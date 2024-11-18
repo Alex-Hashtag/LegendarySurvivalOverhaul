@@ -21,6 +21,7 @@ import sfiomn.legendarysurvivaloverhaul.util.CapabilityUtil;
 import sfiomn.legendarysurvivaloverhaul.util.WorldUtil;
 
 import static sfiomn.legendarysurvivaloverhaul.common.integration.sereneseasons.SereneSeasonsUtil.seasonTooltip;
+import static sfiomn.legendarysurvivaloverhaul.util.ItemUtil.compassLocation;
 import static sfiomn.legendarysurvivaloverhaul.util.WorldUtil.timeInGame;
 
 public class RenderTooltipFrame {
@@ -62,8 +63,9 @@ public class RenderTooltipFrame {
                 }
                 render(forgeGui, guiGraphics, width, height, temperatureComponent);
             } else if (itemInFrame == Items.COMPASS) {
-                render(forgeGui, guiGraphics, width, height, Component.literal("XYZ: " + ENTITY_LOOKED_AT.blockPosition().getX() +
-                        " / " + ENTITY_LOOKED_AT.blockPosition().getY() + " / " + ENTITY_LOOKED_AT.blockPosition().getZ()));
+                String compassLocation = compassLocation(ENTITY_LOOKED_AT);
+                if (!compassLocation.isEmpty())
+                    render(forgeGui, guiGraphics, width, height, Component.literal(compassLocation));
             } else if (itemInFrame == Items.CLOCK) {
                 render(forgeGui, guiGraphics, width, height, Component.literal(timeInGame(Minecraft.getInstance())));
             }

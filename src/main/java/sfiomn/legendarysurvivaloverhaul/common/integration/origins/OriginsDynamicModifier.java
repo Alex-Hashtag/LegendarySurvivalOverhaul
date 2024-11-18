@@ -12,7 +12,6 @@ import sfiomn.legendarysurvivaloverhaul.api.config.json.temperature.JsonTemperat
 import sfiomn.legendarysurvivaloverhaul.api.temperature.DynamicModifierBase;
 import sfiomn.legendarysurvivaloverhaul.api.temperature.TemperatureEnum;
 import sfiomn.legendarysurvivaloverhaul.common.integration.json.JsonIntegrationConfig;
-import sfiomn.legendarysurvivaloverhaul.registry.AttributeRegistry;
 
 public class OriginsDynamicModifier extends DynamicModifierBase {
     public OriginsDynamicModifier() {}

@@ -193,6 +193,8 @@ public class CommonForgeEvents {
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onEntityHurt(LivingHurtEvent event) {
         if (!event.getSource().is(DamageTypes.FALL) &&
+            !event.getSource().is(DamageTypes.STARVE) &&
+            !event.getSource().is(DamageTypes.FREEZE) &&
             !event.getSource().is(DamageTypes.DROWN) &&
             !event.getSource().is(ModDamageTypes.DEHYDRATION) &&
             !event.getSource().is(ModDamageTypes.HYPOTHERMIA) &&

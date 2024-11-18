@@ -2,7 +2,6 @@ package sfiomn.legendarysurvivaloverhaul.common.temperature.dynamic;
 
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
-import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.temperature.DynamicModifierBase;
 import sfiomn.legendarysurvivaloverhaul.api.temperature.TemperatureEnum;
 import sfiomn.legendarysurvivaloverhaul.registry.AttributeRegistry;

@@ -21,8 +21,8 @@ public class JsonConfig
 	public static Map<String, JsonTemperature> dimensionTemperatures = Maps.newHashMap();
 	public static Map<String, JsonBiomeIdentity> biomeOverrides = Maps.newHashMap();
 	public static Map<String, JsonTemperatureResistance> itemTemperatures = Maps.newHashMap();
-	public static Map<String, JsonTemperature> entityTemperatures = Maps.newHashMap();
 	public static Map<String, List<JsonBlockFluidTemperature>> blockFluidTemperatures = Maps.newHashMap();
+	public static Map<String, JsonTemperature> entityTemperatures = Maps.newHashMap();
 	public static Map<String, JsonFuelItem> fuelItems = Maps.newHashMap();
 	public static Map<String, List<JsonBlockFluidThirst>> blockFluidThirst = Maps.newHashMap();
 	public static Map<String, List<JsonConsumableTemperature>> consumableTemperature = Maps.newHashMap();

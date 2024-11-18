@@ -18,11 +18,7 @@ public class ItemModifier extends AttributeModifierBase
 		JsonTemperatureResistance config = new JsonTemperatureResistance();
 
 		if (itemRegistryName != null && JsonConfig.itemTemperatures.containsKey(itemRegistryName.toString())) {
-			JsonTemperatureResistance tempConfig = JsonConfig.itemTemperatures.get(itemRegistryName.toString());
-			config.temperature += tempConfig.temperature;
-			config.heatResistance += tempConfig.heatResistance;
-			config.coldResistance += tempConfig.coldResistance;
-			config.thermalResistance += tempConfig.thermalResistance;
+			config = JsonConfig.itemTemperatures.get(itemRegistryName.toString());
 		}
 
 		return config;

@@ -28,7 +28,6 @@ import sfiomn.legendarysurvivaloverhaul.client.screens.ClientHooks;
 import sfiomn.legendarysurvivaloverhaul.client.effects.TemperatureBreathEffect;
 import sfiomn.legendarysurvivaloverhaul.client.sounds.TemperatureBreathSound;
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.thirst.ThirstCapability;
-import sfiomn.legendarysurvivaloverhaul.common.integration.curios.CuriosUtil;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
 import sfiomn.legendarysurvivaloverhaul.network.NetworkHandler;
 import sfiomn.legendarysurvivaloverhaul.network.packets.MessageDrinkBlockFluid;
@@ -41,6 +40,7 @@ import java.util.ListIterator;
 import static sfiomn.legendarysurvivaloverhaul.common.events.CommonForgeEvents.playerDrinkEffect;
 import static sfiomn.legendarysurvivaloverhaul.common.integration.sereneseasons.SereneSeasonsUtil.seasonTooltip;
 import static sfiomn.legendarysurvivaloverhaul.common.integration.sereneseasons.SereneSeasonsUtil.plantCanGrow;
+import static sfiomn.legendarysurvivaloverhaul.util.ItemUtil.compassLocation;
 import static sfiomn.legendarysurvivaloverhaul.util.WorldUtil.timeInGame;
 
 @Mod.EventBusSubscriber(modid = LegendarySurvivalOverhaul.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
@@ -57,8 +57,9 @@ public class ClientForgeEvents {
         } else if (event.getItemStack().getItem() == Items.CLOCK) {
             player.displayClientMessage(Component.literal(timeInGame(Minecraft.getInstance())), true);
         } else if (event.getItemStack().getItem() == Items.COMPASS) {
-            player.displayClientMessage(Component.literal("XYZ: " + player.blockPosition().getX() +
-                    " / " + player.blockPosition().getY() + " / " + player.blockPosition().getZ()), true);
+            String compassLocation = compassLocation(player);
+            if (!compassLocation.isEmpty())
+                player.displayClientMessage(Component.literal(compassLocation), true);
         }
     }
 

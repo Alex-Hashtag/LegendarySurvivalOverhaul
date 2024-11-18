@@ -4,9 +4,9 @@ import net.minecraft.world.entity.player.Player;
 import sfiomn.legendarysurvivaloverhaul.api.temperature.ModifierBase;
 import sfiomn.legendarysurvivaloverhaul.registry.AttributeRegistry;
 
-public class TemperatureAttributeModifier extends ModifierBase
+public class AttributeModifier extends ModifierBase
 {
-    public TemperatureAttributeModifier()
+    public AttributeModifier()
     {
         super();
     }

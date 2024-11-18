@@ -27,6 +27,9 @@ public class MobEffectRegistry {
 	public static final RegistryObject<MobEffect> THIRST = EFFECTS.register("thirst", ThirstEffect::new);
 	public static final RegistryObject<Potion> THIRST_POTION = POTIONS.register("thirst", () -> new Potion("thirst", new MobEffectInstance(THIRST.get(), 3600, 0, false, true, true)));
 	public static final RegistryObject<Potion> THIRST_POTION_LONG = POTIONS.register("thirst_long", () -> new Potion("thirst_long", new MobEffectInstance(THIRST.get(), 9600, 0, false, true, true)));
+	public static final RegistryObject<MobEffect> HYDRATION_FILL = EFFECTS.register("hydration_fill", HydrationFillEffect::new);
+	public static final RegistryObject<Potion> HYDRATION_FILL_POTION = POTIONS.register("hydration_fill", () -> new Potion("hydration_fill", new MobEffectInstance(HYDRATION_FILL.get(), 3600, 0, false, true, true)));
+	public static final RegistryObject<Potion> HYDRATION_FILL_POTION_LONG = POTIONS.register("hydration_fill_long", () -> new Potion("hydration_fill_long", new MobEffectInstance(HYDRATION_FILL.get(), 9600, 0, false, true, true)));
 
 	public static final RegistryObject<MobEffect> FROSTBITE = EFFECTS.register("frostbite", FrostbiteEffect::new);
 	public static final RegistryObject<MobEffect> COLD_HUNGER = EFFECTS.register("cold_hunger", ColdHungerEffect::new);

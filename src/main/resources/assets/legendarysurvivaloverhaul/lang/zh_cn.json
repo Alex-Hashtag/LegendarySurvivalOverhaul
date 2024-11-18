@@ -43,8 +43,8 @@
 
 	"attribute.legendarysurvivaloverhaul.heating_temperature": "温度",
 	"attribute.legendarysurvivaloverhaul.cooling_temperature": "温度",
-	"attribute.legendarysurvivaloverhaul.heat_immunity": "抗暑",
-	"attribute.legendarysurvivaloverhaul.cold_immunity": "御寒",
+	"attribute.legendarysurvivaloverhaul.heat_resistance": "抗暑",
+	"attribute.legendarysurvivaloverhaul.cold_resistance": "御寒",
 	"attribute.legendarysurvivaloverhaul.thermal_resistance": "恒温",
 
 	"item.legendarysurvivaloverhaul.canteen_empty": "空水壶",

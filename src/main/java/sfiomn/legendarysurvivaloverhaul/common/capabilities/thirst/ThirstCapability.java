@@ -9,12 +9,16 @@ import net.minecraftforge.event.TickEvent;
 import sfiomn.legendarysurvivaloverhaul.api.ModDamageTypes;
 import sfiomn.legendarysurvivaloverhaul.api.thirst.IThirstCapability;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
+import sfiomn.legendarysurvivaloverhaul.registry.MobEffectRegistry;
 import sfiomn.legendarysurvivaloverhaul.util.DamageSourceUtil;
 import sfiomn.legendarysurvivaloverhaul.util.DamageUtil;
 
 
 public class ThirstCapability implements IThirstCapability
 {
+	public static int MAX_HYDRATION = 20;
+	public static float MAX_SATURATION = 20.0f;
+
 	private float exhaustion = 0.0f;
 	private int thirst;
 	private float thirstSaturation;
@@ -70,6 +74,13 @@ public class ThirstCapability implements IThirstCapability
 		if(getThirstTickTimer() >= 10)
 		{
 			this.setThirstTickTimer(0);
+
+			if (player.hasEffect(MobEffectRegistry.HYDRATION_FILL.get())) {
+				if (getHydrationLevel() < MAX_HYDRATION) {
+					addHydrationLevel(1);
+				}
+				return;
+			}
 
 			// if player has moved at least 1 block, trigger the thirst exhaust, allowing afk player not dying from thirst
 			if (oldPos.distanceTo(player.position()) > 1) {
@@ -142,16 +153,16 @@ public class ThirstCapability implements IThirstCapability
 	@Override
 	public boolean isDirty()
 	{
-		return this.thirst!=this.oldThirst ||
-				this.thirstSaturation !=this.oldThirstSaturation ||
+		return this.thirst != this.oldThirst ||
+				this.thirstSaturation != this.oldThirstSaturation ||
 				this.dirty;
 	}
 
 	@Override
 	public void setClean()
 	{
-		this.oldThirst =this.thirst;
-		this.oldThirstSaturation =this.thirstSaturation;
+		this.oldThirst = this.thirst;
+		this.oldThirstSaturation = this.thirstSaturation;
 		this.dirty = false;
 	}
 
@@ -199,7 +210,7 @@ public class ThirstCapability implements IThirstCapability
 	@Override
 	public void setThirstExhaustion(float exhaustion)
 	{
-		this.exhaustion=Math.max(exhaustion,0.0f);
+		this.exhaustion = Math.max(exhaustion,0.0f);
 
 		if(!Float.isFinite(this.exhaustion))
 			this.exhaustion = 0.0f;
@@ -208,16 +219,16 @@ public class ThirstCapability implements IThirstCapability
 	@Override
 	public void setHydrationLevel(int thirst)
 	{
-		this.thirst = Mth.clamp(thirst, 0, 20);
+		this.thirst = Mth.clamp(thirst, 0, MAX_HYDRATION);
 
 	}
 
 	@Override
 	public void setThirstSaturation(float saturation)
 	{
-		this.thirstSaturation = Mth.clamp(saturation, 0.0f, 20.0f);
+		this.thirstSaturation = Mth.clamp(saturation, 0.0f, MAX_SATURATION);
 
-		if(!Float.isFinite(this.thirstSaturation))
+		if (!Float.isFinite(this.thirstSaturation))
 			this.thirstSaturation = 0.0f;
 	}
 
@@ -279,7 +290,7 @@ public class ThirstCapability implements IThirstCapability
 	@Override
 	public boolean isHydrationLevelAtMax()
 	{
-		return this.getHydrationLevel() >= 20;
+		return this.getHydrationLevel() >= MAX_HYDRATION;
 	}
 
 	@Override

@@ -37,19 +37,19 @@ public class TemperatureModifierRegistry
 	public static final Supplier<IForgeRegistry<AttributeModifierBase>> ITEM_ATTRIBUTE_MODIFIERS_REGISTRY = ITEM_ATTRIBUTE_MODIFIERS.makeRegistry(RegistryBuilder::new);
 
 	// Base Modifiers
-	public static final RegistryObject<ModifierBase> DIMENSION = MODIFIERS.register("dimension", DimensionModifier::new);
-	public static final RegistryObject<ModifierBase> BIOME = MODIFIERS.register("biome", BiomeModifier::new);
-	public static final RegistryObject<ModifierBase> TIME = MODIFIERS.register("time", TimeModifier::new);
 	public static final RegistryObject<ModifierBase> ALTITUDE = MODIFIERS.register("altitude", AltitudeModifier::new);
-	public static final RegistryObject<ModifierBase> SPRINT = MODIFIERS.register("sprint", SprintModifier::new);
+	public static final RegistryObject<ModifierBase> ATTRIBUTE = MODIFIERS.register("attribute", AttributeModifier::new);
+	public static final RegistryObject<ModifierBase> BIOME = MODIFIERS.register("biome", BiomeModifier::new);
 	public static final RegistryObject<ModifierBase> BLOCKS = MODIFIERS.register("blocks", BlockModifier::new);
+	public static final RegistryObject<ModifierBase> DIMENSION = MODIFIERS.register("dimension", DimensionModifier::new);
 	public static final RegistryObject<ModifierBase> ENTITY = MODIFIERS.register("entity", EntityModifier::new);
-	public static final RegistryObject<ModifierBase> ON_FIRE = MODIFIERS.register("on_fire", OnFireModifier::new);
-	public static final RegistryObject<ModifierBase> WEATHER = MODIFIERS.register("weather", WeatherModifier::new);
-	public static final RegistryObject<ModifierBase> PLAYER_HUDDLING = MODIFIERS.register("player_huddling", PlayerHuddlingModifier::new);
 	public static final RegistryObject<ModifierBase> FREEZE = MODIFIERS.register("freeze", FreezeModifier::new);
+	public static final RegistryObject<ModifierBase> ON_FIRE = MODIFIERS.register("on_fire", OnFireModifier::new);
+	public static final RegistryObject<ModifierBase> PLAYER_HUDDLING = MODIFIERS.register("player_huddling", PlayerHuddlingModifier::new);
+	public static final RegistryObject<ModifierBase> SPRINT = MODIFIERS.register("sprint", SprintModifier::new);
+	public static final RegistryObject<ModifierBase> TIME = MODIFIERS.register("time", TimeModifier::new);
+	public static final RegistryObject<ModifierBase> WEATHER = MODIFIERS.register("weather", WeatherModifier::new);
 	public static final RegistryObject<ModifierBase> WETNESS = MODIFIERS.register("wetness", WetModifier::new);
-	public static final RegistryObject<ModifierBase> TEMPERATURE_ATTRIBUTE = MODIFIERS.register("temperature_attribute", TemperatureAttributeModifier::new);
 
 	public static final RegistryObject<AttributeModifierBase> ITEM = ITEM_ATTRIBUTE_MODIFIERS.register("item", ItemModifier::new);
 	public static final RegistryObject<AttributeModifierBase> COAT = ITEM_ATTRIBUTE_MODIFIERS.register("coat", CoatModifier::new);

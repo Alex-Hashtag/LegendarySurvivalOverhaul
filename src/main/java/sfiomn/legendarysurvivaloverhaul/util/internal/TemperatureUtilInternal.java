@@ -207,6 +207,7 @@ public class TemperatureUtilInternal implements ITemperatureUtil
 		{
 			final CompoundTag compound = stack.getTag();
 
+			// TODO: remove this temporary transfer to new coat tag name
 			if (compound != null && compound.contains("ArmorPadding")) {
 				compound.putString(COAT_TAG, compound.getString("ArmorPadding"));
 				compound.remove("ArmorPadding");

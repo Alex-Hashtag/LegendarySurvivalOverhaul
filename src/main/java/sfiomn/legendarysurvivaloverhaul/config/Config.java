@@ -9,6 +9,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.temperature.TemperatureDisplayEnum;
 import sfiomn.legendarysurvivaloverhaul.config.json.JsonConfigRegistration;
+import sfiomn.legendarysurvivaloverhaul.util.ItemUtil;
 
 import java.io.IOException;
 import java.nio.file.FileAlreadyExistsException;
@@ -64,6 +65,7 @@ public class Config
 		public final ForgeConfigSpec.BooleanValue naturalRegenerationEnabled;
 		public final ForgeConfigSpec.BooleanValue vanillaFreezeEnabled;
 		public final ForgeConfigSpec.DoubleValue baseFoodExhaustion;
+		public final ForgeConfigSpec.EnumValue<ItemUtil.CompassInfo> compassInfoMode;
 
 		// Temperature
 		public final ForgeConfigSpec.BooleanValue temperatureEnabled;
@@ -179,6 +181,8 @@ public class Config
 		public final ForgeConfigSpec.IntValue hydrationLava;
 		public final ForgeConfigSpec.DoubleValue saturationLava;
 		public final ForgeConfigSpec.BooleanValue glassBottleLootAfterDrink;
+
+		// > Integration
 		public final ForgeConfigSpec.IntValue hydrationLavaBlazeborn;
 		public final ForgeConfigSpec.DoubleValue saturationLavaBlazeborn;
 		public final ForgeConfigSpec.DoubleValue extraThirstExhaustionShulk;
@@ -274,8 +278,15 @@ public class Config
 			builder.push("advanced");
 			routinePacketSync = builder
 					.comment(" How often player temperature is regularly synced between the client and server, in ticks.",
-							" Lower values will increase accuracy at the cost of performance")
+							" Lower values will increase accuracy at the cost of performance.")
 					.defineInRange("Routine Packet Sync", 30, 1, Integer.MAX_VALUE);
+
+			builder.pop();
+
+			builder.push("misc");
+			compassInfoMode = builder
+					.comment(" What information the compass returns when player is using it or in an item frame.")
+					.defineEnum("Compass Info Mode", ItemUtil.CompassInfo.FULL);
 
 			builder.pop();
 			builder.pop();
@@ -319,10 +330,10 @@ public class Config
 							" If the player is too cold, hunger will deplete faster.")
 					.define("Cold Temperature Secondary Effects", true);
 			heatThirstEffectModifier = builder
-					.comment(" How much thirst exhaustion will be added every 50 ticks with no amplification effect.")
+					.comment(" How much thirst exhaustion will be added every 50 ticks with no amplification effect, when the player suffers from heat.")
 					.defineInRange("Heat Thirst Effect Modifier", 0.1d, 0, 1000.0d);
 			coldHungerEffectModifier = builder
-					.comment(" How much food exhaustion will be added every 50 ticks with no amplification effect.",
+					.comment(" How much food exhaustion will be added every 50 ticks with no amplification effect, when the player suffers from frostbite.",
 							" As reference, the hunger effect add 0.025 food exhaustion every 50 ticks.")
 					.defineInRange("Cold Hunger Modifier", 0.05d, 0, 1000.0d);
 			builder.pop();
@@ -434,19 +445,19 @@ public class Config
 							" Adaptive means the coating will maintain the player's temperature temperate.")
 					.push("coat");
 
-			builder.comment(" Add an adaptive heating effect on armors.").push("heating");
+			builder.comment(" Add a heating resistance on armors.").push("heating");
 			heatingCoat1Modifier = builder.defineInRange("Heating Coat I", 2.0d, 0, 1000.0d);
 			heatingCoat2Modifier = builder.defineInRange("Heating Coat II", 3.0d, 0, 1000.0d);
 			heatingCoat3Modifier = builder.defineInRange("Heating Coat III", 4.0d, 0, 1000.0d);
 			builder.pop();
 
-			builder.comment(" Add an adaptive cooling effect on armors.").push("cooling");
+			builder.comment(" Add a cooling resistance on armors.").push("cooling");
 			coolingCoat1Modifier = builder.defineInRange("Cooling Coat I", 2.0d, 0, 1000.0d);
 			coolingCoat2Modifier = builder.defineInRange("Cooling Coat II", 3.0d, 0, 1000.0d);
 			coolingCoat3Modifier = builder.defineInRange("Cooling Coat III", 4.0d, 0, 1000.0d);
 			builder.pop();
 
-			builder.comment(" Add an adaptive temperature effect on armors that can both heat and cool the player.")
+			builder.comment(" Add a temperature resistance on armors that can both heat and cool the player.")
 					.push("thermal");
 			thermalCoat1Modifier = builder.defineInRange("Thermal Coat I", 2.0d, 0, 1000.0d);
 			thermalCoat2Modifier = builder.defineInRange("Thermal Coat II", 3.0d, 0, 1000.0d);
@@ -512,7 +523,7 @@ public class Config
 					.define("Tropical Seasons Enabled", false);
 			seasonCardsEnabled = builder
 					.comment(" If season cards are enabled, season cards will appear at every season changes.")
-					.define("Season Cards Enabled", true);
+					.define("Season Cards Enabled", false);
 			defaultSeasonEnabled = builder
 					.comment(" If default season is enabled, when serene season defines no season effect in a biome, the normal season temperature will be applied.",
 							" If disabled, when serene season defines no season effects, no season temperature will be applied.")
@@ -968,6 +979,7 @@ public class Config
 		public static boolean naturalRegenerationEnabled;
 		public static boolean vanillaFreezeEnabled;
 		public static double baseFoodExhaustion;
+		public static ItemUtil.CompassInfo compassInfoMode;
 
 		// Temperature
 		public static boolean temperatureEnabled;
@@ -1188,6 +1200,7 @@ public class Config
 				routinePacketSync = COMMON.routinePacketSync.get();
 				vanillaFreezeEnabled = COMMON.vanillaFreezeEnabled.get();
 				baseFoodExhaustion = COMMON.baseFoodExhaustion.get();
+				compassInfoMode = COMMON.compassInfoMode.get();
 
 				temperatureEnabled = COMMON.temperatureEnabled.get();
 				tempTickTime = COMMON.tempTickTime.get();

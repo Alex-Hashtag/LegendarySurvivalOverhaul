@@ -28,7 +28,6 @@ import sfiomn.legendarysurvivaloverhaul.common.capabilities.temperature.Temperat
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.thirst.ThirstCapability;
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.thirst.ThirstProvider;
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.wetness.WetnessCapability;
-import sfiomn.legendarysurvivaloverhaul.common.capabilities.wetness.WetnessMode;
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.wetness.WetnessProvider;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
 import sfiomn.legendarysurvivaloverhaul.network.NetworkHandler;

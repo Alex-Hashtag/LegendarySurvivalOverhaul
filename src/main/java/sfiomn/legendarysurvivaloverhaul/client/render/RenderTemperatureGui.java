@@ -14,7 +14,6 @@ import sfiomn.legendarysurvivaloverhaul.api.temperature.TemperatureEnum;
 import sfiomn.legendarysurvivaloverhaul.api.temperature.TemperatureUtil;
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.temperature.TemperatureCapability;
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.wetness.WetnessCapability;
-import sfiomn.legendarysurvivaloverhaul.common.capabilities.wetness.WetnessMode;
 import sfiomn.legendarysurvivaloverhaul.common.integration.curios.CuriosUtil;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
 import sfiomn.legendarysurvivaloverhaul.registry.MobEffectRegistry;
