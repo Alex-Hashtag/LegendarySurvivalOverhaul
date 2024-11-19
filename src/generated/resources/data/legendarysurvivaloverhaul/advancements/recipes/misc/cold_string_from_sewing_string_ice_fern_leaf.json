@@ -6,7 +6,7 @@
         "items": [
           {
             "items": [
-              "legendarysurvivaloverhaul:ice_fern"
+              "legendarysurvivaloverhaul:ice_fern_leaf"
             ]
           }
         ]
@@ -21,7 +21,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "legendarysurvivaloverhaul:cold_string_from_sewing_string_ice_fern"
+        "recipe": "legendarysurvivaloverhaul:cold_string_from_sewing_string_ice_fern_leaf"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -35,7 +35,7 @@
   ],
   "rewards": {
     "recipes": [
-      "legendarysurvivaloverhaul:cold_string_from_sewing_string_ice_fern"
+      "legendarysurvivaloverhaul:cold_string_from_sewing_string_ice_fern_leaf"
     ]
   },
   "sends_telemetry_event": true

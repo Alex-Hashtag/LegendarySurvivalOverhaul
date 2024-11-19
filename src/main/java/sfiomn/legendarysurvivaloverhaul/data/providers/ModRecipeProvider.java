@@ -9,17 +9,20 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.ShapelessRecipe;
 import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.crafting.PartialNBTIngredient;
 import net.minecraftforge.common.crafting.conditions.IConditionBuilder;
 import org.jetbrains.annotations.NotNull;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
+import sfiomn.legendarysurvivaloverhaul.api.temperature.TemperatureUtil;
 import sfiomn.legendarysurvivaloverhaul.api.thirst.HydrationEnum;
 import sfiomn.legendarysurvivaloverhaul.data.recipes.PurificationRecipeBuilder;
 import sfiomn.legendarysurvivaloverhaul.data.recipes.SewingRecipeBuilder;
 import sfiomn.legendarysurvivaloverhaul.registry.BlockRegistry;
 import sfiomn.legendarysurvivaloverhaul.registry.ItemRegistry;
+import sfiomn.legendarysurvivaloverhaul.registry.MobEffectRegistry;
 
 import java.util.Collection;
 import java.util.function.Consumer;
@@ -372,8 +375,6 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
         sewing(consumer, Ingredient.of(Items.STRING), Ingredient.of(ItemRegistry.ICE_FERN.get()), new ItemStack(ItemRegistry.COLD_STRING.get()), "cold_string");
 
         sewing(consumer, Ingredient.of(Items.STRING), Ingredient.of(ItemRegistry.SUN_FERN.get()), new ItemStack(ItemRegistry.WARM_STRING.get()), "warm_string");
-
-        //buildAllCoatingRecipes(consumer);
     }
 
     protected static void smelting(@NotNull Consumer<FinishedRecipe> consumer, Ingredient input, ItemLike result, float experience, int cookingTime, String recipeName) {

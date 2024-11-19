@@ -85,6 +85,10 @@ public class ModBlockLootTables extends BlockLootSubProvider {
                                         .when(lootitemconditionMaxAgebuilder))
                                 .withPool(LootPool.lootPool().add(LootItem.lootTableItem(ItemRegistry.ICE_FERN_SEEDS.get())))));
 
+        this.add(BlockRegistry.ICE_FERN_GOLD.get(), LootTable.lootTable()
+                .withPool(LootPool.lootPool().add(LootItem.lootTableItem(ItemRegistry.ICE_FERN_GOLD.get())))
+                .withPool(LootPool.lootPool().add(LootItem.lootTableItem(ItemRegistry.ICE_FERN_SEEDS.get()))));
+
         lootitemconditionMaxAgebuilder = LootItemBlockStatePropertyCondition
                 .hasBlockStateProperties(BlockRegistry.SUN_FERN_CROP.get())
                 .setProperties(StatePropertiesPredicate.Builder.properties().hasProperty(SunFernBlock.AGE, SunFernBlock.MAX_AGE));
@@ -96,6 +100,10 @@ public class ModBlockLootTables extends BlockLootSubProvider {
                                         .add(LootItem.lootTableItem(ItemRegistry.SUN_FERN.get()))
                                         .when(lootitemconditionMaxAgebuilder))
                                 .withPool(LootPool.lootPool().add(LootItem.lootTableItem(ItemRegistry.SUN_FERN_SEEDS.get())))));
+
+        this.add(BlockRegistry.SUN_FERN_GOLD.get(), LootTable.lootTable()
+                .withPool(LootPool.lootPool().add(LootItem.lootTableItem(ItemRegistry.SUN_FERN_GOLD.get())))
+                .withPool(LootPool.lootPool().add(LootItem.lootTableItem(ItemRegistry.SUN_FERN_SEEDS.get()))));
     }
 
     @Override

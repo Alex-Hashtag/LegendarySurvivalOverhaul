@@ -2,12 +2,9 @@ package sfiomn.legendarysurvivaloverhaul.data.providers;
 
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.block.CropBlock;
 import net.minecraft.world.level.block.DoublePlantBlock;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
-import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraftforge.client.model.generators.BlockStateProvider;
 import net.minecraftforge.client.model.generators.ConfiguredModel;
 import net.minecraftforge.client.model.generators.ModelFile;
@@ -19,8 +16,6 @@ import sfiomn.legendarysurvivaloverhaul.common.blocks.SunFernBlock;
 import sfiomn.legendarysurvivaloverhaul.common.blocks.WaterPlantBlock;
 import sfiomn.legendarysurvivaloverhaul.registry.BlockRegistry;
 
-import java.util.function.Function;
-
 import static sfiomn.legendarysurvivaloverhaul.common.blocks.ThermalBlock.FACING;
 
 public class ModBlockStateProvider extends BlockStateProvider {
@@ -30,11 +25,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
     public static final ResourceLocation HEATER_BASE_OFF = new ResourceLocation(LegendarySurvivalOverhaul.MOD_ID, "block/heater_base_off");
     public static final ResourceLocation HEATER_BASE_ON = new ResourceLocation(LegendarySurvivalOverhaul.MOD_ID, "block/heater_base_on");
     public static final ResourceLocation HEATER_TOP = new ResourceLocation(LegendarySurvivalOverhaul.MOD_ID, "block/heater_top");
-    public static final ResourceLocation ICE_FERN = new ResourceLocation(LegendarySurvivalOverhaul.MOD_ID, "block/ice_fern");
-    public static final ResourceLocation SUN_FERN = new ResourceLocation(LegendarySurvivalOverhaul.MOD_ID, "block/sun_fern");
     public static final ResourceLocation SEWING_TABLE = new ResourceLocation(LegendarySurvivalOverhaul.MOD_ID, "block/sewing_table");
-    public static final ResourceLocation WATER_PLANT_BOTTOM = new ResourceLocation(LegendarySurvivalOverhaul.MOD_ID, "block/water_plant_bottom");
-    public static final ResourceLocation WATER_PLANT_TOP = new ResourceLocation(LegendarySurvivalOverhaul.MOD_ID, "block/water_plant_top");
 
     public ModBlockStateProvider(PackOutput output, ExistingFileHelper exFileHelper) {
         super(output, LegendarySurvivalOverhaul.MOD_ID, exFileHelper);
@@ -57,7 +48,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
                                 .build();
                 });
 
-        simpleBlockItem(BlockRegistry.HEATER.get(), new ModelFile.UncheckedModelFile(new ResourceLocation(LegendarySurvivalOverhaul.MOD_ID, "block/heater_off_full_block")));
+        simpleBlockItem(BlockRegistry.HEATER.get(), new ModelFile.UncheckedModelFile(this.modLoc("block/heater_off_full_block")));
         this.getVariantBuilder(BlockRegistry.HEATER.get())
                 .forAllStates(state -> {
                     if (state.getValue(BlockStateProperties.LIT))
@@ -102,6 +93,8 @@ public class ModBlockStateProvider extends BlockStateProvider {
             }
         });
 
+        this.simpleBlockWithItem(BlockRegistry.ICE_FERN_GOLD.get(), new ModelFile.UncheckedModelFile(this.modLoc("block/ice_fern_gold")));
+
         VariantBlockStateBuilder sunFernBuilder = this.getVariantBuilder(BlockRegistry.SUN_FERN_CROP.get());
         SunFernBlock.AGE.getPossibleValues().forEach((age) -> {
             if (age < SunFernBlock.MAX_AGE) {
@@ -118,6 +111,8 @@ public class ModBlockStateProvider extends BlockStateProvider {
                         .addModel();
             }
         });
+
+        this.simpleBlockWithItem(BlockRegistry.SUN_FERN_GOLD.get(), new ModelFile.UncheckedModelFile(this.modLoc("block/sun_fern_gold")));
 
         VariantBlockStateBuilder waterPlantBuilder = this.getVariantBuilder(BlockRegistry.WATER_PLANT_CROP.get());
         WaterPlantBlock.AGE.getPossibleValues().forEach((age) -> {

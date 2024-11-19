@@ -23,6 +23,8 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.common.PlantType;
+import sfiomn.legendarysurvivaloverhaul.config.Config;
+import sfiomn.legendarysurvivaloverhaul.registry.BlockRegistry;
 import sfiomn.legendarysurvivaloverhaul.registry.ItemRegistry;
 import sfiomn.legendarysurvivaloverhaul.registry.ParticleTypeRegistry;
 
@@ -52,6 +54,24 @@ public class IceFernBlock extends CropBlock implements IPlantable {
                 .instabreak()
                 .sound(SoundType.CROP)
                 .pushReaction(PushReaction.DESTROY);
+    }
+
+    @Override
+    public void growCrops(Level level, BlockPos pos, BlockState blockState) {
+        int i = this.getAge(blockState) + this.getBonemealAgeIncrease(level);
+        int j = this.getMaxAge();
+        if (i > j) {
+            i = j;
+        }
+
+        if (i == MAX_AGE) {
+            if (level.getRandom().nextFloat() < Config.Baked.goldFernChance) {
+                level.setBlock(pos, BlockRegistry.ICE_FERN_GOLD.get().defaultBlockState(), 2);
+                return;
+            }
+        }
+
+        level.setBlock(pos, this.getStateForAge(i), 2);
     }
 
     @Override

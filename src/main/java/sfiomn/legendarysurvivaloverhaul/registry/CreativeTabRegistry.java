@@ -66,6 +66,8 @@ public class CreativeTabRegistry {
 
                         ItemRegistry.ICE_FERN.get().getDefaultInstance(),
                         ItemRegistry.SUN_FERN.get().getDefaultInstance(),
+                        ItemRegistry.ICE_FERN_GOLD.get().getDefaultInstance(),
+                        ItemRegistry.SUN_FERN_GOLD.get().getDefaultInstance(),
                         ItemRegistry.ICE_FERN_SEEDS.get().getDefaultInstance(),
                         ItemRegistry.SUN_FERN_SEEDS.get().getDefaultInstance(),
                         ItemRegistry.COLD_STRING.get().getDefaultInstance(),
@@ -88,6 +90,8 @@ public class CreativeTabRegistry {
 
                         BlockRegistry.COOLER.get().asItem().getDefaultInstance(),
                         BlockRegistry.HEATER.get().asItem().getDefaultInstance(),
+                        BlockRegistry.ICE_FERN_GOLD.get().asItem().getDefaultInstance(),
+                        BlockRegistry.SUN_FERN_GOLD.get().asItem().getDefaultInstance(),
                         BlockRegistry.SEWING_TABLE.get().asItem().getDefaultInstance()
                 ));
             })

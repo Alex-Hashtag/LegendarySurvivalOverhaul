@@ -6,7 +6,7 @@
         "items": [
           {
             "items": [
-              "legendarysurvivaloverhaul:sun_fern"
+              "legendarysurvivaloverhaul:sun_fern_leaf"
             ]
           }
         ]
@@ -21,7 +21,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "legendarysurvivaloverhaul:warm_string_from_sewing_string_sun_fern"
+        "recipe": "legendarysurvivaloverhaul:warm_string_from_sewing_string_sun_fern_leaf"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -35,7 +35,7 @@
   ],
   "rewards": {
     "recipes": [
-      "legendarysurvivaloverhaul:warm_string_from_sewing_string_sun_fern"
+      "legendarysurvivaloverhaul:warm_string_from_sewing_string_sun_fern_leaf"
     ]
   },
   "sends_telemetry_event": true
