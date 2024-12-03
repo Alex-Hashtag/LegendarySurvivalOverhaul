@@ -11,9 +11,11 @@ import net.minecraftforge.event.TickEvent;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 import sfiomn.legendarysurvivaloverhaul.api.bodydamage.*;
+import sfiomn.legendarysurvivaloverhaul.common.capabilities.health.HealthCapability;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
 import sfiomn.legendarysurvivaloverhaul.registry.MobEffectRegistry;
 import sfiomn.legendarysurvivaloverhaul.registry.SoundRegistry;
+import sfiomn.legendarysurvivaloverhaul.util.CapabilityUtil;
 import sfiomn.legendarysurvivaloverhaul.util.MathUtil;
 
 import java.util.*;
@@ -24,6 +26,7 @@ public class BodyDamageCapability implements IBodyDamageCapability
 	// Saved data
 	private Map<BodyPartEnum, BodyPart> bodyParts;
 	private int headacheTimer;
+	private int injuredLimbBrokenHearts;
 
 	// Unsaved data
 	private int updateTickTimer; // Update immediately first time around
@@ -41,6 +44,7 @@ public class BodyDamageCapability implements IBodyDamageCapability
 	{
 		this.updateTickTimer = 20;
 		this.headacheTimer = 0;
+		this.injuredLimbBrokenHearts = 0;
 		this.playerMaxHealth = 0;
 		this.manualDirty = false;
 
@@ -100,8 +104,15 @@ public class BodyDamageCapability implements IBodyDamageCapability
 
 		if (updateTickTimer++ >= 20) {
 			updateTickTimer = 0;
-			if (Config.Baked.bodyPartHealthMode.equals("DYNAMIC") && playerMaxHealth != player.getMaxHealth()) {
+			int brokenHearts = 0;
+			if (Config.Baked.healthOverhaulEnabled) {
+				brokenHearts = CapabilityUtil.getHealthCapability(player).getBrokenHearts();
+			}
+
+			if (Config.Baked.bodyPartHealthMode.equals("DYNAMIC") && playerMaxHealth != player.getMaxHealth() + brokenHearts * 2) {
 				playerMaxHealth = player.getMaxHealth();
+				if (Config.Baked.healthOverhaulEnabled)
+					playerMaxHealth += brokenHearts * 2;
 				updateDynamicMaxHealth(playerMaxHealth);
 			}
 
@@ -135,6 +146,7 @@ public class BodyDamageCapability implements IBodyDamageCapability
 			}
 
 			// Heal each body limb of the player
+			int expectedBrokenHearts = 0;
 			for (Map.Entry<BodyPartEnum, BodyPart> bodyPartPair: this.bodyParts.entrySet()) {
 				BodyPart bodyPart = bodyPartPair.getValue();
 				if (bodyPart.getRemainingHealingTicks() > 0) {
@@ -145,6 +157,16 @@ public class BodyDamageCapability implements IBodyDamageCapability
 					else
 						bodyPart.reduceRemainingHealingTicks(healingTick);
 				}
+
+				if (bodyPart.getDamage() == bodyPart.getMaxHealth()) {
+					expectedBrokenHearts += Config.Baked.brokenHeartsPerInjuredLimb;
+				}
+			}
+
+			if (Config.Baked.healthOverhaulEnabled && expectedBrokenHearts != this.injuredLimbBrokenHearts) {
+				HealthCapability healthCapability = CapabilityUtil.getHealthCapability(player);
+				healthCapability.addBrokenHeart(expectedBrokenHearts - this.injuredLimbBrokenHearts);
+				this.injuredLimbBrokenHearts = expectedBrokenHearts;
 			}
 		}
 
@@ -257,6 +279,7 @@ public class BodyDamageCapability implements IBodyDamageCapability
 			compound = bodyPart.writeNbt(compound);
 		}
 		compound.putInt("headacheTimer", this.headacheTimer);
+		compound.putInt("brokenHearts", this.injuredLimbBrokenHearts);
 
 		return compound;
 	}
@@ -269,5 +292,6 @@ public class BodyDamageCapability implements IBodyDamageCapability
 		}
 
 		this.headacheTimer = compound.getInt("headacheTimer");
+		this.injuredLimbBrokenHearts = compound.getInt("brokenHearts");
 	}
 }

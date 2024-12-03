@@ -91,7 +91,7 @@ public class BodyHealingItem extends Item {
     }
 
     @Override
-    public ItemStack finishUsingItem(ItemStack stack, Level world, LivingEntity entity)
+    public ItemStack finishUsingItem(ItemStack stack, Level level, LivingEntity entity)
     {
         if(!(entity instanceof Player player))
             return stack;
@@ -110,7 +110,7 @@ public class BodyHealingItem extends Item {
 
         if (jsonConsumableHeal != null) {
             if (jsonConsumableHeal.healingCharges > 0) {
-                if (world.isClientSide && Minecraft.getInstance().screen == null)
+                if (level.isClientSide && Minecraft.getInstance().screen == null)
                     ClientHooks.openBodyHealthScreen(player, entity.getUsedItemHand(), false,
                             jsonConsumableHeal.healingCharges, jsonConsumableHeal.healingValue, jsonConsumableHeal.healingTime);
             } else if (jsonConsumableHeal.healingCharges == 0) {
@@ -118,7 +118,7 @@ public class BodyHealingItem extends Item {
                     BodyDamageUtil.applyHealingTimeBodyPart(player, bodyPart, jsonConsumableHeal.healingValue, jsonConsumableHeal.healingTime);
                 }
                 runSecondaryEffect(player, stack);
-                world.playSound(null, entity, SoundRegistry.HEAL_BODY_PART.get(), SoundSource.PLAYERS, 1.0f, 1.0f);
+                level.playSound(null, entity, SoundRegistry.HEAL_BODY_PART.get(), SoundSource.PLAYERS, 1.0f, 1.0f);
                 if (!player.isCreative())
                     stack.shrink(1);
             }

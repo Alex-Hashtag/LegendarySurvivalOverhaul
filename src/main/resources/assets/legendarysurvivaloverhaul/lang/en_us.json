@@ -39,13 +39,18 @@
 	"item.legendarysurvivaloverhaul.seasonal_calendar": "Seasonal Calendar",
 	"item.legendarysurvivaloverhaul.nether_chalice": "Nether Chalice",
 	"tooltip.legendarysurvivaloverhaul.nether_chalice.description": "Allows you to drink Lava",
-	"item.legendarysurvivaloverhaul.heart_fruit": "Heart Fruit",
 
 	"attribute.legendarysurvivaloverhaul.heating_temperature": "Temperature",
 	"attribute.legendarysurvivaloverhaul.cooling_temperature": "Temperature",
 	"attribute.legendarysurvivaloverhaul.heat_resistance": "Heat Resistance",
 	"attribute.legendarysurvivaloverhaul.cold_resistance": "Cold Resistance",
 	"attribute.legendarysurvivaloverhaul.thermal_resistance": "Thermal Resistance",
+	"attribute.legendarysurvivaloverhaul.permanent_heart": "Permanent Heart",
+	"attribute.legendarysurvivaloverhaul.broken_heart_resilience": "Broken Heart Resilience",
+
+	"item.legendarysurvivaloverhaul.heart_container": "Heart Container",
+	"item.legendarysurvivaloverhaul.heart_fragment": "Heart Fragment",
+	"item.legendarysurvivaloverhaul.shield_container": "Shield Container",
 
 	"item.legendarysurvivaloverhaul.canteen_empty": "Empty Canteen",
 	"item.legendarysurvivaloverhaul.canteen": "Canteen",
@@ -242,6 +247,7 @@
 	"sounds.legendarysurvivaloverhaul.heal_body_part": "Body limb healed",
 	"sounds.legendarysurvivaloverhaul.hard_falling_hurt": "Player falls hard",
 	"sounds.legendarysurvivaloverhaul.headache_heartbeat": "Headache pulsing",
+	"sounds.legendarysurvivaloverhaul.heart_container": "Heart Container Consumed",
 
 	"message.legendarysurvivaloverhaul.bonemeal.not_correct_season": "This crop can't grow during this season",
 	"message.legendarysurvivaloverhaul.sereneseasons.no_season_info": "No season in this biome",

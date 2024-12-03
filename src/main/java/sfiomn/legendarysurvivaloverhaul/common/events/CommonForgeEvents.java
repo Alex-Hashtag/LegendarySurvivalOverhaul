@@ -4,8 +4,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -24,6 +27,7 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.event.level.LevelEvent;
 import net.minecraftforge.event.level.SleepFinishedTimeEvent;
+import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -38,9 +42,11 @@ import sfiomn.legendarysurvivaloverhaul.api.config.json.bodydamage.JsonConsumabl
 import sfiomn.legendarysurvivaloverhaul.api.config.json.temperature.JsonConsumableTemperature;
 import sfiomn.legendarysurvivaloverhaul.api.config.json.thirst.JsonBlockFluidThirst;
 import sfiomn.legendarysurvivaloverhaul.api.config.json.thirst.JsonConsumableThirst;
+import sfiomn.legendarysurvivaloverhaul.api.health.HealthUtil;
 import sfiomn.legendarysurvivaloverhaul.api.temperature.TemperatureUtil;
 import sfiomn.legendarysurvivaloverhaul.api.thirst.ThirstUtil;
 import sfiomn.legendarysurvivaloverhaul.client.screens.ClientHooks;
+import sfiomn.legendarysurvivaloverhaul.common.capabilities.health.HealthCapability;
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.thirst.ThirstCapability;
 import sfiomn.legendarysurvivaloverhaul.common.items.drink.DrinkItem;
 import sfiomn.legendarysurvivaloverhaul.common.items.heal.BodyHealingItem;
@@ -214,43 +220,52 @@ public class CommonForgeEvents {
             player = (Player) event.getEntity();
         else return;
 
-        if (player.level().isClientSide || !shouldApplyLocalizedBodyDamage(player))
+        if (player.level().isClientSide)
             return;
 
-        float bodyPartDamageValue = event.getAmount() * (float) Config.Baked.bodyDamageMultiplier;
-        DamageSource source = event.getSource();
-
-        JsonBodyPartsDamageSource damageSourceBodyParts = JsonConfig.damageSourceBodyParts.get(source.getMsgId());
-        List<BodyPartEnum> hitBodyParts = new ArrayList<>();
-        if (damageSourceBodyParts != null) {
-            if (damageSourceBodyParts.damageDistribution == DamageDistributionEnum.NONE)
-                return;
-
-            hitBodyParts.addAll(damageSourceBodyParts.getBodyParts(player));
+        if (shouldApplyHealthOverhaul(player)) {
+            event.setAmount(HealthUtil.hurtPlayer(player, event.getAmount()));
         }
 
-        if (hitBodyParts.isEmpty()) {
-             if (source.is(DamageTypeTags.IS_PROJECTILE) && source.getDirectEntity() != null) {
-                 hitBodyParts.addAll(PlayerModelUtil.getPreciseEntityImpact(source.getDirectEntity(), player));
+        if (shouldApplyLocalizedBodyDamage(player)) {
+            float bodyPartDamageValue = event.getAmount() * (float) Config.Baked.bodyDamageMultiplier;
+            DamageSource source = event.getSource();
 
-             } else if (source.getDirectEntity() != null) {
-                 List<BodyPartEnum> possibleHitParts = PlayerModelUtil.getEntityImpact(source.getDirectEntity(), player);
-                 if (!possibleHitParts.isEmpty()) {
-                     hitBodyParts.addAll(DamageDistributionEnum.ONE_OF.getBodyParts(player, possibleHitParts));
-                 }
+            JsonBodyPartsDamageSource damageSourceBodyParts = JsonConfig.damageSourceBodyParts.get(source.getMsgId());
+            List<BodyPartEnum> hitBodyParts = new ArrayList<>();
+            if (damageSourceBodyParts != null) {
+
+                //  If there are pre-defined body parts for this damage source, use it
+                if (damageSourceBodyParts.damageDistribution != DamageDistributionEnum.NONE)
+                    hitBodyParts.addAll(damageSourceBodyParts.getBodyParts(player));
+
+            } else {
+                if (source.is(DamageTypeTags.IS_PROJECTILE) && source.getDirectEntity() != null) {
+                    hitBodyParts.addAll(PlayerModelUtil.getPreciseEntityImpact(source.getDirectEntity(), player));
+
+                } else if (source.getDirectEntity() != null) {
+                    List<BodyPartEnum> possibleHitParts = PlayerModelUtil.getEntityImpact(source.getDirectEntity(), player);
+                    if (!possibleHitParts.isEmpty()) {
+                        hitBodyParts.addAll(DamageDistributionEnum.ONE_OF.getBodyParts(player, possibleHitParts));
+                    }
+                }
+
+                //  Default random body part assignation
+                if (hitBodyParts.isEmpty()) {
+                    hitBodyParts.addAll(DamageDistributionEnum.ONE_OF.getBodyParts(player, Arrays.asList(BodyPartEnum.values())));
+                }
             }
-        }
 
-        if (hitBodyParts.isEmpty()) {
-            hitBodyParts.addAll(DamageDistributionEnum.ONE_OF.getBodyParts(player, Arrays.asList(BodyPartEnum.values())));
-        }
+            if (!hitBodyParts.isEmpty())
+                BodyDamageUtil.balancedHurtBodyParts(player, hitBodyParts, bodyPartDamageValue);
 
-        if (!hitBodyParts.isEmpty())
-            BodyDamageUtil.balancedHurtBodyParts(player, hitBodyParts, bodyPartDamageValue);
-
-        if (source.is(DamageTypeTags.IS_PROJECTILE) && hitBodyParts.contains(BodyPartEnum.HEAD) && Config.Baked.headCriticalShotMultiplier > 1) {
-            event.setAmount(event.getAmount() * (float) Config.Baked.headCriticalShotMultiplier);
-            player.level().playSound(null, player, SoundRegistry.HEADSHOT.get(), SoundSource.HOSTILE, 1.0F, 1.0F);
+            if (source.is(DamageTypeTags.IS_PROJECTILE)
+                    && hitBodyParts.contains(BodyPartEnum.HEAD)
+                    && Config.Baked.headCriticalShotMultiplier > 1
+                    && player.getItemBySlot(EquipmentSlot.HEAD).isEmpty()) {
+                event.setAmount(event.getAmount() * (float) Config.Baked.headCriticalShotMultiplier);
+                player.level().playSound(null, player, SoundRegistry.HEADSHOT.get(), SoundSource.HOSTILE, 1.0F, 1.0F);
+            }
         }
     }
 
@@ -274,6 +289,21 @@ public class CommonForgeEvents {
     }
 
     @SubscribeEvent
+    public static void onPlayerEffect(MobEffectEvent.Applicable event) {
+        if (event.getEntity() instanceof Player player) {
+            if (!event.getEntity().level().isClientSide &&
+                    Config.Baked.absorptionEffectOverride &&
+                    event.getEffectInstance().getEffect() == MobEffects.ABSORPTION) {
+
+                HealthCapability healthCapability = CapabilityUtil.getHealthCapability(player);
+                healthCapability.addShieldHealth(2);
+
+                event.setResult(Event.Result.DENY);
+            }
+        }
+    }
+
+    @SubscribeEvent
     public static void onPlayerRespawn(PlayerEvent.PlayerRespawnEvent event) {
         if (event.isEndConquered())
             return;
@@ -289,14 +319,20 @@ public class CommonForgeEvents {
             event.getEntity().getPersistentData().putBoolean("tempImmuneOnSpawn", true);
             event.getEntity().addEffect(new MobEffectInstance(MobEffectRegistry.TEMPERATURE_IMMUNITY.get(), Config.Baked.temperatureImmunityOnFirstSpawnTime, 0, false, false, true));
         }
+
+        if (Config.Baked.healthOverhaulEnabled) {
+            HealthUtil.initializeHealthAttributes(event.getEntity());
+            HealthUtil.updatePlayerMaxHealthAttribute(event.getEntity());
+        }
     }
 
     @SubscribeEvent
     public static void onLevelLoad(LevelEvent.Load event) {
         if (!event.getLevel().isClientSide()) {
             LevelData levelData = event.getLevel().getLevelData();
-            if (levelData instanceof PrimaryLevelData primaryLevelData)
+            if (levelData instanceof PrimaryLevelData primaryLevelData) {
                 primaryLevelData.getGameRules().getRule(GameRules.RULE_NATURAL_REGENERATION).set(Config.Baked.naturalRegenerationEnabled, event.getLevel().getServer());
+            }
         }
     }
 
@@ -308,6 +344,11 @@ public class CommonForgeEvents {
     private static boolean shouldApplyLocalizedBodyDamage(Player player)
     {
         return !player.isCreative() && !player.isSpectator() && Config.Baked.localizedBodyDamageEnabled;
+    }
+
+    private static boolean shouldApplyHealthOverhaul(Player player)
+    {
+        return !player.isCreative() && !player.isSpectator() && Config.Baked.healthOverhaulEnabled;
     }
 
     public static void playerDrinkEffect(Player player)

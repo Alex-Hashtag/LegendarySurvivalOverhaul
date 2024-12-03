@@ -1,12 +1,12 @@
 {
-  "type": "minecraft:empty",
+  "type": "minecraft:chest",
   "pools": [
     {
       "bonus_rolls": 0.0,
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "legendarysurvivaloverhaul:heart_fruit",
+          "name": "legendarysurvivaloverhaul:heart_fragment",
           "weight": 15
         },
         {
@@ -18,7 +18,7 @@
               "function": "minecraft:set_count"
             }
           ],
-          "name": "legendarysurvivaloverhaul:heart_fruit",
+          "name": "legendarysurvivaloverhaul:heart_fragment",
           "weight": 5
         },
         {
@@ -33,5 +33,5 @@
       }
     }
   ],
-  "random_sequence": "legendarysurvivaloverhaul:inject/heart_fruits"
+  "random_sequence": "legendarysurvivaloverhaul:inject/chests/bastion_treasure"
 }

@@ -24,11 +24,11 @@
 		"subtitle": "frostbite",
 		"sounds": [
 			{
-				"name": "legendarysurvivaloverhaul:frostbite_1",
+				"name": "legendarysurvivaloverhaul:frostbite1",
 				"stream": true
 			},
 			{
-				"name": "legendarysurvivaloverhaul:frostbite_2",
+				"name": "legendarysurvivaloverhaul:frostbite2",
 				"stream": true
 			}
 		]
@@ -52,19 +52,19 @@
 		"subtitle": "cooler_block",
 		"sounds": [
 			{
-				"name": "legendarysurvivaloverhaul:cooler_block_1",
+				"name": "legendarysurvivaloverhaul:cooler_block1",
 				"stream": true
 			},
 			{
-				"name": "legendarysurvivaloverhaul:cooler_block_2",
+				"name": "legendarysurvivaloverhaul:cooler_block2",
 				"stream": true
 			},
 			{
-				"name": "legendarysurvivaloverhaul:cooler_block_3",
+				"name": "legendarysurvivaloverhaul:cooler_block3",
 				"stream": true
 			},
 			{
-				"name": "legendarysurvivaloverhaul:cooler_block_4",
+				"name": "legendarysurvivaloverhaul:cooler_block4",
 				"stream": true
 			}
 		]
@@ -167,6 +167,20 @@
 			},
 			{
 				"name": "legendarysurvivaloverhaul:shivers5",
+				"stream": true
+			}
+		]
+	},
+	"heart_container": {
+		"category": "neutral",
+		"subtitle": "heart_container",
+		"sounds": [
+			{
+				"name": "legendarysurvivaloverhaul:heart1",
+				"stream": true
+			},
+			{
+				"name": "legendarysurvivaloverhaul:heart2",
 				"stream": true
 			}
 		]

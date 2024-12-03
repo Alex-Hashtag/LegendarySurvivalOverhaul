@@ -41,7 +41,6 @@ public class ModItemModelProvider extends ItemModelProvider {
         canteenItem(ItemRegistry.LARGE_CANTEEN);
 
         simpleItem(ItemRegistry.PURIFIED_WATER_BOTTLE);
-        simpleItem(ItemRegistry.HEART_FRUIT);
         simpleItem(ItemRegistry.ICE_FERN);
         simpleItem(ItemRegistry.ICE_FERN_SEEDS);
         simpleItem(ItemRegistry.ICE_FERN_GOLD);
@@ -52,8 +51,10 @@ public class ModItemModelProvider extends ItemModelProvider {
         simpleItem(ItemRegistry.WATER_PLANT_SEEDS);
         simpleItem(ItemRegistry.COLD_STRING);
         simpleItem(ItemRegistry.WARM_STRING);
-        simpleItem(ItemRegistry.HEART_FRUIT);
         simpleItem(ItemRegistry.NETHER_CHALICE);
+        simpleItem(ItemRegistry.HEART_CONTAINER);
+        simpleItem(ItemRegistry.HEART_FRAGMENT);
+        simpleItem(ItemRegistry.SHIELD_CONTAINER);
 
         simpleCoatItem(ItemRegistry.COOLING_COAT_1);
         simpleCoatItem(ItemRegistry.COOLING_COAT_2);

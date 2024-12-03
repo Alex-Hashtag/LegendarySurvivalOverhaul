@@ -66,6 +66,7 @@ public class Config
 		public final ForgeConfigSpec.BooleanValue vanillaFreezeEnabled;
 		public final ForgeConfigSpec.DoubleValue baseFoodExhaustion;
 		public final ForgeConfigSpec.EnumValue<ItemUtil.CompassInfo> compassInfoMode;
+		public final ForgeConfigSpec.DoubleValue initialHealth;
 
 		// Temperature
 		public final ForgeConfigSpec.BooleanValue temperatureEnabled;
@@ -190,14 +191,15 @@ public class Config
 		public final ForgeConfigSpec.DoubleValue extraThirstExhaustionPhantom;
 		public final ForgeConfigSpec.BooleanValue thirstEnabledIfVampire;
 
-		// Heart Fruits
-		public final ForgeConfigSpec.BooleanValue heartFruitsEnabled;
-
+		// Health Overhaul
+		public final ForgeConfigSpec.BooleanValue healthOverhaulEnabled;
+		public final ForgeConfigSpec.DoubleValue maxAdditionalHealth;
+		public final ForgeConfigSpec.DoubleValue maxShieldHealth;
+		public final ForgeConfigSpec.BooleanValue absorptionEffectOverride;
 		public final ForgeConfigSpec.IntValue heartsLostOnDeath;
-		public final ForgeConfigSpec.IntValue maxAdditionalHearts;
-
-		public final ForgeConfigSpec.IntValue additionalHeartsPerFruit;
-		public final ForgeConfigSpec.BooleanValue heartFruitsGiveRegen;
+		public final ForgeConfigSpec.IntValue permanentHearts;
+		public final ForgeConfigSpec.IntValue minHealthWithBrokenHeart;
+		public final ForgeConfigSpec.IntValue brokenHeartsPerInjuredLimb;
 
 		// Localized Body Damage
 		public final ForgeConfigSpec.BooleanValue localizedBodyDamageEnabled;
@@ -260,21 +262,12 @@ public class Config
 			thirstEnabled = builder
 					.comment(" Whether the thirst system is enabled.")
 					.define("Thirst Enabled", true);
-			heartFruitsEnabled = builder
-					.comment(" Whether heart fruits are functional and generate in-world.")
-					.define("Heart Fruits Enabled", true);
+			healthOverhaulEnabled = builder
+					.comment(" Whether the overhaul health system is enabled.")
+					.define("Health Overhaul Enabled", true);
 			localizedBodyDamageEnabled = builder
 					.comment(" Whether body members receive localized damages.")
 					.define("Localized Body Damage Enabled", true);
-			hideInfoFromDebug = builder
-					.comment(" If enabled, information like position and direction will be hidden from the debug screen (F3).")
-					.define("Hide Info From Debug", true);
-			naturalRegenerationEnabled = builder
-					.comment(" If enabled, the player can regenerate health naturally if their hunger is full enough (doesn't affect external healing, such as golden apples, the Regeneration effect, etc.)")
-					.define("Natural Regeneration Enabled", false);
-			vanillaFreezeEnabled = builder
-					.comment(" If enabled, the player suffers vanilla freeze when inside powder snow.")
-					.define("Vanilla Freeze Enabled", false);
 
 			builder.push("advanced");
 			routinePacketSync = builder
@@ -289,6 +282,18 @@ public class Config
 					.comment(" What information the compass returns when player is using it or in an item frame.")
 					.defineEnum("Compass Info Mode", ItemUtil.CompassInfo.FULL);
 
+			hideInfoFromDebug = builder
+					.comment(" If enabled, information like position and direction will be hidden from the debug screen (F3).")
+					.define("Hide Info From Debug", true);
+			naturalRegenerationEnabled = builder
+					.comment(" If enabled, the player can regenerate health naturally if their hunger is full enough (doesn't affect external healing, such as golden apples, the Regeneration effect, etc.)")
+					.define("Natural Regeneration Enabled", false);
+			vanillaFreezeEnabled = builder
+					.comment(" If enabled, the player suffers vanilla freeze when inside powder snow.")
+					.define("Vanilla Freeze Enabled", false);
+			initialHealth = builder
+					.comment(" How much health player will have initially.")
+					.defineInRange("Initial Player Health", 20.0, 1.0, 10000.0);
 			builder.pop();
 			builder.pop();
 
@@ -684,24 +689,41 @@ public class Config
 
 			builder.pop();
 
-			builder.comment(" Options related to heart fruits").push("heart-fruits");
-			maxAdditionalHearts = builder
-					.comment(" Maximum number of additional hearts that can be given by Heart Fruits.")
-					.defineInRange("Maximum Additional Hearts", 10, 1, Integer.MAX_VALUE);
-			heartsLostOnDeath = builder
-					.comment(" The number of additional hearts lost on death.",
-							" Set to -1 to force loss of all additional hearts on death.",
-							" Set to 0 to make additional hearts permanent.")
-					.defineInRange("Hearts Lost On Death", -1, -1, Integer.MAX_VALUE);
+			builder.comment(" Options related to health overhaul").push("health-overhaul");
+			maxAdditionalHealth = builder
+					.comment(" How much of Additional Health a player can accumulate. 2 Heath means a full heart.")
+					.defineInRange("Maximum Additional Health", 20.0, 0.0, 10000.0);
 
-			builder.push("effects");
-			additionalHeartsPerFruit = builder
-					.comment(" Amount of hearts gained from eating a Heart Fruit.")
-					.defineInRange("Additional Hearts Per Heart Fruit", 1, 1, Integer.MAX_VALUE);
-			heartFruitsGiveRegen = builder
-					.comment(" Whether Heart Fruits give a strong regeneration effect.")
-					.define("Heart Fruits Give Regen", true);
+			builder.push("shield-health");
+			maxShieldHealth = builder
+					.comment(" How much of Shield Health a player can accumulate. 2 Shield Heath means a full shield.",
+							" Shield Health are lost when the player suffers damages and can't regenerate. Works similarly as the Minecraft Absorption.")
+					.defineInRange("Maximum Shield Health", 10.0, 1.0, 10000.0);
+			absorptionEffectOverride = builder
+					.comment(" Override the absorption effect by a shield health increase of 2.",
+							" The absorption is typically given by the Golden Apple.")
+					.define("Absorption Effect Override", true);
 			builder.pop();
+
+			builder.push("heart-loss");
+			heartsLostOnDeath = builder
+					.comment(" The number of Hearts lost on death.")
+					.defineInRange("Hearts Lost On Death", 0, 0, 10000);
+
+			permanentHearts = builder
+					.comment(" The number of Hearts below which player can't lose hearts upon death.",
+							" The hearts below this limit are de facto Permanent Hearts.")
+					.defineInRange("Permanent Hearts", 10, 1, 10000);
+			builder.pop();
+			builder.push("broken-hearts")
+					.comment(" Broken Hearts are an integration with the localized body damage feature. Enables both feature to have it.",
+							" Broken Heart are lost hearts when a player's limb is severely injured and can be recovered by healing it.");
+			minHealthWithBrokenHeart = builder
+					.comment(" Minimum health below which Broken Hearts can no longer be added.")
+					.defineInRange("Minimum Player's Health With Broken Hearts (Broken Heart Resilience)", 5, 1, 10000);
+			brokenHeartsPerInjuredLimb = builder
+					.comment(" Amount of Broken Hearts added per limbs fully injured.")
+					.defineInRange("Added Broken Hearts Per Injured Limb", 1, 0, 10000);
 			builder.pop();
 
 			builder.comment(" Options related to localized body damage",
@@ -984,6 +1006,7 @@ public class Config
 		public static boolean vanillaFreezeEnabled;
 		public static double baseFoodExhaustion;
 		public static ItemUtil.CompassInfo compassInfoMode;
+		public static double initialHealth;
 
 		// Temperature
 		public static boolean temperatureEnabled;
@@ -1107,12 +1130,15 @@ public class Config
 		public static double extraThirstExhaustionPhantom;
 		public static boolean thirstEnabledIfVampire;
 
-		// Heart fruit
-		public static boolean heartFruitsEnabled;
+		// Health Overhaul
+		public static boolean healthOverhaulEnabled;
+		public static double maxAdditionalHealth;
+		public static double maxShieldHealth;
+		public static boolean absorptionEffectOverride;
 		public static int heartsLostOnDeath;
-		public static int maxAdditionalHearts;
-		public static int additionalHeartsPerFruit;
-		public static boolean heartFruitsGiveRegen;
+		public static int permanentHearts;
+		public static int minHealthWithBrokenHeart;
+		public static int brokenHeartsPerInjuredLimb;
 
 		// Body members damage
 		public static boolean localizedBodyDamageEnabled;
@@ -1208,6 +1234,7 @@ public class Config
 				vanillaFreezeEnabled = COMMON.vanillaFreezeEnabled.get();
 				baseFoodExhaustion = COMMON.baseFoodExhaustion.get();
 				compassInfoMode = COMMON.compassInfoMode.get();
+				initialHealth = COMMON.initialHealth.get();
 
 				temperatureEnabled = COMMON.temperatureEnabled.get();
 				tempTickTime = COMMON.tempTickTime.get();
@@ -1334,11 +1361,14 @@ public class Config
 				extraThirstExhaustionPhantom = COMMON.extraThirstExhaustionPhantom.get();
 				thirstEnabledIfVampire = COMMON.thirstEnabledIfVampire.get();
 
-				heartFruitsEnabled = COMMON.heartFruitsEnabled.get();
+				healthOverhaulEnabled = COMMON.healthOverhaulEnabled.get();
+				maxAdditionalHealth = COMMON.maxAdditionalHealth.get();
+				maxShieldHealth = COMMON.maxShieldHealth.get();
+				absorptionEffectOverride = COMMON.absorptionEffectOverride.get();
 				heartsLostOnDeath = COMMON.heartsLostOnDeath.get();
-				maxAdditionalHearts = COMMON.maxAdditionalHearts.get();
-				additionalHeartsPerFruit = COMMON.additionalHeartsPerFruit.get();
-				heartFruitsGiveRegen = COMMON.heartFruitsGiveRegen.get();
+				permanentHearts = COMMON.permanentHearts.get();
+				minHealthWithBrokenHeart = COMMON.minHealthWithBrokenHeart.get();
+				brokenHeartsPerInjuredLimb = COMMON.brokenHeartsPerInjuredLimb.get();
 
 				localizedBodyDamageEnabled = COMMON.localizedBodyDamageEnabled.get();
 				headCriticalShotMultiplier = COMMON.headCriticalShotMultiplier.get();

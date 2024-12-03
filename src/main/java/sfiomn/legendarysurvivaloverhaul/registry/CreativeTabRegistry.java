@@ -84,9 +84,12 @@ public class CreativeTabRegistry {
                         ItemRegistry.THERMAL_COAT_3.get().getDefaultInstance(),
 
                         ItemRegistry.SEASONAL_CALENDAR.get().getDefaultInstance(),
-                        ItemRegistry.HEART_FRUIT.get().getDefaultInstance(),
                         ItemRegistry.THERMOMETER.get().getDefaultInstance(),
                         ItemRegistry.NETHER_CHALICE.get().getDefaultInstance(),
+
+                        ItemRegistry.HEART_CONTAINER.get().getDefaultInstance(),
+                        ItemRegistry.HEART_FRAGMENT.get().getDefaultInstance(),
+                        ItemRegistry.SHIELD_CONTAINER.get().getDefaultInstance(),
 
                         BlockRegistry.COOLER.get().asItem().getDefaultInstance(),
                         BlockRegistry.HEATER.get().asItem().getDefaultInstance(),

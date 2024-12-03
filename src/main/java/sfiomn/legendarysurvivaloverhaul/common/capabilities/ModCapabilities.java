@@ -17,12 +17,13 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.network.PacketDistributor;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
+import sfiomn.legendarysurvivaloverhaul.api.health.HealthUtil;
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.bodydamage.BodyDamageCapability;
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.bodydamage.BodyDamageProvider;
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.food.FoodCapability;
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.food.FoodProvider;
-import sfiomn.legendarysurvivaloverhaul.common.capabilities.heartmods.HeartModifierCapability;
-import sfiomn.legendarysurvivaloverhaul.common.capabilities.heartmods.HeartModifierProvider;
+import sfiomn.legendarysurvivaloverhaul.common.capabilities.health.HealthCapability;
+import sfiomn.legendarysurvivaloverhaul.common.capabilities.health.HealthProvider;
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.temperature.TemperatureCapability;
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.temperature.TemperatureProvider;
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.thirst.ThirstCapability;
@@ -40,7 +41,7 @@ public class ModCapabilities
 	public static final ResourceLocation TEMPERATURE_RES = new ResourceLocation(LegendarySurvivalOverhaul.MOD_ID, "temperature");
 	public static final ResourceLocation WETNESS_RES = new ResourceLocation(LegendarySurvivalOverhaul.MOD_ID, "wetness");
 	public static final ResourceLocation THIRST_RES = new ResourceLocation(LegendarySurvivalOverhaul.MOD_ID, "thirst");
-	public static final ResourceLocation HEART_MOD_RES = new ResourceLocation(LegendarySurvivalOverhaul.MOD_ID, "heart_modifier");
+	public static final ResourceLocation HEALTH_RES = new ResourceLocation(LegendarySurvivalOverhaul.MOD_ID, "health");
 	public static final ResourceLocation FOOD_RES = new ResourceLocation(LegendarySurvivalOverhaul.MOD_ID, "food");
 	public static final ResourceLocation BODY_DAMAGE_RES = new ResourceLocation(LegendarySurvivalOverhaul.MOD_ID, "body_damage");
 	
@@ -54,7 +55,7 @@ public class ModCapabilities
 				event.addCapability(TEMPERATURE_RES, new TemperatureProvider());
 				event.addCapability(WETNESS_RES, new WetnessProvider());
 				event.addCapability(THIRST_RES, new ThirstProvider());
-				event.addCapability(HEART_MOD_RES, new HeartModifierProvider());
+				event.addCapability(HEALTH_RES, new HealthProvider());
 				event.addCapability(FOOD_RES, new FoodProvider());
 				event.addCapability(BODY_DAMAGE_RES, new BodyDamageProvider());
 			}
@@ -150,6 +151,17 @@ public class ModCapabilities
 					sendBodyDamageUpdate(player);
 				}
 			}
+
+			if (Config.Baked.healthOverhaulEnabled) {
+				HealthCapability healthCapability = CapabilityUtil.getHealthCapability(player);
+
+				if(event.phase == Phase.START && healthCapability.isDirty())
+				{
+					healthCapability.setClean();
+					sendHealthUpdate(player);
+					HealthUtil.updatePlayerMaxHealthAttribute(player);
+				}
+			}
 		}
 	}
 
@@ -161,17 +173,16 @@ public class ModCapabilities
 
 		if (event.isWasDeath())
 		{
-			if (Config.Baked.heartFruitsEnabled && Config.Baked.heartsLostOnDeath >= 0)
+			if (Config.Baked.healthOverhaulEnabled && Config.Baked.heartsLostOnDeath >= 0)
 			{
-				HeartModifierCapability oldCap = CapabilityUtil.getHeartModCapability(orig);
-				HeartModifierCapability newCap = CapabilityUtil.getHeartModCapability(player);
-				
-				int oldHearts = oldCap.getAdditionalHearts();
-				
-				newCap.setMaxHealth(oldHearts - Config.Baked.heartsLostOnDeath);
-				
-				newCap.updateMaxHealth(player.getCommandSenderWorld(), player);
-				sendHeartsUpdate(player);
+				HealthCapability oldCap = CapabilityUtil.getHealthCapability(orig);
+				HealthCapability newCap = CapabilityUtil.getHealthCapability(player);
+
+				newCap.setAdditionalHealth(oldCap.getAdditionalHealth());
+
+				HealthUtil.loseHearth(player, Config.Baked.heartsLostOnDeath);
+				HealthUtil.updatePlayerMaxHealthAttribute(player);
+				sendHealthUpdate(player);
 			}
 
 			if (Config.Baked.localizedBodyDamageEnabled) {
@@ -205,13 +216,13 @@ public class ModCapabilities
 				sendThirstUpdate(player);
 			}
 			
-			if (Config.Baked.heartFruitsEnabled)
+			if (Config.Baked.healthOverhaulEnabled)
 			{
-				HeartModifierCapability oldCap = CapabilityUtil.getHeartModCapability(orig);
-				HeartModifierCapability newCap = CapabilityUtil.getHeartModCapability(player);
+				HealthCapability oldCap = CapabilityUtil.getHealthCapability(orig);
+				HealthCapability newCap = CapabilityUtil.getHealthCapability(player);
 				newCap.readNBT(oldCap.writeNBT());
-				newCap.updateMaxHealth(player.getCommandSenderWorld(), player);
-				sendHeartsUpdate(player);
+				HealthUtil.updatePlayerMaxHealthAttribute(player);
+				sendHealthUpdate(player);
 			}
 
 			if (Config.Baked.localizedBodyDamageEnabled)
@@ -264,11 +275,11 @@ public class ModCapabilities
 		}
 	}
 
-	private static void sendHeartsUpdate(Player player)
+	private static void sendHealthUpdate(Player player)
 	{
 		if (!player.level().isClientSide)
 		{
-			UpdateHeartsPacket packet = new UpdateHeartsPacket(CapabilityUtil.getHeartModCapability(player).writeNBT());
+			UpdateHeartsPacket packet = new UpdateHeartsPacket(CapabilityUtil.getHealthCapability(player).writeNBT());
 			
 			NetworkHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer) player), packet);
 		}
@@ -284,8 +295,8 @@ public class ModCapabilities
 			sendWetnessUpdate(player);
 		if (Config.Baked.thirstEnabled)
 			sendThirstUpdate(player);
-		if (Config.Baked.heartFruitsEnabled)
-			sendHeartsUpdate(player);
+		if (Config.Baked.healthOverhaulEnabled)
+			sendHealthUpdate(player);
 		if (Config.Baked.localizedBodyDamageEnabled)
 			sendBodyDamageUpdate(player);
 	}
@@ -300,8 +311,8 @@ public class ModCapabilities
 			sendWetnessUpdate(player);
 		if (Config.Baked.thirstEnabled)
 			sendThirstUpdate(player);
-		if (Config.Baked.heartFruitsEnabled)
-			sendHeartsUpdate(player);
+		if (Config.Baked.healthOverhaulEnabled)
+			sendHealthUpdate(player);
 		if (Config.Baked.localizedBodyDamageEnabled)
 			sendBodyDamageUpdate(player);
 	}

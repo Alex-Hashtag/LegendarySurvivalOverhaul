@@ -20,6 +20,7 @@ import net.minecraftforge.fml.loading.FMLPaths;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import sfiomn.legendarysurvivaloverhaul.api.bodydamage.BodyDamageUtil;
+import sfiomn.legendarysurvivaloverhaul.api.health.HealthUtil;
 import sfiomn.legendarysurvivaloverhaul.api.temperature.TemperatureUtil;
 import sfiomn.legendarysurvivaloverhaul.api.thirst.ThirstUtil;
 import sfiomn.legendarysurvivaloverhaul.api.wetness.WetnessUtil;
@@ -31,7 +32,7 @@ import sfiomn.legendarysurvivaloverhaul.client.screens.SewingTableScreen;
 import sfiomn.legendarysurvivaloverhaul.client.screens.ThermalScreen;
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.bodydamage.BodyDamageCapability;
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.food.FoodCapability;
-import sfiomn.legendarysurvivaloverhaul.common.capabilities.heartmods.HeartModifierCapability;
+import sfiomn.legendarysurvivaloverhaul.common.capabilities.health.HealthCapability;
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.temperature.TemperatureCapability;
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.temperature.TemperatureItemCapability;
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.thirst.ThirstCapability;
@@ -44,14 +45,10 @@ import sfiomn.legendarysurvivaloverhaul.common.integration.vampirism.VampirismEv
 import sfiomn.legendarysurvivaloverhaul.config.Config;
 import sfiomn.legendarysurvivaloverhaul.network.NetworkHandler;
 import sfiomn.legendarysurvivaloverhaul.registry.*;
-import sfiomn.legendarysurvivaloverhaul.util.internal.BodyDamageUtilInternal;
-import sfiomn.legendarysurvivaloverhaul.util.internal.TemperatureUtilInternal;
-import sfiomn.legendarysurvivaloverhaul.util.internal.ThirstUtilInternal;
-import sfiomn.legendarysurvivaloverhaul.util.internal.WetnessInternal;
+import sfiomn.legendarysurvivaloverhaul.util.internal.*;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Objects;
 
 @SuppressWarnings("unused")
 @Mod(LegendarySurvivalOverhaul.MOD_ID)
@@ -164,7 +161,8 @@ public class LegendarySurvivalOverhaul
 			TemperatureUtil.internal = new TemperatureUtilInternal();
 			ThirstUtil.internal = new ThirstUtilInternal();
 			BodyDamageUtil.internal = new BodyDamageUtilInternal();
-			WetnessUtil.internal = new WetnessInternal();
+			WetnessUtil.internal = new WetnessUtilInternal();
+			HealthUtil.internal = new HealthUtilInternal();
 		});
 	}
 
@@ -185,7 +183,7 @@ public class LegendarySurvivalOverhaul
 		event.register(TemperatureCapability.class);
 		event.register(WetnessCapability.class);
 		event.register(ThirstCapability.class);
-		event.register(HeartModifierCapability.class);
+		event.register(HealthCapability.class);
 		event.register(TemperatureItemCapability.class);
 		event.register(FoodCapability.class);
 		event.register(BodyDamageCapability.class);

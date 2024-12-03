@@ -38,5 +38,15 @@ public class CommonModBusEvents {
                     AttributeRegistry.THERMAL_RESISTANCE.get()
             );
         }
+        if (!event.has(EntityType.PLAYER, AttributeRegistry.PERMANENT_HEART.get())) {
+            event.add(EntityType.PLAYER,
+                    AttributeRegistry.PERMANENT_HEART.get()
+            );
+        }
+        if (!event.has(EntityType.PLAYER, AttributeRegistry.BROKEN_HEART_RESILIENCE.get())) {
+            event.add(EntityType.PLAYER,
+                    AttributeRegistry.BROKEN_HEART_RESILIENCE.get()
+            );
+        }
     }
 }

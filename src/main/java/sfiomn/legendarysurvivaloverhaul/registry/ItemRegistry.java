@@ -71,8 +71,10 @@ public class ItemRegistry {
 	public static final RegistryObject<Item> WATER_PLANT_BAG = ITEMS.register("water_plant_bag", () -> new DrinkItem(new Item.Properties()));
 	public static final RegistryObject<Item> WATER_PLANT_SEEDS = ITEMS.register("water_plant_seeds", () -> new ItemNameBlockItem(BlockRegistry.WATER_PLANT_CROP.get(), new Item.Properties()));
 
-	// Heart fruit
-	public static final RegistryObject<Item> HEART_FRUIT = ITEMS.register("heart_fruit", () -> new HeartFruitItem(new Item.Properties().rarity(Rarity.RARE)));
+	// Health Overhaul
+	public static final RegistryObject<Item> HEART_CONTAINER = ITEMS.register("heart_container", () -> new HeartContainerItem(new Item.Properties().rarity(Rarity.EPIC)));
+	public static final RegistryObject<Item> HEART_FRAGMENT = ITEMS.register("heart_fragment", () -> new Item(new Item.Properties().rarity(Rarity.RARE)));
+	public static final RegistryObject<Item> SHIELD_CONTAINER = ITEMS.register("shield_container", () -> new ShieldContainerItem(new Item.Properties().rarity(Rarity.EPIC)));
 
 	// Body Healing
 	public static final RegistryObject<Item> HEALING_HERBS = ITEMS.register("healing_herbs", () -> new HealingHerbsItem(new Item.Properties()));

@@ -6,8 +6,8 @@ import sfiomn.legendarysurvivaloverhaul.common.capabilities.bodydamage.BodyDamag
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.bodydamage.BodyDamageProvider;
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.food.FoodCapability;
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.food.FoodProvider;
-import sfiomn.legendarysurvivaloverhaul.common.capabilities.heartmods.HeartModifierCapability;
-import sfiomn.legendarysurvivaloverhaul.common.capabilities.heartmods.HeartModifierProvider;
+import sfiomn.legendarysurvivaloverhaul.common.capabilities.health.HealthCapability;
+import sfiomn.legendarysurvivaloverhaul.common.capabilities.health.HealthProvider;
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.temperature.TemperatureCapability;
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.temperature.TemperatureItemCapability;
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.temperature.TemperatureProvider;
@@ -45,13 +45,13 @@ public final class CapabilityUtil
 	}
 
 	/**
-	 * Gets the heart modifier capability of the given player.
+	 * Gets the health capability of the given player.
 	 * @param player Player
-	 * @return The heart modifier capability of the given player if it exists, or a new dummy capability if it doesn't.
+	 * @return The health capability of the given player if it exists, or a new dummy capability if it doesn't.
 	 */
-	public static HeartModifierCapability getHeartModCapability(Player player)
+	public static HealthCapability getHealthCapability(Player player)
 	{
-		return player.getCapability(HeartModifierProvider.HEART_MODIFIER_CAPABILITY).orElse(new HeartModifierCapability());
+		return player.getCapability(HealthProvider.HEALTH_CAPABILITY).orElse(new HealthCapability());
 	}
 
 	/**

@@ -16,6 +16,7 @@ import sfiomn.legendarysurvivaloverhaul.registry.ParticleTypeRegistry;
 
 import static sfiomn.legendarysurvivaloverhaul.client.integration.sereneseasons.RenderSeasonCards.SEASON_CARD_GUI;
 import static sfiomn.legendarysurvivaloverhaul.client.render.RenderBodyDamageGui.BODY_DAMAGE_GUI;
+import static sfiomn.legendarysurvivaloverhaul.client.render.RenderHealthGui.HEALTH_GUI;
 import static sfiomn.legendarysurvivaloverhaul.client.render.RenderTooltipFrame.TOOLTIP_ITEM_FRAME;
 import static sfiomn.legendarysurvivaloverhaul.client.render.RenderTemperatureGui.FOOD_BAR_COLD_EFFECT_GUI;
 import static sfiomn.legendarysurvivaloverhaul.client.render.RenderTemperatureGui.TEMPERATURE_GUI;
@@ -27,6 +28,8 @@ public class ClientModBusEvents {
 
     @SubscribeEvent
     public static void registerGuiOverlays(RegisterGuiOverlaysEvent event) {
+        event.registerAbove(VanillaGuiOverlay.PLAYER_HEALTH.id(), "health_overhaul", HEALTH_GUI);
+
         event.registerBelow(VanillaGuiOverlay.FOOD_LEVEL.id(), "cold_hunger", FOOD_BAR_COLD_EFFECT_GUI);
 
         event.registerAbove(VanillaGuiOverlay.FOOD_LEVEL.id(), "thirst", THIRST_GUI);

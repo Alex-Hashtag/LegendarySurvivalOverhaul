@@ -73,7 +73,8 @@ public class RenderTemperatureGui
 
 				forgeGui.setupOverlayRenderState(true, false);
 
-                if (Objects.requireNonNull(Config.Baked.temperatureDisplayMode) == TemperatureDisplayEnum.SYMBOL) {
+                if (Objects.requireNonNull(Config.Baked.temperatureDisplayMode) == TemperatureDisplayEnum.SYMBOL
+						&& !CuriosUtil.isThermometerEquipped) {
 					Minecraft.getInstance().getProfiler().push("temperature_gui");
                     drawTemperatureAsSymbol(guiGraphics, player, width, height);
 					Minecraft.getInstance().getProfiler().pop();
@@ -236,6 +237,9 @@ public class RenderTemperatureGui
 		
 		int x = width / 2 - (WETNESS_TEXTURE_WIDTH / 2) + Config.Baked.wetnessIndicatorOffsetX;
 		int y = height - 61 + Config.Baked.wetnessIndicatorOffsetY;
+
+		if (CuriosUtil.isThermometerEquipped && Config.Baked.wetnessIndicatorOffsetY == 0)
+			y += 10;
 		
 		if (wetness == 0)
 			return;

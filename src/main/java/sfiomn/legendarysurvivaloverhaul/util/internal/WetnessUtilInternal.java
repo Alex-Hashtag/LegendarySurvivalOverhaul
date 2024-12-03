@@ -6,7 +6,7 @@ import sfiomn.legendarysurvivaloverhaul.common.capabilities.wetness.WetnessCapab
 import sfiomn.legendarysurvivaloverhaul.config.Config;
 import sfiomn.legendarysurvivaloverhaul.util.CapabilityUtil;
 
-public class WetnessInternal implements IWetnessUtil {
+public class WetnessUtilInternal implements IWetnessUtil {
     @Override
     public void addWetness(Player player, int wetness) {
         if(!Config.Baked.wetnessEnabled)

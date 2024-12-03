@@ -8,8 +8,10 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.network.NetworkEvent;
-import sfiomn.legendarysurvivaloverhaul.common.capabilities.heartmods.HeartModifierCapability;
-import sfiomn.legendarysurvivaloverhaul.common.capabilities.heartmods.HeartModifierProvider;
+import sfiomn.legendarysurvivaloverhaul.api.health.HealthUtil;
+import sfiomn.legendarysurvivaloverhaul.common.capabilities.health.HealthCapability;
+import sfiomn.legendarysurvivaloverhaul.common.capabilities.health.HealthProvider;
+import sfiomn.legendarysurvivaloverhaul.util.CapabilityUtil;
 
 import java.util.function.Supplier;
 
@@ -54,10 +56,9 @@ public class UpdateHeartsPacket
 				LocalPlayer player = Minecraft.getInstance().player;
 
 				if (player != null) {
-					HeartModifierCapability hearts = player.getCapability(HeartModifierProvider.HEART_MODIFIER_CAPABILITY).orElse(new HeartModifierCapability());
+					HealthCapability healthCapability = CapabilityUtil.getHealthCapability(player);
 
-					hearts.readNBT(compound);
-					hearts.updateMaxHealth(player.getCommandSenderWorld(), player);
+					healthCapability.readNBT(compound);
 				}
 			}
 		};

@@ -94,6 +94,11 @@ public class MobEffectRegistry {
 	{
 		BrewingRecipeRegistry.addRecipe(StrictNBTIngredient.of(PotionUtils.setPotion(new ItemStack(Items.POTION), potionInput)), StrictNBTIngredient.of(new ItemStack(ingredient)), PotionUtils.setPotion(new ItemStack(Items.POTION), potionResult));
 	}
+
+	private static void addBrewingRecipe(Potion potionInput, Item ingredient, Item itemResult)
+	{
+		BrewingRecipeRegistry.addRecipe(StrictNBTIngredient.of(PotionUtils.setPotion(new ItemStack(Items.POTION), potionInput)), StrictNBTIngredient.of(new ItemStack(ingredient)), new ItemStack(itemResult));
+	}
 	
 	public static void register (IEventBus eventBus){
 		EFFECTS.register(eventBus);

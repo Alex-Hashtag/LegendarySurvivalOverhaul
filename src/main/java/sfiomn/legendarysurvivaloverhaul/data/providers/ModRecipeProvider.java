@@ -264,6 +264,14 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .unlockedBy("has_planks", has(ItemTags.PLANKS))
                 .save(consumer);
 
+        ShapedRecipeBuilder.shaped(RecipeCategory.FOOD, ItemRegistry.HEART_CONTAINER.get())
+                .pattern("hhh")
+                .pattern("hhh")
+                .pattern("hhh")
+                .define('h', ItemRegistry.HEART_FRAGMENT.get())
+                .unlockedBy("has_heart_fragment", has(ItemRegistry.HEART_FRAGMENT.get()))
+                .save(consumer);
+
         juice(consumer, Items.APPLE, ItemRegistry.APPLE_JUICE.get());
         juice(consumer, Items.BEETROOT, ItemRegistry.BEETROOT_JUICE.get());
         juice(consumer, Items.CACTUS, ItemRegistry.CACTUS_JUICE.get());

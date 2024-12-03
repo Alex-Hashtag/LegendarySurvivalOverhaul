@@ -16,7 +16,6 @@ import sfiomn.legendarysurvivaloverhaul.util.MathUtil;
 
 public class TemperatureCommand extends CommandBase
 {
-	//.executes(src -> new TemperatureCommand().execute(src.getSource())));
 	public TemperatureCommand()
 	{
 		super(Commands.literal("temperature")
