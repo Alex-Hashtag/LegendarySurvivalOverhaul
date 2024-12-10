@@ -103,6 +103,7 @@ public class LegendarySurvivalOverhaul
 
 		AttributeRegistry.register(modBus);
 		ItemRegistry.register(modBus);
+		LootModifierRegistry.register(modBus);
 		BlockRegistry.register(modBus);
 		ContainerRegistry.register(modBus);
 		MobEffectRegistry.register(modBus);

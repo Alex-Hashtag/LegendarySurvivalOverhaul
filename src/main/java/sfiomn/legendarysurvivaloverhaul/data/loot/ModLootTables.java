@@ -14,28 +14,32 @@ import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.registry.ItemRegistry;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.function.BiConsumer;
 
 public class ModLootTables implements LootTableSubProvider {
+
+    public static List<ResourceLocation> injectedLootTables = Arrays.asList(
+            BuiltInLootTables.BURIED_TREASURE,
+            BuiltInLootTables.JUNGLE_TEMPLE,
+            BuiltInLootTables.ABANDONED_MINESHAFT,
+            BuiltInLootTables.BASTION_TREASURE,
+            BuiltInLootTables.STRONGHOLD_CORRIDOR
+    );
+
     public ModLootTables() {
     }
 
     @Override
     public void generate(BiConsumer<ResourceLocation, LootTable.Builder> biConsumer) {
 
-        for (ResourceLocation lootTable : Arrays.asList(
-                BuiltInLootTables.BURIED_TREASURE,
-                BuiltInLootTables.JUNGLE_TEMPLE,
-                BuiltInLootTables.ABANDONED_MINESHAFT,
-                BuiltInLootTables.BASTION_TREASURE,
-                BuiltInLootTables.STRONGHOLD_CORRIDOR
-        )) {
+        for (ResourceLocation lootTable : injectedLootTables) {
             biConsumer.accept(
                     new ResourceLocation(LegendarySurvivalOverhaul.MOD_ID, "inject/" + lootTable.getPath()),
                     LootTable.lootTable().withPool(
                             LootPool.lootPool()
                                     .setRolls(UniformGenerator.between(1.0F, 1.0F))
-                                    .add(LootItem.lootTableItem(ItemRegistry.HEART_FRAGMENT.get()).setWeight(15))
+                                    .add(LootItem.lootTableItem(ItemRegistry.HEART_FRAGMENT.get()).setWeight(30))
                                     .add(LootItem.lootTableItem(ItemRegistry.HEART_FRAGMENT.get()).setWeight(5)
                                             .apply(SetItemCountFunction.setCount(ConstantValue.exactly(2.0f))))
                                     .add(EmptyLootItem.emptyItem().setWeight(80))

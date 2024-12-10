@@ -99,6 +99,6 @@ public class ModLootModifierProvider implements DataProvider {
 
     @Override
     public @NotNull String getName() {
-        return "Global Loot Modifiers : " + LegendarySurvivalOverhaul.MOD_ID;
+        return "Loot Modifiers : " + LegendarySurvivalOverhaul.MOD_ID;
     }
 }

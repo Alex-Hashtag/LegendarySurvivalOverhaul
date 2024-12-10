@@ -65,10 +65,6 @@ public class ShieldContainerItem extends Item
 				cap.addShieldHealth(2);
 
 				level.playSound(null, player, SoundRegistry.HEART_CONTAINER.get(), SoundSource.NEUTRAL, 1.0f, 1.0f);
-
-				if (level.isClientSide) {
-					Minecraft.getInstance().gameRenderer.displayItemActivation(stack);
-				}
 			}
 
 			stack.shrink(1);

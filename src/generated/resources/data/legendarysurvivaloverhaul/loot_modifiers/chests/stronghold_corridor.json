@@ -1,0 +1,10 @@
+{
+  "type": "legendarysurvivaloverhaul:additional_loot_table",
+  "conditions": [
+    {
+      "condition": "forge:loot_table_id",
+      "loot_table_id": "minecraft:chests/stronghold_corridor"
+    }
+  ],
+  "lootTable": "legendarysurvivaloverhaul:inject/chests/stronghold_corridor"
+}
