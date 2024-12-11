@@ -18,8 +18,12 @@ public class CuriosProvider extends CuriosDataProvider {
     public void generate(HolderLookup.Provider provider, ExistingFileHelper existingFileHelper) {
         String beltSlotId = "belt";
         String necklaceSlotId = "necklace";
+        String headSlotId = "head";
+        String bodySlotId = "body";
         this.createSlot(beltSlotId).icon(new ResourceLocation("curios:slot/empty_belt_slot"));
         this.createSlot(necklaceSlotId).icon(new ResourceLocation("curios:slot/empty_necklace_slot"));
-        this.createEntities("player").addPlayer().addSlots(beltSlotId, necklaceSlotId);
+        this.createSlot(headSlotId).icon(new ResourceLocation("curios:slot/empty_head_slot"));
+        this.createSlot(bodySlotId).icon(new ResourceLocation("curios:slot/empty_body_slot"));
+        this.createEntities("player").addPlayer().addSlots(beltSlotId, necklaceSlotId, headSlotId, bodySlotId);
     }
 }

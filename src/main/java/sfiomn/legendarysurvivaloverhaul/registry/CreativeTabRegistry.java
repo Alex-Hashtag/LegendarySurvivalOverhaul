@@ -40,6 +40,7 @@ public class CreativeTabRegistry {
                         ItemRegistry.MELON_JUICE.get().getDefaultInstance(),
                         ItemRegistry.PUMPKIN_JUICE.get().getDefaultInstance(),
 
+                        ItemRegistry.WATER_PURIFIER.get().getDefaultInstance(),
                         ItemRegistry.CANTEEN.get().getDefaultInstance(),
                         ItemRegistry.LARGE_CANTEEN.get().getDefaultInstance(),
                         fullCanteen,
@@ -86,6 +87,7 @@ public class CreativeTabRegistry {
                         ItemRegistry.SEASONAL_CALENDAR.get().getDefaultInstance(),
                         ItemRegistry.THERMOMETER.get().getDefaultInstance(),
                         ItemRegistry.NETHER_CHALICE.get().getDefaultInstance(),
+                        ItemRegistry.SPONGE.get().getDefaultInstance(),
 
                         ItemRegistry.HEART_CONTAINER.get().getDefaultInstance(),
                         ItemRegistry.HEART_FRAGMENT.get().getDefaultInstance(),

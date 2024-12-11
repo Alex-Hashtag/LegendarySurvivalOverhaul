@@ -16,7 +16,7 @@ import net.minecraft.world.level.storage.loot.*;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import org.jetbrains.annotations.NotNull;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
-import sfiomn.legendarysurvivaloverhaul.data.loot.ModLootTables;
+import sfiomn.legendarysurvivaloverhaul.data.loot.ModChestLootTables;
 
 import javax.annotation.Nullable;
 import java.nio.file.Path;
@@ -38,7 +38,7 @@ public class ModLootModifierProvider implements DataProvider {
 
     public static ModLootModifierProvider createLootTables(PackOutput output) {
         return new ModLootModifierProvider(output, Set.of(), List.of(
-                new LootTableProvider.SubProviderEntry(ModLootTables::new, LootContextParamSets.CHEST)
+                new LootTableProvider.SubProviderEntry(ModChestLootTables::new, LootContextParamSets.CHEST)
         ));
     }
 

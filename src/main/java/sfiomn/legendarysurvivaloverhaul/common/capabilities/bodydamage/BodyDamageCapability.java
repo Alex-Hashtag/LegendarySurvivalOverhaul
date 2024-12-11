@@ -1,6 +1,7 @@
 package sfiomn.legendarysurvivaloverhaul.common.capabilities.bodydamage;
 
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -10,9 +11,11 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.event.TickEvent;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
+import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.bodydamage.*;
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.health.HealthCapability;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
+import sfiomn.legendarysurvivaloverhaul.registry.AttributeRegistry;
 import sfiomn.legendarysurvivaloverhaul.registry.MobEffectRegistry;
 import sfiomn.legendarysurvivaloverhaul.registry.SoundRegistry;
 import sfiomn.legendarysurvivaloverhaul.util.CapabilityUtil;
@@ -104,15 +107,15 @@ public class BodyDamageCapability implements IBodyDamageCapability
 
 		if (updateTickTimer++ >= 20) {
 			updateTickTimer = 0;
-			int brokenHearts = 0;
+			float playerMaxHealthCheckUpdate = player.getMaxHealth();
 			if (Config.Baked.healthOverhaulEnabled) {
-				brokenHearts = CapabilityUtil.getHealthCapability(player).getBrokenHearts();
+				int brokenHearts = CapabilityUtil.getHealthCapability(player).getBrokenHearts();
+				int minhHearthLimitWithBrokenHearth = (int) player.getAttributeValue(AttributeRegistry.BROKEN_HEART_RESILIENCE.get());
+				playerMaxHealthCheckUpdate += Mth.clamp(player.getMaxHealth() - minhHearthLimitWithBrokenHearth * 2, 0, brokenHearts * 2);
 			}
 
-			if (Config.Baked.bodyPartHealthMode.equals("DYNAMIC") && playerMaxHealth != player.getMaxHealth() + brokenHearts * 2) {
-				playerMaxHealth = player.getMaxHealth();
-				if (Config.Baked.healthOverhaulEnabled)
-					playerMaxHealth += brokenHearts * 2;
+			if (Config.Baked.bodyPartHealthMode.equals("DYNAMIC") && playerMaxHealth != playerMaxHealthCheckUpdate) {
+				playerMaxHealth = playerMaxHealthCheckUpdate;
 				updateDynamicMaxHealth(playerMaxHealth);
 			}
 

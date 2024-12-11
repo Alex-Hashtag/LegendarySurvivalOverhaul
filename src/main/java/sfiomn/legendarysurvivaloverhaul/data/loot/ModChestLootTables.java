@@ -17,9 +17,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.BiConsumer;
 
-public class ModLootTables implements LootTableSubProvider {
+public class ModChestLootTables implements LootTableSubProvider {
 
-    public static List<ResourceLocation> injectedLootTables = Arrays.asList(
+    public static List<ResourceLocation> heartFragmentInjectedLootTables = Arrays.asList(
             BuiltInLootTables.BURIED_TREASURE,
             BuiltInLootTables.JUNGLE_TEMPLE,
             BuiltInLootTables.ABANDONED_MINESHAFT,
@@ -27,13 +27,13 @@ public class ModLootTables implements LootTableSubProvider {
             BuiltInLootTables.STRONGHOLD_CORRIDOR
     );
 
-    public ModLootTables() {
+    public ModChestLootTables() {
     }
 
     @Override
     public void generate(BiConsumer<ResourceLocation, LootTable.Builder> biConsumer) {
 
-        for (ResourceLocation lootTable : injectedLootTables) {
+        for (ResourceLocation lootTable : heartFragmentInjectedLootTables) {
             biConsumer.accept(
                     new ResourceLocation(LegendarySurvivalOverhaul.MOD_ID, "inject/" + lootTable.getPath()),
                     LootTable.lootTable().withPool(

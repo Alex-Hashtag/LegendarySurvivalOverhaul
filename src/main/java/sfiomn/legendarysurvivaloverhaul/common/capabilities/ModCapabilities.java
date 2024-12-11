@@ -3,6 +3,7 @@ package sfiomn.legendarysurvivaloverhaul.common.capabilities;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
@@ -17,6 +18,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.network.PacketDistributor;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
+import sfiomn.legendarysurvivaloverhaul.api.bodydamage.BodyPartEnum;
 import sfiomn.legendarysurvivaloverhaul.api.health.HealthUtil;
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.bodydamage.BodyDamageCapability;
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.bodydamage.BodyDamageProvider;
@@ -33,6 +35,7 @@ import sfiomn.legendarysurvivaloverhaul.common.capabilities.wetness.WetnessProvi
 import sfiomn.legendarysurvivaloverhaul.config.Config;
 import sfiomn.legendarysurvivaloverhaul.network.NetworkHandler;
 import sfiomn.legendarysurvivaloverhaul.network.packets.*;
+import sfiomn.legendarysurvivaloverhaul.registry.AttributeRegistry;
 import sfiomn.legendarysurvivaloverhaul.util.CapabilityUtil;
 
 @Mod.EventBusSubscriber(modid = LegendarySurvivalOverhaul.MOD_ID, bus = EventBusSubscriber.Bus.FORGE)
@@ -115,7 +118,7 @@ public class ModCapabilities
 				 * just because the player is standing out in the rain
 				 * since it's not good for performance
 				 */
-				if (event.phase == Phase.START && wetCap.getPacketTimer() % Config.Baked.routinePacketSync == 0 && wetCap.isDirty())
+				if (event.phase == Phase.START && (wetCap.getPacketTimer() % Config.Baked.routinePacketSync == 0 || wetCap.isDirty()))
 				{
 					wetCap.setClean();
 					sendWetnessUpdate(player);
@@ -173,15 +176,22 @@ public class ModCapabilities
 
 		if (event.isWasDeath())
 		{
-			if (Config.Baked.healthOverhaulEnabled && Config.Baked.heartsLostOnDeath >= 0)
+			if (Config.Baked.healthOverhaulEnabled)
 			{
+				orig.reviveCaps();
 				HealthCapability oldCap = CapabilityUtil.getHealthCapability(orig);
+				orig.invalidateCaps();
+
 				HealthCapability newCap = CapabilityUtil.getHealthCapability(player);
 
 				newCap.setAdditionalHealth(oldCap.getAdditionalHealth());
+				HealthUtil.initializeHealthAttributes(event.getEntity());
 
-				HealthUtil.loseHearth(player, Config.Baked.heartsLostOnDeath);
-				HealthUtil.updatePlayerMaxHealthAttribute(player);
+				if (Config.Baked.heartsLostOnDeath >= 0)
+					HealthUtil.loseHearth(player, Config.Baked.heartsLostOnDeath);
+				else
+					HealthUtil.updatePlayerMaxHealthAttribute(player);
+
 				sendHealthUpdate(player);
 			}
 

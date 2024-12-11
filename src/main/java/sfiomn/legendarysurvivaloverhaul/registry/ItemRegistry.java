@@ -21,7 +21,8 @@ public class ItemRegistry {
 	public static final RegistryObject<Item> THERMOMETER = ITEMS.register("thermometer", () -> new ThermometerItem(new Item.Properties().stacksTo(1)));
 	public static final RegistryObject<Item> SEASONAL_CALENDAR = ITEMS.register("seasonal_calendar", () -> new SeasonalCalendarItem(new Item.Properties()));
 
-	public static final RegistryObject<Item> NETHER_CHALICE = ITEMS.register("nether_chalice", () -> new NetherChalice(new Item.Properties().stacksTo(1)));
+	public static final RegistryObject<Item> NETHER_CHALICE = ITEMS.register("nether_chalice", () -> new NetherChalice(new Item.Properties().stacksTo(1).rarity(Rarity.EPIC)));
+	public static final RegistryObject<Item> SPONGE = ITEMS.register("sponge", () -> new Item(new Item.Properties().stacksTo(1).rarity(Rarity.RARE)));
 
 	public static final RegistryObject<Item> SNOW_HELMET = ITEMS.register("snow_helmet", () -> new ArmorItem(SNOW, ArmorItem.Type.HELMET, new Item.Properties()));
 	public static final RegistryObject<Item> SNOW_CHEST = ITEMS.register("snow_chestplate", () -> new ArmorItem(SNOW, ArmorItem.Type.CHESTPLATE, new Item.Properties()));
@@ -54,6 +55,8 @@ public class ItemRegistry {
 	public static final RegistryObject<Item> ICE_FERN_GOLD = ITEMS.register("ice_fern_gold_leaf", () -> new Item(new Item.Properties()));
 
 	// Thirst
+	public static final RegistryObject<Item> WATER_PURIFIER = ITEMS.register("water_purifier", () -> new Item(new Item.Properties().stacksTo(1).rarity(Rarity.RARE)));
+
 	public static final RegistryObject<Item> CANTEEN = ITEMS.register("canteen", () -> new CanteenItem(new Item.Properties().rarity(Rarity.COMMON)));
 	public static final RegistryObject<Item> LARGE_CANTEEN = ITEMS.register("large_canteen", () -> new LargeCanteenItem(new Item.Properties().rarity(Rarity.UNCOMMON)));
 

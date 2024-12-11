@@ -198,7 +198,7 @@ public class Config
 		public final ForgeConfigSpec.BooleanValue absorptionEffectOverride;
 		public final ForgeConfigSpec.IntValue heartsLostOnDeath;
 		public final ForgeConfigSpec.IntValue permanentHearts;
-		public final ForgeConfigSpec.IntValue minHealthWithBrokenHeart;
+		public final ForgeConfigSpec.IntValue resilientHeartsWithBrokenHearts;
 		public final ForgeConfigSpec.IntValue brokenHeartsPerInjuredLimb;
 
 		// Localized Body Damage
@@ -718,9 +718,9 @@ public class Config
 			builder.push("broken-hearts")
 					.comment(" Broken Hearts are an integration with the localized body damage feature. Enables both feature to have it.",
 							" Broken Heart are lost hearts when a player's limb is severely injured and can be recovered by healing it.");
-			minHealthWithBrokenHeart = builder
-					.comment(" Minimum health below which Broken Hearts can no longer be added.")
-					.defineInRange("Minimum Player's Health With Broken Hearts (Broken Heart Resilience)", 5, 1, 10000);
+			resilientHeartsWithBrokenHearts = builder
+					.comment(" Resilient hearts number below which Broken Hearts can no longer be added.")
+					.defineInRange("Minimum Player's Heart number With Broken Hearts (Broken Heart Resilience)", 5, 1, 10000);
 			brokenHeartsPerInjuredLimb = builder
 					.comment(" Amount of Broken Hearts added per limbs fully injured.")
 					.defineInRange("Added Broken Hearts Per Injured Limb", 1, 0, 10000);
@@ -1137,7 +1137,7 @@ public class Config
 		public static boolean absorptionEffectOverride;
 		public static int heartsLostOnDeath;
 		public static int permanentHearts;
-		public static int minHealthWithBrokenHeart;
+		public static int resilientHeartsWithBrokenHearts;
 		public static int brokenHeartsPerInjuredLimb;
 
 		// Body members damage
@@ -1367,7 +1367,7 @@ public class Config
 				absorptionEffectOverride = COMMON.absorptionEffectOverride.get();
 				heartsLostOnDeath = COMMON.heartsLostOnDeath.get();
 				permanentHearts = COMMON.permanentHearts.get();
-				minHealthWithBrokenHeart = COMMON.minHealthWithBrokenHeart.get();
+				resilientHeartsWithBrokenHearts = COMMON.resilientHeartsWithBrokenHearts.get();
 				brokenHeartsPerInjuredLimb = COMMON.brokenHeartsPerInjuredLimb.get();
 
 				localizedBodyDamageEnabled = COMMON.localizedBodyDamageEnabled.get();

@@ -21,7 +21,9 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
 import sfiomn.legendarysurvivaloverhaul.api.wetness.IWetnessCapability;
+import sfiomn.legendarysurvivaloverhaul.common.integration.curios.CuriosUtil;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
+import sfiomn.legendarysurvivaloverhaul.registry.ItemRegistry;
 import sfiomn.legendarysurvivaloverhaul.util.MathUtil;
 
 public class WetnessCapability implements IWetnessCapability
@@ -91,8 +93,11 @@ public class WetnessCapability implements IWetnessCapability
 	@Override
 	public void tickUpdate(Player player, Level level, Phase phase)
 	{
-		if (getWetnessTickTimer() == -1)
+		if (getWetnessTickTimer() == -1 || CuriosUtil.isCurioItemEquipped(player, ItemRegistry.SPONGE.get())) {
+			if (this.getWetness() > 0)
+				this.setWetness(0);
 			return;
+		}
 
 		if(phase == TickEvent.Phase.START)
 		{

@@ -67,9 +67,7 @@ public class RenderHealthGui
 		if (HEALTH_CAP == null || player.tickCount % 20 == 0)
 			HEALTH_CAP = CapabilityUtil.getHealthCapability(player);
 
-		double minHealthWithBrokenHeart = player.getAttributeValue(AttributeRegistry.BROKEN_HEART_RESILIENCE.get());
-
-		int brokenHearts = Mth.ceil(Math.min(HEALTH_CAP.getBrokenHearts() * 2, Config.Baked.initialHealth + HEALTH_CAP.getAdditionalHealth() - minHealthWithBrokenHeart) / 2.0);
+		int brokenHearts = Mth.ceil(Math.max(0, Config.Baked.initialHealth + HEALTH_CAP.getAdditionalHealth() - player.getMaxHealth()) / 2.0);
 		float shieldHealth = HEALTH_CAP.getShieldHealth();
 
 		int left = width / 2 - 91; // Same x offset as the health bar

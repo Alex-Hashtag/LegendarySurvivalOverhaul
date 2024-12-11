@@ -16,6 +16,15 @@ public class HealthUtil
 	}
 
 	/**
+	 * Calculate the player max health based on broken hearts & additional health
+	 *
+	 * @param player The player for which the max health is calculated
+	 */
+	public static double calculatePlayerMaxHealth(Player player) {
+		return internal.calculatePlayerMaxHealth(player);
+	}
+
+	/**
 	 * Initialize the player broken heart resilience & permanent hearts attributes with the config values
 	 *
 	 * @param player The player for which we initialize the health attributes

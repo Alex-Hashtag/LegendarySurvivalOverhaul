@@ -6,6 +6,8 @@ public interface IHealthUtil
 {
     void updatePlayerHealthAttributes(Player player);
 
+    double calculatePlayerMaxHealth(Player player);
+
     void initializeHealthAttributes(Player player);
 
     float hurtPlayer(Player player, float damageValue);

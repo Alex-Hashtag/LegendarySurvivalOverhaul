@@ -3,6 +3,8 @@
     "minecraft:player"
   ],
   "slots": [
+    "head",
+    "chest",
     "belt",
     "necklace"
   ]
