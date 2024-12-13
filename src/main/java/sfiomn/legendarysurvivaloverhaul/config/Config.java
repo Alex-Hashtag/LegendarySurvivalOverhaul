@@ -698,7 +698,7 @@ public class Config
 			maxShieldHealth = builder
 					.comment(" How much of Shield Health a player can accumulate. 2 Shield Heath means a full shield.",
 							" Shield Health are lost when the player suffers damages and can't regenerate. Works similarly as the Minecraft Absorption.")
-					.defineInRange("Maximum Shield Health", 10.0, 1.0, 10000.0);
+					.defineInRange("Maximum Shield Health", 20.0, 1.0, 10000.0);
 			absorptionEffectOverride = builder
 					.comment(" Override the absorption effect by a shield health increase of 2.",
 							" The absorption is typically given by the Golden Apple.")
@@ -720,7 +720,7 @@ public class Config
 							" Broken Heart are lost hearts when a player's limb is severely injured and can be recovered by healing it.");
 			resilientHeartsWithBrokenHearts = builder
 					.comment(" Resilient hearts number below which Broken Hearts can no longer be added.")
-					.defineInRange("Minimum Player's Heart number With Broken Hearts (Broken Heart Resilience)", 5, 1, 10000);
+					.defineInRange("Minimum Player's Heart number With Broken Hearts (Broken Heart Resilience)", 2, 1, 10000);
 			brokenHeartsPerInjuredLimb = builder
 					.comment(" Amount of Broken Hearts added per limbs fully injured.")
 					.defineInRange("Added Broken Hearts Per Injured Limb", 1, 0, 10000);

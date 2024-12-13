@@ -192,6 +192,7 @@ public class ModCapabilities
 				else
 					HealthUtil.updatePlayerMaxHealthAttribute(player);
 
+				player.setHealth(player.getMaxHealth());
 				sendHealthUpdate(player);
 			}
 

@@ -1,6 +1,7 @@
 package sfiomn.legendarysurvivaloverhaul.common.items;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
@@ -21,6 +22,7 @@ import sfiomn.legendarysurvivaloverhaul.common.capabilities.health.HealthCapabil
 import sfiomn.legendarysurvivaloverhaul.config.Config;
 import sfiomn.legendarysurvivaloverhaul.network.NetworkHandler;
 import sfiomn.legendarysurvivaloverhaul.network.packets.UpdateHeartsPacket;
+import sfiomn.legendarysurvivaloverhaul.registry.ParticleTypeRegistry;
 import sfiomn.legendarysurvivaloverhaul.registry.SoundRegistry;
 import sfiomn.legendarysurvivaloverhaul.util.CapabilityUtil;
 import net.minecraft.world.entity.player.Player;
@@ -73,6 +75,9 @@ public class HeartContainerItem extends Item
 				cap.addAdditionalHealth(2);
 
 				level.playSound(null, player, SoundRegistry.HEART_CONTAINER.get(), SoundSource.NEUTRAL, 1.0f, 1.0f);
+				for (int i = 0; i < 100; i++) {
+					level.addParticle(ParticleTypes.CRIMSON_SPORE, player.position().x, player.position().add(0, 1.5, 0).y, player.position().z, 0.2, 0.2, 0.2);
+				}
 
 				if (level.isClientSide) {
 					Minecraft.getInstance().gameRenderer.displayItemActivation(stack);
