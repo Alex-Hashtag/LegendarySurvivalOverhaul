@@ -2,6 +2,7 @@ package sfiomn.legendarysurvivaloverhaul.common.items;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
@@ -18,6 +19,8 @@ import sfiomn.legendarysurvivaloverhaul.registry.SoundRegistry;
 import sfiomn.legendarysurvivaloverhaul.util.CapabilityUtil;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+
+import static sfiomn.legendarysurvivaloverhaul.common.integration.sereneseasons.SereneSeasonsUtil.seasonTooltip;
 
 public class HeartContainerItem extends Item
 {
@@ -41,7 +44,9 @@ public class HeartContainerItem extends Item
 		if (Config.Baked.healthOverhaulEnabled) {
 			HealthCapability cap = CapabilityUtil.getHealthCapability(player);
 
-			if (cap.getAdditionalHealth() > Config.Baked.maxAdditionalHealth) {
+			if (cap.getAdditionalHealth() >= Config.Baked.maxAdditionalHealth) {
+				if (level.isClientSide)
+					player.displayClientMessage(Component.translatable("message.legendarysurvivaloverhaul.heart_container.additional_health_full"), true);
 				return InteractionResultHolder.fail(player.getItemInHand(hand));
 			}
 		}

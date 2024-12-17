@@ -141,7 +141,7 @@ public class ThirstUtilInternal implements IThirstUtil {
         for (JsonEffectParameter effect: effects) {
             if (effect.chance >= 0.0f && effect.duration > 0 && !effect.name.isEmpty() && player.level().random.nextFloat() < effect.chance) {
                 MobEffect mobEffect = ForgeRegistries.MOB_EFFECTS.getValue(new ResourceLocation(effect.name));
-                if (mobEffect != null && (mobEffect != MobEffectRegistry.THIRST.get() || !CuriosUtil.isCurioItemEquipped(player, ItemRegistry.WATER_PURIFIER.get()))) {
+                if (mobEffect != null) {
                     int effectDuration = effect.duration;
                     if (Config.Baked.cumulativeThirstEffectDuration &&
                             mobEffect == MobEffectRegistry.THIRST.get() &&

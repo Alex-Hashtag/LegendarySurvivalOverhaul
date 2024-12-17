@@ -48,10 +48,12 @@ import sfiomn.legendarysurvivaloverhaul.api.thirst.ThirstUtil;
 import sfiomn.legendarysurvivaloverhaul.client.screens.ClientHooks;
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.health.HealthCapability;
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.thirst.ThirstCapability;
+import sfiomn.legendarysurvivaloverhaul.common.integration.curios.CuriosUtil;
 import sfiomn.legendarysurvivaloverhaul.common.items.drink.DrinkItem;
 import sfiomn.legendarysurvivaloverhaul.common.items.heal.BodyHealingItem;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
 import sfiomn.legendarysurvivaloverhaul.config.json.JsonConfig;
+import sfiomn.legendarysurvivaloverhaul.registry.ItemRegistry;
 import sfiomn.legendarysurvivaloverhaul.registry.MobEffectRegistry;
 import sfiomn.legendarysurvivaloverhaul.registry.SoundRegistry;
 import sfiomn.legendarysurvivaloverhaul.util.CapabilityUtil;
@@ -290,14 +292,18 @@ public class CommonForgeEvents {
 
     @SubscribeEvent
     public static void onPlayerEffect(MobEffectEvent.Applicable event) {
-        if (event.getEntity() instanceof Player player) {
-            if (!event.getEntity().level().isClientSide &&
-                    Config.Baked.absorptionEffectOverride &&
-                    event.getEffectInstance().getEffect() == MobEffects.ABSORPTION) {
+        if (event.getEntity() instanceof Player player && !event.getEntity().level().isClientSide) {
+            if (event.getEffectInstance().getEffect() == MobEffects.ABSORPTION &&
+                    Config.Baked.absorptionEffectOverride) {
 
                 HealthCapability healthCapability = CapabilityUtil.getHealthCapability(player);
                 healthCapability.addShieldHealth(2);
 
+                event.setResult(Event.Result.DENY);
+            }
+            if (event.getEffectInstance().getEffect() == MobEffectRegistry.THIRST.get() &&
+                    LegendarySurvivalOverhaul.curiosLoaded &&
+                    CuriosUtil.isCurioItemEquipped(player, ItemRegistry.WATER_PURIFIER.get())) {
                 event.setResult(Event.Result.DENY);
             }
         }

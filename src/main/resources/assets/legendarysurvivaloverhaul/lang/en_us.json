@@ -42,7 +42,7 @@
 	"item.legendarysurvivaloverhaul.sponge": "Sponge",
 	"tooltip.legendarysurvivaloverhaul.sponge.description": "Prevents you from being wet",
 	"item.legendarysurvivaloverhaul.water_purifier": "Water Purifier",
-	"tooltip.legendarysurvivaloverhaul.water_purifier.description": "Prevents you from water dirtiness",
+	"tooltip.legendarysurvivaloverhaul.water_purifier.description": "Grans thirst immunity",
 
 	"attribute.legendarysurvivaloverhaul.heating_temperature": "Temperature",
 	"attribute.legendarysurvivaloverhaul.cooling_temperature": "Temperature",
@@ -257,5 +257,6 @@
 	"message.legendarysurvivaloverhaul.sereneseasons.no_season_info": "No season in this biome",
 	"message.legendarysurvivaloverhaul.sereneseasons.season_info": "%sSeason, Day %s/%s",
 	"message.legendarysurvivaloverhaul.sereneseasons.no_season_dimension": "No season in this dimension",
-	"message.legendarysurvivaloverhaul.sereneseasons.no_serene_season_loaded": "Serene Seasons mod not loaded"
+	"message.legendarysurvivaloverhaul.sereneseasons.no_serene_season_loaded": "Serene Seasons mod not loaded",
+	"message.legendarysurvivaloverhaul.heart_container.additional_health_full": "You have reach your maximum health"
 }
