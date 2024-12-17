@@ -9,7 +9,8 @@ import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.common.loot_modifiers.AdditionalLootTable;
 
 import static sfiomn.legendarysurvivaloverhaul.data.loot.ModChestLootTables.heartFragmentInjectedLootTables;
-import static sfiomn.legendarysurvivaloverhaul.data.loot.ModEntitiesLootTables.spongeInjectedLootTables;
+import static sfiomn.legendarysurvivaloverhaul.data.loot.ModEntityLootTables.entityInjectedLootTables;
+import static sfiomn.legendarysurvivaloverhaul.data.loot.ModFishingLootTables.fishingInjectedLootTables;
 
 public class ModGlobalLootModifierProvider extends GlobalLootModifierProvider {
 
@@ -27,7 +28,15 @@ public class ModGlobalLootModifierProvider extends GlobalLootModifierProvider {
                     false));
         }
 
-        for (ResourceLocation lootTable: spongeInjectedLootTables) {
+        for (ResourceLocation lootTable: entityInjectedLootTables) {
+            this.add(lootTable.getPath(), new AdditionalLootTable(
+                    new LootItemCondition[]{LootTableIdCondition.builder(lootTable).build()},
+                    new ResourceLocation(LegendarySurvivalOverhaul.MOD_ID,
+                            "inject/" + lootTable.getPath()),
+                    false));
+        }
+
+        for (ResourceLocation lootTable: fishingInjectedLootTables) {
             this.add(lootTable.getPath(), new AdditionalLootTable(
                     new LootItemCondition[]{LootTableIdCondition.builder(lootTable).build()},
                     new ResourceLocation(LegendarySurvivalOverhaul.MOD_ID,

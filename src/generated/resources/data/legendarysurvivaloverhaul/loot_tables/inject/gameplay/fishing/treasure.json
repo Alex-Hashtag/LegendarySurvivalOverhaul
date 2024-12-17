@@ -1,20 +1,21 @@
 {
-  "type": "minecraft:entity",
+  "type": "minecraft:fishing",
   "pools": [
     {
       "bonus_rolls": 0.0,
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "legendarysurvivaloverhaul:water_purifier"
+          "name": "legendarysurvivaloverhaul:sponge",
+          "weight": 20
         },
         {
           "type": "minecraft:empty",
-          "weight": 100
+          "weight": 80
         }
       ],
       "rolls": 1.0
     }
   ],
-  "random_sequence": "legendarysurvivaloverhaul:inject/entities/drowned"
+  "random_sequence": "legendarysurvivaloverhaul:inject/gameplay/fishing/treasure"
 }

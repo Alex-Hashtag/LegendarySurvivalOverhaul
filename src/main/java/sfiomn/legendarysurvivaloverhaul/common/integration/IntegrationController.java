@@ -345,7 +345,7 @@ public final class IntegrationController
 		JsonConfig.registerConsumableThirst("beachparty:pumpkin_cocktail", 5, 2.0f);
 		JsonConfig.registerConsumableThirst("beachparty:melon_cocktail", 5, 2.0f);
 		JsonConfig.registerConsumableThirst("beachparty:honey_cocktail", 7, 3.0f);
-		JsonConfig.registerConsumableThirst("beachparty:refreshing_drink", 7, 3.0f);
+		JsonConfig.registerConsumableThirst("beachparty:refreshing_drink", 10, 5.0f);
 
 		JsonConfig.registerConsumableTemperature(TemporaryModifierGroupEnum.DRINK, "beachparty:sweetberry_milkshake", -3, 4800);
 		JsonConfig.registerConsumableTemperature(TemporaryModifierGroupEnum.DRINK, "beachparty:coconut_milkshake", -3, 4800);

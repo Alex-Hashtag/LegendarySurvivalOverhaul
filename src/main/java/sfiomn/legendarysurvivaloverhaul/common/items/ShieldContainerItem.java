@@ -1,6 +1,5 @@
 package sfiomn.legendarysurvivaloverhaul.common.items;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;

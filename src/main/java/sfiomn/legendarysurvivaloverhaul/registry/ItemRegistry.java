@@ -1,15 +1,20 @@
 package sfiomn.legendarysurvivaloverhaul.registry;
 
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.*;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
+import org.jetbrains.annotations.Nullable;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.item.CoatEnum;
 import sfiomn.legendarysurvivaloverhaul.common.items.*;
 import sfiomn.legendarysurvivaloverhaul.common.items.drink.*;
 import sfiomn.legendarysurvivaloverhaul.common.items.heal.*;
+
+import java.util.List;
 
 import static sfiomn.legendarysurvivaloverhaul.common.items.armor.ArmorMaterialBase.DESERT;
 import static sfiomn.legendarysurvivaloverhaul.common.items.armor.ArmorMaterialBase.SNOW;
@@ -22,7 +27,15 @@ public class ItemRegistry {
 	public static final RegistryObject<Item> SEASONAL_CALENDAR = ITEMS.register("seasonal_calendar", () -> new SeasonalCalendarItem(new Item.Properties()));
 
 	public static final RegistryObject<Item> NETHER_CHALICE = ITEMS.register("nether_chalice", () -> new NetherChalice(new Item.Properties().stacksTo(1).rarity(Rarity.EPIC)));
-	public static final RegistryObject<Item> SPONGE = ITEMS.register("sponge", () -> new Item(new Item.Properties().stacksTo(1).rarity(Rarity.RARE)));
+	public static final RegistryObject<Item> SPONGE = ITEMS.register("sponge", () -> new WearableCurioItem(new Item.Properties().stacksTo(1).rarity(Rarity.RARE)) {
+
+		@Override
+		public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
+			super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
+
+			tooltipComponents.add(Component.translatable("tooltip." + LegendarySurvivalOverhaul.MOD_ID + ".sponge.description"));
+		}
+	});
 
 	public static final RegistryObject<Item> SNOW_HELMET = ITEMS.register("snow_helmet", () -> new ArmorItem(SNOW, ArmorItem.Type.HELMET, new Item.Properties()));
 	public static final RegistryObject<Item> SNOW_CHEST = ITEMS.register("snow_chestplate", () -> new ArmorItem(SNOW, ArmorItem.Type.CHESTPLATE, new Item.Properties()));
@@ -55,7 +68,15 @@ public class ItemRegistry {
 	public static final RegistryObject<Item> ICE_FERN_GOLD = ITEMS.register("ice_fern_gold_leaf", () -> new Item(new Item.Properties()));
 
 	// Thirst
-	public static final RegistryObject<Item> WATER_PURIFIER = ITEMS.register("water_purifier", () -> new Item(new Item.Properties().stacksTo(1).rarity(Rarity.RARE)));
+	public static final RegistryObject<Item> WATER_PURIFIER = ITEMS.register("water_purifier", () -> new WearableCurioItem(new Item.Properties().stacksTo(1).rarity(Rarity.RARE)) {
+
+		@Override
+		public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
+			super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
+
+			tooltipComponents.add(Component.translatable("tooltip." + LegendarySurvivalOverhaul.MOD_ID + ".water_purifier.description"));
+		}
+	});
 
 	public static final RegistryObject<Item> CANTEEN = ITEMS.register("canteen", () -> new CanteenItem(new Item.Properties().rarity(Rarity.COMMON)));
 	public static final RegistryObject<Item> LARGE_CANTEEN = ITEMS.register("large_canteen", () -> new LargeCanteenItem(new Item.Properties().rarity(Rarity.UNCOMMON)));

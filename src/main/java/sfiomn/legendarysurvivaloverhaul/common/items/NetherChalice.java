@@ -2,13 +2,9 @@ package sfiomn.legendarysurvivaloverhaul.common.items;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
@@ -25,13 +21,16 @@ import sfiomn.legendarysurvivaloverhaul.util.CapabilityUtil;
 
 import java.util.List;
 
-public class NetherChalice extends Item {
+public class NetherChalice extends WearableCurioItem {
     public NetherChalice(Properties pProperties) {
         super(pProperties);
     }
 
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand usedHand) {
+        if (LegendarySurvivalOverhaul.curiosLoaded)
+            return super.use(level, player, usedHand);
+
         ItemStack itemstack = player.getItemInHand(usedHand);
 
         if (CapabilityUtil.getThirstCapability(player).isHydrationLevelAtMax())
@@ -52,11 +51,6 @@ public class NetherChalice extends Item {
         }
 
         return InteractionResultHolder.fail(itemstack);
-    }
-
-    @Override
-    public boolean canEquip(ItemStack stack, EquipmentSlot armorType, Entity entity) {
-        return super.canEquip(stack, armorType, entity);
     }
 
     @Override

@@ -22,7 +22,6 @@ import sfiomn.legendarysurvivaloverhaul.config.Config;
 import sfiomn.legendarysurvivaloverhaul.registry.KeyMappingRegistry;
 import sfiomn.legendarysurvivaloverhaul.util.CapabilityUtil;
 import sfiomn.legendarysurvivaloverhaul.util.WorldUtil;
-import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
