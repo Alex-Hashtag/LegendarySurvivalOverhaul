@@ -250,6 +250,11 @@ public class Config
 		public final ForgeConfigSpec.IntValue tonicUseTime;
 		public final ForgeConfigSpec.IntValue medikitUseTime;
 
+		public final ForgeConfigSpec.BooleanValue inventoryTabEnabled;
+		public final ForgeConfigSpec.BooleanValue bodyDamageTabEnabled;
+		public final ForgeConfigSpec.BooleanValue reskillableTabEnabled;
+		public final ForgeConfigSpec.BooleanValue ftbQuestsTabEnabled;
+
 		Common(ForgeConfigSpec.Builder builder)
 		{
 			builder.comment(new String [] {
@@ -827,6 +832,21 @@ public class Config
 
 			builder.pop();
 			builder.pop();
+
+			builder.push("tabs-menu").comment(" Configuration about the new tabs added on top of defined screens");
+			inventoryTabEnabled = builder
+					.comment(" If enabled, show the inventory button in the tabs menu.")
+					.define("Inventory Tab Enabled ", true);
+			bodyDamageTabEnabled = builder
+					.comment(" If enabled, show the body damage button in the tabs menu.")
+					.define("Body Damage Tab Enabled ", true);
+			reskillableTabEnabled = builder
+					.comment(" If enabled, show the reskillable button in the tabs menu.")
+					.define("Reskillable Tab Enabled ", true);
+			ftbQuestsTabEnabled = builder
+					.comment(" If enabled, show the ftb quests button in the tabs menu.")
+					.define("FTB Quests Tab Enabled ", true);
+			builder.pop();
 		}
 	}
 
@@ -879,6 +899,9 @@ public class Config
 		public final ForgeConfigSpec.BooleanValue mergeHydrationAndSaturationTooltip;
 		public final ForgeConfigSpec.BooleanValue thirstSaturationDisplayed;
 		public final ForgeConfigSpec.BooleanValue lowHydrationEffect;
+
+		public final ForgeConfigSpec.IntValue tabsMenuOffsetX;
+		public final ForgeConfigSpec.IntValue tabsMenuOffsetY;
 
 		Client(ForgeConfigSpec.Builder builder)
 		{
@@ -985,6 +1008,14 @@ public class Config
 			lowHydrationEffect = builder
 					.comment(" If enabled, player's vision will become blurry when running low on hydration.")
 					.define("Low Thirst Effect", true);
+			builder.pop();
+
+			builder.push("tabs-menu");
+			tabsMenuOffsetX = builder
+					.comment(" The X and Y offset of the tabs menu. Set both to 0 for no offset.", " By default, will be rendered above minecraft menus. Set it to 10000 to disable it completely.")
+					.defineInRange("Season Cards Display X Offset", 0, -10000, 10000);
+			tabsMenuOffsetY = builder
+					.defineInRange("Season Cards Display Y Offset", 0, -10000, 10000);
 			builder.pop();
 		}
 	}
@@ -1189,6 +1220,12 @@ public class Config
 		public static List<? extends Integer> bothFeetPartEffectAmplifiers;
 		public static List<? extends Double> bothFeetPartEffectThresholds;
 
+		// Tabs Menu
+		public static boolean inventoryTabEnabled;
+		public static boolean bodyDamageTabEnabled;
+		public static boolean reskillableTabEnabled;
+		public static boolean ftbQuestsTabEnabled;
+
 		// Client Config
 		public static TemperatureDisplayEnum temperatureDisplayMode;
 		public static int temperatureDisplayOffsetX;
@@ -1222,6 +1259,9 @@ public class Config
 		public static boolean mergeHydrationAndSaturationTooltip;
 		public static boolean thirstSaturationDisplayed;
 		public static boolean lowHydrationEffect;
+
+		public static int tabsMenuOffsetX;
+		public static int tabsMenuOffsetY;
 
 		public static void bakeCommon()
 		{
@@ -1413,6 +1453,11 @@ public class Config
 				bothFeetPartEffects = COMMON.bothFeetPartEffects.get();
 				bothFeetPartEffectAmplifiers = COMMON.bothFeetPartEffectAmplifiers.get();
 				bothFeetPartEffectThresholds = COMMON.bothFeetPartEffectThresholds.get();
+
+				inventoryTabEnabled = COMMON.inventoryTabEnabled.get();
+				bodyDamageTabEnabled = COMMON.bodyDamageTabEnabled.get();
+				reskillableTabEnabled = COMMON.reskillableTabEnabled.get();
+				ftbQuestsTabEnabled = COMMON.ftbQuestsTabEnabled.get();
 			}
 			catch (Exception e)
 			{
@@ -1458,6 +1503,9 @@ public class Config
 				showHydrationTooltip = CLIENT.showHydrationTooltip.get();
 				mergeHydrationAndSaturationTooltip = CLIENT.mergeHydrationAndSaturationTooltip.get();
 				lowHydrationEffect = CLIENT.lowHydrationEffect.get();
+
+				tabsMenuOffsetX = CLIENT.tabsMenuOffsetX.get();
+				tabsMenuOffsetY = CLIENT.tabsMenuOffsetY.get();
 			}
 			catch (Exception e)
 			{

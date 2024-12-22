@@ -113,11 +113,13 @@ public final class IntegrationController
 		JsonConfig.registerConsumableTemperature(TemporaryModifierGroupEnum.FOOD, "farmersdelight:pumpkin_soup", 2, 2400);
 		JsonConfig.registerConsumableTemperature(TemporaryModifierGroupEnum.FOOD, "farmersdelight:baked_cod_stew", 2, 2400);
 		JsonConfig.registerConsumableTemperature(TemporaryModifierGroupEnum.DRINK, "farmersdelight:hot_cocoa", 3, 3600);
+		JsonConfig.registerConsumableTemperature(TemporaryModifierGroupEnum.DRINK, "farmersdelight:melon_juice", -1, 1200);
 
 		JsonConfig.registerConsumableThirst("farmersdelight:chicken_soup", 4, 2.0f);
 		JsonConfig.registerConsumableThirst("farmersdelight:vegetable_soup", 4, 2.0f);
 		JsonConfig.registerConsumableThirst("farmersdelight:pumpkin_soup", 4, 2.0f);
 		JsonConfig.registerConsumableThirst("farmersdelight:hot_cocoa", 4, 1.0f);
+		JsonConfig.registerConsumableThirst("farmersdelight:melon_juice", 8, 4.0f);
 	}
 	
 	private static void initRealisticTorches()

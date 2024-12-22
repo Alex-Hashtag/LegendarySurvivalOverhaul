@@ -165,12 +165,11 @@ dependencies {
     compileOnly(fg.deobf("mezz.jei:jei-${minecraft_version}-forge-api:${jei_version}"))
     compileOnly(fg.deobf("curse.maven:terrafirmacraft-302973:5571484"))
     compileOnly(fg.deobf("curse.maven:vampirism-233029:5526512"))
-    compileOnly(fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}:api"))
-    compileOnly fg.deobf("curse.maven:origins-474438:5314209")
+    compileOnly(fg.deobf("curse.maven:origins-474438:5314209"))
+    implementation(fg.deobf("curse.maven:reskillable-981352:5997519"))
 
     // at runtime, use the full JEI jar for Forge
     runtimeOnly(fg.deobf("mezz.jei:jei-${minecraft_version}-forge:${jei_version}"))
-    implementation(fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}"))
     runtimeOnly(fg.deobf("curse.maven:appleskin-248787:4770828"))
     //runtimeOnly fg.deobf("curse.maven:quark-243121:5594847")
     //runtimeOnly fg.deobf("curse.maven:zeta-968868:5597406") //  don't work on server
@@ -179,9 +178,15 @@ dependencies {
     // These are REQUIRED for the mod to compile correctly and should not be removed.
     implementation fg.deobf("curse.maven:serene-seasons-291874:5790653")
     implementation fg.deobf("curse.maven:glitchcore-955399:5787839")
+    implementation(fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}"))
+
+    implementation(fg.deobf("curse.maven:ftbquest-289412:5816794"))
+    implementation(fg.deobf("curse.maven:architectury-419699:5137938"))
+    implementation(fg.deobf("curse.maven:ftblibrary-404465:5925398"))
+    implementation(fg.deobf("curse.maven:ftbteams-404468:5267190"))
     
     //implementation fg.deobf("curse.maven:create-328085:4835191")
-    implementation(fg.deobf("curse.maven:patchouli-306770:4966125"))
+    //implementation(fg.deobf("curse.maven:patchouli-306770:4966125"))
     //implementation fg.deobf("curse.maven:firma-civilization-714158:5737719")
     //implementation fg.deobf("curse.maven:alekis-nifty-ships-1068445:5669604")
 

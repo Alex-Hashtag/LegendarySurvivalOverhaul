@@ -88,7 +88,7 @@ public class CommonForgeEvents {
     }*/
 
     @SubscribeEvent
-    public static void onFoodEaten(LivingEntityUseItemEvent.Finish event)
+    public static void onFinishUseItem(LivingEntityUseItemEvent.Finish event)
     {
         LivingEntity entity = event.getEntity();
         if (!(entity instanceof Player player))

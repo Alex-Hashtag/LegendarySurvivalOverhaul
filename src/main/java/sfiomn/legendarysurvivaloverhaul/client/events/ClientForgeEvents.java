@@ -1,6 +1,11 @@
 package sfiomn.legendarysurvivaloverhaul.client.events;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.Renderable;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
@@ -21,9 +26,11 @@ import net.minecraftforge.registries.ForgeRegistries;
 import sereneseasons.api.SSItems;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.config.json.thirst.JsonBlockFluidThirst;
+import sfiomn.legendarysurvivaloverhaul.api.tabs_menu.TabsMenu;
 import sfiomn.legendarysurvivaloverhaul.api.thirst.ThirstUtil;
 import sfiomn.legendarysurvivaloverhaul.client.integration.sereneseasons.RenderSeasonCards;
 import sfiomn.legendarysurvivaloverhaul.client.render.*;
+import sfiomn.legendarysurvivaloverhaul.client.screens.BodyHealthScreen;
 import sfiomn.legendarysurvivaloverhaul.client.screens.ClientHooks;
 import sfiomn.legendarysurvivaloverhaul.client.effects.TemperatureBreathEffect;
 import sfiomn.legendarysurvivaloverhaul.client.sounds.TemperatureBreathSound;
@@ -127,6 +134,25 @@ public class ClientForgeEvents {
                 textLine.startsWith("Chunk:") ||
                 textLine.startsWith("Block:") ||
                 textLine.startsWith("Facing:"));
+    }
+
+    @SubscribeEvent
+    public static void preRenderScreen(ScreenEvent.Render.Pre event) {
+        if (event.getScreen() instanceof Screen) {
+
+            Screen screen = event.getScreen();
+
+            if (screen instanceof AbstractContainerScreen<?> containerScreen) {
+                TabsMenu.updateButtonsPosition(screen, containerScreen.getGuiLeft(), containerScreen.getGuiTop());
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void screenInitPost(ScreenEvent.Init.Post event) {
+        if (event.getScreen() instanceof Screen) {
+            TabsMenu.initScreenButtons(event);
+        }
     }
 
     @SubscribeEvent

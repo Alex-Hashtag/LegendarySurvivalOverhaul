@@ -37,10 +37,6 @@ public class RenderHealthGui
 	private static final int HEART_TEXTURE_WIDTH = 9;
 	private static final int HEART_TEXTURE_HEIGHT = 9;
 
-	private static int lastHealth;
-	private static int displayHealth;
-	private static long lastHealthTime;
-
 	public static final IGuiOverlay HEALTH_GUI = (forgeGui, guiGraphics, partialTicks, width, height) -> {
 		if (Config.Baked.healthOverhaulEnabled
 				&& !Minecraft.getInstance().options.hideGui
@@ -67,44 +63,20 @@ public class RenderHealthGui
 		if (HEALTH_CAP == null || player.tickCount % 20 == 0)
 			HEALTH_CAP = CapabilityUtil.getHealthCapability(player);
 
-		int brokenHearts = Mth.ceil(Math.max(0, Config.Baked.initialHealth + HEALTH_CAP.getAdditionalHealth() - player.getMaxHealth()) / 2.0);
+		int brokenHearts = Mth.clamp(Mth.ceil(Config.Baked.initialHealth + HEALTH_CAP.getAdditionalHealth() - player.getMaxHealth() / 2.0), 0, HEALTH_CAP.getBrokenHearts());
 		float shieldHealth = HEALTH_CAP.getShieldHealth();
+
+		if (brokenHearts + shieldHealth == 0)
+			return;
 
 		int left = width / 2 - 91; // Same x offset as the health bar
 		int top = height - forgeGui.leftHeight;
 
-		forgeGui.leftHeight += 10;
+		int healthRows = Mth.ceil((Mth.ceil(shieldHealth / 2.0F) + brokenHearts)  / 10.0F);
 
-		int health = Mth.ceil(player.getHealth());
-		if (health < lastHealth && player.invulnerableTime > 0) {
-			lastHealthTime = Util.getMillis();
-		} else if (health > lastHealth && player.invulnerableTime > 0) {
-			lastHealthTime = Util.getMillis();
-		}
+		forgeGui.leftHeight += healthRows * 10;
 
-		if (Util.getMillis() - lastHealthTime > 1000L) {
-			lastHealth = health;
-			displayHealth = health;
-			lastHealthTime = Util.getMillis();
-		}
-
-		lastHealth = health;
-		int healthLast = displayHealth;
-		AttributeInstance attrMaxHealth = player.getAttribute(Attributes.MAX_HEALTH);
-		if (attrMaxHealth == null)
-			return;
-
-		float healthMax = Math.max((float) attrMaxHealth.getValue(), (float)Math.max(healthLast, health));
-		int healthRows = Mth.ceil((healthMax / 2.0F + brokenHearts)  / 10.0F);
-		int rowHeight = Math.max(10 - (healthRows - 2), 3);
-		rand.setSeed(player.tickCount * 312871L);
-
-		forgeGui.leftHeight += healthRows * rowHeight;
-		if (rowHeight != 10) {
-			forgeGui.leftHeight += 10 - rowHeight;
-		}
-
-		renderHearts(gui, left, top, rowHeight, brokenHearts, health, shieldHealth);
+		renderHearts(gui, left, top, 10, brokenHearts, Mth.ceil(player.getHealth()), shieldHealth);
 	}
 
 	public static void renderHearts(GuiGraphics gui, int left, int top, int rowHeight, int brokenHearts, int health, float shieldHealth) {

@@ -42,13 +42,18 @@ import sfiomn.legendarysurvivaloverhaul.common.integration.json.JsonIntegrationC
 import sfiomn.legendarysurvivaloverhaul.common.integration.origins.OriginsEvents;
 import sfiomn.legendarysurvivaloverhaul.common.integration.sereneseasons.SereneSeasonsUtil;
 import sfiomn.legendarysurvivaloverhaul.common.integration.vampirism.VampirismEvents;
+import sfiomn.legendarysurvivaloverhaul.common.tabs_menu.FtbQuestsTab;
+import sfiomn.legendarysurvivaloverhaul.common.tabs_menu.ReskillableTab;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
 import sfiomn.legendarysurvivaloverhaul.network.NetworkHandler;
 import sfiomn.legendarysurvivaloverhaul.registry.*;
+import sfiomn.legendarysurvivaloverhaul.util.TabsMenuUtil;
 import sfiomn.legendarysurvivaloverhaul.util.internal.*;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+
+import static sfiomn.legendarysurvivaloverhaul.registry.TabsMenuRegistry.TABS_MENU;
 
 @SuppressWarnings("unused")
 @Mod(LegendarySurvivalOverhaul.MOD_ID)
@@ -83,6 +88,9 @@ public class LegendarySurvivalOverhaul
 
 	public static boolean vampirismLoaded = false;
 	public static boolean originsLoaded = false;
+
+	public static boolean reskillableLoaded = false;
+	public static boolean ftbQuestsLoaded = false;
 	
 	public static Path configPath = FMLPaths.CONFIGDIR.get();
 	public static Path modConfigPath = Paths.get(configPath.toAbsolutePath().toString(), "legendarysurvivaloverhaul");
@@ -114,6 +122,7 @@ public class LegendarySurvivalOverhaul
 		BlockEntityRegistry.register(modBus);
 		FeatureRegistry.register(modBus);
 		CreativeTabRegistry.register(modBus);
+		TabsMenuRegistry.register(modBus);
 
 		forgeBus.addListener(CommandRegistry::registerCommandsEvent);
 		forgeBus.addListener(this::registerCapabilities);
@@ -131,11 +140,21 @@ public class LegendarySurvivalOverhaul
 		terraFirmaCraftLoaded = ModList.get().isLoaded("tfc");
 		vampirismLoaded = ModList.get().isLoaded("vampirism");
 		originsLoaded = ModList.get().isLoaded("origins");
+		reskillableLoaded = ModList.get().isLoaded("rereskillable");
+		ftbQuestsLoaded = ModList.get().isLoaded("ftbquests");
 
 		if (sereneSeasonsLoaded)
 			LOGGER.debug("Serene Seasons is loaded, enabling compatibility");
 		if (terraFirmaCraftLoaded)
 			LOGGER.debug("TerraFirmaCraft is loaded, enabling compatibility");
+		if (reskillableLoaded) {
+			LOGGER.debug("Rereskillable is loaded, enabling compatibility");
+			TABS_MENU.register("reskillable", ReskillableTab::new);
+		}
+		if (ftbQuestsLoaded) {
+			LOGGER.debug("FTB Quests is loaded, enabling compatibility");
+			TABS_MENU.register("ftb_quests", FtbQuestsTab::new);
+		}
 		if (curiosLoaded) {
 			LOGGER.debug("Curios is loaded, enabling compatibility");
 			forgeBus.register(CuriosEvents.class);
@@ -172,6 +191,7 @@ public class LegendarySurvivalOverhaul
 		event.enqueueWork(() ->
 		{
 			BodyDamageUtilInternal.initMalusConfig();
+			TabsMenuUtil.initializeTabsMenu();
 
 			if (sereneSeasonsLoaded)
 				SereneSeasonsUtil.initAverageTemperatures();
