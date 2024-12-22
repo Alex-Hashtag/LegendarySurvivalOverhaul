@@ -1,4 +1,4 @@
-package sfiomn.legendarysurvivaloverhaul.common.tabs_menu;
+package sfiomn.legendarysurvivaloverhaul.client.tabs_menu;
 
 import majik.rereskillable.client.screen.SkillScreen;
 import net.minecraft.client.Minecraft;

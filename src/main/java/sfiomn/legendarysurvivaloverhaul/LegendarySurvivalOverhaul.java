@@ -21,6 +21,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import sfiomn.legendarysurvivaloverhaul.api.bodydamage.BodyDamageUtil;
 import sfiomn.legendarysurvivaloverhaul.api.health.HealthUtil;
+import sfiomn.legendarysurvivaloverhaul.api.tabs_menu.TabsMenu;
 import sfiomn.legendarysurvivaloverhaul.api.temperature.TemperatureUtil;
 import sfiomn.legendarysurvivaloverhaul.api.thirst.ThirstUtil;
 import sfiomn.legendarysurvivaloverhaul.api.wetness.WetnessUtil;
@@ -30,6 +31,8 @@ import sfiomn.legendarysurvivaloverhaul.client.itemproperties.SeasonalCalendarSe
 import sfiomn.legendarysurvivaloverhaul.client.itemproperties.ThermometerProperty;
 import sfiomn.legendarysurvivaloverhaul.client.screens.SewingTableScreen;
 import sfiomn.legendarysurvivaloverhaul.client.screens.ThermalScreen;
+import sfiomn.legendarysurvivaloverhaul.client.tabs_menu.BodyDamageTab;
+import sfiomn.legendarysurvivaloverhaul.client.tabs_menu.InventoryTab;
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.bodydamage.BodyDamageCapability;
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.food.FoodCapability;
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.health.HealthCapability;
@@ -42,18 +45,16 @@ import sfiomn.legendarysurvivaloverhaul.common.integration.json.JsonIntegrationC
 import sfiomn.legendarysurvivaloverhaul.common.integration.origins.OriginsEvents;
 import sfiomn.legendarysurvivaloverhaul.common.integration.sereneseasons.SereneSeasonsUtil;
 import sfiomn.legendarysurvivaloverhaul.common.integration.vampirism.VampirismEvents;
-import sfiomn.legendarysurvivaloverhaul.common.tabs_menu.FtbQuestsTab;
-import sfiomn.legendarysurvivaloverhaul.common.tabs_menu.ReskillableTab;
+import sfiomn.legendarysurvivaloverhaul.client.tabs_menu.FtbQuestsTab;
+import sfiomn.legendarysurvivaloverhaul.client.tabs_menu.ReskillableTab;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
 import sfiomn.legendarysurvivaloverhaul.network.NetworkHandler;
 import sfiomn.legendarysurvivaloverhaul.registry.*;
-import sfiomn.legendarysurvivaloverhaul.util.TabsMenuUtil;
 import sfiomn.legendarysurvivaloverhaul.util.internal.*;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import static sfiomn.legendarysurvivaloverhaul.registry.TabsMenuRegistry.TABS_MENU;
 
 @SuppressWarnings("unused")
 @Mod(LegendarySurvivalOverhaul.MOD_ID)
@@ -122,7 +123,6 @@ public class LegendarySurvivalOverhaul
 		BlockEntityRegistry.register(modBus);
 		FeatureRegistry.register(modBus);
 		CreativeTabRegistry.register(modBus);
-		TabsMenuRegistry.register(modBus);
 
 		forgeBus.addListener(CommandRegistry::registerCommandsEvent);
 		forgeBus.addListener(this::registerCapabilities);
@@ -149,11 +149,9 @@ public class LegendarySurvivalOverhaul
 			LOGGER.debug("TerraFirmaCraft is loaded, enabling compatibility");
 		if (reskillableLoaded) {
 			LOGGER.debug("Rereskillable is loaded, enabling compatibility");
-			TABS_MENU.register("reskillable", ReskillableTab::new);
 		}
 		if (ftbQuestsLoaded) {
 			LOGGER.debug("FTB Quests is loaded, enabling compatibility");
-			TABS_MENU.register("ftb_quests", FtbQuestsTab::new);
 		}
 		if (curiosLoaded) {
 			LOGGER.debug("Curios is loaded, enabling compatibility");
@@ -191,7 +189,6 @@ public class LegendarySurvivalOverhaul
 		event.enqueueWork(() ->
 		{
 			BodyDamageUtilInternal.initMalusConfig();
-			TabsMenuUtil.initializeTabsMenu();
 
 			if (sereneSeasonsLoaded)
 				SereneSeasonsUtil.initAverageTemperatures();
@@ -235,6 +232,13 @@ public class LegendarySurvivalOverhaul
 		@SubscribeEvent
 		public static void onClientSetup(FMLClientSetupEvent event) {
 			Config.Baked.bakeClient();
+
+			TabsMenu.register(new BodyDamageTab());
+			TabsMenu.register(new InventoryTab());
+			if (LegendarySurvivalOverhaul.ftbQuestsLoaded)
+				TabsMenu.register(new FtbQuestsTab());
+			if (LegendarySurvivalOverhaul.reskillableLoaded)
+				TabsMenu.register(new ReskillableTab());
 
 			MenuScreens.register(ContainerRegistry.COOLER_CONTAINER.get(), ThermalScreen::new);
 			MenuScreens.register(ContainerRegistry.HEATER_CONTAINER.get(), ThermalScreen::new);

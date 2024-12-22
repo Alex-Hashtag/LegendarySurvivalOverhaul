@@ -57,6 +57,12 @@ public class TabsMenu {
         }
     }
 
+    public static void register(TabBase tabBase) {
+        if (tabBase.isEnabled()) {
+            tabBase.initTabOnScreens();
+        }
+    }
+
     public static class ScreenInfo {
         public int width;
         public int height;

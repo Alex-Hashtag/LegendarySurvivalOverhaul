@@ -1,8 +1,9 @@
-package sfiomn.legendarysurvivaloverhaul.client.screens;
+package sfiomn.legendarysurvivaloverhaul.client;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.InteractionHand;
+import sfiomn.legendarysurvivaloverhaul.client.screens.BodyHealthScreen;
 
 public class ClientHooks {
     public static void openBodyHealthScreen(Player player, InteractionHand hand, boolean alreadyConsumed, int healingCharges, float healingValue, int healingTime) {
