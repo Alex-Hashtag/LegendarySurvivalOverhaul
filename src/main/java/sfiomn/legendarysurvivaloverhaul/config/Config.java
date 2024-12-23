@@ -1013,7 +1013,7 @@ public class Config
 			builder.push("tabs-menu");
 			tabsMenuOffsetX = builder
 					.comment(" The X and Y offset of the tabs menu. Set both to 0 for no offset.", " By default, will be rendered above minecraft menus. Set it to 10000 to disable it completely.")
-					.defineInRange("Season Cards Display X Offset", 0, -10000, 10000);
+					.defineInRange("Season Cards Display X Offset", 2, -10000, 10000);
 			tabsMenuOffsetY = builder
 					.defineInRange("Season Cards Display Y Offset", 0, -10000, 10000);
 			builder.pop();

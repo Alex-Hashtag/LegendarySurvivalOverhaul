@@ -8,6 +8,7 @@ import sfiomn.legendarysurvivaloverhaul.client.screens.TabButton;
 import java.util.*;
 
 import static sfiomn.legendarysurvivaloverhaul.api.tabs_menu.TabBase.TAB_HEIGHT;
+import static sfiomn.legendarysurvivaloverhaul.api.tabs_menu.TabBase.TAB_WIDTH;
 
 public class TabsMenu {
     private static final Map<Class<? extends Screen>, ScreenInfo> tabsScreens = new HashMap<>();
@@ -46,11 +47,17 @@ public class TabsMenu {
 
             if (TabsMenu.topScreenPos - TAB_HEIGHT >= 0) {
                 int tabPositionIndex = 0;
+                int remainingWidth = screenInfo.width;
                 for (TabBase tabBase: screenInfo.tabs.values()) {
+                    if (remainingWidth < TAB_WIDTH + 1)
+                        break;
+
                     if (tabBase.isCurrentlyUsed(event.getScreen()))
                         event.addListener(new TabButton(tabBase, true, tabPositionIndex, TabsMenu.leftScreenPos, TabsMenu.topScreenPos, button -> {}));
                     else
                         event.addListener(new TabButton(tabBase, false, tabPositionIndex, TabsMenu.leftScreenPos, TabsMenu.topScreenPos, button -> tabBase.openTargetScreen(event.getScreen().getMinecraft().player)));
+
+                    remainingWidth -= TAB_WIDTH + 1;
                     tabPositionIndex++;
                 }
             }
