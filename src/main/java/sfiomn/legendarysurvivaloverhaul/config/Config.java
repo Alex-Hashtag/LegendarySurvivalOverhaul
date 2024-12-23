@@ -66,6 +66,7 @@ public class Config
 		public final ForgeConfigSpec.BooleanValue vanillaFreezeEnabled;
 		public final ForgeConfigSpec.DoubleValue baseFoodExhaustion;
 		public final ForgeConfigSpec.EnumValue<ItemUtil.CompassInfo> compassInfoMode;
+		public final ForgeConfigSpec.BooleanValue showCoordinateOnMap;
 		public final ForgeConfigSpec.DoubleValue initialHealth;
 
 		// Temperature
@@ -286,6 +287,9 @@ public class Config
 			compassInfoMode = builder
 					.comment(" What information the compass returns when player is using it or in an item frame.")
 					.defineEnum("Compass Info Mode", ItemUtil.CompassInfo.FULL);
+			showCoordinateOnMap = builder
+					.comment(" If enabled, use on a filled map will show destination coordinates.")
+					.define("Show Coordinate On Filled Map", true);
 
 			hideInfoFromDebug = builder
 					.comment(" If enabled, information like position and direction will be hidden from the debug screen (F3).")
@@ -1037,6 +1041,7 @@ public class Config
 		public static boolean vanillaFreezeEnabled;
 		public static double baseFoodExhaustion;
 		public static ItemUtil.CompassInfo compassInfoMode;
+		public static boolean showCoordinateOnMap;
 		public static double initialHealth;
 
 		// Temperature
@@ -1274,6 +1279,7 @@ public class Config
 				vanillaFreezeEnabled = COMMON.vanillaFreezeEnabled.get();
 				baseFoodExhaustion = COMMON.baseFoodExhaustion.get();
 				compassInfoMode = COMMON.compassInfoMode.get();
+				showCoordinateOnMap = COMMON.showCoordinateOnMap.get();
 				initialHealth = COMMON.initialHealth.get();
 
 				temperatureEnabled = COMMON.temperatureEnabled.get();

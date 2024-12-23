@@ -258,5 +258,6 @@
 	"message.legendarysurvivaloverhaul.sereneseasons.season_info": "%sSeason, Day %s/%s",
 	"message.legendarysurvivaloverhaul.sereneseasons.no_season_dimension": "No season in this dimension",
 	"message.legendarysurvivaloverhaul.sereneseasons.no_serene_season_loaded": "Serene Seasons mod not loaded",
-	"message.legendarysurvivaloverhaul.heart_container.additional_health_full": "You have reach your maximum health"
+	"message.legendarysurvivaloverhaul.heart_container.additional_health_full": "You have reach your maximum health",
+	"message.legendarysurvivaloverhaul.filled_map.destination": "Destination at XZ: %s / %s"
 }

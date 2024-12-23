@@ -7,7 +7,9 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.MapItem;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.*;
 import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
@@ -63,6 +65,12 @@ public class ClientForgeEvents {
             String compassLocation = compassLocation(player);
             if (!compassLocation.isEmpty())
                 player.displayClientMessage(Component.literal(compassLocation), true);
+        } else if (Config.Baked.showCoordinateOnMap && event.getItemStack().getItem() == Items.FILLED_MAP) {
+            MapItemSavedData mapData = MapItem.getSavedData(event.getItemStack(), event.getLevel());
+            if (mapData != null)
+                player.displayClientMessage(
+                        Component.translatable("message.legendarysurvivaloverhaul.filled_map.destination",
+                                mapData.centerX, mapData.centerZ), true);
         }
     }
 
