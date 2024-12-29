@@ -364,7 +364,8 @@ public class Config
 					.defineInRange("Player Sprint Modifier", 1.5, -1000, 1000);
 			altitudeModifier = builder
 					.comment(" How much the effects of the player's altitude on temperature are multiplied starting at Y 64.",
-							" Each 64 blocks further from Y 64 will reduce player's temperature by this value.")
+							" Each 64 blocks further from Y 64 will reduce player's temperature by this value.",
+							" It means that for a value of -5, the body temperature of the player is reduced by 5 for each 64 blocks (the calculus is done linearly).")
 					.defineInRange("Altitude Modifier", -5.0, -1000, 1000);
 
 			builder.push("wetness");
@@ -373,7 +374,8 @@ public class Config
 					.define("Wetness Enabled", true);
 
 			wetMultiplier = builder
-					.comment(" How much being wet influences the player's temperature.")
+					.comment(" How much being wet influences the player's temperature.",
+							" It means that for a value of -10, the body temperature of the player is reduced by 10.")
 					.defineInRange("Wetness Modifier", -10.0, -1000, 1000);
 
 			wetnessDecrease = builder
@@ -428,10 +430,12 @@ public class Config
 
 			builder.push("weather");
 			rainTemperatureModifier = builder
-					.comment(" How much of an effect rain has on temperature.")
+					.comment(" How much of an effect rain has on temperature.",
+							" It means that for a value of -2, the body temperature of the player is reduced by 2.")
 					.defineInRange("Rain Temperature Modifier", -2.0, -1000, 1000);
 			snowTemperatureModifier = builder
-					.comment(" How much of an effect snow has on temperature.")
+					.comment(" How much of an effect snow has on temperature.",
+							" It means that for a value of -6, the body temperature of the player is reduced by 6.")
 					.defineInRange("Snow Temperature Modifier", -6.0, -1000, 1000);
 			builder.pop();
 
@@ -455,6 +459,7 @@ public class Config
 					.defineInRange("Biome Time Multiplier", 1.75d, 1.0d, Double.POSITIVE_INFINITY);
 			shadeTimeModifier = builder
 					.comment(" Staying in the shade or during cloudy weather will reduce player's temperature by this amount based on time of the day (maximum effect at noon, following sinusoidal).",
+							" It means that for a value of -6, the body temperature of the player is reduced by 6.",
 							" Only effective in hot biomes and during day time!")
 					.defineInRange("Shade Time Modifier", -6.0, -1000, 1000);
 			builder.pop();
