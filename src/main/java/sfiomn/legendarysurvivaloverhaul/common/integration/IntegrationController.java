@@ -92,6 +92,8 @@ public final class IntegrationController
 			initUpgradeAquatic();
 		if (LegendarySurvivalOverhaul.terraFirmaCraftLoaded)
 			initTerraFirmaCraft();
+		if (mods.isLoaded("legendary_additions"))
+			initLegendaryAdditions();
 	}
 
 	private static void initCreate()
@@ -360,6 +362,8 @@ public final class IntegrationController
 		JsonConfig.registerItemTemperature("beachparty:trunks", 0, 3.0f, 0, 0);
 		JsonConfig.registerItemTemperature("beachparty:bikine", 0, 3.0f, 0, 0);
 		JsonConfig.registerItemTemperature("beachparty:crocs", 0, 0.5f, 0, 0);
+		JsonConfig.registerItemTemperature("beachparty:palm_torch_item", 1, 0.0f, 0, 0);
+		JsonConfig.registerItemTemperature("beachparty:palm_tall_torch", 1, 0.0f, 0, 0);
 	}
 
 	private static void initCreateConfectionery() {
@@ -392,6 +396,8 @@ public final class IntegrationController
 
 	private static void initIceAndFire() {
 		JsonConfig.registerEntityTemperature("iceandfire:hippocampus", 3.0f);
+
+		JsonConfig.registerItemTemperature("iceandfire:dread_torch", -1, 0, 0, 0);
 
 		JsonConfig.registerItemTemperature("iceandfire:armor_silver_metal_helmet", 0, 0.5f, 0, 0);
 		JsonConfig.registerItemTemperature("iceandfire:armor_silver_metal_chestplate", 0, 1.5f, 0, 0);
@@ -601,5 +607,9 @@ public final class IntegrationController
 		JsonConfig.registerBlockFluidTemperature("tfc:charcoal_forge", 6.0f, new JsonPropertyValue("heat_level", "2"));
 		JsonConfig.registerBlockFluidTemperature("tfc:charcoal_forge", 3.0f, new JsonPropertyValue("heat_level", "1"));
 		JsonConfig.registerBlockFluidTemperature("tfc:charcoal_forge", 0.0f, new JsonPropertyValue("heat_level", "0"));
+	}
+
+	private static void initLegendaryAdditions() {
+		JsonConfig.registerItemTemperature("legendaryadditions:tribal_torch", 1.0f, 0, 0, 0);
 	}
 }
