@@ -181,7 +181,6 @@ dependencies {
     implementation(fg.deobf("curse.maven:serene-seasons-291874:5790653"))
     implementation(fg.deobf("curse.maven:glitchcore-955399:5787839"))
     implementation(fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}"))
-    implementation(fg.deobf("curse.maven:quality-equipment-667174:5523943"))
 
     //implementation(fg.deobf("curse.maven:ftblibrary-404465:5925398"))
     //implementation(fg.deobf("curse.maven:ftbteams-404468:5267190"))

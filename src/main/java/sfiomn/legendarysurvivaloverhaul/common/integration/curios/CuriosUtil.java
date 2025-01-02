@@ -1,5 +1,6 @@
 package sfiomn.legendarysurvivaloverhaul.common.integration.curios;
 
+import net.minecraft.client.renderer.PostChain;
 import net.minecraft.core.NonNullList;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.InteractionHand;
@@ -19,6 +20,8 @@ import top.theillusivec4.curios.api.type.capability.ICuriosItemHandler;
 import top.theillusivec4.curios.api.type.inventory.ICurioStacksHandler;
 import top.theillusivec4.curios.api.type.inventory.IDynamicStackHandler;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 
 public class CuriosUtil {
@@ -69,11 +72,21 @@ public class CuriosUtil {
                             }
 
                             if (firstSlot == null) {
-                                CurioUnequipEvent unequipEvent = new CurioUnequipEvent(present, slotContext);
-                                MinecraftForge.EVENT_BUS.post(unequipEvent);
-                                Event.Result result = unequipEvent.getResult();
-                                if (result != Event.Result.DENY && stackHandlerx.extractItem(ix, stack.getMaxStackSize(), true).getCount() == stack.getCount()) {
-                                    firstSlot = new Tuple(stackHandlerx, slotContext);
+                                try {
+                                    Class<?> curioUnequipEventClass = Class.forName("top.theillusivec4.curios.api.event.CurioUnequipEvent");
+                                    Constructor<?> constructor = curioUnequipEventClass.getConstructor(ItemStack.class, SlotContext.class);
+                                    Object event = constructor.newInstance(stack, slotContext);
+
+                                    if (event instanceof Event unequipEvent) {
+                                        MinecraftForge.EVENT_BUS.post(unequipEvent);
+                                        Event.Result result = unequipEvent.getResult();
+                                        if (result != Event.Result.DENY && stackHandlerx.extractItem(ix, stack.getMaxStackSize(), true).getCount() == stack.getCount()) {
+                                            firstSlot = new Tuple<>(stackHandlerx, slotContext);
+                                        }
+                                    }
+                                } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException |
+                                         InvocationTargetException | InstantiationException e) {
+                                    return false;
                                 }
                             }
                         }
