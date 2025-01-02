@@ -42,7 +42,7 @@
 	"item.legendarysurvivaloverhaul.sponge": "Sponge",
 	"tooltip.legendarysurvivaloverhaul.sponge.description": "Prevents you from being wet",
 	"item.legendarysurvivaloverhaul.water_purifier": "Water Purifier",
-	"tooltip.legendarysurvivaloverhaul.water_purifier.description": "Grans thirst immunity",
+	"tooltip.legendarysurvivaloverhaul.water_purifier.description": "Grants thirst immunity",
 
 	"attribute.legendarysurvivaloverhaul.heating_temperature": "Temperature",
 	"attribute.legendarysurvivaloverhaul.cooling_temperature": "Temperature",
