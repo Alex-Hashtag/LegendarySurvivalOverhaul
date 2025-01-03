@@ -151,11 +151,11 @@ public class JsonConfigRegistration
 		JsonConfig.registerFuelItems("minecraft:coal", ThermalTypeEnum.HEATING, 30);
 		JsonConfig.registerFuelItems("minecraft:charcoal", ThermalTypeEnum.HEATING, 30);
 		JsonConfig.registerFuelItems("minecraft:coal_block", ThermalTypeEnum.HEATING, 270);
-		JsonConfig.registerFuelItems("minecraft:ice", ThermalTypeEnum.COOLING, 30);
-		JsonConfig.registerFuelItems("minecraft:snowball", ThermalTypeEnum.COOLING, 30);
+		JsonConfig.registerFuelItems("minecraft:ice", ThermalTypeEnum.COOLING, 20);
+		JsonConfig.registerFuelItems("minecraft:snowball", ThermalTypeEnum.COOLING, 20);
 		JsonConfig.registerFuelItems("minecraft:snow_block", ThermalTypeEnum.COOLING, 30);
-		JsonConfig.registerFuelItems("minecraft:blue_ice", ThermalTypeEnum.COOLING, 30);
-		JsonConfig.registerFuelItems("minecraft:packed_ice", ThermalTypeEnum.COOLING, 30);
+		JsonConfig.registerFuelItems("minecraft:blue_ice", ThermalTypeEnum.COOLING, 1620);
+		JsonConfig.registerFuelItems("minecraft:packed_ice", ThermalTypeEnum.COOLING, 180);
 
 		JsonConfig.registerBlockFluidThirst("minecraft:rain", 1, 0);
 		JsonConfig.registerBlockFluidThirst("minecraft:flowing_water", 3, 0, new JsonEffectParameter[]{new JsonEffectParameter(LegendarySurvivalOverhaul.MOD_ID + ":thirst", 0.75f, 300, 0)});

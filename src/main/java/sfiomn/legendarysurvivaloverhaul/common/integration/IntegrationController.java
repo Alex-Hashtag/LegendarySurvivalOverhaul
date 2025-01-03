@@ -399,6 +399,9 @@ public final class IntegrationController
 
 		JsonConfig.registerItemTemperature("iceandfire:dread_torch", -1, 0, 0, 0);
 
+		JsonConfig.registerFuelItems("iceandfire:dragon_ice", ThermalTypeEnum.COOLING, 20);
+		JsonConfig.registerFuelItems("iceandfire:dread_shard", ThermalTypeEnum.COOLING, 180);
+
 		JsonConfig.registerItemTemperature("iceandfire:armor_silver_metal_helmet", 0, 0.5f, 0, 0);
 		JsonConfig.registerItemTemperature("iceandfire:armor_silver_metal_chestplate", 0, 1.5f, 0, 0);
 		JsonConfig.registerItemTemperature("iceandfire:armor_silver_metal_leggings", 0, 1.0f, 0, 0);

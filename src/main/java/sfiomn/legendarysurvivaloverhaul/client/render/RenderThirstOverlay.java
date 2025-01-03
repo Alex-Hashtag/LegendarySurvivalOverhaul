@@ -24,21 +24,17 @@ public class RenderThirstOverlay {
     private static int updateTimer = 0;
 
     public static void render(Player player) {
-        if (focusShader == null)
-            return;
-
-        if (player.isSpectator() || player.isCreative()) {
+        if (focusShader != null && (player.isSpectator() || player.isCreative() || shaderIntensity == 0)) {
             focusShader.stopRender();
-        } else if (!(Minecraft.getInstance().screen instanceof DeathScreen)) {
+            focusShader = null;
+        } else if (shaderIntensity > 0 && !(Minecraft.getInstance().screen instanceof DeathScreen)) {
+            if (focusShader == null)
+                focusShader = new FocusShader();
             focusShader.render(shaderIntensity);
         }
     }
 
     public static void updateThirstEffect(@Nullable Player player) {
-        if (focusShader == null) {
-            focusShader = new FocusShader();
-        }
-
         float targetShaderIntensity = DEFAULT_SHADER_INTENSITY;
         if (player != null && player.isAlive()) {
 

@@ -21,8 +21,8 @@ public class FocusShader {
     public FocusShader() {}
 
     public void render(float intensity) {
-        PostChain currentEffect = Minecraft.getInstance().gameRenderer.currentEffect();
         if (intensity > 0) {
+            PostChain currentEffect = Minecraft.getInstance().gameRenderer.currentEffect();
             if (currentEffect == null ||
                     !currentEffect.getName().equals("minecraft:shaders/post/blobs2.json")) {
                 try {
@@ -32,8 +32,6 @@ public class FocusShader {
                 }
             }
             updateIntensity(intensity);
-        } else if (intensity == 0) {
-            stopRender();
         }
     }
 
