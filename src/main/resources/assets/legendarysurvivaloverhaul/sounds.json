@@ -79,6 +79,16 @@
 			}
 		]
 	},
+	"self_watering" : {
+		"category": "neutral",
+		"subtitle": "self_watering",
+		"sounds": [
+			{
+				"name": "legendarysurvivaloverhaul:self_watering",
+				"stream": true
+			}
+		]
+	},
 	"headshot": {
 		"category": "neutral",
 		"subtitle": "headhot",

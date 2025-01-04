@@ -22,6 +22,8 @@ public class SoundRegistry
 	public static final RegistryObject<SoundEvent> SEWING_TABLE = registerSoundEvent("sewing_table");
 	public static final RegistryObject<SoundEvent> COOLER_BLOCK = registerSoundEvent("cooler_block");
 
+	public static final RegistryObject<SoundEvent> SELF_WATERING = registerSoundEvent("self_watering");
+
 	public static final RegistryObject<SoundEvent> HEADSHOT = registerSoundEvent("headshot");
 	public static final RegistryObject<SoundEvent> HEAL_BODY_PART = registerSoundEvent("heal_body_part");
 	public static final RegistryObject<SoundEvent> HARD_FALLING_HURT = registerSoundEvent("hard_falling_hurt");

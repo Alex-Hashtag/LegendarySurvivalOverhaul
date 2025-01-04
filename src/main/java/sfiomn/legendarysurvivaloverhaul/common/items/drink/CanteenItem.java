@@ -27,6 +27,7 @@ import sfiomn.legendarysurvivaloverhaul.api.thirst.HydrationEnum;
 import sfiomn.legendarysurvivaloverhaul.api.thirst.ThirstUtil;
 import sfiomn.legendarysurvivaloverhaul.api.wetness.WetnessUtil;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
+import sfiomn.legendarysurvivaloverhaul.registry.SoundRegistry;
 import sfiomn.legendarysurvivaloverhaul.util.CapabilityUtil;
 
 public class CanteenItem extends DrinkItem {
@@ -85,7 +86,7 @@ public class CanteenItem extends DrinkItem {
         }
 
         if (player.isCrouching() && player.getViewXRot(1.0f) < -60.0f && canDrink(itemstack) && Config.Baked.selfWateringCanteenEnabled) {
-            player.playSound(SoundEvents.BOTTLE_EMPTY, 1.0f, 1.0f);
+            player.playSound(SoundRegistry.SELF_WATERING.get(), 1.0f, 1.0f);
             if (player.isOnFire())
                 player.setSecondsOnFire(0);
             if (Config.Baked.selfWateringCanteenWetnessIncrease > 0)
