@@ -92,6 +92,7 @@ public class LegendarySurvivalOverhaul
 
 	public static boolean reskillableLoaded = false;
 	public static boolean ftbQuestsLoaded = false;
+	public static boolean quarkOdditiesLoaded = false;
 	
 	public static Path configPath = FMLPaths.CONFIGDIR.get();
 	public static Path modConfigPath = Paths.get(configPath.toAbsolutePath().toString(), "legendarysurvivaloverhaul");
@@ -142,29 +143,38 @@ public class LegendarySurvivalOverhaul
 		originsLoaded = ModList.get().isLoaded("origins");
 		reskillableLoaded = ModList.get().isLoaded("rereskillable");
 		ftbQuestsLoaded = ModList.get().isLoaded("ftbquests");
+		quarkOdditiesLoaded = ModList.get().isLoaded("quarkoddities");
 
 		if (sereneSeasonsLoaded)
 			LOGGER.debug("Serene Seasons is loaded, enabling compatibility");
+
 		if (terraFirmaCraftLoaded)
 			LOGGER.debug("TerraFirmaCraft is loaded, enabling compatibility");
-		if (reskillableLoaded) {
+
+		if (reskillableLoaded)
 			LOGGER.debug("Rereskillable is loaded, enabling compatibility");
-		}
-		if (ftbQuestsLoaded) {
+
+		if (ftbQuestsLoaded)
 			LOGGER.debug("FTB Quests is loaded, enabling compatibility");
-		}
+
 		if (curiosLoaded) {
 			LOGGER.debug("Curios is loaded, enabling compatibility");
 			forgeBus.register(CuriosEvents.class);
 		}
+
 		if (vampirismLoaded) {
 			LOGGER.debug("Vampirism is loaded, enabling compatibility");
 			forgeBus.register(VampirismEvents.class);
 		}
+
 		if (originsLoaded) {
 			LOGGER.debug("Origins is loaded, enabling compatibility");
 			forgeBus.register(OriginsEvents.class);
 		}
+
+		if (quarkOdditiesLoaded)
+			LOGGER.debug("Quark Oddities is loaded, enabling compatibility");
+
 		if (surviveLoaded)
 			LOGGER.debug("Survive is loaded, I hope you know what you're doing");
 

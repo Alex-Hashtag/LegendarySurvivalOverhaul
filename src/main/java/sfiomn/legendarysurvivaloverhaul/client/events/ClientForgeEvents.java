@@ -74,7 +74,7 @@ public class ClientForgeEvents {
         }
     }
 
-    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    @SubscribeEvent(priority = EventPriority.HIGH)
     public static void onApplyBonemeal(BonemealEvent event)
     {
         Block plant = event.getBlock().getBlock();

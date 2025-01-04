@@ -7,6 +7,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
+import org.violetmoon.quark.addons.oddities.client.screen.BackpackInventoryScreen;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.tabs_menu.TabBase;
 import sfiomn.legendarysurvivaloverhaul.api.tabs_menu.TabsMenu;
@@ -61,5 +62,8 @@ public class InventoryTab extends TabBase {
 
         if (LegendarySurvivalOverhaul.curiosLoaded)
             TabsMenu.addTabToScreen(this, CuriosScreenV2.class, 176, 166, 10);
+
+        if (LegendarySurvivalOverhaul.quarkOdditiesLoaded)
+            TabsMenu.addTabToScreen(this, BackpackInventoryScreen.class, 176, 224, 10);
     }
 }

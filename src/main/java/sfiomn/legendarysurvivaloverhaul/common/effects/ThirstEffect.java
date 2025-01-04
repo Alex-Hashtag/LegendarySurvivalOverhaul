@@ -23,7 +23,7 @@ public class ThirstEffect extends MobEffect
 		{
 			ThirstCapability thirstCapability = CapabilityUtil.getThirstCapability((Player) entity);
 
-			// Twice strength of Hunger effect
+			// By default, twice strength of Hunger effect (0.005F)
 			thirstCapability.addThirstExhaustion((float) (Config.Baked.thirstEffectModifier * amplifier + 1));
 		}
 	}

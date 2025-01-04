@@ -65,6 +65,7 @@ public class Config
 		public final ForgeConfigSpec.BooleanValue naturalRegenerationEnabled;
 		public final ForgeConfigSpec.BooleanValue vanillaFreezeEnabled;
 		public final ForgeConfigSpec.DoubleValue baseFoodExhaustion;
+		public final ForgeConfigSpec.DoubleValue sprintingFoodExhaustion;
 		public final ForgeConfigSpec.EnumValue<ItemUtil.CompassInfo> compassInfoMode;
 		public final ForgeConfigSpec.BooleanValue showCoordinateOnMap;
 		public final ForgeConfigSpec.DoubleValue initialHealth;
@@ -179,6 +180,8 @@ public class Config
 		public final ForgeConfigSpec.DoubleValue onBlockBreakThirstExhaustion;
 		public final ForgeConfigSpec.DoubleValue onAttackThirstExhaustion;
 		public final ForgeConfigSpec.IntValue canteenCapacity;
+		public final ForgeConfigSpec.BooleanValue selfWateringCanteenEnabled;
+		public final ForgeConfigSpec.IntValue selfWateringCanteenWetnessIncrease;
 		public final ForgeConfigSpec.IntValue largeCanteenCapacity;
 		public final ForgeConfigSpec.BooleanValue allowOverridePurifiedWater;
 		public final ForgeConfigSpec.IntValue hydrationLava;
@@ -208,6 +211,8 @@ public class Config
 		public final ForgeConfigSpec.DoubleValue bodyDamageMultiplier;
 		public final ForgeConfigSpec.DoubleValue bodyHealthRatioRecoveredFromSleep;
 		public final ForgeConfigSpec.DoubleValue healthRatioRecoveredFromSleep;
+		public final ForgeConfigSpec.DoubleValue bodyHealingFoodExhaustion;
+		public final ForgeConfigSpec.IntValue minFoodOnBodyHealing;
 
 		public final ForgeConfigSpec.ConfigValue<String> bodyPartHealthMode;
 		public final ForgeConfigSpec.DoubleValue headPartHealth;
@@ -309,7 +314,10 @@ public class Config
 			builder.comment(" Options related to the player food data").push("food");
 			baseFoodExhaustion = builder
 					.comment(" Food exhausted every 10 ticks. Increase the base minecraft food exhaustion.")
-					.defineInRange("Base Food Exhaustion", 0.03d, 0, 1000.0D);
+					.defineInRange("Base Food Exhaustion", 0.05d, 0, 1000.0D);
+			sprintingFoodExhaustion = builder
+					.comment(" Food exhausted every 10 ticks while sprinting in addition to the sprinting minecraft food exhaustion.")
+					.defineInRange("Sprinting Food Exhaustion", 0.1d, 0, 1000.0D);
 			builder.pop();
 
 			builder.comment(" Options related to the temperature system").push("temperature");
@@ -379,13 +387,13 @@ public class Config
 					.defineInRange("Wetness Modifier", -10.0, -1000, 1000);
 
 			wetnessDecrease = builder
-					.comment(" How much the wetness decrease when out of water, in case of dynamic wetness.")
+					.comment(" How much the wetness decrease when out of water.")
 					.defineInRange("Wetness Decrease", -5, -1000, 0);
 			wetnessRainIncrease = builder
-					.comment(" How much the wetness increase when under rain, in case of dynamic wetness.")
+					.comment(" How much the wetness increase when under rain.")
 					.defineInRange("Wetness Under Rain Increase", 5, 0, 1000);
 			wetnessFluidIncrease = builder
-					.comment(" How much the wetness increase when the player is in a fluid, scale by the amount of fluid in the block, in case of dynamic wetness.",
+					.comment(" How much the wetness increase when the player is in a fluid, scale by the amount of fluid in the block.",
 							" The defined value is for a full block of fluid, and goes up to 2 times this value when fully immerge.")
 					.defineInRange("Wetness In Fluid Increase", 10, 0, 1000);
 			builder.pop();
@@ -630,6 +638,14 @@ public class Config
 							" The player will suffer Thirst Effect from dirty water for example.")
 					.defineInRange("Thirst Effect Modifier", 0.25d, 0, 1000);
 			builder.push("canteen");
+			selfWateringCanteenEnabled = builder
+					.comment(" If enabled, the player can water himself by using the canteen while crouching.",
+							" This will increase the player wetness and remove fire.")
+					.define("Self Watering Canteen Enabled", true);
+			selfWateringCanteenWetnessIncrease = builder
+					.comment(" If Self Watering Canteen and Wetness are enabled, defines how much wetness is added to the player.",
+							" Set this value to 0 to have no wetness added. By default, the maximum wetness is 400.")
+					.defineInRange("Self Watering Canteen Wetness", 400, 0, 10000);
 			canteenCapacity = builder
 					.comment(" Capacity of the canteen used to store water.")
 					.defineInRange("Canteen Capacity", 10, 0, 1000);
@@ -755,6 +771,16 @@ public class Config
 			healthRatioRecoveredFromSleep = builder
 					.comment(" How much health ratio are recovered from bed sleeping.")
 					.defineInRange("Health Ratio Recovered", 1.0d, 0.0d, 1.0d);
+
+			bodyHealingFoodExhaustion = builder
+					.comment(" How much food is exhausted when a limb regenerates based on the amount of health regenerated.",
+							" Each 1 health regenerated, the food is exhausted by this value.")
+					.defineInRange("Body Healing Food Exhaustion", 0.1d, 0, 1000.0D);
+
+			minFoodOnBodyHealing = builder
+					.comment(" The hunger bar won't drop below this value while body is healing.",
+							" Each hunger icon has a value of 2 in the hunger bar.")
+					.defineInRange("Minimum Food On Body Healing", 0, 0, 1000);
 
 			builder.push("healing-items");
 			healingHerbsUseTime = builder
@@ -1045,6 +1071,7 @@ public class Config
 		public static boolean naturalRegenerationEnabled;
 		public static boolean vanillaFreezeEnabled;
 		public static double baseFoodExhaustion;
+		public static double sprintingFoodExhaustion;
 		public static ItemUtil.CompassInfo compassInfoMode;
 		public static boolean showCoordinateOnMap;
 		public static double initialHealth;
@@ -1159,6 +1186,8 @@ public class Config
 		public static double onJumpThirstExhaustion;
 		public static double onBlockBreakThirstExhaustion;
 		public static double onAttackThirstExhaustion;
+		public static boolean selfWateringCanteenEnabled;
+		public static int selfWateringCanteenWetnessIncrease;
 		public static int canteenCapacity;
 		public static int largeCanteenCapacity;
 		public static boolean allowOverridePurifiedWater;
@@ -1187,6 +1216,8 @@ public class Config
 		public static double bodyDamageMultiplier;
 		public static double bodyHealthRatioRecoveredFromSleep;
 		public static double healthRatioRecoveredFromSleep;
+		public static double bodyHealingFoodExhaustion;
+		public static int minFoodOnBodyHealing;
 
 		public static String bodyPartHealthMode;
 		public static double headPartHealth;
@@ -1283,6 +1314,7 @@ public class Config
 				routinePacketSync = COMMON.routinePacketSync.get();
 				vanillaFreezeEnabled = COMMON.vanillaFreezeEnabled.get();
 				baseFoodExhaustion = COMMON.baseFoodExhaustion.get();
+				sprintingFoodExhaustion = COMMON.sprintingFoodExhaustion.get();
 				compassInfoMode = COMMON.compassInfoMode.get();
 				showCoordinateOnMap = COMMON.showCoordinateOnMap.get();
 				initialHealth = COMMON.initialHealth.get();
@@ -1397,6 +1429,8 @@ public class Config
 				onBlockBreakThirstExhaustion = COMMON.onBlockBreakThirstExhaustion.get();
 				onAttackThirstExhaustion = COMMON.onAttackThirstExhaustion.get();
 
+				selfWateringCanteenEnabled = COMMON.selfWateringCanteenEnabled.get();
+				selfWateringCanteenWetnessIncrease = COMMON.selfWateringCanteenWetnessIncrease.get();
 				canteenCapacity = COMMON.canteenCapacity.get();
 				largeCanteenCapacity = COMMON.largeCanteenCapacity.get();
 				allowOverridePurifiedWater = COMMON.allowOverridePurifiedWater.get();
@@ -1426,6 +1460,8 @@ public class Config
 				bodyDamageMultiplier = COMMON.bodyDamageMultiplier.get();
 				bodyHealthRatioRecoveredFromSleep = COMMON.bodyHealthRatioRecoveredFromSleep.get();
 				healthRatioRecoveredFromSleep = COMMON.healthRatioRecoveredFromSleep.get();
+				bodyHealingFoodExhaustion = COMMON.bodyHealingFoodExhaustion.get();
+				minFoodOnBodyHealing = COMMON.minFoodOnBodyHealing.get();
 
 				bodyPartHealthMode = COMMON.bodyPartHealthMode.get();
 				headPartHealth = COMMON.headPartHealth.get();

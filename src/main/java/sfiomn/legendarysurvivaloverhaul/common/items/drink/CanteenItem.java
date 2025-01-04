@@ -25,6 +25,7 @@ import sfiomn.legendarysurvivaloverhaul.api.config.json.thirst.JsonBlockFluidThi
 import sfiomn.legendarysurvivaloverhaul.api.config.json.thirst.JsonConsumableThirst;
 import sfiomn.legendarysurvivaloverhaul.api.thirst.HydrationEnum;
 import sfiomn.legendarysurvivaloverhaul.api.thirst.ThirstUtil;
+import sfiomn.legendarysurvivaloverhaul.api.wetness.WetnessUtil;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
 import sfiomn.legendarysurvivaloverhaul.util.CapabilityUtil;
 
@@ -82,6 +83,17 @@ public class CanteenItem extends DrinkItem {
             this.fill(itemstack);
             return InteractionResultHolder.success(itemstack);
         }
+
+        if (player.isCrouching() && player.getViewXRot(1.0f) < -60.0f && canDrink(itemstack) && Config.Baked.selfWateringCanteenEnabled) {
+            player.playSound(SoundEvents.BOTTLE_EMPTY, 1.0f, 1.0f);
+            if (player.isOnFire())
+                player.setSecondsOnFire(0);
+            if (Config.Baked.selfWateringCanteenWetnessIncrease > 0)
+                WetnessUtil.addWetness(player, Config.Baked.selfWateringCanteenWetnessIncrease);
+            shrinkCapacity(itemstack);
+            return InteractionResultHolder.success(itemstack);
+        }
+
         if (canDrink(itemstack) && !CapabilityUtil.getThirstCapability(player).isHydrationLevelAtMax()) {
             player.startUsingItem(hand);
             return InteractionResultHolder.success(itemstack);
@@ -104,13 +116,17 @@ public class CanteenItem extends DrinkItem {
             }
 
             runSecondaryEffect(player, stack);
-
-            int newCapacity = ThirstUtil.getCapacityTag(stack) - 1;
-            ThirstUtil.setCapacityTag(stack, newCapacity);
-            if (newCapacity == 0)
-                ThirstUtil.removeHydrationEnumTag(stack);
+            shrinkCapacity(stack);
         }
         return stack;
+    }
+
+    private void shrinkCapacity(ItemStack stack) {
+        int newCapacity = ThirstUtil.getCapacityTag(stack) - 1;
+        ThirstUtil.setCapacityTag(stack, newCapacity);
+        if (newCapacity == 0)
+            ThirstUtil.removeHydrationEnumTag(stack);
+
     }
 
     @Override

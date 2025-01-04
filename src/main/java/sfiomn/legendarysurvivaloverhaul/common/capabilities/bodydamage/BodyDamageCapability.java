@@ -154,7 +154,11 @@ public class BodyDamageCapability implements IBodyDamageCapability
 				BodyPart bodyPart = bodyPartPair.getValue();
 				if (bodyPart.getRemainingHealingTicks() > 0) {
 					int healingTick = Math.min(20, bodyPart.getRemainingHealingTicks());
-					this.heal(bodyPartPair.getKey(), healingTick * bodyPart.getHealingPerTicks());
+					float healingValue = healingTick * bodyPart.getHealingPerTicks();
+					this.heal(bodyPartPair.getKey(), healingValue);
+					if (Config.Baked.bodyHealingFoodExhaustion > 0 && player.getFoodData().getFoodLevel() > Config.Baked.minFoodOnBodyHealing) {
+						player.getFoodData().addExhaustion((float) (healingValue * Config.Baked.bodyHealingFoodExhaustion));
+					}
 					if (bodyPart.isMaxHealth())
 						bodyPart.reduceRemainingHealingTicks(bodyPart.getRemainingHealingTicks());
 					else
@@ -175,7 +179,6 @@ public class BodyDamageCapability implements IBodyDamageCapability
 
 		if (player.hasEffect(MobEffectRegistry.HEADACHE.get())) {
 			if (this.headacheTimer-- < 0) {
-				player.level().playSound(null ,player, SoundRegistry.HEADACHE_HEARTBEAT.get(), SoundSource.PLAYERS, 1.f, 1.0f);
 				applyHeadache(player, Objects.requireNonNull(player.getEffect(MobEffectRegistry.HEADACHE.get())).getAmplifier());
 			}
 		} else {
@@ -184,6 +187,8 @@ public class BodyDamageCapability implements IBodyDamageCapability
 	}
 
 	private void applyHeadache(Player player, int amplifier) {
+		player.level().playLocalSound(player.blockPosition(), SoundRegistry.HEADACHE_HEARTBEAT.get(), SoundSource.PLAYERS, 1.f, 1.0f, false);
+
 		int blindnessTime = (40 + player.getRandom().nextInt(100)) * Math.min(amplifier + 1, 4);
 		this.headacheTimer = blindnessTime + Math.round((float) (200 + player.getRandom().nextInt(400)) / (float) Math.min(amplifier + 1, 4));
 		player.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, blindnessTime, 0, false, false, true));

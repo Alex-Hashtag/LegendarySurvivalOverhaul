@@ -9,7 +9,7 @@ import sfiomn.legendarysurvivaloverhaul.util.CapabilityUtil;
 public class WetnessUtilInternal implements IWetnessUtil {
     @Override
     public void addWetness(Player player, int wetness) {
-        if(!Config.Baked.wetnessEnabled)
+        if(!isWetnessActive(player))
             return;
 
         WetnessCapability cap = CapabilityUtil.getWetnessCapability(player);
