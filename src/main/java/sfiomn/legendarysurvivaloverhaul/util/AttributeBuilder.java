@@ -25,7 +25,7 @@ public class AttributeBuilder {
     public void addModifier(Player player, UUID uuid, double value) {
         AttributeInstance instance = player.getAttribute(attribute);
         if (instance != null) {
-            instance.removePermanentModifier(uuid);
+            instance.removeModifier(uuid);
             instance.addPermanentModifier(new AttributeModifier(uuid, descriptionId, value, AttributeModifier.Operation.ADDITION));
         }
     }

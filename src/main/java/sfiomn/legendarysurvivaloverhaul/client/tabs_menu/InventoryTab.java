@@ -60,6 +60,9 @@ public class InventoryTab extends TabBase {
         if (LegendarySurvivalOverhaul.reskillableLoaded)
             TabsMenu.addTabToScreen(this, SkillScreen.class, 176, 166, 10);
 
+        if (LegendarySurvivalOverhaul.reskillableReimaginedLoaded)
+            TabsMenu.addTabToScreen(this, net.bandit.reskillable.client.screen.SkillScreen.class, 176, 166, 10);
+
         if (LegendarySurvivalOverhaul.curiosLoaded)
             TabsMenu.addTabToScreen(this, CuriosScreenV2.class, 176, 166, 10);
 

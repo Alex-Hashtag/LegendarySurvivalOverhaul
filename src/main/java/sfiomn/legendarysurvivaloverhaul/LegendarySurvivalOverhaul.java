@@ -31,8 +31,7 @@ import sfiomn.legendarysurvivaloverhaul.client.itemproperties.SeasonalCalendarSe
 import sfiomn.legendarysurvivaloverhaul.client.itemproperties.ThermometerProperty;
 import sfiomn.legendarysurvivaloverhaul.client.screens.SewingTableScreen;
 import sfiomn.legendarysurvivaloverhaul.client.screens.ThermalScreen;
-import sfiomn.legendarysurvivaloverhaul.client.tabs_menu.BodyDamageTab;
-import sfiomn.legendarysurvivaloverhaul.client.tabs_menu.InventoryTab;
+import sfiomn.legendarysurvivaloverhaul.client.tabs_menu.*;
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.bodydamage.BodyDamageCapability;
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.food.FoodCapability;
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.health.HealthCapability;
@@ -45,8 +44,6 @@ import sfiomn.legendarysurvivaloverhaul.common.integration.json.JsonIntegrationC
 import sfiomn.legendarysurvivaloverhaul.common.integration.origins.OriginsEvents;
 import sfiomn.legendarysurvivaloverhaul.common.integration.sereneseasons.SereneSeasonsUtil;
 import sfiomn.legendarysurvivaloverhaul.common.integration.vampirism.VampirismEvents;
-import sfiomn.legendarysurvivaloverhaul.client.tabs_menu.FtbQuestsTab;
-import sfiomn.legendarysurvivaloverhaul.client.tabs_menu.ReskillableTab;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
 import sfiomn.legendarysurvivaloverhaul.network.NetworkHandler;
 import sfiomn.legendarysurvivaloverhaul.registry.*;
@@ -91,6 +88,7 @@ public class LegendarySurvivalOverhaul
 	public static boolean originsLoaded = false;
 
 	public static boolean reskillableLoaded = false;
+	public static boolean reskillableReimaginedLoaded = false;
 	public static boolean ftbQuestsLoaded = false;
 	public static boolean quarkOdditiesLoaded = false;
 	
@@ -142,6 +140,7 @@ public class LegendarySurvivalOverhaul
 		vampirismLoaded = ModList.get().isLoaded("vampirism");
 		originsLoaded = ModList.get().isLoaded("origins");
 		reskillableLoaded = ModList.get().isLoaded("rereskillable");
+		reskillableReimaginedLoaded = ModList.get().isLoaded("reskillable");
 		ftbQuestsLoaded = ModList.get().isLoaded("ftbquests");
 		quarkOdditiesLoaded = ModList.get().isLoaded("quarkoddities");
 
@@ -153,6 +152,9 @@ public class LegendarySurvivalOverhaul
 
 		if (reskillableLoaded)
 			LOGGER.debug("Rereskillable is loaded, enabling compatibility");
+
+		if (reskillableReimaginedLoaded)
+			LOGGER.debug("Reskillable Reimagined is loaded, enabling compatibility");
 
 		if (ftbQuestsLoaded)
 			LOGGER.debug("FTB Quests is loaded, enabling compatibility");
@@ -249,6 +251,8 @@ public class LegendarySurvivalOverhaul
 				TabsMenu.register(new FtbQuestsTab());
 			if (LegendarySurvivalOverhaul.reskillableLoaded)
 				TabsMenu.register(new ReskillableTab());
+			if (LegendarySurvivalOverhaul.reskillableReimaginedLoaded)
+				TabsMenu.register(new ReskillableReimaginedTab());
 
 			MenuScreens.register(ContainerRegistry.COOLER_CONTAINER.get(), ThermalScreen::new);
 			MenuScreens.register(ContainerRegistry.HEATER_CONTAINER.get(), ThermalScreen::new);

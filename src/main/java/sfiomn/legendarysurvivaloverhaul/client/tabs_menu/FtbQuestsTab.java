@@ -62,6 +62,9 @@ public class FtbQuestsTab extends TabBase {
         if (LegendarySurvivalOverhaul.reskillableLoaded)
             TabsMenu.addTabToScreen(this, SkillScreen.class, 176, 166, 70);
 
+        if (LegendarySurvivalOverhaul.reskillableReimaginedLoaded)
+            TabsMenu.addTabToScreen(this, net.bandit.reskillable.client.screen.SkillScreen.class, 176, 166, 70);
+
         if (LegendarySurvivalOverhaul.quarkOdditiesLoaded)
             TabsMenu.addTabToScreen(this, BackpackInventoryScreen.class, 176, 224, 70);
     }

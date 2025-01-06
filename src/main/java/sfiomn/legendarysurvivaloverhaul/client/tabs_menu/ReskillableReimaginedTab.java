@@ -1,6 +1,6 @@
 package sfiomn.legendarysurvivaloverhaul.client.tabs_menu;
 
-import majik.rereskillable.client.screen.SkillScreen;
+import net.bandit.reskillable.client.screen.SkillScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
@@ -15,24 +15,24 @@ import sfiomn.legendarysurvivaloverhaul.client.screens.BodyHealthScreen;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
 import top.theillusivec4.curios.client.gui.CuriosScreenV2;
 
-public class ReskillableTab extends TabBase {
+public class ReskillableReimaginedTab extends TabBase {
     private ResourceLocation TAB_ICONS = new ResourceLocation(LegendarySurvivalOverhaul.MOD_ID, "textures/gui/tab_menu_buttons.png");
     private final int TAB_ICON_TEX_X = 27;
     private final int TAB_ICON_TEX_Y = 0;
 
-    public ReskillableTab() {
+    public ReskillableReimaginedTab() {
         super();
     }
 
     @Override
     public void openTargetScreen(Player player) {
-        if (LegendarySurvivalOverhaul.reskillableLoaded)
+        if (LegendarySurvivalOverhaul.reskillableReimaginedLoaded)
             Minecraft.getInstance().setScreen(new SkillScreen());
     }
 
     @Override
     public boolean isEnabled() {
-        return Config.Baked.reskillableTabEnabled && LegendarySurvivalOverhaul.reskillableLoaded;
+        return Config.Baked.reskillableTabEnabled && LegendarySurvivalOverhaul.reskillableReimaginedLoaded;
     }
 
     @Override
@@ -46,7 +46,7 @@ public class ReskillableTab extends TabBase {
 
     @Override
     public boolean isCurrentlyUsed(Screen currentScreen) {
-        return LegendarySurvivalOverhaul.reskillableLoaded && currentScreen instanceof SkillScreen;
+        return LegendarySurvivalOverhaul.reskillableReimaginedLoaded && currentScreen instanceof SkillScreen;
     }
 
     @Override
@@ -60,10 +60,10 @@ public class ReskillableTab extends TabBase {
             TabsMenu.addTabToScreen(this, BodyHealthScreen.class, 176, 183, 30);
 
         if (LegendarySurvivalOverhaul.reskillableLoaded)
-            TabsMenu.addTabToScreen(this, SkillScreen.class, 176, 166, 30);
+            TabsMenu.addTabToScreen(this, majik.rereskillable.client.screen.SkillScreen.class, 176, 166, 30);
 
         if (LegendarySurvivalOverhaul.reskillableReimaginedLoaded)
-            TabsMenu.addTabToScreen(this, net.bandit.reskillable.client.screen.SkillScreen.class, 176, 166, 30);
+            TabsMenu.addTabToScreen(this, SkillScreen.class, 176, 166, 30);
 
         if (LegendarySurvivalOverhaul.quarkOdditiesLoaded)
             TabsMenu.addTabToScreen(this, BackpackInventoryScreen.class, 176, 224, 30);

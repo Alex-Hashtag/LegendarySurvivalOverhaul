@@ -21,8 +21,8 @@ import sfiomn.legendarysurvivaloverhaul.util.CapabilityUtil;
 
 import java.util.List;
 
-public class NetherChalice extends WearableCurioItem {
-    public NetherChalice(Properties pProperties) {
+public class NetherChaliceItem extends WearableCurioItem {
+    public NetherChaliceItem(Properties pProperties) {
         super(pProperties);
     }
 

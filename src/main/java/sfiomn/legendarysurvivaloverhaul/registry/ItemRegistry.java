@@ -26,7 +26,7 @@ public class ItemRegistry {
 	public static final RegistryObject<Item> THERMOMETER = ITEMS.register("thermometer", () -> new ThermometerItem(new Item.Properties().stacksTo(1)));
 	public static final RegistryObject<Item> SEASONAL_CALENDAR = ITEMS.register("seasonal_calendar", () -> new SeasonalCalendarItem(new Item.Properties()));
 
-	public static final RegistryObject<Item> NETHER_CHALICE = ITEMS.register("nether_chalice", () -> new NetherChalice(new Item.Properties().stacksTo(1).rarity(Rarity.EPIC)));
+	public static final RegistryObject<Item> NETHER_CHALICE = ITEMS.register("nether_chalice", () -> new NetherChaliceItem(new Item.Properties().stacksTo(1).rarity(Rarity.EPIC)));
 	public static final RegistryObject<Item> SPONGE = ITEMS.register("sponge", () -> new WearableCurioItem(new Item.Properties().stacksTo(1).rarity(Rarity.RARE)) {
 
 		@Override
