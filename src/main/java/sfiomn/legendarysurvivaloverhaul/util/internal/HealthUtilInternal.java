@@ -34,11 +34,10 @@ public class HealthUtilInternal implements IHealthUtil {
 
     @Override
     public double calculatePlayerMaxHealth(Player player) {
-
-        HealthCapability healthCapability = CapabilityUtil.getHealthCapability(player);
         double maxHealth = Config.Baked.initialHealth;
 
         if (Config.Baked.healthOverhaulEnabled) {
+            HealthCapability healthCapability = CapabilityUtil.getHealthCapability(player);
             maxHealth += healthCapability.getAdditionalHealth();
 
             if (Config.Baked.localizedBodyDamageEnabled && healthCapability.getBrokenHearts() > 0) {

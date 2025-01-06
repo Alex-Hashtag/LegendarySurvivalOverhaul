@@ -292,7 +292,8 @@ public class CommonForgeEvents {
     @SubscribeEvent
     public static void onPlayerEffect(MobEffectEvent.Applicable event) {
         if (event.getEntity() instanceof Player player && !event.getEntity().level().isClientSide) {
-            if (event.getEffectInstance().getEffect() == MobEffects.ABSORPTION &&
+            if (Config.Baked.healthOverhaulEnabled &&
+                    event.getEffectInstance().getEffect() == MobEffects.ABSORPTION &&
                     Config.Baked.absorptionEffectOverride) {
 
                 HealthCapability healthCapability = CapabilityUtil.getHealthCapability(player);
@@ -327,8 +328,9 @@ public class CommonForgeEvents {
 
         if (Config.Baked.healthOverhaulEnabled) {
             HealthUtil.initializeHealthAttributes(event.getEntity());
-            HealthUtil.updatePlayerMaxHealthAttribute(event.getEntity());
         }
+
+        HealthUtil.updatePlayerMaxHealthAttribute(event.getEntity());
     }
 
     @SubscribeEvent
