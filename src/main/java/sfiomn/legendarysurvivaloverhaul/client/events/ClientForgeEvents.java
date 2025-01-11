@@ -1,8 +1,6 @@
 package sfiomn.legendarysurvivaloverhaul.client.events;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
@@ -25,7 +23,6 @@ import net.minecraftforge.registries.ForgeRegistries;
 import sereneseasons.api.SSItems;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.config.json.thirst.JsonBlockFluidThirst;
-import sfiomn.legendarysurvivaloverhaul.api.tabs_menu.TabsMenu;
 import sfiomn.legendarysurvivaloverhaul.api.thirst.ThirstUtil;
 import sfiomn.legendarysurvivaloverhaul.client.integration.sereneseasons.RenderSeasonCards;
 import sfiomn.legendarysurvivaloverhaul.client.render.*;
@@ -33,9 +30,11 @@ import sfiomn.legendarysurvivaloverhaul.client.ClientHooks;
 import sfiomn.legendarysurvivaloverhaul.client.effects.TemperatureBreathEffect;
 import sfiomn.legendarysurvivaloverhaul.client.sounds.TemperatureBreathSound;
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.thirst.ThirstCapability;
+import sfiomn.legendarysurvivaloverhaul.common.integration.curios.CuriosUtil;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
 import sfiomn.legendarysurvivaloverhaul.network.NetworkHandler;
 import sfiomn.legendarysurvivaloverhaul.network.packets.MessageDrinkBlockFluid;
+import sfiomn.legendarysurvivaloverhaul.registry.ItemRegistry;
 import sfiomn.legendarysurvivaloverhaul.registry.MobEffectRegistry;
 import sfiomn.legendarysurvivaloverhaul.registry.KeyMappingRegistry;
 import sfiomn.legendarysurvivaloverhaul.util.CapabilityUtil;
@@ -141,25 +140,6 @@ public class ClientForgeEvents {
     }
 
     @SubscribeEvent
-    public static void preRenderScreen(ScreenEvent.Render.Pre event) {
-        if (event.getScreen() instanceof Screen) {
-
-            Screen screen = event.getScreen();
-
-            if (screen instanceof AbstractContainerScreen<?> containerScreen) {
-                TabsMenu.updateButtonsPosition(screen, containerScreen.getGuiLeft(), containerScreen.getGuiTop());
-            }
-        }
-    }
-
-    @SubscribeEvent
-    public static void screenInitPost(ScreenEvent.Init.Post event) {
-        if (event.getScreen() instanceof Screen) {
-            TabsMenu.initScreenButtons(event);
-        }
-    }
-
-    @SubscribeEvent
     public static void onClientTick(TickEvent.ClientTickEvent event) {
         if (event.phase == TickEvent.Phase.END) {
             Player player = Minecraft.getInstance().player;
@@ -184,6 +164,8 @@ public class ClientForgeEvents {
                     if (KeyMappingRegistry.showBodyHealth.consumeClick())
                         ClientHooks.openBodyHealthScreen(player);
                 }
+                if (LegendarySurvivalOverhaul.curiosLoaded && player.tickCount % 10 == 0)
+                    CuriosUtil.isThermometerEquipped = CuriosUtil.isCurioItemEquipped(player, ItemRegistry.THERMOMETER.get());
             }
         }
     }

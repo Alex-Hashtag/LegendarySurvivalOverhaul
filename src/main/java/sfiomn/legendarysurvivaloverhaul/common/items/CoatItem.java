@@ -40,21 +40,17 @@ public class CoatItem extends Item {
         if (InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), KeyMappingRegistry.showAddedDesc.getKey().getValue())) {
             if (this.coat != null) {
                 MutableComponent effectComponent = Component.translatable("tooltip." + LegendarySurvivalOverhaul.MOD_ID + ".coat_item." + this.coat.type() + ".effect").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(6466303)));
-                MutableComponent temperatureComponent;
-                if (Config.Baked.renderTemperatureInFahrenheit)
-                    temperatureComponent = Component.literal(" " + MathUtil.round(WorldUtil.toFahrenheit((float) this.coat.modifier()) - 32, 1) + "\u00B0F");
-                else
-                    temperatureComponent = Component.literal(" " + this.coat.modifier() + "\u00B0C");
+                MutableComponent temperatureComponent = Component.literal(" " + this.coat.modifier());
 
-                if (Objects.equals(coat.type(), "cooling")) {
-                    temperatureComponent = temperatureComponent.withStyle(Style.EMPTY.withColor(TextColor.fromRgb(6466303)));
+                if (Objects.equals(coat.type(), "heating")) {
                     effectComponent = effectComponent.withStyle(Style.EMPTY.withColor(TextColor.fromRgb(6466303)));
-                } else if (Objects.equals(coat.type(), "heating")) {
-                    temperatureComponent = temperatureComponent.withStyle(Style.EMPTY.withColor(TextColor.fromRgb(16420407)));
+                    temperatureComponent = temperatureComponent.withStyle(Style.EMPTY.withColor(TextColor.fromRgb(6466303)));
+                } else if (Objects.equals(coat.type(), "cooling")) {
                     effectComponent = effectComponent.withStyle(Style.EMPTY.withColor(TextColor.fromRgb(16420407)));
+                    temperatureComponent = temperatureComponent.withStyle(Style.EMPTY.withColor(TextColor.fromRgb(16420407)));
                 } else {
-                    temperatureComponent = temperatureComponent.withStyle(Style.EMPTY.withColor(TextColor.fromRgb(10040319)));
                     effectComponent = effectComponent.withStyle(Style.EMPTY.withColor(TextColor.fromRgb(10040319)));
+                    temperatureComponent = temperatureComponent.withStyle(Style.EMPTY.withColor(TextColor.fromRgb(10040319)));
                 }
 
                 text = Component.translatable("tooltip." + LegendarySurvivalOverhaul.MOD_ID + ".coat_item.desc", effectComponent).append(temperatureComponent);

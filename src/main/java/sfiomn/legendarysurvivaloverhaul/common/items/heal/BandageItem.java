@@ -29,7 +29,6 @@ public class BandageItem extends BodyHealingItem {
         return Config.Baked.bandageUseTime;
     }
 
-
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltips, TooltipFlag isAdvanced) {
         super.appendHoverText(stack, level, tooltips, isAdvanced);

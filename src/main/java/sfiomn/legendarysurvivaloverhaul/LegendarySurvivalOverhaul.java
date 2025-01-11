@@ -21,7 +21,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import sfiomn.legendarysurvivaloverhaul.api.bodydamage.BodyDamageUtil;
 import sfiomn.legendarysurvivaloverhaul.api.health.HealthUtil;
-import sfiomn.legendarysurvivaloverhaul.api.tabs_menu.TabsMenu;
 import sfiomn.legendarysurvivaloverhaul.api.temperature.TemperatureUtil;
 import sfiomn.legendarysurvivaloverhaul.api.thirst.ThirstUtil;
 import sfiomn.legendarysurvivaloverhaul.api.wetness.WetnessUtil;
@@ -31,7 +30,6 @@ import sfiomn.legendarysurvivaloverhaul.client.itemproperties.SeasonalCalendarSe
 import sfiomn.legendarysurvivaloverhaul.client.itemproperties.ThermometerProperty;
 import sfiomn.legendarysurvivaloverhaul.client.screens.SewingTableScreen;
 import sfiomn.legendarysurvivaloverhaul.client.screens.ThermalScreen;
-import sfiomn.legendarysurvivaloverhaul.client.tabs_menu.*;
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.bodydamage.BodyDamageCapability;
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.food.FoodCapability;
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.health.HealthCapability;
@@ -97,9 +95,9 @@ public class LegendarySurvivalOverhaul
 	public static Path modConfigJsons = Paths.get(modConfigPath.toString(), "json");
 	public static Path modIntegrationConfigJsons = Paths.get(modConfigJsons.toString(), "integration");
 	
-	public LegendarySurvivalOverhaul()
+	public LegendarySurvivalOverhaul(FMLJavaModLoadingContext context)
 	{
-		IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
+		IEventBus modBus = context.getModEventBus();
 		IEventBus forgeBus = MinecraftForge.EVENT_BUS;
 		
 		modBus.addListener(this::commonSetup);
@@ -107,7 +105,7 @@ public class LegendarySurvivalOverhaul
 		modBus.addListener(this::onModConfigReloadEvent);
 		modBus.addListener(this::onLoadComplete);
 
-		Config.register();
+		Config.register(context);
 
 		AttributeRegistry.register(modBus);
 		ItemRegistry.register(modBus);
@@ -244,15 +242,6 @@ public class LegendarySurvivalOverhaul
 		@SubscribeEvent
 		public static void onClientSetup(FMLClientSetupEvent event) {
 			Config.Baked.bakeClient();
-
-			TabsMenu.register(new BodyDamageTab());
-			TabsMenu.register(new InventoryTab());
-			if (LegendarySurvivalOverhaul.ftbQuestsLoaded)
-				TabsMenu.register(new FtbQuestsTab());
-			if (LegendarySurvivalOverhaul.reskillableLoaded)
-				TabsMenu.register(new ReskillableTab());
-			if (LegendarySurvivalOverhaul.reskillableReimaginedLoaded)
-				TabsMenu.register(new ReskillableReimaginedTab());
 
 			MenuScreens.register(ContainerRegistry.COOLER_CONTAINER.get(), ThermalScreen::new);
 			MenuScreens.register(ContainerRegistry.HEATER_CONTAINER.get(), ThermalScreen::new);

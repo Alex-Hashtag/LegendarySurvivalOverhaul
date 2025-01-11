@@ -15,7 +15,6 @@ import net.minecraftforge.fml.loading.FMLLoader;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.SlotContext;
-import top.theillusivec4.curios.api.event.CurioUnequipEvent;
 import top.theillusivec4.curios.api.type.capability.ICuriosItemHandler;
 import top.theillusivec4.curios.api.type.inventory.ICurioStacksHandler;
 import top.theillusivec4.curios.api.type.inventory.IDynamicStackHandler;
@@ -53,16 +52,16 @@ public class CuriosUtil {
                 Tuple<IDynamicStackHandler, SlotContext> firstSlot = null;
 
                 for (Map.Entry<String, ICurioStacksHandler> entry : curios.entrySet()) {
-                    IDynamicStackHandler stackHandlerx = entry.getValue().getStacks();
+                    IDynamicStackHandler stackHandler = entry.getValue().getStacks();
 
-                    for (int ix = 0; ix < stackHandlerx.getSlots(); ++ix) {
+                    for (int ix = 0; ix < stackHandler.getSlots(); ++ix) {
                         String id = entry.getKey();
                         NonNullList<Boolean> renderStates = entry.getValue().getRenders();
                         SlotContext slotContext = new SlotContext(id, player, ix, false, renderStates.size() > ix && renderStates.get(ix));
-                        if (stackHandlerx.isItemValid(ix, stack)) {
-                            ItemStack present = stackHandlerx.getStackInSlot(ix);
+                        if (stackHandler.isItemValid(ix, stack)) {
+                            ItemStack present = stackHandler.getStackInSlot(ix);
                             if (present.isEmpty()) {
-                                stackHandlerx.setStackInSlot(ix, stack.copy());
+                                stackHandler.setStackInSlot(ix, stack.copy());
                                 if (!player.isCreative()) {
                                     int count = stack.getCount();
                                     stack.shrink(count);
@@ -80,8 +79,8 @@ public class CuriosUtil {
                                     if (event instanceof Event unequipEvent) {
                                         MinecraftForge.EVENT_BUS.post(unequipEvent);
                                         Event.Result result = unequipEvent.getResult();
-                                        if (result != Event.Result.DENY && stackHandlerx.extractItem(ix, stack.getMaxStackSize(), true).getCount() == stack.getCount()) {
-                                            firstSlot = new Tuple<>(stackHandlerx, slotContext);
+                                        if (result != Event.Result.DENY && stackHandler.extractItem(ix, stack.getMaxStackSize(), true).getCount() == stack.getCount()) {
+                                            firstSlot = new Tuple<>(stackHandler, slotContext);
                                         }
                                     }
                                 } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException |
@@ -95,8 +94,8 @@ public class CuriosUtil {
 
                 if (firstSlot != null) {
                     IDynamicStackHandler stackHandler = firstSlot.getA();
-                    SlotContext slotContextx = firstSlot.getB();
-                    int i = slotContextx.index();
+                    SlotContext slotContext = firstSlot.getB();
+                    int i = slotContext.index();
                     ItemStack presentx = stackHandler.getStackInSlot(i);
                     stackHandler.setStackInSlot(i, stack.copy());
                     player.setItemInHand(hand, presentx.copy());

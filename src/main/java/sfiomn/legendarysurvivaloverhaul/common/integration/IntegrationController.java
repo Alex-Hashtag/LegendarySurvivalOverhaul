@@ -94,6 +94,8 @@ public final class IntegrationController
 			initTerraFirmaCraft();
 		if (mods.isLoaded("legendary_additions"))
 			initLegendaryAdditions();
+		if (mods.isLoaded("hardcore_torches"))
+			initHardcoreTorches();
 	}
 
 	private static void initCreate()
@@ -275,6 +277,8 @@ public final class IntegrationController
 
 	private static void initLegendaryCreatures() {
 		JsonConfig.registerDamageSourceBodyParts("legendarycreatures.root_attack", DamageDistributionEnum.ONE_OF, Arrays.asList(BodyPartEnum.LEFT_FOOT, BodyPartEnum.RIGHT_FOOT, BodyPartEnum.LEFT_LEG, BodyPartEnum.RIGHT_LEG));
+
+		JsonConfig.registerItemTemperature("legendarycreatures:straw_hat", 0, 3, 0, 0);
 	}
 
 	private static void initSupplementaries() {
@@ -614,5 +618,16 @@ public final class IntegrationController
 
 	private static void initLegendaryAdditions() {
 		JsonConfig.registerItemTemperature("legendaryadditions:tribal_torch", 1.0f, 0, 0, 0);
+	}
+
+	private static void initHardcoreTorches() {
+		JsonConfig.registerBlockFluidTemperature("hardcore_torches:hardcore_campfire", 10f, new JsonPropertyValue("lit", "true"));
+		JsonConfig.registerBlockFluidTemperature("hardcore_torches:hardcore_campfire", 0.0f, new JsonPropertyValue("lit", "false"));
+
+		JsonConfig.registerBlockFluidTemperature("hardcore_torches:lit_wall_torch", 1.5f);
+		JsonConfig.registerBlockFluidTemperature("hardcore_torches:lit_torch", 1.5f);
+
+		JsonConfig.registerBlockFluidTemperature("hardcore_torches:smoldering_wall_torch", 0.75f);
+		JsonConfig.registerBlockFluidTemperature("hardcore_torches:smoldering_torch", 0.75f);
 	}
 }
