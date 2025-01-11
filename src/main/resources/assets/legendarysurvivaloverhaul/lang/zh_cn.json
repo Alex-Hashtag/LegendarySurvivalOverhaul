@@ -36,16 +36,25 @@
 	"item.legendarysurvivaloverhaul.thermometer": "温度计",
 	"item.legendarysurvivaloverhaul.seasonal_calendar": "季节日历",
 	"item.legendarysurvivaloverhaul.nether_chalice": "下界圣杯",
-	"item.legendarysurvivaloverhaul.heart_fruit": "杈杷果",
+	"item.legendarysurvivaloverhaul.sponge": "海绵",
+	"item.legendarysurvivaloverhaul.water_purifier": "水灵净化",
 	"tooltip.legendarysurvivaloverhaul.thermometer.description": "右键使用可显示环境温度",
 	"tooltip.legendarysurvivaloverhaul.thermometer.bauble_description": "当作为饰品佩戴时可在物品栏左边显示你的体温",
 	"tooltip.legendarysurvivaloverhaul.nether_chalice.description": "佩戴时可以使岩浆可饮用",
+	"tooltip.legendarysurvivaloverhaul.sponge.description": "佩戴时吸收身上的水分，防止增加湿度。",
+	"tooltip.legendarysurvivaloverhaul.water_purifier.description": "佩戴时任何饮用将自动净化，防止获得干渴Buff。",
 
 	"attribute.legendarysurvivaloverhaul.heating_temperature": "御寒",
 	"attribute.legendarysurvivaloverhaul.cooling_temperature": "抗暑",
 	"attribute.legendarysurvivaloverhaul.heat_resistance": "抗暑",
 	"attribute.legendarysurvivaloverhaul.cold_resistance": "御寒",
 	"attribute.legendarysurvivaloverhaul.thermal_resistance": "恒温",
+	"attribute.legendarysurvivaloverhaul.permanent_heart": "永久生命值",
+	"attribute.legendarysurvivaloverhaul.broken_heart_resilience": "破碎生命值",
+
+	"item.legendarysurvivaloverhaul.heart_container": "心之容器",
+	"item.legendarysurvivaloverhaul.heart_fragment": "心之碎片",
+	"item.legendarysurvivaloverhaul.shield_container": "护卫容器",
 
 	"item.legendarysurvivaloverhaul.canteen_empty": "空水壶",
 	"item.legendarysurvivaloverhaul.canteen": "水壶",
@@ -238,14 +247,18 @@
 	"sounds.legendarysurvivaloverhaul.dehydration": "玩家：脱水",
 	"sounds.legendarysurvivaloverhaul.cooler_block": "冰桶：冰裂声",
 	"sounds.legendarysurvivaloverhaul.sewing_table": "缝纫机：使用",
+	"sounds.legendarysurvivaloverhaul.self_watering": "玩家：浇水在身上",
 	"sounds.legendarysurvivaloverhaul.headshot": "玩家：爆头",
 	"sounds.legendarysurvivaloverhaul.heal_body_part": "肢体愈合",
 	"sounds.legendarysurvivaloverhaul.hard_falling_hurt": "玩家：骨折",
 	"sounds.legendarysurvivaloverhaul.headache_heartbeat": "头疼阵痛",
+	"sounds.legendarysurvivaloverhaul.heart_container": "心之容器使用",
 
 	"message.legendarysurvivaloverhaul.bonemeal.not_correct_season": "这种作物在这个季节不能生长",
 	"message.legendarysurvivaloverhaul.sereneseasons.no_season_info": "这个生物群系没有季节",
 	"message.legendarysurvivaloverhaul.sereneseasons.season_info": "季节：%s , %s/%s 日",
 	"message.legendarysurvivaloverhaul.sereneseasons.no_season_dimension": "这个维度没有季节",
-	"message.legendarysurvivaloverhaul.sereneseasons.no_serene_season_loaded": "静谧四季Mod未安装"
+	"message.legendarysurvivaloverhaul.sereneseasons.no_serene_season_loaded": "静谧四季Mod未安装",
+	"message.legendarysurvivaloverhaul.heart_container.additional_health_full": "你已达到最大生命值",
+	"message.legendarysurvivaloverhaul.filled_map.destination": "Destination at XZ: %s / %s"
 }
