@@ -19,7 +19,7 @@ public class MedikitItem extends BodyHealingItem {
 
     @Override
     public void runSecondaryEffect(Player player, ItemStack stack) {
-        player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 400, 2));
+        player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, Config.Baked.medikitRegenerationTickDuration, Config.Baked.medikitRegenerationAmplifier));
         super.runSecondaryEffect(player, stack);
     }
 
@@ -32,6 +32,6 @@ public class MedikitItem extends BodyHealingItem {
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltips, TooltipFlag isAdvanced) {
         super.appendHoverText(stack, level, tooltips, isAdvanced);
-        addSecondaryEffectTooltip(tooltips, new MobEffectInstance(MobEffects.REGENERATION, 400, 2));
+        addSecondaryEffectTooltip(tooltips, new MobEffectInstance(MobEffects.REGENERATION, Config.Baked.medikitRegenerationTickDuration, Config.Baked.medikitRegenerationAmplifier));
     }
 }

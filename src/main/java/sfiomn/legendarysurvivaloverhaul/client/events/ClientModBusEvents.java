@@ -22,6 +22,7 @@ import static sfiomn.legendarysurvivaloverhaul.client.render.RenderTemperatureGu
 import static sfiomn.legendarysurvivaloverhaul.client.render.RenderTemperatureGui.TEMPERATURE_GUI;
 import static sfiomn.legendarysurvivaloverhaul.client.render.RenderTemperatureOverlay.TEMPERATURE_OVERLAY;
 import static sfiomn.legendarysurvivaloverhaul.client.render.RenderThirstGui.THIRST_GUI;
+import static sfiomn.legendarysurvivaloverhaul.client.render.RenderWetnessGui.WETNESS_GUI;
 
 @Mod.EventBusSubscriber(modid = LegendarySurvivalOverhaul.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class ClientModBusEvents {
@@ -35,6 +36,8 @@ public class ClientModBusEvents {
         event.registerAbove(VanillaGuiOverlay.FOOD_LEVEL.id(), "thirst", THIRST_GUI);
 
         event.registerAbove(VanillaGuiOverlay.FOOD_LEVEL.id(), "temperature", TEMPERATURE_GUI);
+
+        event.registerAbove(VanillaGuiOverlay.FOOD_LEVEL.id(), "wetness", WETNESS_GUI);
 
         event.registerAbove(VanillaGuiOverlay.FOOD_LEVEL.id(), "body_damage", BODY_DAMAGE_GUI);
 

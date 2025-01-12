@@ -195,9 +195,9 @@ public class BodyDamageCapability implements IBodyDamageCapability
 	}
 
 	@Override
-	public boolean isWounded() {
+	public boolean isWoundedBelow(float healthPercent) {
 		for (BodyPart part: this.bodyParts.values()) {
-			if (!part.isMaxHealth())
+			if (getBodyPartHealthRatio(part.getBodyPartEnum()) < healthPercent)
 				return true;
 		}
 		return false;
@@ -245,7 +245,7 @@ public class BodyDamageCapability implements IBodyDamageCapability
 	}
 
 	@Override
-	public float getRemainingHealingTicks(BodyPartEnum part) {
+	public int getRemainingHealingTicks(BodyPartEnum part) {
 		return this.bodyParts.get(part).getRemainingHealingTicks();
 	}
 

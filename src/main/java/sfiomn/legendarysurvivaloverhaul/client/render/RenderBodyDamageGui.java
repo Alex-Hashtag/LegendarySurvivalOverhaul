@@ -1,6 +1,5 @@
 package sfiomn.legendarysurvivaloverhaul.client.render;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.entity.HumanoidArm;
@@ -42,7 +41,7 @@ public class RenderBodyDamageGui
 				if (BODY_DAMAGE_CAP == null || player.tickCount % 20 == 0)
 					BODY_DAMAGE_CAP = CapabilityUtil.getBodyDamageCapability(player);
 
-				if (Config.Baked.alwaysShowBodyDamageIndicator || BODY_DAMAGE_CAP.isWounded()) {
+				if (BODY_DAMAGE_CAP.isWoundedBelow((float) Config.Baked.bodyDamageIndicatorRenderHealthLimit)) {
 					Minecraft.getInstance().getProfiler().push("body_damage_gui");
 					drawBodyDamage(guiGraphics, player, BODY_DAMAGE_CAP, width, height);
 					Minecraft.getInstance().getProfiler().pop();

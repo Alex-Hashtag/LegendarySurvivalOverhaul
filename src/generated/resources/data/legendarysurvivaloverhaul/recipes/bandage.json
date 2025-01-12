@@ -3,17 +3,17 @@
   "category": "misc",
   "group": "healing",
   "key": {
-    "s": {
-      "item": "minecraft:string"
+    "h": {
+      "item": "legendarysurvivaloverhaul:healing_herbs"
     },
-    "w": {
-      "tag": "minecraft:wool"
+    "p": {
+      "item": "legendarysurvivaloverhaul:plaster"
     }
   },
   "pattern": [
-    "ss ",
-    "ww ",
-    "   "
+    "  p",
+    " h ",
+    "p  "
   ],
   "result": {
     "item": "legendarysurvivaloverhaul:bandage"

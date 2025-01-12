@@ -2,7 +2,6 @@ package sfiomn.legendarysurvivaloverhaul.client.render;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.player.Player;
@@ -13,7 +12,6 @@ import sfiomn.legendarysurvivaloverhaul.api.temperature.TemperatureDisplayEnum;
 import sfiomn.legendarysurvivaloverhaul.api.temperature.TemperatureEnum;
 import sfiomn.legendarysurvivaloverhaul.api.temperature.TemperatureUtil;
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.temperature.TemperatureCapability;
-import sfiomn.legendarysurvivaloverhaul.common.capabilities.wetness.WetnessCapability;
 import sfiomn.legendarysurvivaloverhaul.common.integration.curios.CuriosUtil;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
 import sfiomn.legendarysurvivaloverhaul.registry.MobEffectRegistry;
@@ -27,7 +25,6 @@ import java.util.Random;
 public class RenderTemperatureGui
 {
 	private static TemperatureCapability TEMPERATURE_CAP = null;
-	private static WetnessCapability WETNESS_CAP = null;
 	private static final Random rand = new Random();
 
 	private static final ResourceLocation ICONS = new ResourceLocation(LegendarySurvivalOverhaul.MOD_ID, "textures/gui/overlay.png");
@@ -45,11 +42,6 @@ public class RenderTemperatureGui
 	private static final int BODY_TEMPERATURE_FRAME_TEXTURE_HEIGHT = 13;
 	private static final int BODY_TEMPERATURE_NUMBER_TEXTURE_WIDTH = 3;
 	private static final int BODY_TEMPERATURE_NUMBER_TEXTURE_HEIGHT = 5;
-	
-	private static final int WETNESS_TEXTURE_POS_Y = 96;
-	
-	private static final int WETNESS_TEXTURE_WIDTH = 10;
-	private static final int WETNESS_TEXTURE_HEIGHT = 10;
 
 	private static final int HUNGER_TEXTURE_WIDTH = 9;
 	private static final int HUNGER_TEXTURE_HEIGHT = 9;
@@ -58,7 +50,6 @@ public class RenderTemperatureGui
 	private static int delay = 0;
 	private static boolean risingTemperature = false;
 	private static boolean startAnimation = false;
-	private static int lastWetnessSymbol = 0;
 	private static int flashCounter = -1;
 	private static boolean shakeSide = false;
 	
@@ -79,12 +70,6 @@ public class RenderTemperatureGui
                     drawTemperatureAsSymbol(guiGraphics, player, width, height);
 					Minecraft.getInstance().getProfiler().pop();
                 }
-
-				if (Config.Baked.wetnessEnabled) {
-					Minecraft.getInstance().getProfiler().push("wetness_gui");
-					drawWetness(guiGraphics, player, width, height);
-					Minecraft.getInstance().getProfiler().pop();
-				}
 
 				if (LegendarySurvivalOverhaul.curiosLoaded && CuriosUtil.isThermometerEquipped) {
 					Minecraft.getInstance().getProfiler().push("body_temperature_gui");
@@ -226,37 +211,6 @@ public class RenderTemperatureGui
 
 		gui.blit(ICONS, x + xOffset, y + yOffset, ovrXOffset, ovrYOffset, TEMPERATURE_TEXTURE_WIDTH, TEMPERATURE_TEXTURE_HEIGHT);
 	}
-	
-	public static void drawWetness(GuiGraphics gui, Player player, int width, int height)
-	{
-		if (WETNESS_CAP == null || player.tickCount % 20 == 0)
-			WETNESS_CAP = CapabilityUtil.getWetnessCapability(player);
-
-		int wetness = WETNESS_CAP.getWetness();
-		byte wetnessSymbol;
-		
-		int x = width / 2 - (WETNESS_TEXTURE_WIDTH / 2) + Config.Baked.wetnessIndicatorOffsetX;
-		int y = height - 61 + Config.Baked.wetnessIndicatorOffsetY;
-
-		if (CuriosUtil.isThermometerEquipped && Config.Baked.wetnessIndicatorOffsetY == 0)
-			y += 10;
-		
-		if (wetness == 0)
-			return;
-		else
-			wetnessSymbol = (byte) (Mth.clamp(MathUtil.invLerp(0, WetnessCapability.WETNESS_LIMIT, wetness) * 4, 0, 3));
-		
-		if (lastWetnessSymbol != wetnessSymbol)
-		{
-			flashCounter = 3;
-			lastWetnessSymbol = wetnessSymbol;
-		}
-		
-		int texPosX = wetnessSymbol * WETNESS_TEXTURE_WIDTH;
-		int texPosY = WETNESS_TEXTURE_POS_Y + (flashCounter >= 0 ? WETNESS_TEXTURE_HEIGHT : 0);
-		
-		gui.blit(ICONS, x, y, texPosX, texPosY, WETNESS_TEXTURE_WIDTH, WETNESS_TEXTURE_HEIGHT);
-	}
 
 	public static void drawBodyTemperature(GuiGraphics gui, Player player, int width, int height) {
 
@@ -266,7 +220,7 @@ public class RenderTemperatureGui
 		int x = width / 2 - 92 - 32 + Config.Baked.bodyTemperatureDisplayOffsetX;
 		int y = height - 14 + Config.Baked.bodyTemperatureDisplayOffsetY;
 
-		if (!player.getOffhandItem().isEmpty() && player.getMainArm() == HumanoidArm.RIGHT && Config.Baked.bodyDamageIndicatorOffsetX == 0 && Config.Baked.bodyTemperatureDisplayOffsetY == 0)
+		if (!player.getOffhandItem().isEmpty() && player.getMainArm() == HumanoidArm.RIGHT && Config.Baked.bodyTemperatureDisplayOffsetX == 0 && Config.Baked.bodyTemperatureDisplayOffsetY == 0)
 			x -= 31;
 
 		float bodyTemperature = TemperatureUtil.clampTemperature(TEMPERATURE_CAP.getTemperatureLevel());

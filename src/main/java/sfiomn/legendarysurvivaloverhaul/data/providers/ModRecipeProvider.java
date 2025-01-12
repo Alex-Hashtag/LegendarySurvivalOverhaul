@@ -214,13 +214,12 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .save(consumer);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, BlockRegistry.COOLER.get())
-                .pattern("lql")
-                .pattern("lql")
-                .pattern("#r#")
-                .define('l', Items.LAPIS_LAZULI)
-                .define('q', Items.QUARTZ)
+                .pattern("psp")
+                .pattern("prp")
+                .pattern("ppp")
+                .define('s', Items.SNOW_BLOCK)
+                .define('p', ItemTags.PLANKS)
                 .define('r', Items.REDSTONE)
-                .define('#', Items.STONE)
                 .unlockedBy(getHasName(Items.STONE), has(Items.STONE))
                 .save(consumer);
 
@@ -313,7 +312,7 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .unlockedBy("has_flower", has(ItemTags.FLOWERS))
                 .save(consumer);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ItemRegistry.BANDAGE.get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ItemRegistry.PLASTER.get())
                 .pattern("ss ")
                 .pattern("ww ")
                 .pattern("   ")
@@ -338,23 +337,23 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ItemRegistry.MORPHINE.get())
                 .pattern("  n")
-                .pattern(" p ")
+                .pattern(" t ")
                 .pattern("g  ")
                 .define('n', Items.IRON_NUGGET)
-                .define('p', ItemRegistry.PLASTER.get())
+                .define('t', ItemRegistry.TONIC.get())
                 .define('g', Tags.Items.GLASS)
                 .group("healing")
                 .unlockedBy(getHasName(ItemRegistry.PLASTER.get()), has(ItemRegistry.PLASTER.get()))
                 .save(consumer);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ItemRegistry.PLASTER.get())
-                .pattern("  s")
-                .pattern(" w ")
-                .pattern("s  ")
-                .define('s', Items.STRING)
-                .define('w', ItemTags.WOOL)
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ItemRegistry.BANDAGE.get())
+                .pattern("  p")
+                .pattern(" h ")
+                .pattern("p  ")
+                .define('p', ItemRegistry.PLASTER.get())
+                .define('h', ItemRegistry.HEALING_HERBS.get())
                 .group("healing")
-                .unlockedBy("has_wool", has(ItemTags.WOOL))
+                .unlockedBy("has_plaster", has(ItemRegistry.PLASTER.get()))
                 .save(consumer);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ItemRegistry.TONIC.get())

@@ -11,9 +11,9 @@
     }
   },
   "pattern": [
-    "  s",
-    " w ",
-    "s  "
+    "ss ",
+    "ww ",
+    "   "
   ],
   "result": {
     "item": "legendarysurvivaloverhaul:plaster"

@@ -1,0 +1,97 @@
+package sfiomn.legendarysurvivaloverhaul.client.render;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.player.Player;
+import net.minecraftforge.client.gui.overlay.IGuiOverlay;
+import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
+import sfiomn.legendarysurvivaloverhaul.common.capabilities.wetness.WetnessCapability;
+import sfiomn.legendarysurvivaloverhaul.common.integration.curios.CuriosUtil;
+import sfiomn.legendarysurvivaloverhaul.config.Config;
+import sfiomn.legendarysurvivaloverhaul.util.CapabilityUtil;
+import sfiomn.legendarysurvivaloverhaul.util.MathUtil;
+
+import java.util.Random;
+
+public class RenderWetnessGui
+{
+	private static WetnessCapability WETNESS_CAP = null;
+	private static final Random rand = new Random();
+
+	private static final ResourceLocation ICONS = new ResourceLocation(LegendarySurvivalOverhaul.MOD_ID, "textures/gui/overlay.png");
+	
+	private static final int WETNESS_TEXTURE_POS_Y = 96;
+	
+	private static final int WETNESS_TEXTURE_WIDTH = 10;
+	private static final int WETNESS_TEXTURE_HEIGHT = 10;
+
+	private static int frameCounter = -1;
+	private static boolean startAnimation = false;
+	private static int lastWetnessSymbol = 0;
+	private static int flashCounter = -1;
+	
+	public static IGuiOverlay WETNESS_GUI = (forgeGui, guiGraphics, partialTicks, width, height) -> {
+		if (Config.Baked.wetnessEnabled
+				&& !Minecraft.getInstance().options.hideGui
+				&& forgeGui.shouldDrawSurvivalElements()) {
+			Player player = forgeGui.getMinecraft().player;
+
+			if (player != null) {
+				rand.setSeed(player.tickCount * 445L);
+
+				forgeGui.setupOverlayRenderState(true, false);
+
+				Minecraft.getInstance().getProfiler().push("wetness_gui");
+				drawWetness(guiGraphics, player, width, height);
+				Minecraft.getInstance().getProfiler().pop();
+			}
+		}
+	};
+	
+	public static void drawWetness(GuiGraphics gui, Player player, int width, int height)
+	{
+		if (WETNESS_CAP == null || player.tickCount % 20 == 0)
+			WETNESS_CAP = CapabilityUtil.getWetnessCapability(player);
+
+		int wetness = WETNESS_CAP.getWetness();
+		byte wetnessSymbol;
+		
+		int x = width / 2 - (WETNESS_TEXTURE_WIDTH / 2) + Config.Baked.wetnessIndicatorOffsetX;
+		int y = height - 61 + Config.Baked.wetnessIndicatorOffsetY;
+
+		if (CuriosUtil.isThermometerEquipped && Config.Baked.wetnessIndicatorOffsetY == 0)
+			y += 10;
+		
+		if (wetness == 0)
+			return;
+		else
+			wetnessSymbol = (byte) (Mth.clamp(MathUtil.invLerp(0, WetnessCapability.WETNESS_LIMIT, wetness) * 4, 0, 3));
+		
+		if (lastWetnessSymbol != wetnessSymbol)
+		{
+			flashCounter = 3;
+			lastWetnessSymbol = wetnessSymbol;
+		}
+		
+		int texPosX = wetnessSymbol * WETNESS_TEXTURE_WIDTH;
+		int texPosY = WETNESS_TEXTURE_POS_Y + (flashCounter >= 0 ? WETNESS_TEXTURE_HEIGHT : 0);
+		
+		gui.blit(ICONS, x, y, texPosX, texPosY, WETNESS_TEXTURE_WIDTH, WETNESS_TEXTURE_HEIGHT);
+	}
+
+	public static void updateTimer()
+	{
+		if (frameCounter >= 0)
+			frameCounter--;
+		if (flashCounter >= 0)
+			flashCounter--;
+
+		if (startAnimation)
+		{
+			frameCounter = 24;
+			startAnimation = false;
+		}
+	}
+}

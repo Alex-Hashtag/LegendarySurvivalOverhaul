@@ -25,7 +25,7 @@ public class HealingHerbsItem extends BodyHealingItem {
 
     @Override
     public void runSecondaryEffect(Player player, ItemStack stack) {
-        player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 200, 0));
+        player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, Config.Baked.healingHerbsRegenerationTickDuration, Config.Baked.healingHerbsRegenerationAmplifier));
         super.runSecondaryEffect(player, stack);
     }
 
@@ -38,6 +38,6 @@ public class HealingHerbsItem extends BodyHealingItem {
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltips, TooltipFlag isAdvanced) {
         super.appendHoverText(stack, level, tooltips, isAdvanced);
-        addSecondaryEffectTooltip(tooltips, new MobEffectInstance(MobEffects.REGENERATION, 200, 0));
+        addSecondaryEffectTooltip(tooltips, new MobEffectInstance(MobEffects.REGENERATION, Config.Baked.healingHerbsRegenerationTickDuration, Config.Baked.healingHerbsRegenerationAmplifier));
     }
 }
