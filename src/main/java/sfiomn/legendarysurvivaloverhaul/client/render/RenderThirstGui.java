@@ -6,9 +6,12 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.client.gui.overlay.ForgeGui;
 import net.minecraftforge.client.gui.overlay.IGuiOverlay;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.jetbrains.annotations.Nullable;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.config.json.thirst.JsonConsumableThirst;
 import sfiomn.legendarysurvivaloverhaul.api.thirst.ThirstUtil;
@@ -30,6 +33,8 @@ public class RenderThirstGui
 	private static final int THIRST_TEXTURE_WIDTH = 9;
 	private static final int THIRST_TEXTURE_HEIGHT = 9;
 
+	@Nullable
+	private static Item heldItemOnPreview;
 	private static int heldItemHydration;
 	private static float heldItemSaturation;
 	private static boolean heldItemThirst;
@@ -71,22 +76,23 @@ public class RenderThirstGui
 			THIRST_CAP = CapabilityUtil.getThirstCapability(player);
 
 		// Calculation of hydration preview
-		if (Config.Baked.showDrinkPreview && !player.getMainHandItem().isEmpty() && player.tickCount % 10 == 0) {
-			ResourceLocation itemRegistryName = ForgeRegistries.ITEMS.getKey(player.getMainHandItem().getItem());
-			JsonConsumableThirst jsonConsumableThirst = ThirstUtil.getConsumableThirstJsonConfig(itemRegistryName, player.getMainHandItem());
+		ItemStack currentHeldItemStack = player.getMainHandItem();
+		if (Config.Baked.showDrinkPreview && currentHeldItemStack.getItem() != heldItemOnPreview) {
+			ResourceLocation itemRegistryName = ForgeRegistries.ITEMS.getKey(currentHeldItemStack.getItem());
+			JsonConsumableThirst jsonConsumableThirst = ThirstUtil.getConsumableThirstJsonConfig(itemRegistryName, currentHeldItemStack);
 			heldItemHydration = (jsonConsumableThirst != null) ? jsonConsumableThirst.hydration : 0;
 			heldItemSaturation = (jsonConsumableThirst != null) ? jsonConsumableThirst.saturation : 0;
 			heldItemThirst = jsonConsumableThirst != null && jsonConsumableThirst.effects.stream().anyMatch(jsonEffectParameter -> jsonEffectParameter.name.equals(LegendarySurvivalOverhaul.MOD_ID + ":thirst"));
-			if (alphaDirection == 0) {
-				alphaDirection = 1;
-				alphaPreview = 0;
+			// Force a reset flash when item becomes edible && avoid this reset if moving from edible to edible
+			// Improve the sync with appleskin flashing
+			if (heldItemOnPreview == null || currentHeldItemStack.isEdible() != heldItemOnPreview.isEdible()) {
+				resetFlash();
 			}
+			heldItemOnPreview = currentHeldItemStack.getItem();
 		}
 
-		if (heldItemHydration == 0 && heldItemSaturation == 0) {
-			alphaDirection = 0;
-			alphaPreview = 1;
-		}
+		if (heldItemHydration == 0 && heldItemSaturation == 0 && !heldItemThirst)
+			resetFlash();
 
 		// hydration is 0 - 20
 		int hydration = THIRST_CAP.getHydrationLevel();
@@ -99,7 +105,7 @@ public class RenderThirstGui
 		boolean hasThirstEffect = player.hasEffect(MobEffectRegistry.THIRST.get());
 		boolean hasHeatThirstEffect = player.hasEffect(MobEffectRegistry.HEAT_THIRST.get());
 		ThirstEffect thirstEffect = ThirstEffect.getEffect(hasThirstEffect, hasHeatThirstEffect);
-		ThirstEffect targetThirstEffect = ThirstEffect.getEffect(!hasThirstEffect && heldItemThirst, hasHeatThirstEffect);
+		ThirstEffect targetThirstEffect = ThirstEffect.getEffect(hasThirstEffect || heldItemThirst, hasHeatThirstEffect);
 
 		// Draw hydration & saturation icons
 		for (int i = 0; i < 10; i++) {
@@ -119,35 +125,39 @@ public class RenderThirstGui
 						new ThirstIcon(targetThirstEffect.getXTextureOffset(halfIcon == hydration + heldItemHydration, heldItemHydration < 0), thirstEffect.getYTextureOffset()));
 
 			} else {
-				if (thirstEffect != targetThirstEffect) {
+				// Used to render the full hydration bar thirsty in the preview
+				/*if (thirstEffect != targetThirstEffect) {
 					renderFading(gui, x, y + yOffset,
 							new ThirstIcon(thirstEffect.getXTextureOffset(false, halfIcon > hydration + Math.max(heldItemHydration, 0)), thirstEffect.getYTextureOffset()),
 							new ThirstIcon(targetThirstEffect.getXTextureOffset(false, halfIcon > hydration + Math.max(heldItemHydration, 0)), thirstEffect.getYTextureOffset()));
 				} else {
 					gui.blit(ICONS, x, y + yOffset, thirstEffect.getXTextureOffset(false, halfIcon > hydration + Math.max(heldItemHydration, 0)), thirstEffect.getYTextureOffset(), THIRST_TEXTURE_WIDTH, THIRST_TEXTURE_HEIGHT);
-				}
+				}*/
+				gui.blit(ICONS, x, y + yOffset, thirstEffect.getXTextureOffset(false, halfIcon > hydration + Math.max(heldItemHydration, 0)), thirstEffect.getYTextureOffset(), THIRST_TEXTURE_WIDTH, THIRST_TEXTURE_HEIGHT);
 			}
 
 			// Draw saturation icons if enabled
 			if (Config.Baked.thirstSaturationDisplayed) {
-				if ((int) (saturation + Math.min(heldItemSaturation, 0)) <= halfIcon && halfIcon <= (int) (saturation + Math.max(heldItemSaturation, 0))) {
-					if (heldItemSaturation < 0 || halfIcon == (int) saturation) {
+				if (Mth.ceil(saturation + Math.min(heldItemSaturation, 0)) <= halfIcon && halfIcon <= Mth.ceil(saturation + Math.max(heldItemSaturation, 0))) {
+					if (heldItemSaturation < 0 || halfIcon == Mth.ceil(saturation)) {
 						RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1 - alphaPreview);
-						gui.blit(ICONS, x, y, thirstEffect.getXTextureOffsetSaturation(halfIcon == (int) (saturation)), 0, THIRST_TEXTURE_WIDTH, THIRST_TEXTURE_HEIGHT);
+						gui.blit(ICONS, x, y, thirstEffect.getXTextureOffsetSaturation(halfIcon == Mth.ceil(saturation)), 0, THIRST_TEXTURE_WIDTH, THIRST_TEXTURE_HEIGHT);
 					}
-					if (heldItemSaturation > 0 || (int) (saturation + Math.min(heldItemSaturation, 0)) == halfIcon) {
+					if (heldItemSaturation > 0 || Mth.ceil(saturation + heldItemSaturation) == halfIcon) {
 						RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, alphaPreview);
-						gui.blit(ICONS, x, y, targetThirstEffect.getXTextureOffsetSaturation(halfIcon == (int) (saturation + heldItemSaturation)), 0, THIRST_TEXTURE_WIDTH, THIRST_TEXTURE_HEIGHT);
+						gui.blit(ICONS, x, y, targetThirstEffect.getXTextureOffsetSaturation(halfIcon == Mth.ceil(saturation + heldItemSaturation)), 0, THIRST_TEXTURE_WIDTH, THIRST_TEXTURE_HEIGHT);
 					}
 					RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-				} else if (halfIcon < (int) (saturation + Math.min(heldItemSaturation, 0))) {
-					if (thirstEffect != targetThirstEffect) {
+				} else if (halfIcon < Mth.ceil(saturation + Math.min(heldItemSaturation, 0))) {
+					// Used to render the full saturation bar thirsty in the preview
+					/*if (thirstEffect != targetThirstEffect) {
 						renderFading(gui, x, y + yOffset,
 								new ThirstIcon(thirstEffect.getXTextureOffsetSaturation(false), thirstEffect.getYTextureOffset()),
 								new ThirstIcon(targetThirstEffect.getXTextureOffsetSaturation(false), thirstEffect.getYTextureOffset()));
 					} else {
 						gui.blit(ICONS, x, y + yOffset, thirstEffect.getXTextureOffsetSaturation(false), 0, THIRST_TEXTURE_WIDTH, THIRST_TEXTURE_HEIGHT);
-					}
+					}*/
+					gui.blit(ICONS, x, y + yOffset, thirstEffect.getXTextureOffsetSaturation(false), 0, THIRST_TEXTURE_WIDTH, THIRST_TEXTURE_HEIGHT);
 				}
 			}
 		}
@@ -170,6 +180,12 @@ public class RenderThirstGui
 			alphaDirection = 1;
 		}
 		alphaPreview = Mth.clamp(unclampedAlphaPreview, 0.0f, 1.0f);
+	}
+
+	public static void resetFlash()
+	{
+		unclampedAlphaPreview = alphaPreview = 0f;
+		alphaDirection = 1;
 	}
 
 	public record ThirstIcon(int xTextureOffset, int yTextureOffset) {

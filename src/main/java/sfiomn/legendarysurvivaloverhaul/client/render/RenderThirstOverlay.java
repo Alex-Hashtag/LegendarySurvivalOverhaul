@@ -36,7 +36,7 @@ public class RenderThirstOverlay {
 
     public static void updateThirstEffect(@Nullable Player player) {
         float targetShaderIntensity = DEFAULT_SHADER_INTENSITY;
-        if (player != null && player.isAlive()) {
+        if (player != null && player.isAlive() && !player.isCreative() && !player.isSpectator()) {
 
             ThirstCapability thirstCap = CapabilityUtil.getThirstCapability(player);
             // hydration is 0 - 20
@@ -53,6 +53,8 @@ public class RenderThirstOverlay {
                     shaderIntensity = Math.max(shaderIntensity - SHADER_INTENSITY_STEP, targetShaderIntensity);
                 }
             }
+        } else {
+            shaderIntensity = 0;
         }
     }
 }
