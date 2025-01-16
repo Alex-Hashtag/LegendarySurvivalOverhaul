@@ -82,6 +82,7 @@ public class MobEffectRegistry {
 
 		addBrewingRecipe(COLD_IMMUNITY_POTION.get(), ItemRegistry.SUN_FERN_GOLD.get(), TEMPERATURE_IMMUNITY_POTION.get());
 		addBrewingRecipe(COLD_IMMUNITY_POTION_LONG.get(), ItemRegistry.SUN_FERN_GOLD.get(), TEMPERATURE_IMMUNITY_POTION_LONG.get());
+		addBrewingRecipe(TEMPERATURE_IMMUNITY_POTION.get(), Items.REDSTONE, TEMPERATURE_IMMUNITY_POTION_LONG.get());
 	}
 
 	private static void addBrewingRecipe(Potion potionInput, Item ingredient, Potion potionResult)

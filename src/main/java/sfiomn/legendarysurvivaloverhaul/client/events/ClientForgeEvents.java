@@ -164,6 +164,9 @@ public class ClientForgeEvents {
                     if (KeyMappingRegistry.showBodyHealth.consumeClick())
                         ClientHooks.openBodyHealthScreen(player);
                 }
+                if (Config.Baked.thirstEnabled && Config.Baked.showDrinkPreview)
+                    RenderThirstGui.updateTimer();
+
                 if (LegendarySurvivalOverhaul.curiosLoaded && player.tickCount % 10 == 0)
                     CuriosUtil.isThermometerEquipped = CuriosUtil.isCurioItemEquipped(player, ItemRegistry.THERMOMETER.get());
             }

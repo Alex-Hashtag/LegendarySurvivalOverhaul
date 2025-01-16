@@ -402,11 +402,11 @@ public class Config
 					.defineInRange("Wetness Decrease", -2, -1000, 0);
 			wetnessRainIncrease = builder
 					.comment(" How much the wetness increase when under rain.")
-					.defineInRange("Wetness Under Rain Increase", 5, 0, 1000);
+					.defineInRange("Wetness Under Rain Increase", 8, 0, 1000);
 			wetnessFluidIncrease = builder
 					.comment(" How much the wetness increase when the player is in a fluid, scale by the amount of fluid in the block.",
 							" The defined value is for a full block of fluid, and goes up to 2 times this value when fully immerge.")
-					.defineInRange("Wetness In Fluid Increase", 10, 0, 1000);
+					.defineInRange("Wetness In Fluid Increase", 12, 0, 1000);
 			builder.pop();
 
 			builder.push("huddling");
@@ -977,6 +977,7 @@ public class Config
 		public final ForgeConfigSpec.BooleanValue mergeHydrationAndSaturationTooltip;
 		public final ForgeConfigSpec.BooleanValue thirstSaturationDisplayed;
 		public final ForgeConfigSpec.BooleanValue lowHydrationEffect;
+		public final ForgeConfigSpec.BooleanValue showDrinkPreview;
 
 		Client(ForgeConfigSpec.Builder builder)
 		{
@@ -1083,6 +1084,9 @@ public class Config
 			lowHydrationEffect = builder
 					.comment(" If enabled, player's vision will become blurry when running low on hydration.")
 					.define("Low Thirst Effect", true);
+			showDrinkPreview = builder
+					.comment(" If enabled, a preview on hydration bar will be displayed if player holds a drink item.")
+					.define("Show Drink Preview", true);
 			builder.pop();
 		}
 	}
@@ -1337,6 +1341,7 @@ public class Config
 		public static boolean mergeHydrationAndSaturationTooltip;
 		public static boolean thirstSaturationDisplayed;
 		public static boolean lowHydrationEffect;
+		public static boolean showDrinkPreview;
 
 		public static void bakeCommon()
 		{
@@ -1590,6 +1595,7 @@ public class Config
 				showHydrationTooltip = CLIENT.showHydrationTooltip.get();
 				mergeHydrationAndSaturationTooltip = CLIENT.mergeHydrationAndSaturationTooltip.get();
 				lowHydrationEffect = CLIENT.lowHydrationEffect.get();
+				showDrinkPreview = CLIENT.showDrinkPreview.get();
 			}
 			catch (Exception e)
 			{

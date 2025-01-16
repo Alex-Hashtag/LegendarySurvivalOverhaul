@@ -121,6 +121,7 @@ public class ThirstUtil
      * @param itemRegistryName Item stack registry name
      * @param itemStack        Item stack
      */
+	@Nullable
     public static JsonConsumableThirst getConsumableThirstJsonConfig(ResourceLocation itemRegistryName, ItemStack itemStack) {
         return internal.getConsumableThirstJsonConfig(itemRegistryName, itemStack);
     }
