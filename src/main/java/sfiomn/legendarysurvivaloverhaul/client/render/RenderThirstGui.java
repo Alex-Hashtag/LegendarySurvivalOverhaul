@@ -71,7 +71,7 @@ public class RenderThirstGui
 			THIRST_CAP = CapabilityUtil.getThirstCapability(player);
 
 		// Calculation of hydration preview
-		if (Config.Baked.showDrinkPreview && !player.getMainHandItem().isEmpty()) {
+		if (Config.Baked.showDrinkPreview && !player.getMainHandItem().isEmpty() && player.tickCount % 10 == 0) {
 			ResourceLocation itemRegistryName = ForgeRegistries.ITEMS.getKey(player.getMainHandItem().getItem());
 			JsonConsumableThirst jsonConsumableThirst = ThirstUtil.getConsumableThirstJsonConfig(itemRegistryName, player.getMainHandItem());
 			heldItemHydration = (jsonConsumableThirst != null) ? jsonConsumableThirst.hydration : 0;
@@ -118,21 +118,13 @@ public class RenderThirstGui
 						new ThirstIcon(thirstEffect.getXTextureOffset(halfIcon == hydration, heldItemHydration > 0), thirstEffect.getYTextureOffset()),
 						new ThirstIcon(targetThirstEffect.getXTextureOffset(halfIcon == hydration + heldItemHydration, heldItemHydration < 0), thirstEffect.getYTextureOffset()));
 
-			} else if (halfIcon < hydration + Math.min(heldItemHydration, 0)) {
+			} else {
 				if (thirstEffect != targetThirstEffect) {
 					renderFading(gui, x, y + yOffset,
-							new ThirstIcon(thirstEffect.getXTextureOffset(false, false), thirstEffect.getYTextureOffset()),
-							new ThirstIcon(targetThirstEffect.getXTextureOffset(false, false), thirstEffect.getYTextureOffset()));
+							new ThirstIcon(thirstEffect.getXTextureOffset(false, halfIcon > hydration + Math.max(heldItemHydration, 0)), thirstEffect.getYTextureOffset()),
+							new ThirstIcon(targetThirstEffect.getXTextureOffset(false, halfIcon > hydration + Math.max(heldItemHydration, 0)), thirstEffect.getYTextureOffset()));
 				} else {
-					gui.blit(ICONS, x, y + yOffset, thirstEffect.getXTextureOffset(false, false), thirstEffect.getYTextureOffset(), THIRST_TEXTURE_WIDTH, THIRST_TEXTURE_HEIGHT);
-				}
-			} else if (halfIcon > hydration + Math.max(heldItemHydration, 0)) {
-				if (thirstEffect != targetThirstEffect) {
-					renderFading(gui, x, y + yOffset,
-							new ThirstIcon(thirstEffect.getXTextureOffset(false, true), thirstEffect.getYTextureOffset()),
-							new ThirstIcon(targetThirstEffect.getXTextureOffset(false, true), thirstEffect.getYTextureOffset()));
-				} else {
-					gui.blit(ICONS, x, y + yOffset, thirstEffect.getXTextureOffset(false, true), thirstEffect.getYTextureOffset(), THIRST_TEXTURE_WIDTH, THIRST_TEXTURE_HEIGHT);
+					gui.blit(ICONS, x, y + yOffset, thirstEffect.getXTextureOffset(false, halfIcon > hydration + Math.max(heldItemHydration, 0)), thirstEffect.getYTextureOffset(), THIRST_TEXTURE_WIDTH, THIRST_TEXTURE_HEIGHT);
 				}
 			}
 
