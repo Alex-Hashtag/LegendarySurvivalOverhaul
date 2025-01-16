@@ -64,11 +64,14 @@ public class Config
 		public final ForgeConfigSpec.BooleanValue hideInfoFromDebug;
 		public final ForgeConfigSpec.BooleanValue naturalRegenerationEnabled;
 		public final ForgeConfigSpec.BooleanValue vanillaFreezeEnabled;
-		public final ForgeConfigSpec.DoubleValue baseFoodExhaustion;
-		public final ForgeConfigSpec.DoubleValue sprintingFoodExhaustion;
 		public final ForgeConfigSpec.EnumValue<ItemUtil.CompassInfo> compassInfoMode;
 		public final ForgeConfigSpec.BooleanValue showCoordinateOnMap;
 		public final ForgeConfigSpec.DoubleValue initialHealth;
+
+		// Food
+		public final ForgeConfigSpec.DoubleValue baseFoodExhaustion;
+		public final ForgeConfigSpec.DoubleValue sprintingFoodExhaustion;
+		public final ForgeConfigSpec.DoubleValue onAttackFoodExhaustion;
 
 		// Temperature
 		public final ForgeConfigSpec.BooleanValue temperatureEnabled;
@@ -324,6 +327,9 @@ public class Config
 			sprintingFoodExhaustion = builder
 					.comment(" Food exhausted every 10 ticks while sprinting in addition to the sprinting minecraft food exhaustion.")
 					.defineInRange("Sprinting Food Exhaustion", 0.1d, 0, 1000.0D);
+			onAttackFoodExhaustion = builder
+					.comment(" Food exhausted on every attack in addition to the minecraft attack food exhaustion.")
+					.defineInRange("On Attack Food Exhaustion", 0.1d, 0, 1000.0D);
 			builder.pop();
 
 			builder.comment(" Options related to the temperature system").push("temperature");
@@ -977,7 +983,10 @@ public class Config
 		public final ForgeConfigSpec.BooleanValue mergeHydrationAndSaturationTooltip;
 		public final ForgeConfigSpec.BooleanValue thirstSaturationDisplayed;
 		public final ForgeConfigSpec.BooleanValue lowHydrationEffect;
+		public final ForgeConfigSpec.BooleanValue showHydrationBar;
 		public final ForgeConfigSpec.BooleanValue showDrinkPreview;
+		public final ForgeConfigSpec.IntValue hydrationBarOffsetX;
+		public final ForgeConfigSpec.IntValue hydrationBarOffsetY;
 
 		Client(ForgeConfigSpec.Builder builder)
 		{
@@ -1072,21 +1081,34 @@ public class Config
 			builder.pop();
 
 			builder.push("thirst");
+			builder.push("tooltip");
 			showHydrationTooltip = builder
 					.comment(" If enabled, show the hydration values in the item tooltip.")
 					.define("Show Hydration Tooltip", true);
 			mergeHydrationAndSaturationTooltip = builder
 					.comment(" If enabled, show the hydration and the saturation values on the same line in the tooltip.")
 					.define("Merge Hydration And Saturation Tooltip", true);
+			builder.pop();
 			thirstSaturationDisplayed = builder
 					.comment(" Whether the Thirst Saturation is displayed or not.")
 					.define("Render the thirst saturation", true);
 			lowHydrationEffect = builder
 					.comment(" If enabled, player's vision will become blurry when running low on hydration.")
 					.define("Low Thirst Effect", true);
+			builder.push("hydration-bar");
+			showHydrationBar = builder
+					.comment(" If enabled, the hydration bar will be displayed.")
+					.define("Show Hydration Bar", true);
 			showDrinkPreview = builder
 					.comment(" If enabled, a preview on hydration bar will be displayed if player holds a drink item.")
 					.define("Show Drink Preview", true);
+			hydrationBarOffsetX = builder
+					.comment(" How much the hydration bar is moved to the right.")
+					.defineInRange("Hydration Bar Offset X", 0, -10000, 10000);
+			hydrationBarOffsetY = builder
+					.comment(" How much the hydration bar is moved to the bottom.")
+					.defineInRange("Hydration Bar Offset Y", 0, -10000, 10000);
+			builder.pop();
 			builder.pop();
 		}
 	}
@@ -1106,11 +1128,14 @@ public class Config
 		public static boolean hideInfoFromDebug;
 		public static boolean naturalRegenerationEnabled;
 		public static boolean vanillaFreezeEnabled;
-		public static double baseFoodExhaustion;
-		public static double sprintingFoodExhaustion;
 		public static ItemUtil.CompassInfo compassInfoMode;
 		public static boolean showCoordinateOnMap;
 		public static double initialHealth;
+
+		// Food
+		public static double baseFoodExhaustion;
+		public static double sprintingFoodExhaustion;
+		public static double onAttackFoodExhaustion;
 
 		// Temperature
 		public static boolean temperatureEnabled;
@@ -1341,7 +1366,10 @@ public class Config
 		public static boolean mergeHydrationAndSaturationTooltip;
 		public static boolean thirstSaturationDisplayed;
 		public static boolean lowHydrationEffect;
+		public static boolean showHydrationBar;
 		public static boolean showDrinkPreview;
+		public static int hydrationBarOffsetX;
+		public static int hydrationBarOffsetY;
 
 		public static void bakeCommon()
 		{
@@ -1352,11 +1380,13 @@ public class Config
 				naturalRegenerationEnabled = COMMON.naturalRegenerationEnabled.get();
 				routinePacketSync = COMMON.routinePacketSync.get();
 				vanillaFreezeEnabled = COMMON.vanillaFreezeEnabled.get();
-				baseFoodExhaustion = COMMON.baseFoodExhaustion.get();
-				sprintingFoodExhaustion = COMMON.sprintingFoodExhaustion.get();
 				compassInfoMode = COMMON.compassInfoMode.get();
 				showCoordinateOnMap = COMMON.showCoordinateOnMap.get();
 				initialHealth = COMMON.initialHealth.get();
+
+				baseFoodExhaustion = COMMON.baseFoodExhaustion.get();
+				sprintingFoodExhaustion = COMMON.sprintingFoodExhaustion.get();
+				onAttackFoodExhaustion = COMMON.onAttackFoodExhaustion.get();
 
 				temperatureEnabled = COMMON.temperatureEnabled.get();
 				tempTickTime = COMMON.tempTickTime.get();
@@ -1595,7 +1625,10 @@ public class Config
 				showHydrationTooltip = CLIENT.showHydrationTooltip.get();
 				mergeHydrationAndSaturationTooltip = CLIENT.mergeHydrationAndSaturationTooltip.get();
 				lowHydrationEffect = CLIENT.lowHydrationEffect.get();
+				showHydrationBar = CLIENT.showHydrationBar.get();
 				showDrinkPreview = CLIENT.showDrinkPreview.get();
+				hydrationBarOffsetX = CLIENT.hydrationBarOffsetX.get();
+				hydrationBarOffsetY = CLIENT.hydrationBarOffsetY.get();
 			}
 			catch (Exception e)
 			{

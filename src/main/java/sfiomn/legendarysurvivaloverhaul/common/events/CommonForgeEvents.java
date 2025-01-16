@@ -169,6 +169,7 @@ public class CommonForgeEvents {
             Entity monster = event.getTarget();
             if(monster.isAttackable()) {
                 ThirstUtil.addExhaustion(player, (float) Config.Baked.onAttackThirstExhaustion);
+                player.causeFoodExhaustion((float) Config.Baked.onAttackFoodExhaustion);
             }
         }
     }

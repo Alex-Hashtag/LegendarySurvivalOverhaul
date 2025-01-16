@@ -39,6 +39,7 @@ public class RenderThirstGui
 
 	public static final IGuiOverlay THIRST_GUI = (forgeGui, guiGraphics, partialTicks, width, height) -> {
 		if (Config.Baked.thirstEnabled
+				&& Config.Baked.showHydrationBar
 				&& !Minecraft.getInstance().options.hideGui
 				&& forgeGui.shouldDrawSurvivalElements()) {
 			Player player = forgeGui.getMinecraft().player;
@@ -92,8 +93,8 @@ public class RenderThirstGui
 		float saturation = THIRST_CAP.getSaturationLevel();
 
 		// Same as hunger bar
-		int left = width / 2 + 91;
-		int top = height - forgeGui.rightHeight;
+		int left = width / 2 + 91 + Config.Baked.hydrationBarOffsetX;
+		int top = height - forgeGui.rightHeight + Config.Baked.hydrationBarOffsetY;
 
 		boolean hasThirstEffect = player.hasEffect(MobEffectRegistry.THIRST.get());
 		boolean hasHeatThirstEffect = player.hasEffect(MobEffectRegistry.HEAT_THIRST.get());
