@@ -152,18 +152,23 @@ public class ClientForgeEvents {
                     if (Config.Baked.breathingSoundEnabled)
                         TemperatureBreathSound.tickPlay(player);
                 }
-                if (shouldApplyThirst(player) && Config.Baked.lowHydrationEffect) {
+
+                if (Config.Baked.wetnessEnabled)
+                    RenderWetnessGui.updateTimer();
+
+                if (shouldApplyThirst(player) && Config.Baked.lowHydrationEffect)
                     RenderThirstOverlay.updateThirstEffect(player);
-                }
-                if (LegendarySurvivalOverhaul.sereneSeasonsLoaded && Config.Baked.seasonCardsEnabled) {
+
+                if (LegendarySurvivalOverhaul.sereneSeasonsLoaded && Config.Baked.seasonCardsEnabled)
                     RenderSeasonCards.updateSeasonCardFading(player);
-                }
+
                 if (Config.Baked.localizedBodyDamageEnabled) {
                     RenderBodyDamageGui.updateFlashingTimer();
 
                     if (KeyMappingRegistry.showBodyHealth.consumeClick())
                         ClientHooks.openBodyHealthScreen(player);
                 }
+
                 if (Config.Baked.thirstEnabled && Config.Baked.showDrinkPreview)
                     RenderThirstGui.updateTimer();
 

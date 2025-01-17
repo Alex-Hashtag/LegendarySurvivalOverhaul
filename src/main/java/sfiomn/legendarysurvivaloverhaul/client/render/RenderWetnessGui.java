@@ -3,7 +3,6 @@ package sfiomn.legendarysurvivaloverhaul.client.render;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.client.gui.overlay.IGuiOverlay;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
@@ -11,7 +10,6 @@ import sfiomn.legendarysurvivaloverhaul.common.capabilities.wetness.WetnessCapab
 import sfiomn.legendarysurvivaloverhaul.common.integration.curios.CuriosUtil;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
 import sfiomn.legendarysurvivaloverhaul.util.CapabilityUtil;
-import sfiomn.legendarysurvivaloverhaul.util.MathUtil;
 
 import java.util.Random;
 
@@ -29,7 +27,7 @@ public class RenderWetnessGui
 
 	private static int frameCounter = -1;
 	private static boolean startAnimation = false;
-	private static int lastWetnessSymbol = 0;
+	private static WetnessIcon lastWetnessIcon;
 	private static int flashCounter = -1;
 	
 	public static IGuiOverlay WETNESS_GUI = (forgeGui, guiGraphics, partialTicks, width, height) -> {
@@ -56,29 +54,24 @@ public class RenderWetnessGui
 			WETNESS_CAP = CapabilityUtil.getWetnessCapability(player);
 
 		int wetness = WETNESS_CAP.getWetness();
-		byte wetnessSymbol;
+		if (wetness == 0)
+			return;
 		
 		int x = width / 2 - (WETNESS_TEXTURE_WIDTH / 2) + Config.Baked.wetnessIndicatorOffsetX;
 		int y = height - 61 + Config.Baked.wetnessIndicatorOffsetY;
 
 		if (CuriosUtil.isThermometerEquipped && Config.Baked.wetnessIndicatorOffsetY == 0)
 			y += 10;
+
+		WetnessIcon wetnessIcon = WetnessIcon.get(wetness);
 		
-		if (wetness == 0)
-			return;
-		else
-			wetnessSymbol = (byte) (Mth.clamp(MathUtil.invLerp(0, WetnessCapability.WETNESS_LIMIT, wetness) * 4, 0, 3));
-		
-		if (lastWetnessSymbol != wetnessSymbol)
+		if (lastWetnessIcon != wetnessIcon)
 		{
 			flashCounter = 3;
-			lastWetnessSymbol = wetnessSymbol;
+			lastWetnessIcon = wetnessIcon;
 		}
-		
-		int texPosX = wetnessSymbol * WETNESS_TEXTURE_WIDTH;
-		int texPosY = WETNESS_TEXTURE_POS_Y + (flashCounter >= 0 ? WETNESS_TEXTURE_HEIGHT : 0);
-		
-		gui.blit(ICONS, x, y, texPosX, texPosY, WETNESS_TEXTURE_WIDTH, WETNESS_TEXTURE_HEIGHT);
+
+		gui.blit(ICONS, x, y, wetnessIcon.getXTextureOffset(), wetnessIcon.getYTextureOffset(flashCounter >= 0), WETNESS_TEXTURE_WIDTH, WETNESS_TEXTURE_HEIGHT);
 	}
 
 	public static void updateTimer()
@@ -93,5 +86,38 @@ public class RenderWetnessGui
 			frameCounter = 24;
 			startAnimation = false;
 		}
+	}
+
+	private enum WetnessIcon {
+		WETNESS_0(0),
+		WETNESS_1(1),
+		WETNESS_2(2),
+		WETNESS_3(3);
+
+		public final int iconIndexX;
+
+		WetnessIcon(int iconIndexX) {
+			this.iconIndexX = iconIndexX;
+		}
+
+		public int getXTextureOffset() {
+			return iconIndexX * WETNESS_TEXTURE_WIDTH;
+		}
+
+		public int getYTextureOffset(boolean isFlash) {
+			return WETNESS_TEXTURE_POS_Y + (isFlash ? WETNESS_TEXTURE_HEIGHT : 0);
+		}
+
+		public static WetnessIcon get(int wetness) {
+			float wetnessRation =  wetness / (float) WetnessCapability.WETNESS_LIMIT;
+            if (wetnessRation <= 0.25f)
+				return WETNESS_0;
+			else if (wetnessRation <= 0.5f)
+				return WETNESS_1;
+			else if (wetnessRation <= 0.75f)
+				return WETNESS_2;
+			else
+				return WETNESS_3;
+        }
 	}
 }
