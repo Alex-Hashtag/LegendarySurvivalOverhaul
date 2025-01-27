@@ -251,6 +251,9 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .define('i', Items.IRON_INGOT)
                 .define('r', Items.REDSTONE)
                 .unlockedBy("has_glass", has(Tags.Items.GLASS))
+                .unlockedBy("has_iron", has(Items.IRON_INGOT))
+                .unlockedBy("has_redstone", has(Items.REDSTONE))
+                .unlockedBy("has_gold_ingot", has(Items.GOLD_INGOT))
                 .save(consumer);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, BlockRegistry.SEWING_TABLE.get())
@@ -261,6 +264,8 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .define('r', Items.REDSTONE)
                 .define('p', ItemTags.PLANKS)
                 .unlockedBy("has_planks", has(ItemTags.PLANKS))
+                .unlockedBy("has_iron", has(Items.IRON_INGOT))
+                .unlockedBy("has_redstone", has(Items.REDSTONE))
                 .save(consumer);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.FOOD, ItemRegistry.HEART_CONTAINER.get())

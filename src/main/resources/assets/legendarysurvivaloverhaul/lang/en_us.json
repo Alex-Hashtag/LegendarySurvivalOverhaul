@@ -1,4 +1,13 @@
 {
+	"advancement.legendarysurvivaloverhaul": "Legendary Survival Overhaul",
+	"advancement.legendarysurvivaloverhaul.description": "",
+	"advancement.legendarysurvivaloverhaul.get_a_thermometer": "Get a Thermometer",
+	"advancement.legendarysurvivaloverhaul.get_a_thermometer.description": "Craft a Thermometer",
+	"advancement.legendarysurvivaloverhaul.get_a_sewing_table": "Get a Sewing Table",
+	"advancement.legendarysurvivaloverhaul.get_a_sewing_table.description": "Craft a Sewing Table",
+	"advancement.legendarysurvivaloverhaul.sew_a_coat": "Sew a Coat",
+	"advancement.legendarysurvivaloverhaul.sew_a_coat.description": "Use the sewing table to sew a coat on an armor",
+
 	"key.legendarysurvivaloverhaul.title": "Legendary Survival Overhaul",
 	"key.legendarysurvivaloverhaul.added_desc": "Show Description",
 	"tooltip.legendarysurvivaloverhaul.added_desc.activate": "Press %s%s%s for descriptions",

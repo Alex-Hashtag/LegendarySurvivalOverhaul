@@ -1,6 +1,9 @@
 package sfiomn.legendarysurvivaloverhaul.common.containers;
 
+import net.minecraft.advancements.Advancement;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
@@ -21,6 +24,8 @@ import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+
+import static sfiomn.legendarysurvivaloverhaul.data.providers.ModAdvancementProvider.SEW_A_COAT_ADVANCEMENT;
 
 public class SewingTableContainer extends ItemCombinerMenu {
     public static final int INPUT_SLOT = 0;
@@ -78,6 +83,14 @@ public class SewingTableContainer extends ItemCombinerMenu {
                     itemStack = this.inputSlots.getItem(INPUT_SLOT).copy();
                     CoatItem coatItem = (CoatItem) inputSlots.getItem(ADDITIONAL_SLOT).getItem();
                     TemperatureUtil.setArmorCoatTag(itemStack, coatItem.coat.id());
+                    if (player instanceof ServerPlayer serverPlayer) {
+                        Advancement sewCoatAdvancement = serverPlayer.server.getAdvancements().getAdvancement(new ResourceLocation(SEW_A_COAT_ADVANCEMENT));
+                        if (sewCoatAdvancement != null) {
+                            for (String criteria: serverPlayer.getAdvancements().getOrStartProgress(sewCoatAdvancement).getRemainingCriteria()) {
+                                serverPlayer.getAdvancements().award(sewCoatAdvancement, criteria);
+                            }
+                        }
+                    }
                 }
             }
         }

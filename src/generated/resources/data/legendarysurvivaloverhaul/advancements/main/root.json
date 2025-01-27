@@ -1,0 +1,30 @@
+{
+  "criteria": {
+    "main": {
+      "conditions": {},
+      "trigger": "minecraft:tick"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "background": "minecraft:textures/block/ice.png",
+    "description": {
+      "translate": "advancement.legendarysurvivaloverhaul.description"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "legendarysurvivaloverhaul:thermometer"
+    },
+    "show_toast": false,
+    "title": {
+      "translate": "advancement.legendarysurvivaloverhaul"
+    }
+  },
+  "requirements": [
+    [
+      "main"
+    ]
+  ],
+  "sends_telemetry_event": true
+}
