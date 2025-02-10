@@ -3,6 +3,7 @@ package sfiomn.legendarysurvivaloverhaul.common.events;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.DamageTypeTags;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
@@ -15,9 +16,11 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.level.GameRules;
+import net.minecraft.world.level.entity.LevelEntityGetter;
 import net.minecraft.world.level.storage.LevelData;
 import net.minecraft.world.level.storage.PrimaryLevelData;
 import net.minecraftforge.common.ForgeMod;
+import net.minecraftforge.common.Tags;
 import net.minecraftforge.event.ItemAttributeModifierEvent;
 import net.minecraftforge.event.entity.living.*;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
@@ -206,10 +209,12 @@ public class CommonForgeEvents {
             !event.getSource().is(DamageTypes.DROWN) &&
             !event.getSource().is(ModDamageTypes.DEHYDRATION) &&
             !event.getSource().is(ModDamageTypes.HYPOTHERMIA) &&
-            !event.getSource().is(ModDamageTypes.HYPERTHERMIA) && event.getEntity().hasEffect(MobEffectRegistry.VULNERABILITY.get()))
+            !event.getSource().is(ModDamageTypes.HYPERTHERMIA) && event.getEntity().hasEffect(MobEffectRegistry.VULNERABILITY.get())) {
+
             event.setAmount(event.getAmount() * (1 + 0.2f * Objects.requireNonNull(event.getEntity().getEffect(MobEffectRegistry.VULNERABILITY.get())).getAmplifier() + 1));
 
-        else if (event.getSource().is(DamageTypes.FALL) && event.getEntity().hasEffect(MobEffectRegistry.HARD_FALLING.get())) {
+        } else if (event.getSource().is(DamageTypes.FALL) && event.getEntity().hasEffect(MobEffectRegistry.HARD_FALLING.get())) {
+
             event.setAmount(event.getAmount() * (1 + 0.2f * Objects.requireNonNull(event.getEntity().getEffect(MobEffectRegistry.HARD_FALLING.get())).getAmplifier() + 1));
             event.getEntity().level().playSound(null, event.getEntity(), SoundRegistry.HARD_FALLING_HURT.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
         }
@@ -225,9 +230,8 @@ public class CommonForgeEvents {
         if (player.level().isClientSide)
             return;
 
-        if (shouldApplyHealthOverhaul(player)) {
+        if (shouldApplyHealthOverhaul(player))
             event.setAmount(HealthUtil.hurtPlayer(player, event.getAmount()));
-        }
 
         if (shouldApplyLocalizedBodyDamage(player)) {
             float bodyPartDamageValue = event.getAmount() * (float) Config.Baked.bodyDamageMultiplier;

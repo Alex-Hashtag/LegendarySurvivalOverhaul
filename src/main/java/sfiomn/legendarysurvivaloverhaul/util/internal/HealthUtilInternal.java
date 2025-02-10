@@ -58,9 +58,8 @@ public class HealthUtilInternal implements IHealthUtil {
     public float hurtPlayer(Player player, float damageValue) {
         HealthCapability healthCapability = CapabilityUtil.getHealthCapability(player);
 
-        float shieldValue = healthCapability.getShieldHealth();
+        float shieldValue = Math.max(healthCapability.getShieldHealth(), 0);
         healthCapability.addShieldHealth(-damageValue);
-        damageValue -= shieldValue;
 
         return Math.max(damageValue - shieldValue, 0);
     }

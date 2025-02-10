@@ -47,7 +47,7 @@
     }
   },
   "display": {
-    "announce_to_chat": false,
+    "announce_to_chat": true,
     "description": {
       "translate": "advancement.legendarysurvivaloverhaul.sew_a_coat.description"
     },
@@ -56,7 +56,7 @@
     "icon": {
       "item": "legendarysurvivaloverhaul:cooling_coat_1"
     },
-    "show_toast": false,
+    "show_toast": true,
     "title": {
       "translate": "advancement.legendarysurvivaloverhaul.sew_a_coat"
     }

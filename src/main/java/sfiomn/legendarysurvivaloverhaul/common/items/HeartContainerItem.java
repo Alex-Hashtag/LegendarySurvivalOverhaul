@@ -79,8 +79,8 @@ public class HeartContainerItem extends Item
 					Minecraft.getInstance().gameRenderer.displayItemActivation(stack);
 				}
 			}
-
-			stack.shrink(1);
+			if (!player.isCreative())
+				stack.shrink(1);
 		}
 
 		return stack;

@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:barter",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "legendarysurvivaloverhaul:nether_chalice"
+        },
+        {
+          "type": "minecraft:empty",
+          "weight": 99
+        }
+      ],
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "legendarysurvivaloverhaul:inject/gameplay/piglin_bartering"
+}

@@ -46,13 +46,19 @@ public class ModAdvancementProvider extends ForgeAdvancementProvider {
                     .save(consumer, LegendarySurvivalOverhaul.MOD_ID + ":main/root");
 
             Advancement get_a_thermometer = Advancement.Builder.advancement()
-                    .display(ItemRegistry.THERMOMETER.get(), Component.translatable("advancement." + LegendarySurvivalOverhaul.MOD_ID + ".get_a_thermometer"), Component.translatable("advancement." + LegendarySurvivalOverhaul.MOD_ID + ".get_a_thermometer.description"), null, FrameType.TASK, false, false, false)
+                    .display(ItemRegistry.THERMOMETER.get(), Component.translatable("advancement." + LegendarySurvivalOverhaul.MOD_ID + ".get_a_thermometer"), Component.translatable("advancement." + LegendarySurvivalOverhaul.MOD_ID + ".get_a_thermometer.description"), null, FrameType.TASK, true, true, false)
                     .parent(root)
                     .addCriterion("inventory_changed", InventoryChangeTrigger.TriggerInstance.hasItems(ItemRegistry.THERMOMETER.get()))
                     .save(consumer, LegendarySurvivalOverhaul.MOD_ID + ":main/get_a_thermometer");
 
+            Advancement get_a_calendar = Advancement.Builder.advancement()
+                    .display(ItemRegistry.SEASONAL_CALENDAR.get(), Component.translatable("advancement." + LegendarySurvivalOverhaul.MOD_ID + ".get_a_calendar"), Component.translatable("advancement." + LegendarySurvivalOverhaul.MOD_ID + ".get_a_calendar.description"), null, FrameType.TASK, true, true, false)
+                    .parent(root)
+                    .addCriterion("inventory_changed", InventoryChangeTrigger.TriggerInstance.hasItems(ItemRegistry.SEASONAL_CALENDAR.get()))
+                    .save(consumer, LegendarySurvivalOverhaul.MOD_ID + ":main/get_a_calendar");
+
             Advancement use_a_sewing_table = Advancement.Builder.advancement()
-                    .display(BlockRegistry.SEWING_TABLE.get(), Component.translatable("advancement." + LegendarySurvivalOverhaul.MOD_ID + ".get_a_sewing_table"), Component.translatable("advancement." + LegendarySurvivalOverhaul.MOD_ID + ".get_a_sewing_table.description"), null, FrameType.TASK, false, false, false)
+                    .display(BlockRegistry.SEWING_TABLE.get(), Component.translatable("advancement." + LegendarySurvivalOverhaul.MOD_ID + ".get_a_sewing_table"), Component.translatable("advancement." + LegendarySurvivalOverhaul.MOD_ID + ".get_a_sewing_table.description"), null, FrameType.TASK, true, true, false)
                     .parent(root)
                     .addCriterion("inventory_changed", InventoryChangeTrigger.TriggerInstance.hasItems(BlockRegistry.SEWING_TABLE.get()))
                     .save(consumer, LegendarySurvivalOverhaul.MOD_ID + ":main/get_a_sewing_table");
@@ -66,7 +72,7 @@ public class ModAdvancementProvider extends ForgeAdvancementProvider {
                 );
             }
             Advancement sew_a_coat = Advancement.Builder.advancement()
-                    .display(ItemRegistry.COOLING_COAT_1.get(), Component.translatable("advancement." + LegendarySurvivalOverhaul.MOD_ID + ".sew_a_coat"), Component.translatable("advancement." + LegendarySurvivalOverhaul.MOD_ID + ".sew_a_coat.description"), null, FrameType.TASK, false, false, false)
+                    .display(ItemRegistry.COOLING_COAT_1.get(), Component.translatable("advancement." + LegendarySurvivalOverhaul.MOD_ID + ".sew_a_coat"), Component.translatable("advancement." + LegendarySurvivalOverhaul.MOD_ID + ".sew_a_coat.description"), null, FrameType.TASK, true, true, false)
                     .parent(use_a_sewing_table)
                     .addCriterion("recipe_crafted", RecipeCraftedTrigger.TriggerInstance.craftedItem(RecipeRegistry.SEWING_RECIPE.getId(), itemPredicates))
                     .save(consumer, SEW_A_COAT_ADVANCEMENT);

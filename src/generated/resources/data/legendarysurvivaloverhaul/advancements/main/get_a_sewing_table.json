@@ -15,7 +15,7 @@
     }
   },
   "display": {
-    "announce_to_chat": false,
+    "announce_to_chat": true,
     "description": {
       "translate": "advancement.legendarysurvivaloverhaul.get_a_sewing_table.description"
     },
@@ -24,7 +24,7 @@
     "icon": {
       "item": "legendarysurvivaloverhaul:sewing_table"
     },
-    "show_toast": false,
+    "show_toast": true,
     "title": {
       "translate": "advancement.legendarysurvivaloverhaul.get_a_sewing_table"
     }

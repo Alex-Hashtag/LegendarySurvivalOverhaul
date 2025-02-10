@@ -45,8 +45,8 @@ public class HealthCapability implements IHealthCapability
 	}
 
 	@Override
-	public void addShieldHealth(float healthValue) {
-		this.setShieldHealth(this.getShieldHealth() + healthValue);
+	public void addShieldHealth(float shieldValue) {
+		this.setShieldHealth(this.getShieldHealth() + shieldValue);
 	}
 
 	@Override

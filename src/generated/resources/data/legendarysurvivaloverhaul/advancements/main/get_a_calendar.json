@@ -6,7 +6,7 @@
         "items": [
           {
             "items": [
-              "legendarysurvivaloverhaul:thermometer"
+              "legendarysurvivaloverhaul:seasonal_calendar"
             ]
           }
         ]
@@ -17,16 +17,16 @@
   "display": {
     "announce_to_chat": true,
     "description": {
-      "translate": "advancement.legendarysurvivaloverhaul.get_a_thermometer.description"
+      "translate": "advancement.legendarysurvivaloverhaul.get_a_calendar.description"
     },
     "frame": "task",
     "hidden": false,
     "icon": {
-      "item": "legendarysurvivaloverhaul:thermometer"
+      "item": "legendarysurvivaloverhaul:seasonal_calendar"
     },
     "show_toast": true,
     "title": {
-      "translate": "advancement.legendarysurvivaloverhaul.get_a_thermometer"
+      "translate": "advancement.legendarysurvivaloverhaul.get_a_calendar"
     }
   },
   "requirements": [

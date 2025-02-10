@@ -182,10 +182,12 @@ public class ModCapabilities
 				HealthCapability oldCap = CapabilityUtil.getHealthCapability(orig);
 				orig.invalidateCaps();
 
+				player.getPersistentData().putBoolean("tempImmuneOnSpawn", orig.getPersistentData().getBoolean("tempImmuneOnSpawn"));
+
 				HealthCapability newCap = CapabilityUtil.getHealthCapability(player);
 
 				newCap.setAdditionalHealth(oldCap.getAdditionalHealth());
-				HealthUtil.initializeHealthAttributes(event.getEntity());
+				HealthUtil.initializeHealthAttributes(player);
 
 				if (Config.Baked.heartsLostOnDeath >= 0)
 					HealthUtil.loseHearth(player, Config.Baked.heartsLostOnDeath);

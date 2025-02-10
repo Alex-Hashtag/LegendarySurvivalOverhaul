@@ -165,7 +165,7 @@ public class BodyDamageCapability implements IBodyDamageCapability
 						bodyPart.reduceRemainingHealingTicks(healingTick);
 				}
 
-				if (bodyPart.getDamage() == bodyPart.getMaxHealth()) {
+				if (Config.Baked.healthOverhaulEnabled && bodyPart.getDamage() == bodyPart.getMaxHealth()) {
 					expectedBrokenHearts += Config.Baked.brokenHeartsPerInjuredLimb;
 				}
 			}

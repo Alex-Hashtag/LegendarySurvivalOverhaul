@@ -66,7 +66,8 @@ public class ShieldContainerItem extends Item
 				level.playSound(null, player, SoundRegistry.HEART_CONTAINER.get(), SoundSource.NEUTRAL, 1.0f, 1.0f);
 			}
 
-			stack.shrink(1);
+			if (!player.isCreative())
+				stack.shrink(1);
 		}
 		
 		return stack;
