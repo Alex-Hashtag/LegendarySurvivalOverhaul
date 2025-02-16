@@ -161,8 +161,8 @@ public class BodyHealthScreen extends Screen {
 
         bodyPartButton.render(gui, mouseX, mouseY, partialTicks);
 
-        if (bodyPartButton.isMouseOver(mouseX, mouseY) && totalRemainingHealing == 0 && this.hand != null) {
-            totalRemainingHealing = this.healingValue;
+        if (bodyPartButton.isMouseOver(mouseX, mouseY) && this.hand != null) {
+            totalRemainingHealing += this.healingValue;
         }
 
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
