@@ -141,7 +141,7 @@ public class TemperatureUtilInternal implements ITemperatureUtil
 
 	@Override
 	public void applyItemAttributeModifiers(ItemAttributeModifierEvent event) {
-		if (Minecraft.getInstance().level != null && ItemUtil.canBeEquippedInSlot(event.getItemStack(), event.getSlotType())) {
+		if (ItemUtil.canBeEquippedInSlot(event.getItemStack(), event.getSlotType())) {
 			JsonTemperatureResistance config = new JsonTemperatureResistance();
 			for (AttributeModifierBase attributeModifier : ITEM_ATTRIBUTE_MODIFIERS_REGISTRY.get().getValues()) {
 				config.add(attributeModifier.getItemAttributes(event.getItemStack()));
