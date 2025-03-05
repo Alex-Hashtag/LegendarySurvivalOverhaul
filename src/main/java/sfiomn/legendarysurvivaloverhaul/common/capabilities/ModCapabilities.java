@@ -182,11 +182,9 @@ public class ModCapabilities
 				HealthCapability oldCap = CapabilityUtil.getHealthCapability(orig);
 				orig.invalidateCaps();
 
-				player.getPersistentData().putBoolean("tempImmuneOnSpawn", orig.getPersistentData().getBoolean("tempImmuneOnSpawn"));
-
 				HealthCapability newCap = CapabilityUtil.getHealthCapability(player);
+				newCap.readNBT(oldCap.writeNBT());
 
-				newCap.setAdditionalHealth(oldCap.getAdditionalHealth());
 				HealthUtil.initializeHealthAttributes(player);
 
 				if (Config.Baked.heartsLostOnDeath >= 0)
@@ -199,15 +197,20 @@ public class ModCapabilities
 			}
 
 			if (Config.Baked.localizedBodyDamageEnabled) {
-
 				sendBodyDamageUpdate(player);
 			}
+
+			if (Config.Baked.temperatureEnabled)
+				player.getPersistentData().putBoolean("tempImmuneOnSpawn", orig.getPersistentData().getBoolean("tempImmuneOnSpawn"));
 		}
 		else
 		{
 			if (Config.Baked.temperatureEnabled)
 			{
+				orig.reviveCaps();
 				TemperatureCapability oldCap = CapabilityUtil.getTempCapability(orig);
+				orig.invalidateCaps();
+
 				TemperatureCapability newCap = CapabilityUtil.getTempCapability(player);
 				newCap.readNBT(oldCap.writeNBT());
 				sendTemperatureUpdate(player);
@@ -215,7 +218,10 @@ public class ModCapabilities
 
 			if (Config.Baked.wetnessEnabled)
 			{
+				orig.reviveCaps();
 				WetnessCapability oldCap = CapabilityUtil.getWetnessCapability(orig);
+				orig.invalidateCaps();
+
 				WetnessCapability newCap = CapabilityUtil.getWetnessCapability(player);
 				newCap.readNBT(oldCap.writeNBT());
 				sendWetnessUpdate(player);
@@ -223,7 +229,10 @@ public class ModCapabilities
 
 			if (Config.Baked.thirstEnabled)
 			{
+				orig.reviveCaps();
 				ThirstCapability oldCap = CapabilityUtil.getThirstCapability(orig);
+				orig.invalidateCaps();
+
 				ThirstCapability newCap = CapabilityUtil.getThirstCapability(player);
 				newCap.readNBT(oldCap.writeNBT());
 				sendThirstUpdate(player);
@@ -231,16 +240,25 @@ public class ModCapabilities
 			
 			if (Config.Baked.healthOverhaulEnabled)
 			{
+				orig.reviveCaps();
 				HealthCapability oldCap = CapabilityUtil.getHealthCapability(orig);
+				orig.invalidateCaps();
+
 				HealthCapability newCap = CapabilityUtil.getHealthCapability(player);
 				newCap.readNBT(oldCap.writeNBT());
+
+				HealthUtil.initializeHealthAttributes(player);
 				HealthUtil.updatePlayerMaxHealthAttribute(player);
+				player.setHealth(player.getMaxHealth());
 				sendHealthUpdate(player);
 			}
 
 			if (Config.Baked.localizedBodyDamageEnabled)
 			{
+				orig.reviveCaps();
 				BodyDamageCapability oldCap = CapabilityUtil.getBodyDamageCapability(orig);
+				orig.invalidateCaps();
+
 				BodyDamageCapability newCap = CapabilityUtil.getBodyDamageCapability(player);
 				newCap.readNBT(oldCap.writeNBT());
 				sendBodyDamageUpdate(player);
