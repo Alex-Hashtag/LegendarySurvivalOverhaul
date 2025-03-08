@@ -2,18 +2,22 @@ package sfiomn.legendarysurvivaloverhaul.common.capabilities.health;
 
 import net.minecraft.util.Mth;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraftforge.event.TickEvent;
 import sfiomn.legendarysurvivaloverhaul.api.health.IHealthCapability;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
+import sfiomn.legendarysurvivaloverhaul.registry.AttributeRegistry;
 
 public class HealthCapability implements IHealthCapability
 {
 	private float additionalHealth;
-	private int brokenHearts;
 	private float shieldHealth;
 	
 	// Unsaved Data
-	private float oldAdditionalHealth;
+	private int brokenHearts;
 	private int oldBrokenHearts;
+	private float oldAdditionalHealth;
 	private float oldShieldHealth;
 	private int packetTimer;
 	
@@ -27,21 +31,25 @@ public class HealthCapability implements IHealthCapability
 		additionalHealth = 0;
 		brokenHearts = 0;
 		shieldHealth = 0;
-		
-		oldAdditionalHealth = 0;
+
 		oldBrokenHearts = 0;
+		oldAdditionalHealth = 0;
 		oldShieldHealth = 0;
 		packetTimer = 0;
+	}
+
+	public void tickUpdate(Player player, Level level, TickEvent.Phase phase) {
+		if (phase == TickEvent.Phase.START) {
+			this.packetTimer++;
+			return;
+		}
+
+		brokenHearts = (int) (player.getAttributeValue(AttributeRegistry.BROKEN_HEART.get()));
 	}
 
 	@Override
 	public void addAdditionalHealth(float healthValue) {
 		this.setAdditionalHealth(this.getAdditionalHealth() + healthValue);
-	}
-
-	@Override
-	public void addBrokenHeart(int heartValue) {
-		this.setBrokenHearts(this.getBrokenHearts() + heartValue);
 	}
 
 	@Override
@@ -55,24 +63,20 @@ public class HealthCapability implements IHealthCapability
 	}
 
 	@Override
-	public void setBrokenHearts(int newHeartValue) {
-		this.brokenHearts = Math.max(0, newHeartValue);
+	public void setShieldHealth(float newHealthValue) {
+		this.shieldHealth = Mth.clamp(newHealthValue, 0.0f, (float) Config.Baked.maxShieldHealth);
 	}
 
 	@Override
-	public void setShieldHealth(float newHealthValue) {
-		this.shieldHealth = Mth.clamp(newHealthValue, 0.0f, (float) Config.Baked.maxShieldHealth);
+	public int getBrokenHearts()
+	{
+		return brokenHearts;
 	}
 
 	@Override
 	public float getAdditionalHealth()
 	{
 		return additionalHealth;
-	}
-
-	@Override
-	public int getBrokenHearts() {
-		return brokenHearts;
 	}
 
 	@Override
@@ -84,16 +88,15 @@ public class HealthCapability implements IHealthCapability
 	public boolean isDirty()
 	{
 		return additionalHealth != oldAdditionalHealth ||
-				brokenHearts != oldBrokenHearts ||
-				shieldHealth != oldShieldHealth;
+				shieldHealth != oldShieldHealth || brokenHearts != oldBrokenHearts;
 	}
 
 	@Override
 	public void setClean()
 	{
 		oldAdditionalHealth = additionalHealth;
-		oldBrokenHearts = brokenHearts;
 		oldShieldHealth = shieldHealth;
+		oldBrokenHearts = brokenHearts;
 	}
 
 	@Override
@@ -107,8 +110,8 @@ public class HealthCapability implements IHealthCapability
 		CompoundTag compound = new CompoundTag();
 		
 		compound.putFloat("additionalHealth", getAdditionalHealth());
-		compound.putInt("brokenHearts", getBrokenHearts());
 		compound.putFloat("shieldHealth", getShieldHealth());
+		compound.putInt("brokenHearts", getBrokenHearts());
 		
 		return compound;
 	}
@@ -119,9 +122,9 @@ public class HealthCapability implements IHealthCapability
 
 		if (compound.contains("additionalHealth"))
 			this.setAdditionalHealth(compound.getFloat("additionalHealth"));
-		if (compound.contains("brokenHearts"))
-			this.setBrokenHearts(compound.getInt("brokenHearts"));
 		if (compound.contains("shieldHealth"))
 			this.setShieldHealth(compound.getFloat("shieldHealth"));
+		if (compound.contains("brokenHearts"))
+			this.brokenHearts = compound.getInt("brokenHearts");
 	}
 }

@@ -338,6 +338,7 @@ public class CommonForgeEvents {
         }
 
         HealthUtil.updatePlayerMaxHealthAttribute(event.getEntity());
+        BodyDamageUtil.updatePlayerBrokenHeartAttribute(event.getEntity());
     }
 
     @SubscribeEvent

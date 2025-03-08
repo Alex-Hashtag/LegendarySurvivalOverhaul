@@ -38,12 +38,9 @@ public class HealthUtilInternal implements IHealthUtil {
 
         if (Config.Baked.healthOverhaulEnabled) {
             HealthCapability healthCapability = CapabilityUtil.getHealthCapability(player);
-            maxHealth += healthCapability.getAdditionalHealth();
+            int minhHearthLimitWithBrokenHearth = (int) player.getAttributeValue(AttributeRegistry.BROKEN_HEART_RESILIENCE.get());
 
-            if (Config.Baked.localizedBodyDamageEnabled && healthCapability.getBrokenHearts() > 0) {
-                int minhHearthLimitWithBrokenHearth = (int) player.getAttributeValue(AttributeRegistry.BROKEN_HEART_RESILIENCE.get());
-                maxHealth -= Mth.clamp(maxHealth - minhHearthLimitWithBrokenHearth * 2, 0, healthCapability.getBrokenHearts() * 2);
-            }
+            maxHealth += healthCapability.getAdditionalHealth() - Mth.clamp(maxHealth - minhHearthLimitWithBrokenHearth * 2, 0, healthCapability.getBrokenHearts() * 2);
         }
         return maxHealth;
     }

@@ -3,7 +3,6 @@ package sfiomn.legendarysurvivaloverhaul.common.capabilities;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
@@ -18,7 +17,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.network.PacketDistributor;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
-import sfiomn.legendarysurvivaloverhaul.api.bodydamage.BodyPartEnum;
+import sfiomn.legendarysurvivaloverhaul.api.bodydamage.BodyDamageUtil;
 import sfiomn.legendarysurvivaloverhaul.api.health.HealthUtil;
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.bodydamage.BodyDamageCapability;
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.bodydamage.BodyDamageProvider;
@@ -35,7 +34,6 @@ import sfiomn.legendarysurvivaloverhaul.common.capabilities.wetness.WetnessProvi
 import sfiomn.legendarysurvivaloverhaul.config.Config;
 import sfiomn.legendarysurvivaloverhaul.network.NetworkHandler;
 import sfiomn.legendarysurvivaloverhaul.network.packets.*;
-import sfiomn.legendarysurvivaloverhaul.registry.AttributeRegistry;
 import sfiomn.legendarysurvivaloverhaul.util.CapabilityUtil;
 
 @Mod.EventBusSubscriber(modid = LegendarySurvivalOverhaul.MOD_ID, bus = EventBusSubscriber.Bus.FORGE)
@@ -152,11 +150,14 @@ public class ModCapabilities
 				{
 					bodyDamageCapability.setClean();
 					sendBodyDamageUpdate(player);
+					BodyDamageUtil.updatePlayerBrokenHeartAttribute(player);
 				}
 			}
 
 			if (Config.Baked.healthOverhaulEnabled) {
 				HealthCapability healthCapability = CapabilityUtil.getHealthCapability(player);
+
+				healthCapability.tickUpdate(player, level, event.phase);
 
 				if(event.phase == Phase.START && healthCapability.isDirty())
 				{
@@ -198,6 +199,7 @@ public class ModCapabilities
 
 			if (Config.Baked.localizedBodyDamageEnabled) {
 				sendBodyDamageUpdate(player);
+				BodyDamageUtil.updatePlayerBrokenHeartAttribute(player);
 			}
 
 			if (Config.Baked.temperatureEnabled)
@@ -213,6 +215,7 @@ public class ModCapabilities
 
 				TemperatureCapability newCap = CapabilityUtil.getTempCapability(player);
 				newCap.readNBT(oldCap.writeNBT());
+
 				sendTemperatureUpdate(player);
 			}
 
@@ -224,6 +227,7 @@ public class ModCapabilities
 
 				WetnessCapability newCap = CapabilityUtil.getWetnessCapability(player);
 				newCap.readNBT(oldCap.writeNBT());
+
 				sendWetnessUpdate(player);
 			}
 
@@ -235,6 +239,7 @@ public class ModCapabilities
 
 				ThirstCapability newCap = CapabilityUtil.getThirstCapability(player);
 				newCap.readNBT(oldCap.writeNBT());
+
 				sendThirstUpdate(player);
 			}
 			
@@ -261,6 +266,8 @@ public class ModCapabilities
 
 				BodyDamageCapability newCap = CapabilityUtil.getBodyDamageCapability(player);
 				newCap.readNBT(oldCap.writeNBT());
+
+				BodyDamageUtil.updatePlayerBrokenHeartAttribute(player);
 				sendBodyDamageUpdate(player);
 			}
 		}

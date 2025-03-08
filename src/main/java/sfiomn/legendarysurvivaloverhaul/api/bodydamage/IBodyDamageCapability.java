@@ -6,6 +6,8 @@ import net.minecraftforge.event.TickEvent;
 
 public interface IBodyDamageCapability
 {
+	public int getExpectedBrokenHearts();
+
 	public float getBodyPartDamage(BodyPartEnum part);
 
 	public float getBodyPartHealthRatio(BodyPartEnum part);

@@ -25,4 +25,6 @@ public interface IBodyDamageUtil
     public float getTotalRemainingHealing(Player player, BodyPartEnum bodyPartEnum);
 
     public float getMaxHealth(Player player, BodyPartEnum bodyPartEnum);
+
+    public void updatePlayerBrokenHeartAttribute(Player player);
 }

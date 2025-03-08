@@ -111,4 +111,13 @@ public class BodyDamageUtil
 	{
 		return internal.getMaxHealth(player, bodyPart);
 	}
+
+	/**
+	 * Update the broken heart attribute of the player, based on the number of broken limbs. <br>
+	 * @param player player
+	 */
+	public static void updatePlayerBrokenHeartAttribute(Player player)
+	{
+		internal.updatePlayerBrokenHeartAttribute(player);
+	}
 }

@@ -25,7 +25,7 @@ public class HealthCommand extends CommandBase {
                         .then(Commands.literal("get")
                                 .then(Commands.literal("shield")
                                         .executes(src ->  new HealthCommand().getShield(src.getSource(), EntityArgument.getEntities(src, "target"))))
-                                .then(Commands.literal("additionHealth")
+                                .then(Commands.literal("additionalHealth")
                                         .executes(src ->  new HealthCommand().getHealth(src.getSource(), EntityArgument.getEntities(src, "target"))))
                                 .then(Commands.literal("brokenHearts")
                                         .executes(src ->  new HealthCommand().getBrokenHeart(src.getSource(), EntityArgument.getEntities(src, "target")))))
@@ -36,9 +36,7 @@ public class HealthCommand extends CommandBase {
                                 .then(Commands.literal("additionalHealth")
                                         .then(Commands.argument("healthValue", DoubleArgumentType.doubleArg(0, Config.Baked.maxAdditionalHealth))
                                                 .executes(src ->  new HealthCommand().setHealth(src.getSource(), EntityArgument.getEntities(src, "target"), DoubleArgumentType.getDouble(src, "healthValue")))))
-                                .then(Commands.literal("brokenHearts")
-                                        .then(Commands.argument("brokenHearts", IntegerArgumentType.integer(0))
-                                                .executes(src ->  new HealthCommand().setBrokenHearts(src.getSource(), EntityArgument.getEntities(src, "target"), IntegerArgumentType.getInteger(src, "brokenHearts"))))))
+                        )
                 )
         );
     }
@@ -127,16 +125,6 @@ public class HealthCommand extends CommandBase {
         for (Entity entity: entities) {
             if (entity instanceof Player player) {
                 CapabilityUtil.getHealthCapability(player).setAdditionalHealth((float) healthValue);
-            }
-        }
-        return Command.SINGLE_SUCCESS;
-    }
-
-    private int setBrokenHearts(CommandSourceStack src, Collection<? extends Entity> entities, int brokenHearts) throws CommandSyntaxException
-    {
-        for (Entity entity: entities) {
-            if (entity instanceof Player player) {
-                CapabilityUtil.getHealthCapability(player).setBrokenHearts(brokenHearts);
             }
         }
         return Command.SINGLE_SUCCESS;

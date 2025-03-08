@@ -11,14 +11,11 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.event.TickEvent;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
-import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.bodydamage.*;
-import sfiomn.legendarysurvivaloverhaul.common.capabilities.health.HealthCapability;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
 import sfiomn.legendarysurvivaloverhaul.registry.AttributeRegistry;
 import sfiomn.legendarysurvivaloverhaul.registry.MobEffectRegistry;
 import sfiomn.legendarysurvivaloverhaul.registry.SoundRegistry;
-import sfiomn.legendarysurvivaloverhaul.util.CapabilityUtil;
 import sfiomn.legendarysurvivaloverhaul.util.MathUtil;
 
 import java.util.*;
@@ -29,9 +26,10 @@ public class BodyDamageCapability implements IBodyDamageCapability
 	// Saved data
 	private Map<BodyPartEnum, BodyPart> bodyParts;
 	private int headacheTimer;
-	private int injuredLimbBrokenHearts;
+	private int expectedBrokenHearts;
 
 	// Unsaved data
+	private int oldExpectedBrokenHearts;
 	private int updateTickTimer; // Update immediately first time around
 	private float playerMaxHealth;
 	private boolean manualDirty;
@@ -47,7 +45,7 @@ public class BodyDamageCapability implements IBodyDamageCapability
 	{
 		this.updateTickTimer = 20;
 		this.headacheTimer = 0;
-		this.injuredLimbBrokenHearts = 0;
+		this.expectedBrokenHearts = 0;
 		this.playerMaxHealth = 0;
 		this.manualDirty = false;
 
@@ -81,7 +79,7 @@ public class BodyDamageCapability implements IBodyDamageCapability
 			if (bodyPart.isDirty())
 				return true;
 		}
-		return manualDirty;
+		return manualDirty || (this.expectedBrokenHearts != this.oldExpectedBrokenHearts);
 	}
 
 	@Override
@@ -90,6 +88,7 @@ public class BodyDamageCapability implements IBodyDamageCapability
 			bodyPart.setClean();
 		}
 		this.manualDirty = false;
+		this.oldExpectedBrokenHearts = this.expectedBrokenHearts;
 	}
 
 	@Override
@@ -98,7 +97,7 @@ public class BodyDamageCapability implements IBodyDamageCapability
 	}
 
 	@Override
-	public void tickUpdate(Player player, Level world, TickEvent.Phase phase)
+	public void tickUpdate(Player player, Level level, TickEvent.Phase phase)
 	{
 		if(phase == TickEvent.Phase.START) {
 			this.packetTimer++;
@@ -109,7 +108,7 @@ public class BodyDamageCapability implements IBodyDamageCapability
 			updateTickTimer = 0;
 			float playerMaxHealthCheckUpdate = player.getMaxHealth();
 			if (Config.Baked.healthOverhaulEnabled) {
-				int brokenHearts = CapabilityUtil.getHealthCapability(player).getBrokenHearts();
+				int brokenHearts = (int) (player.getAttributeValue(AttributeRegistry.BROKEN_HEART.get()));
 				int minhHearthLimitWithBrokenHearth = (int) player.getAttributeValue(AttributeRegistry.BROKEN_HEART_RESILIENCE.get());
 				playerMaxHealthCheckUpdate += Mth.clamp(player.getMaxHealth() - minhHearthLimitWithBrokenHearth * 2, 0, brokenHearts * 2);
 			}
@@ -170,11 +169,7 @@ public class BodyDamageCapability implements IBodyDamageCapability
 				}
 			}
 
-			if (Config.Baked.healthOverhaulEnabled && expectedBrokenHearts != this.injuredLimbBrokenHearts) {
-				HealthCapability healthCapability = CapabilityUtil.getHealthCapability(player);
-				healthCapability.addBrokenHeart(expectedBrokenHearts - this.injuredLimbBrokenHearts);
-				this.injuredLimbBrokenHearts = expectedBrokenHearts;
-			}
+			this.expectedBrokenHearts = expectedBrokenHearts;
 		}
 
 		if (player.hasEffect(MobEffectRegistry.HEADACHE.get())) {
@@ -201,6 +196,11 @@ public class BodyDamageCapability implements IBodyDamageCapability
 				return true;
 		}
 		return false;
+	}
+
+	@Override
+	public int getExpectedBrokenHearts() {
+		return this.expectedBrokenHearts;
 	}
 
 	@Override
@@ -287,7 +287,7 @@ public class BodyDamageCapability implements IBodyDamageCapability
 			compound = bodyPart.writeNbt(compound);
 		}
 		compound.putInt("headacheTimer", this.headacheTimer);
-		compound.putInt("brokenHearts", this.injuredLimbBrokenHearts);
+		compound.putInt("expectedBrokenHearts", this.expectedBrokenHearts);
 
 		return compound;
 	}
@@ -300,6 +300,6 @@ public class BodyDamageCapability implements IBodyDamageCapability
 		}
 
 		this.headacheTimer = compound.getInt("headacheTimer");
-		this.injuredLimbBrokenHearts = compound.getInt("brokenHearts");
+		this.expectedBrokenHearts = compound.getInt("expectedBrokenHearts");
 	}
 }

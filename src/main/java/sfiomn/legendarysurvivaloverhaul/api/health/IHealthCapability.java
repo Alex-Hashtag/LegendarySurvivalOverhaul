@@ -4,13 +4,9 @@ public interface IHealthCapability
 {
 	public void addAdditionalHealth(float healthValue);
 
-	public void addBrokenHeart(int heartValue);
-
 	public void addShieldHealth(float healthValue);
 
 	public void setAdditionalHealth(float newHealthValue);
-
-	public void setBrokenHearts(int newHeartValue);
 
 	public void setShieldHealth(float newHealthValue);
 

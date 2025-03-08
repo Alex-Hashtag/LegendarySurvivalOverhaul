@@ -18,6 +18,7 @@ public class AttributeRegistry {
     public static final RegistryObject<Attribute> COLD_RESISTANCE = ATTRIBUTES.register("cold_resistance", () -> new RangedAttribute("attribute." + LegendarySurvivalOverhaul.MOD_ID + ".cold_resistance", 0.0f, 0.0f, 10000.0f).setSyncable(true));
     public static final RegistryObject<Attribute> THERMAL_RESISTANCE = ATTRIBUTES.register("thermal_resistance", () -> new RangedAttribute("attribute." + LegendarySurvivalOverhaul.MOD_ID + ".thermal_resistance", 0.0f, 0.0f, 10000.0f).setSyncable(true));
 
+    public static final RegistryObject<Attribute> BROKEN_HEART = ATTRIBUTES.register("broken_heart", () -> new RangedAttribute("attribute." + LegendarySurvivalOverhaul.MOD_ID + ".broken_heart", 0.0f, 0.0f, 10000.0f).setSyncable(true));
     public static final RegistryObject<Attribute> PERMANENT_HEART = ATTRIBUTES.register("permanent_heart", () -> new RangedAttribute("attribute." + LegendarySurvivalOverhaul.MOD_ID + ".permanent_heart", 1.0f, 1.0f, 10000.0f).setSyncable(true));
     public static final RegistryObject<Attribute> BROKEN_HEART_RESILIENCE = ATTRIBUTES.register("broken_heart_resilience", () -> new RangedAttribute("attribute." + LegendarySurvivalOverhaul.MOD_ID + ".broken_heart_resilience", 1.0f, 1.0f, 10000.0f).setSyncable(true));
 

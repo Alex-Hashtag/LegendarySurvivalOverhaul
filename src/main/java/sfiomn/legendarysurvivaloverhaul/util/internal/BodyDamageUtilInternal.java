@@ -8,13 +8,19 @@ import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.tuple.Pair;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.bodydamage.*;
+import sfiomn.legendarysurvivaloverhaul.common.capabilities.bodydamage.BodyPart;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
+import sfiomn.legendarysurvivaloverhaul.registry.AttributeRegistry;
+import sfiomn.legendarysurvivaloverhaul.util.AttributeBuilder;
 import sfiomn.legendarysurvivaloverhaul.util.CapabilityUtil;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class BodyDamageUtilInternal implements IBodyDamageUtil {
+    public static final UUID BROKEN_HEART_ATTRIBUTE_UUID = UUID.fromString("2e3cede5-3c18-45c2-8a46-31b89fb9c027");
+    public static final AttributeBuilder BROKEN_HEART_ATTRIBUTE = new AttributeBuilder(AttributeRegistry.BROKEN_HEART.get(), "attribute." + LegendarySurvivalOverhaul.MOD_ID + ".broken_heart");
+
     private static final Map<MalusBodyPartEnum, Map<Float, Pair<MobEffect, Integer>>> bodyPartMalusEffects = new HashMap<>();
 
     public BodyDamageUtilInternal() {}
@@ -157,5 +163,18 @@ public class BodyDamageUtilInternal implements IBodyDamageUtil {
         IBodyDamageCapability capability = CapabilityUtil.getBodyDamageCapability(player);
 
         return capability.getBodyPartMaxHealth(bodyPartEnum);
+    }
+
+    @Override
+    public void updatePlayerBrokenHeartAttribute(Player player)
+    {
+        int expectedBrokenHearts = 0;
+        if (Config.Baked.localizedBodyDamageEnabled && Config.Baked.healthOverhaulEnabled) {
+            IBodyDamageCapability capability = CapabilityUtil.getBodyDamageCapability(player);
+
+            expectedBrokenHearts = capability.getExpectedBrokenHearts();
+        }
+
+        BROKEN_HEART_ATTRIBUTE.addModifier(player, BROKEN_HEART_ATTRIBUTE_UUID, expectedBrokenHearts);
     }
 }
