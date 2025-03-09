@@ -12,8 +12,6 @@ public interface IHealthCapability
 
 	public float getAdditionalHealth();
 
-	public int getBrokenHearts();
-
 	public float getShieldHealth();
 	
 	/**

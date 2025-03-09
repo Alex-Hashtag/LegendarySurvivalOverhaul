@@ -157,13 +157,10 @@ public class ModCapabilities
 			if (Config.Baked.healthOverhaulEnabled) {
 				HealthCapability healthCapability = CapabilityUtil.getHealthCapability(player);
 
-				healthCapability.tickUpdate(player, level, event.phase);
-
 				if(event.phase == Phase.START && healthCapability.isDirty())
 				{
 					healthCapability.setClean();
 					sendHealthUpdate(player);
-					HealthUtil.updatePlayerMaxHealthAttribute(player);
 				}
 			}
 		}
@@ -177,6 +174,14 @@ public class ModCapabilities
 
 		if (event.isWasDeath())
 		{
+			if (Config.Baked.localizedBodyDamageEnabled) {
+				sendBodyDamageUpdate(player);
+				BodyDamageUtil.updatePlayerBrokenHeartAttribute(player);
+			}
+
+			if (Config.Baked.temperatureEnabled)
+				player.getPersistentData().putBoolean("tempImmuneOnSpawn", orig.getPersistentData().getBoolean("tempImmuneOnSpawn"));
+
 			if (Config.Baked.healthOverhaulEnabled)
 			{
 				orig.reviveCaps();
@@ -196,14 +201,6 @@ public class ModCapabilities
 				player.setHealth(player.getMaxHealth());
 				sendHealthUpdate(player);
 			}
-
-			if (Config.Baked.localizedBodyDamageEnabled) {
-				sendBodyDamageUpdate(player);
-				BodyDamageUtil.updatePlayerBrokenHeartAttribute(player);
-			}
-
-			if (Config.Baked.temperatureEnabled)
-				player.getPersistentData().putBoolean("tempImmuneOnSpawn", orig.getPersistentData().getBoolean("tempImmuneOnSpawn"));
 		}
 		else
 		{

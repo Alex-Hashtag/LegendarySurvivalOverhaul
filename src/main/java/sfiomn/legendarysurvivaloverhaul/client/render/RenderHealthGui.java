@@ -1,13 +1,10 @@
 package sfiomn.legendarysurvivaloverhaul.client.render;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.ai.attributes.AttributeInstance;
-import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -63,7 +60,7 @@ public class RenderHealthGui
 		if (HEALTH_CAP == null || player.tickCount % 20 == 0)
 			HEALTH_CAP = CapabilityUtil.getHealthCapability(player);
 
-		int brokenHearts = Mth.clamp(Mth.ceil(Config.Baked.initialHealth + HEALTH_CAP.getAdditionalHealth() - player.getMaxHealth() / 2.0), 0, HEALTH_CAP.getBrokenHearts());
+		int brokenHearts = Mth.clamp(Mth.ceil(Config.Baked.initialHealth + HEALTH_CAP.getAdditionalHealth() - player.getMaxHealth() / 2.0), 0, (int) player.getAttributeValue(AttributeRegistry.BROKEN_HEART.get()));
 		float shieldHealth = HEALTH_CAP.getShieldHealth();
 
 		if (brokenHearts + shieldHealth == 0)

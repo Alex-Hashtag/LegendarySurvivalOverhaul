@@ -2,7 +2,6 @@ package sfiomn.legendarysurvivaloverhaul.common.commands;
 
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.DoubleArgumentType;
-import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -12,6 +11,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
+import sfiomn.legendarysurvivaloverhaul.registry.AttributeRegistry;
 import sfiomn.legendarysurvivaloverhaul.util.CapabilityUtil;
 
 import java.util.Collection;
@@ -93,7 +93,7 @@ public class HealthCommand extends CommandBase {
             for (Entity entity : entities) {
                 if (entity instanceof Player player && src.getEntity() instanceof Player) {
                     reply.append("Player ").append(player.getName().getString()).append(" ");
-                    float brokenHearts = CapabilityUtil.getHealthCapability(player).getBrokenHearts();
+                    float brokenHearts = (int) player.getAttributeValue(AttributeRegistry.BROKEN_HEART.get());
 
                     reply.append("Broken Hearts: ")
                             .append(brokenHearts)

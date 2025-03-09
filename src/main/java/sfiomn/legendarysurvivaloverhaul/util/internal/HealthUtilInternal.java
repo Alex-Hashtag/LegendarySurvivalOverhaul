@@ -20,6 +20,7 @@ public class HealthUtilInternal implements IHealthUtil {
     public static final UUID INITIAL_BROKEN_HEART_RESILIENCE_ATTRIBUTE_UUID = UUID.fromString("eb13fc3b-cc33-4716-a0b0-9f4cdd7704ba");
 
     public static final AttributeBuilder HEALTH_ATTRIBUTE = new AttributeBuilder(Attributes.MAX_HEALTH, "attribute." + LegendarySurvivalOverhaul.MOD_ID + ".max_health");
+    public static final AttributeBuilder BROKEN_HEART_ATTRIBUTE = new AttributeBuilder(AttributeRegistry.BROKEN_HEART.get(), "attribute." + LegendarySurvivalOverhaul.MOD_ID + ".broken_heart");
     public static final AttributeBuilder PERMANENT_HEART_ATTRIBUTE = new AttributeBuilder(AttributeRegistry.PERMANENT_HEART.get(), "attribute." + LegendarySurvivalOverhaul.MOD_ID + ".permanent_heart");
     public static final AttributeBuilder BROKEN_HEART_RESILIENCE_ATTRIBUTE = new AttributeBuilder(AttributeRegistry.BROKEN_HEART_RESILIENCE.get(), "attribute." + LegendarySurvivalOverhaul.MOD_ID + ".broken_heart_resilience");
 
@@ -40,7 +41,7 @@ public class HealthUtilInternal implements IHealthUtil {
             HealthCapability healthCapability = CapabilityUtil.getHealthCapability(player);
             int minhHearthLimitWithBrokenHearth = (int) player.getAttributeValue(AttributeRegistry.BROKEN_HEART_RESILIENCE.get());
 
-            maxHealth += healthCapability.getAdditionalHealth() - Mth.clamp(maxHealth - minhHearthLimitWithBrokenHearth * 2, 0, healthCapability.getBrokenHearts() * 2);
+            maxHealth += healthCapability.getAdditionalHealth() - Mth.clamp(maxHealth - minhHearthLimitWithBrokenHearth * 2, 0, ((int) player.getAttributeValue(AttributeRegistry.BROKEN_HEART.get())) * 2);
         }
         return maxHealth;
     }
@@ -68,6 +69,12 @@ public class HealthUtilInternal implements IHealthUtil {
         int minhHearthLimit = (int) player.getAttributeValue(AttributeRegistry.PERMANENT_HEART.get());
 
         healthCapability.setAdditionalHealth(Math.max(minhHearthLimit * 2 - Mth.ceil(Config.Baked.initialHealth), healthCapability.getAdditionalHealth() - amountLost * 2));
+        updatePlayerHealthAttributes(player);
+    }
+
+    @Override
+    public void updateBrokenHearts(Player player, UUID attributeUuid, int brokenHearts) {
+        BROKEN_HEART_ATTRIBUTE.addModifier(player, attributeUuid, brokenHearts);
         updatePlayerHealthAttributes(player);
     }
 }

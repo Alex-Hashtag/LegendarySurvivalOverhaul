@@ -2,12 +2,8 @@ package sfiomn.legendarysurvivaloverhaul.common.capabilities.health;
 
 import net.minecraft.util.Mth;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Level;
-import net.minecraftforge.event.TickEvent;
 import sfiomn.legendarysurvivaloverhaul.api.health.IHealthCapability;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
-import sfiomn.legendarysurvivaloverhaul.registry.AttributeRegistry;
 
 public class HealthCapability implements IHealthCapability
 {
@@ -15,8 +11,6 @@ public class HealthCapability implements IHealthCapability
 	private float shieldHealth;
 	
 	// Unsaved Data
-	private int brokenHearts;
-	private int oldBrokenHearts;
 	private float oldAdditionalHealth;
 	private float oldShieldHealth;
 	private int packetTimer;
@@ -29,22 +23,11 @@ public class HealthCapability implements IHealthCapability
 	public void init()
 	{
 		additionalHealth = 0;
-		brokenHearts = 0;
 		shieldHealth = 0;
 
-		oldBrokenHearts = 0;
 		oldAdditionalHealth = 0;
 		oldShieldHealth = 0;
 		packetTimer = 0;
-	}
-
-	public void tickUpdate(Player player, Level level, TickEvent.Phase phase) {
-		if (phase == TickEvent.Phase.START) {
-			this.packetTimer++;
-			return;
-		}
-
-		brokenHearts = (int) (player.getAttributeValue(AttributeRegistry.BROKEN_HEART.get()));
 	}
 
 	@Override
@@ -68,12 +51,6 @@ public class HealthCapability implements IHealthCapability
 	}
 
 	@Override
-	public int getBrokenHearts()
-	{
-		return brokenHearts;
-	}
-
-	@Override
 	public float getAdditionalHealth()
 	{
 		return additionalHealth;
@@ -88,7 +65,7 @@ public class HealthCapability implements IHealthCapability
 	public boolean isDirty()
 	{
 		return additionalHealth != oldAdditionalHealth ||
-				shieldHealth != oldShieldHealth || brokenHearts != oldBrokenHearts;
+				shieldHealth != oldShieldHealth;
 	}
 
 	@Override
@@ -96,7 +73,6 @@ public class HealthCapability implements IHealthCapability
 	{
 		oldAdditionalHealth = additionalHealth;
 		oldShieldHealth = shieldHealth;
-		oldBrokenHearts = brokenHearts;
 	}
 
 	@Override
@@ -111,7 +87,6 @@ public class HealthCapability implements IHealthCapability
 		
 		compound.putFloat("additionalHealth", getAdditionalHealth());
 		compound.putFloat("shieldHealth", getShieldHealth());
-		compound.putInt("brokenHearts", getBrokenHearts());
 		
 		return compound;
 	}
@@ -124,7 +99,5 @@ public class HealthCapability implements IHealthCapability
 			this.setAdditionalHealth(compound.getFloat("additionalHealth"));
 		if (compound.contains("shieldHealth"))
 			this.setShieldHealth(compound.getFloat("shieldHealth"));
-		if (compound.contains("brokenHearts"))
-			this.brokenHearts = compound.getInt("brokenHearts");
 	}
 }

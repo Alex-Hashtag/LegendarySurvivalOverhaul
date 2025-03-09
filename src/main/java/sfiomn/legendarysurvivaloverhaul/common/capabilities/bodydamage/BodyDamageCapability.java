@@ -11,11 +11,14 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.event.TickEvent;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
+import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.bodydamage.*;
+import sfiomn.legendarysurvivaloverhaul.api.health.HealthUtil;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
 import sfiomn.legendarysurvivaloverhaul.registry.AttributeRegistry;
 import sfiomn.legendarysurvivaloverhaul.registry.MobEffectRegistry;
 import sfiomn.legendarysurvivaloverhaul.registry.SoundRegistry;
+import sfiomn.legendarysurvivaloverhaul.util.CapabilityUtil;
 import sfiomn.legendarysurvivaloverhaul.util.MathUtil;
 
 import java.util.*;
@@ -75,6 +78,8 @@ public class BodyDamageCapability implements IBodyDamageCapability
 
 	@Override
 	public boolean isDirty() {
+		LegendarySurvivalOverhaul.LOGGER.debug("body damage is dirty ?");
+		LegendarySurvivalOverhaul.LOGGER.debug(this.expectedBrokenHearts + " =? " + this.oldExpectedBrokenHearts);
 		for (BodyPart bodyPart: this.bodyParts.values()) {
 			if (bodyPart.isDirty())
 				return true;
@@ -110,7 +115,8 @@ public class BodyDamageCapability implements IBodyDamageCapability
 			if (Config.Baked.healthOverhaulEnabled) {
 				int brokenHearts = (int) (player.getAttributeValue(AttributeRegistry.BROKEN_HEART.get()));
 				int minhHearthLimitWithBrokenHearth = (int) player.getAttributeValue(AttributeRegistry.BROKEN_HEART_RESILIENCE.get());
-				playerMaxHealthCheckUpdate += Mth.clamp(player.getMaxHealth() - minhHearthLimitWithBrokenHearth * 2, 0, brokenHearts * 2);
+				float additionalHealth = CapabilityUtil.getHealthCapability(player).getAdditionalHealth();
+				playerMaxHealthCheckUpdate += Math.min(brokenHearts * 2, 20 + additionalHealth - minhHearthLimitWithBrokenHearth * 2);
 			}
 
 			if (Config.Baked.bodyPartHealthMode.equals("DYNAMIC") && playerMaxHealth != playerMaxHealthCheckUpdate) {

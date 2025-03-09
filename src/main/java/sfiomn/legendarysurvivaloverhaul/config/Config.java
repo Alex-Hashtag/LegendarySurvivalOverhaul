@@ -291,7 +291,7 @@ public class Config
 
 			builder.push("advanced");
 			routinePacketSync = builder
-					.comment(" How often player temperature is regularly synced between the client and server, in ticks.",
+					.comment(" How often player temperature, thirst, body damage and health is regularly synced between the client and server, in ticks.",
 							" Lower values will increase accuracy at the cost of performance.")
 					.defineInRange("Routine Packet Sync", 30, 1, Integer.MAX_VALUE);
 
@@ -763,11 +763,12 @@ public class Config
 					.defineInRange("Permanent Hearts", 10, 1, 10000);
 			builder.pop();
 			builder.push("broken-hearts")
-					.comment(" Broken Hearts are an integration with the localized body damage feature. Enables both feature to have it.",
-							" Broken Heart are lost hearts when a player's limb is severely injured and can be recovered by healing it.");
+					.comment(" Broken Hearts are an interaction with the localized body damage feature. Enables both feature to have it.",
+							" Broken Hearts are lost hearts when a player's limb is severely injured and it can be recovered by healing the injured limb.");
 			resilientHeartsWithBrokenHearts = builder
-					.comment(" Resilient hearts number below which Broken Hearts can no longer be added.")
-					.defineInRange("Minimum Player's Heart number With Broken Hearts (Broken Heart Resilience)", 2, 1, 10000);
+					.comment(" The Resilient hearts is the number of heart below which Broken Hearts can no longer be added.",
+							" By default, the player has 2 resilient heart, meaning no matter the amount of broken hearts, the player won't go below 2 hearts.")
+					.defineInRange("Minimum Amount Of Player's Heart With Broken Hearts (Broken Heart Resilience)", 2, 1, 10000);
 			brokenHeartsPerInjuredLimb = builder
 					.comment(" Amount of Broken Hearts added per limbs fully injured.")
 					.defineInRange("Added Broken Hearts Per Injured Limb", 1, 0, 10000);

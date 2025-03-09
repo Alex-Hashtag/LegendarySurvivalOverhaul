@@ -1,7 +1,7 @@
 {
 	"heat_stroke": {
 		"category": "neutral",
-		"subtitle": "heat_stroke",
+		"subtitle": "sounds.legendarysurvivaloverhaul.heat_stroke",
 		"sounds": [
 			{
 				"name": "legendarysurvivaloverhaul:heat_stroke",
@@ -11,7 +11,7 @@
 	},
 	"heat_stroke_early": {
 		"category": "neutral",
-		"subtitle": "heat_stroke_early",
+		"subtitle": "sounds.legendarysurvivaloverhaul.heat_stroke_early",
 		"sounds": [
 			{
 				"name": "legendarysurvivaloverhaul:heat_stroke_early",
@@ -21,7 +21,7 @@
 	},
 	"frostbite": {
 		"category": "neutral",
-		"subtitle": "frostbite",
+		"subtitle": "sounds.legendarysurvivaloverhaul.frostbite",
 		"sounds": [
 			{
 				"name": "legendarysurvivaloverhaul:frostbite1",
@@ -35,7 +35,7 @@
 	},
 	"frostbite_early": {
 		"category": "neutral",
-		"subtitle": "frostbite",
+		"subtitle": "sounds.legendarysurvivaloverhaul.frostbite",
 		"sounds": [
 			{
 				"name": "legendarysurvivaloverhaul:frostbite_early",
@@ -49,7 +49,7 @@
 	},
 	"cooler_block": {
 		"category": "neutral",
-		"subtitle": "cooler_block",
+		"subtitle": "sounds.legendarysurvivaloverhaul.cooler_block",
 		"sounds": [
 			{
 				"name": "legendarysurvivaloverhaul:cooler_block1",
@@ -71,7 +71,7 @@
 	},
 	"sewing_table": {
 		"category": "neutral",
-		"subtitle": "sewing_table",
+		"subtitle": "sounds.legendarysurvivaloverhaul.sewing_table",
 		"sounds": [
 			{
 				"name": "legendarysurvivaloverhaul:sewing_table",
@@ -81,7 +81,7 @@
 	},
 	"self_watering" : {
 		"category": "neutral",
-		"subtitle": "self_watering",
+		"subtitle": "sounds.legendarysurvivaloverhaul.self_watering",
 		"sounds": [
 			{
 				"name": "legendarysurvivaloverhaul:self_watering",
@@ -91,7 +91,7 @@
 	},
 	"headshot": {
 		"category": "neutral",
-		"subtitle": "headhot",
+		"subtitle": "sounds.legendarysurvivaloverhaul.headshot",
 		"sounds": [
 			{
 				"name": "legendarysurvivaloverhaul:headshot",
@@ -101,7 +101,7 @@
 	},
 	"heal_body_part": {
 		"category": "neutral",
-		"subtitle": "heal_body_part",
+		"subtitle": "sounds.legendarysurvivaloverhaul.heal_body_part",
 		"sounds": [
 			{
 				"name": "legendarysurvivaloverhaul:heal_body_part",
@@ -111,7 +111,7 @@
 	},
 	"hard_falling_hurt": {
 		"category": "neutral",
-		"subtitle": "hard_falling_hurt",
+		"subtitle": "sounds.legendarysurvivaloverhaul.hard_falling_hurt",
 		"sounds": [
 			{
 				"name": "legendarysurvivaloverhaul:hard_falling_hurt",
@@ -121,7 +121,7 @@
 	},
 	"headache_heartbeat": {
 		"category": "neutral",
-		"subtitle": "headache_heartbeat",
+		"subtitle": "sounds.legendarysurvivaloverhaul.headache_heartbeat",
 		"sounds": [
 			{
 				"name": "legendarysurvivaloverhaul:headache_heartbeat",
@@ -131,7 +131,7 @@
 	},
 	"panting": {
 		"category": "neutral",
-		"subtitle": "panting",
+		"subtitle": "sounds.legendarysurvivaloverhaul.panting",
 		"sounds": [
 			{
 				"name": "legendarysurvivaloverhaul:panting1",
@@ -157,7 +157,7 @@
 	},
 	"shivering": {
 		"category": "neutral",
-		"subtitle": "shivering",
+		"subtitle": "sounds.legendarysurvivaloverhaul.shivering",
 		"sounds": [
 			{
 				"name": "legendarysurvivaloverhaul:shivers1",
@@ -183,7 +183,7 @@
 	},
 	"heart_container": {
 		"category": "neutral",
-		"subtitle": "heart_container",
+		"subtitle": "sounds.legendarysurvivaloverhaul.heart_container",
 		"sounds": [
 			{
 				"name": "legendarysurvivaloverhaul:heart1",
