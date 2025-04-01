@@ -78,8 +78,6 @@ public class BodyDamageCapability implements IBodyDamageCapability
 
 	@Override
 	public boolean isDirty() {
-		LegendarySurvivalOverhaul.LOGGER.debug("body damage is dirty ?");
-		LegendarySurvivalOverhaul.LOGGER.debug(this.expectedBrokenHearts + " =? " + this.oldExpectedBrokenHearts);
 		for (BodyPart bodyPart: this.bodyParts.values()) {
 			if (bodyPart.isDirty())
 				return true;
