@@ -172,7 +172,7 @@ dependencies {
     compileOnly(fg.deobf("curse.maven:terrafirmacraft-302973:5571484"))
     compileOnly(fg.deobf("curse.maven:origins-474438:5314209"))
     compileOnly(fg.deobf("curse.maven:mutantmonsters-852665:5107399"))
-    //implementation(fg.deobf("curse.maven:vampirism-233029:5990073"))
+    compileOnly(fg.deobf("curse.maven:vampirism-233029:5990073"))
     //implementation(fg.deobf("curse.maven:werewolves-417851:5406832"))
     //implementation(fg.deobf("curse.maven:medsandherbs-418682:4840824"))
 
