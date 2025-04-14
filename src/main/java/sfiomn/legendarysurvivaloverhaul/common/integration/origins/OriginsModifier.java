@@ -8,7 +8,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.common.util.LazyOptional;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.temperature.ModifierBase;
-import sfiomn.legendarysurvivaloverhaul.common.integration.json.JsonIntegrationConfig;
+import sfiomn.legendarysurvivaloverhaul.common.integration.jsonConfig.JsonIntegrationConfig;
 
 
 public class OriginsModifier extends ModifierBase {

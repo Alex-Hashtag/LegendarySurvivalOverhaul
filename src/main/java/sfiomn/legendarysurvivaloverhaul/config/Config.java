@@ -766,7 +766,7 @@ public class Config
 					.comment(" Broken Hearts are an interaction with the localized body damage feature. Enables both feature to have it.",
 							" Broken Hearts are lost hearts when a player's limb is severely injured and it can be recovered by healing the injured limb.");
 			resilientHeartsWithBrokenHearts = builder
-					.comment(" The Resilient hearts is the number of heart below which Broken Hearts can no longer be added.",
+					.comment(" The Resilient Hearts is the number of heart below which Broken Hearts can no longer be added.",
 							" By default, the player has 2 resilient heart, meaning no matter the amount of broken hearts, the player won't go below 2 hearts.")
 					.defineInRange("Minimum Amount Of Player's Heart With Broken Hearts (Broken Heart Resilience)", 2, 1, 10000);
 			brokenHeartsPerInjuredLimb = builder

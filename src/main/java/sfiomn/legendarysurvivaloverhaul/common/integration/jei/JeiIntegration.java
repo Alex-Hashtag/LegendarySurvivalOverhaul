@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import static sfiomn.legendarysurvivaloverhaul.common.integration.mutantmonsters.MutantMonstersUtil.isMutantMonstersArmor;
 import static sfiomn.legendarysurvivaloverhaul.util.internal.ThirstUtilInternal.HYDRATION_ENUM_TAG;
 
 @JeiPlugin
@@ -90,25 +91,31 @@ public class JeiIntegration implements IModPlugin {
         ArrayList<SewingRecipe> sewingRecipes = new ArrayList<>();
 
         for (Item item: ForgeRegistries.ITEMS) {
-            if (item instanceof ArmorItem itemArmor && ForgeRegistries.ITEMS.getKey(itemArmor) != null) {
-                ResourceLocation itemArmorRegistryName = ForgeRegistries.ITEMS.getKey(itemArmor);
-                for (RegistryObject<Item> modItem : ItemRegistry.ITEMS.getEntries()) {
-                    if (modItem.get() instanceof CoatItem itemCoat && itemArmorRegistryName != null) {
-                        ItemStack result = new ItemStack(itemArmor);
-                        TemperatureUtil.setArmorCoatTag(result, itemCoat.coat.id());
-                        sewingRecipes.add(
-                                getCoatRecipe(
-                                        "sewing_" + itemArmorRegistryName.getPath() + "_" + modItem.getId().getPath(),
-                                        itemArmor,
-                                        itemCoat,
-                                        result
-                                ));
-                    }
-                }
+            if (item instanceof ArmorItem && ForgeRegistries.ITEMS.getKey(item) != null) {
+                addSewingRecipe(item, sewingRecipes);
+            } else if (isMutantMonstersArmor(item) && ForgeRegistries.ITEMS.getKey(item) != null) {
+                addSewingRecipe(item, sewingRecipes);
             }
         }
 
         return sewingRecipes;
+    }
+
+    private void addSewingRecipe(Item itemArmor, ArrayList<SewingRecipe> sewingRecipes) {
+        ResourceLocation itemArmorRegistryName = ForgeRegistries.ITEMS.getKey(itemArmor);
+        for (RegistryObject<Item> modItem : ItemRegistry.ITEMS.getEntries()) {
+            if (modItem.get() instanceof CoatItem itemCoat && itemArmorRegistryName != null) {
+                ItemStack result = new ItemStack(itemArmor);
+                TemperatureUtil.setArmorCoatTag(result, itemCoat.coat.id());
+                sewingRecipes.add(
+                        getCoatRecipe(
+                                "sewing_" + itemArmorRegistryName.getPath() + "_" + modItem.getId().getPath(),
+                                itemArmor,
+                                itemCoat,
+                                result
+                        ));
+            }
+        }
     }
 
     private SewingRecipe getCoatRecipe(String id, Item base, Item addition, ItemStack result) {

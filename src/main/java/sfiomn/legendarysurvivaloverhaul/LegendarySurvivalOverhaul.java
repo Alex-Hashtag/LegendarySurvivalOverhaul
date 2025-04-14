@@ -38,7 +38,7 @@ import sfiomn.legendarysurvivaloverhaul.common.capabilities.temperature.Temperat
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.thirst.ThirstCapability;
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.wetness.WetnessCapability;
 import sfiomn.legendarysurvivaloverhaul.common.integration.curios.CuriosEvents;
-import sfiomn.legendarysurvivaloverhaul.common.integration.json.JsonIntegrationConfigRegistration;
+import sfiomn.legendarysurvivaloverhaul.common.integration.jsonConfig.JsonIntegrationConfigRegistration;
 import sfiomn.legendarysurvivaloverhaul.common.integration.origins.OriginsEvents;
 import sfiomn.legendarysurvivaloverhaul.common.integration.sereneseasons.SereneSeasonsUtil;
 import sfiomn.legendarysurvivaloverhaul.common.integration.vampirism.VampirismEvents;
@@ -84,11 +84,7 @@ public class LegendarySurvivalOverhaul
 
 	public static boolean vampirismLoaded = false;
 	public static boolean originsLoaded = false;
-
-	public static boolean reskillableLoaded = false;
-	public static boolean reskillableReimaginedLoaded = false;
-	public static boolean ftbQuestsLoaded = false;
-	public static boolean quarkOdditiesLoaded = false;
+	public static boolean mutantMonstersLoaded = false;
 	
 	public static Path configPath = FMLPaths.CONFIGDIR.get();
 	public static Path modConfigPath = Paths.get(configPath.toAbsolutePath().toString(), "legendarysurvivaloverhaul");
@@ -137,10 +133,7 @@ public class LegendarySurvivalOverhaul
 		terraFirmaCraftLoaded = ModList.get().isLoaded("tfc");
 		vampirismLoaded = ModList.get().isLoaded("vampirism");
 		originsLoaded = ModList.get().isLoaded("origins");
-		reskillableLoaded = ModList.get().isLoaded("rereskillable");
-		reskillableReimaginedLoaded = ModList.get().isLoaded("reskillable");
-		ftbQuestsLoaded = ModList.get().isLoaded("ftbquests");
-		quarkOdditiesLoaded = ModList.get().isLoaded("quarkoddities");
+		mutantMonstersLoaded = ModList.get().isLoaded("mutantmonsters");
 
 		if (sereneSeasonsLoaded)
 			LOGGER.debug("Serene Seasons is loaded, enabling compatibility");
@@ -148,14 +141,8 @@ public class LegendarySurvivalOverhaul
 		if (terraFirmaCraftLoaded)
 			LOGGER.debug("TerraFirmaCraft is loaded, enabling compatibility");
 
-		if (reskillableLoaded)
-			LOGGER.debug("Rereskillable is loaded, enabling compatibility");
-
-		if (reskillableReimaginedLoaded)
-			LOGGER.debug("Reskillable Reimagined is loaded, enabling compatibility");
-
-		if (ftbQuestsLoaded)
-			LOGGER.debug("FTB Quests is loaded, enabling compatibility");
+		if (mutantMonstersLoaded)
+			LOGGER.debug("Mutant Monsters is loaded, enabling compatibility");
 
 		if (curiosLoaded) {
 			LOGGER.debug("Curios is loaded, enabling compatibility");
@@ -172,8 +159,8 @@ public class LegendarySurvivalOverhaul
 			forgeBus.register(OriginsEvents.class);
 		}
 
-		if (quarkOdditiesLoaded)
-			LOGGER.debug("Quark Oddities is loaded, enabling compatibility");
+		if (surviveLoaded)
+			LOGGER.debug("Survive is loaded, I hope you know what you're doing");
 
 		if (surviveLoaded)
 			LOGGER.debug("Survive is loaded, I hope you know what you're doing");

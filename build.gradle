@@ -170,8 +170,11 @@ dependencies {
     compileOnly(fg.deobf("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}"))
     compileOnly(fg.deobf("mezz.jei:jei-${minecraft_version}-forge-api:${jei_version}"))
     compileOnly(fg.deobf("curse.maven:terrafirmacraft-302973:5571484"))
-    compileOnly(fg.deobf("curse.maven:vampirism-233029:5526512"))
     compileOnly(fg.deobf("curse.maven:origins-474438:5314209"))
+    compileOnly(fg.deobf("curse.maven:mutantmonsters-852665:5107399"))
+    //implementation(fg.deobf("curse.maven:vampirism-233029:5990073"))
+    //implementation(fg.deobf("curse.maven:werewolves-417851:5406832"))
+    //implementation(fg.deobf("curse.maven:medsandherbs-418682:4840824"))
 
     // at runtime, use the full JEI jar for Forge
     runtimeOnly(fg.deobf("mezz.jei:jei-${minecraft_version}-forge:${jei_version}"))

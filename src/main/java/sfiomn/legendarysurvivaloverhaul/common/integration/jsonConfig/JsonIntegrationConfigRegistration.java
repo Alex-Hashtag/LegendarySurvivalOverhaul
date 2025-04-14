@@ -1,4 +1,4 @@
-package sfiomn.legendarysurvivaloverhaul.common.integration.json;
+package sfiomn.legendarysurvivaloverhaul.common.integration.jsonConfig;
 
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.config.json.temperature.JsonTemperatureResistance;

@@ -25,6 +25,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+import static sfiomn.legendarysurvivaloverhaul.common.integration.mutantmonsters.MutantMonstersUtil.isMutantMonstersArmor;
 import static sfiomn.legendarysurvivaloverhaul.data.providers.ModAdvancementProvider.SEW_A_COAT_ADVANCEMENT;
 
 public class SewingTableContainer extends ItemCombinerMenu {
@@ -124,7 +125,7 @@ public class SewingTableContainer extends ItemCombinerMenu {
     }
 
     public static boolean isItemArmor(ItemStack itemStack) {
-        return itemStack.getItem() instanceof ArmorItem;
+        return itemStack.getItem() instanceof ArmorItem || isMutantMonstersArmor(itemStack.getItem());
     }
 
     public static boolean isItemCoat(ItemStack itemStack) {
