@@ -58,6 +58,7 @@ public class MobEffectRegistry {
 	public static final RegistryObject<Potion> TEMPERATURE_IMMUNITY_POTION_LONG = POTIONS.register("temperature_immunity_long", () -> new Potion("temperature_immunity_long", new MobEffectInstance(TEMPERATURE_IMMUNITY.get(), 2400, 0, false, true, true)));
 
 	public static final RegistryObject<MobEffect> PAINKILLER = EFFECTS.register("painkiller", PainKillerEffect::new);
+	public static final RegistryObject<MobEffect> PAINKILLER_ADDICTION = EFFECTS.register("painkiller_addiction", PainkillerAddictionEffect::new);
 
 	public static final RegistryObject<MobEffect> HARD_FALLING = EFFECTS.register("hard_falling", HardFallingEffect::new);
 	public static final RegistryObject<MobEffect> VULNERABILITY = EFFECTS.register("vulnerability", VulnerabilityEffect::new);

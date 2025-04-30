@@ -1,7 +1,7 @@
 package sfiomn.legendarysurvivaloverhaul.api.temperature;
 
 import net.minecraft.world.item.ItemStack;
-import sfiomn.legendarysurvivaloverhaul.api.config.json.temperature.JsonTemperatureResistance;
+import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonTemperatureResistance;
 
 public class AttributeModifierBase {
 

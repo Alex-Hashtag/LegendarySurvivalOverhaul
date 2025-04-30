@@ -22,15 +22,17 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.registries.ForgeRegistries;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
-import sfiomn.legendarysurvivaloverhaul.api.config.json.bodydamage.JsonConsumableHeal;
-import sfiomn.legendarysurvivaloverhaul.api.config.json.temperature.JsonConsumableTemperature;
-import sfiomn.legendarysurvivaloverhaul.api.config.json.thirst.JsonConsumableThirst;
-import sfiomn.legendarysurvivaloverhaul.api.config.json.thirst.JsonEffectParameter;
+import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonHealingConsumable;
+import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonTemperatureConsumable;
+import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonThirstConsumable;
+import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonMobEffect;
+import sfiomn.legendarysurvivaloverhaul.api.data.manager.BodyDamageDataManager;
+import sfiomn.legendarysurvivaloverhaul.api.data.manager.TemperatureDataManager;
+import sfiomn.legendarysurvivaloverhaul.api.data.manager.ThirstDataManager;
 import sfiomn.legendarysurvivaloverhaul.api.item.CoatEnum;
 import sfiomn.legendarysurvivaloverhaul.api.temperature.TemperatureUtil;
-import sfiomn.legendarysurvivaloverhaul.api.thirst.ThirstUtil;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
-import sfiomn.legendarysurvivaloverhaul.config.json.JsonConfig;
+import sfiomn.legendarysurvivaloverhaul.config.json_old.JsonConfig;
 import sfiomn.legendarysurvivaloverhaul.registry.AttributeRegistry;
 import sfiomn.legendarysurvivaloverhaul.registry.MobEffectRegistry;
 import sfiomn.legendarysurvivaloverhaul.util.MathUtil;
@@ -137,26 +139,25 @@ public class TooltipHandler
 
 	private static void addFoodEffectText(ItemStack stack, List<Component> tooltips) {
 		ResourceLocation itemRegistryName = ForgeRegistries.ITEMS.getKey(stack.getItem());
-		assert itemRegistryName != null;
-		List<JsonConsumableTemperature> jcts = JsonConfig.consumableTemperature.get(itemRegistryName.toString());
+		List<JsonTemperatureConsumable> jtcs = TemperatureDataManager.getConsumable(itemRegistryName);
 
-		if (jcts != null) {
-			for (JsonConsumableTemperature jct: jcts) {
-				MobEffectInstance effectInstance = new MobEffectInstance(jct.getEffect(), jct.duration, Math.abs(jct.temperatureLevel));
+		if (jtcs != null) {
+			for (JsonTemperatureConsumable jtc: jtcs) {
+				MobEffectInstance effectInstance = new MobEffectInstance(jtc.getEffect(), jtc.duration, Math.abs(jtc.temperatureLevel));
 				MutableComponent mutableComponent = Component.translatable(effectInstance.getDescriptionId());
 
-				if (Math.abs(jct.temperatureLevel) > 1) {
-					mutableComponent = Component.translatable("potion.withAmplifier", mutableComponent, Component.translatable("potion.potency." + (Math.abs(jct.temperatureLevel) - 1)));
+				if (Math.abs(jtc.temperatureLevel) > 1) {
+					mutableComponent = Component.translatable("potion.withAmplifier", mutableComponent, Component.translatable("potion.potency." + (Math.abs(jtc.temperatureLevel) - 1)));
 				}
 
-				if (jct.duration > 20) {
+				if (jtc.duration > 20) {
 					mutableComponent = Component.translatable("potion.withDuration", mutableComponent, MobEffectUtil.formatDuration(effectInstance, 1.0f));
 				}
 
-				if (jct.getEffect() == MobEffectRegistry.COLD_FOOD.get() || jct.getEffect() == MobEffectRegistry.COLD_DRINK.get())
+				if (jtc.getEffect() == MobEffectRegistry.COLD_FOOD.get() || jtc.getEffect() == MobEffectRegistry.COLD_DRINK.get())
 					tooltips.add(mutableComponent.withStyle(Style.EMPTY.withColor(TextColor.fromRgb(6466303))));
 
-				if (jct.getEffect() == MobEffectRegistry.HOT_FOOD.get() || jct.getEffect() == MobEffectRegistry.HOT_DRINk.get())
+				if (jtc.getEffect() == MobEffectRegistry.HOT_FOOD.get() || jtc.getEffect() == MobEffectRegistry.HOT_DRINk.get())
 					tooltips.add(mutableComponent.withStyle(Style.EMPTY.withColor(TextColor.fromRgb(16420407))));
 			}
 		}
@@ -165,8 +166,7 @@ public class TooltipHandler
 	private static void addHealingText(ItemStack stack, List<Component> tooltips) {
 
 		ResourceLocation itemRegistryName = ForgeRegistries.ITEMS.getKey(stack.getItem());
-		assert itemRegistryName != null;
-		JsonConsumableHeal jsonConsumableHeal = JsonConfig.consumableHeal.get(itemRegistryName.toString());
+		JsonHealingConsumable jsonConsumableHeal = BodyDamageDataManager.getHealingItem(itemRegistryName);
 
 		if (jsonConsumableHeal != null) {
 			if (jsonConsumableHeal.healingCharges > 0) {
@@ -183,16 +183,14 @@ public class TooltipHandler
 
 	private static void addHydrationTooltip(ItemStack stack, List<Either<FormattedText, TooltipComponent>> tooltips) {
 
-		ResourceLocation itemRegistryName = ForgeRegistries.ITEMS.getKey(stack.getItem());
-		assert itemRegistryName != null;
-		JsonConsumableThirst jsonConsumableThirst = ThirstUtil.getConsumableThirstJsonConfig(itemRegistryName, stack);
+		JsonThirstConsumable jsonThirstConsumable = ThirstDataManager.getConsumable(stack);
 
 		HydrationTooltipComponent hydrationTooltipComponent = null;
 		List<MutableComponent> hydrationEffectComponents = new ArrayList<>();
 
-		if (jsonConsumableThirst != null) {
-			hydrationTooltipComponent = new HydrationTooltipComponent(jsonConsumableThirst.hydration, jsonConsumableThirst.saturation);
-			for (JsonEffectParameter effect: jsonConsumableThirst.effects) {
+		if (jsonThirstConsumable != null) {
+			hydrationTooltipComponent = new HydrationTooltipComponent(jsonThirstConsumable.hydration, jsonThirstConsumable.saturation);
+			for (JsonMobEffect effect: jsonThirstConsumable.effects) {
 				if (effect.chance > 0 && effect.duration > 0 && !effect.name.isEmpty()) {
 					hydrationEffectComponents.add(getHydrationEffectTooltip(effect.chance, effect.name, effect.amplifier, effect.duration));
 				}

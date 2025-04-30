@@ -8,8 +8,10 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.network.NetworkEvent;
+import net.minecraftforge.network.PacketDistributor;
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.thirst.ThirstCapability;
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.thirst.ThirstProvider;
+import sfiomn.legendarysurvivaloverhaul.network.NetworkHandler;
 
 import java.util.function.Supplier;
 
@@ -23,15 +25,15 @@ public class UpdateThirstPacket
 	}
 
 	public UpdateThirstPacket() {}
+
+	public static void encode(UpdateThirstPacket message, FriendlyByteBuf buffer)
+	{
+		buffer.writeNbt(message.compound);
+	}
 	
 	public static UpdateThirstPacket decode(FriendlyByteBuf buffer)
 	{
 		return new UpdateThirstPacket(buffer.readNbt());
-	}
-	
-	public static void encode(UpdateThirstPacket message, FriendlyByteBuf buffer)
-	{
-		buffer.writeNbt(message.compound);
 	}
 	
 	public static void handle(UpdateThirstPacket message, Supplier<NetworkEvent.Context> supplier)
@@ -60,5 +62,9 @@ public class UpdateThirstPacket
 				}
 			}
 		};
+	}
+
+	public static void sendTo(PacketDistributor.PacketTarget packetDistributor, Tag compound) {
+		NetworkHandler.INSTANCE.send(packetDistributor, new UpdateThirstPacket(compound));
 	}
 }

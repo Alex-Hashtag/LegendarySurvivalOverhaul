@@ -8,8 +8,10 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.network.NetworkEvent;
+import net.minecraftforge.network.PacketDistributor;
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.temperature.TemperatureCapability;
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.temperature.TemperatureProvider;
+import sfiomn.legendarysurvivaloverhaul.network.NetworkHandler;
 
 import java.util.function.Supplier;
 
@@ -23,15 +25,15 @@ public class UpdateTemperaturesPacket
 	}
 	
 	public UpdateTemperaturesPacket() {}
+
+	public static void encode(UpdateTemperaturesPacket message, FriendlyByteBuf buffer)
+	{
+		buffer.writeNbt(message.compound);
+	}
 	
 	public static UpdateTemperaturesPacket decode(FriendlyByteBuf buffer)
 	{
 		return new UpdateTemperaturesPacket(buffer.readNbt());
-	}
-	
-	public static void encode(UpdateTemperaturesPacket message, FriendlyByteBuf buffer)
-	{
-		buffer.writeNbt(message.compound);
 	}
 	
 	public static void handle(UpdateTemperaturesPacket message, Supplier<NetworkEvent.Context> supplier)
@@ -60,5 +62,9 @@ public class UpdateTemperaturesPacket
 				}
 			}
 		};
+	}
+
+	public static void sendTo(PacketDistributor.PacketTarget packetDistributor, Tag compound) {
+		NetworkHandler.INSTANCE.send(packetDistributor, new UpdateTemperaturesPacket(compound));
 	}
 }

@@ -6,8 +6,8 @@ import sfiomn.legendarysurvivaloverhaul.api.block.ThermalTypeEnum;
 import sfiomn.legendarysurvivaloverhaul.api.bodydamage.BodyPartEnum;
 import sfiomn.legendarysurvivaloverhaul.api.bodydamage.DamageDistributionEnum;
 import sfiomn.legendarysurvivaloverhaul.api.temperature.TemporaryModifierGroupEnum;
-import sfiomn.legendarysurvivaloverhaul.api.config.json.JsonPropertyValue;
-import sfiomn.legendarysurvivaloverhaul.config.json.JsonConfig;
+import sfiomn.legendarysurvivaloverhaul.api.config.json_old.JsonPropertyValue;
+import sfiomn.legendarysurvivaloverhaul.config.json_old.JsonConfig;
 
 import java.util.Arrays;
 

@@ -1,7 +1,7 @@
 package sfiomn.legendarysurvivaloverhaul.common.integration.jsonConfig;
 
 import com.google.common.collect.Maps;
-import sfiomn.legendarysurvivaloverhaul.api.config.json.temperature.JsonTemperatureResistance;
+import sfiomn.legendarysurvivaloverhaul.api.config.json_old.temperature.JsonTemperatureResistance;
 
 import java.util.Map;
 

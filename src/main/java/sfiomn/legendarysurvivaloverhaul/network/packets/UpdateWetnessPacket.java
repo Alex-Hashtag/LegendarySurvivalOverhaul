@@ -8,8 +8,10 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.network.NetworkEvent;
+import net.minecraftforge.network.PacketDistributor;
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.wetness.WetnessCapability;
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.wetness.WetnessProvider;
+import sfiomn.legendarysurvivaloverhaul.network.NetworkHandler;
 
 import java.util.function.Supplier;
 
@@ -23,15 +25,15 @@ public class UpdateWetnessPacket
 	}
 	
 	public UpdateWetnessPacket() {}
+
+	public static void encode(UpdateWetnessPacket message, FriendlyByteBuf buffer)
+	{
+		buffer.writeNbt(message.compound);
+	}
 	
 	public static UpdateWetnessPacket decode(FriendlyByteBuf buffer)
 	{
 		return new UpdateWetnessPacket(buffer.readNbt());
-	}
-	
-	public static void encode(UpdateWetnessPacket message, FriendlyByteBuf buffer)
-	{
-		buffer.writeNbt(message.compound);
 	}
 	
 	public static void handle(UpdateWetnessPacket message, Supplier<NetworkEvent.Context> supplier)
@@ -60,5 +62,9 @@ public class UpdateWetnessPacket
 				}
 			}
 		};
+	}
+
+	public static void sendTo(PacketDistributor.PacketTarget packetDistributor, Tag compound) {
+		NetworkHandler.INSTANCE.send(packetDistributor, new UpdateWetnessPacket(compound));
 	}
 }

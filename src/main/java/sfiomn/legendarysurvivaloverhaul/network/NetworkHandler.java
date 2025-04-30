@@ -26,7 +26,21 @@ public class NetworkHandler
 		INSTANCE.registerMessage(id++, UpdateThirstPacket.class, UpdateThirstPacket::encode, UpdateThirstPacket::decode, UpdateThirstPacket::handle);
 		INSTANCE.registerMessage(id++, UpdateHeartsPacket.class, UpdateHeartsPacket::encode, UpdateHeartsPacket::decode, UpdateHeartsPacket::handle);
 		INSTANCE.registerMessage(id++, UpdateBodyDamagePacket.class, UpdateBodyDamagePacket::encode, UpdateBodyDamagePacket::decode, UpdateBodyDamagePacket::handle);
-		INSTANCE.registerMessage(id++, MessageDrinkBlockFluid.class, MessageDrinkBlockFluid::encode, MessageDrinkBlockFluid::decode, MessageDrinkBlockFluid::handle);
-		INSTANCE.registerMessage(id++, MessageBodyPartHealingTime.class, MessageBodyPartHealingTime::encode, MessageBodyPartHealingTime::decode, MessageBodyPartHealingTime::handle);
+		INSTANCE.registerMessage(id++, DrinkBlockFluidMessage.class, DrinkBlockFluidMessage::encode, DrinkBlockFluidMessage::decode, DrinkBlockFluidMessage::handle);
+		INSTANCE.registerMessage(id++, BodyPartHealingTimeMessage.class, BodyPartHealingTimeMessage::encode, BodyPartHealingTimeMessage::decode, BodyPartHealingTimeMessage::handle);
+
+		INSTANCE.registerMessage(id++, SyncTemperatureConsumablesPacket.class, SyncTemperatureConsumablesPacket::encode, SyncTemperatureConsumablesPacket::decode, SyncTemperatureConsumablesPacket::handle);
+		INSTANCE.registerMessage(id++, SyncTemperatureBlocksPacket.class, SyncTemperatureBlocksPacket::encode, SyncTemperatureBlocksPacket::decode, SyncTemperatureBlocksPacket::handle);
+		INSTANCE.registerMessage(id++, SyncTemperatureItemsPacket.class, SyncTemperatureItemsPacket::encode, SyncTemperatureItemsPacket::decode, SyncTemperatureItemsPacket::handle);
+		INSTANCE.registerMessage(id++, SyncTemperatureBiomesPacket.class, SyncTemperatureBiomesPacket::encode, SyncTemperatureBiomesPacket::decode, SyncTemperatureBiomesPacket::handle);
+		INSTANCE.registerMessage(id++, SyncTemperatureFuelItemsPacket.class, SyncTemperatureFuelItemsPacket::encode, SyncTemperatureFuelItemsPacket::decode, SyncTemperatureFuelItemsPacket::handle);
+		INSTANCE.registerMessage(id++, SyncTemperatureMountsPacket.class, SyncTemperatureMountsPacket::encode, SyncTemperatureMountsPacket::decode, SyncTemperatureMountsPacket::handle);
+		INSTANCE.registerMessage(id++, SyncTemperatureDimensionsPacket.class, SyncTemperatureDimensionsPacket::encode, SyncTemperatureDimensionsPacket::decode, SyncTemperatureDimensionsPacket::handle);
+
+		INSTANCE.registerMessage(id++, SyncThirstBlocksPacket.class, SyncThirstBlocksPacket::encode, SyncThirstBlocksPacket::decode, SyncThirstBlocksPacket::handle);
+		INSTANCE.registerMessage(id++, SyncThirstConsumablesPacket.class, SyncThirstConsumablesPacket::encode, SyncThirstConsumablesPacket::decode, SyncThirstConsumablesPacket::handle);
+
+		INSTANCE.registerMessage(id++, SyncBodyDamageHealingConsumablesPacket.class, SyncBodyDamageHealingConsumablesPacket::encode, SyncBodyDamageHealingConsumablesPacket::decode, SyncBodyDamageHealingConsumablesPacket::handle);
+		INSTANCE.registerMessage(id++, SyncBodyPartsDamageSourcesPacket.class, SyncBodyPartsDamageSourcesPacket::encode, SyncBodyPartsDamageSourcesPacket::decode, SyncBodyPartsDamageSourcesPacket::handle);
 	}
 }

@@ -1,14 +1,14 @@
 package sfiomn.legendarysurvivaloverhaul.common.integration.jsonConfig;
 
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
-import sfiomn.legendarysurvivaloverhaul.api.config.json.temperature.JsonTemperatureResistance;
+import sfiomn.legendarysurvivaloverhaul.api.config.json_old.temperature.JsonTemperatureResistance;
 import sfiomn.legendarysurvivaloverhaul.config.JsonFileName;
 
 import java.io.File;
 import java.util.Map;
 
-import static sfiomn.legendarysurvivaloverhaul.config.json.JsonConfigRegistration.manuallyWriteToJson;
-import static sfiomn.legendarysurvivaloverhaul.config.json.JsonConfigRegistration.processJson;
+import static sfiomn.legendarysurvivaloverhaul.config.json_old.JsonConfigRegistration.manuallyWriteToJson;
+import static sfiomn.legendarysurvivaloverhaul.config.json_old.JsonConfigRegistration.processJson;
 
 public class JsonIntegrationConfigRegistration
 {

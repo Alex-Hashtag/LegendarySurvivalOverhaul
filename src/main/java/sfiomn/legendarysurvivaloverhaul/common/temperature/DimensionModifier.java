@@ -4,13 +4,11 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
-import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
-import sfiomn.legendarysurvivaloverhaul.api.config.json.temperature.JsonTemperature;
+import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonTemperature;
+import sfiomn.legendarysurvivaloverhaul.api.data.manager.TemperatureDataManager;
 import sfiomn.legendarysurvivaloverhaul.api.temperature.ModifierBase;
 import sfiomn.legendarysurvivaloverhaul.api.temperature.TemperatureEnum;
 import sfiomn.legendarysurvivaloverhaul.common.integration.terrafirmacraft.TerraFirmaCraftUtil;
-import sfiomn.legendarysurvivaloverhaul.config.Config;
-import sfiomn.legendarysurvivaloverhaul.config.json.JsonConfig;
 
 public class DimensionModifier extends ModifierBase
 {
@@ -25,7 +23,7 @@ public class DimensionModifier extends ModifierBase
 		if (TerraFirmaCraftUtil.shouldUseTerraFirmaCraftTemp())
 			return 0.0f;
 
-		JsonTemperature dimensionTemperature = JsonConfig.dimensionTemperatures.get(level.dimension().location().toString());
+		JsonTemperature dimensionTemperature = TemperatureDataManager.getDimension(level.dimension().location());
 		if (dimensionTemperature == null)
 			return TemperatureEnum.NORMAL.getMiddle();
 		return dimensionTemperature.temperature;

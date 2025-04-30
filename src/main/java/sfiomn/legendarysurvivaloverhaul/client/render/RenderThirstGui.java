@@ -10,10 +10,10 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.client.gui.overlay.ForgeGui;
 import net.minecraftforge.client.gui.overlay.IGuiOverlay;
-import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.Nullable;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
-import sfiomn.legendarysurvivaloverhaul.api.config.json.thirst.JsonConsumableThirst;
+import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonThirstConsumable;
+import sfiomn.legendarysurvivaloverhaul.api.data.manager.ThirstDataManager;
 import sfiomn.legendarysurvivaloverhaul.api.thirst.ThirstUtil;
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.thirst.ThirstCapability;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
@@ -78,11 +78,10 @@ public class RenderThirstGui
 		// Calculation of hydration preview
 		ItemStack currentHeldItemStack = player.getMainHandItem();
 		if (Config.Baked.showDrinkPreview && currentHeldItemStack.getItem() != heldItemOnPreview) {
-			ResourceLocation itemRegistryName = ForgeRegistries.ITEMS.getKey(currentHeldItemStack.getItem());
-			JsonConsumableThirst jsonConsumableThirst = ThirstUtil.getConsumableThirstJsonConfig(itemRegistryName, currentHeldItemStack);
-			heldItemHydration = (jsonConsumableThirst != null) ? jsonConsumableThirst.hydration : 0;
-			heldItemSaturation = (jsonConsumableThirst != null) ? jsonConsumableThirst.saturation : 0;
-			heldItemThirst = jsonConsumableThirst != null && jsonConsumableThirst.effects.stream().anyMatch(jsonEffectParameter -> jsonEffectParameter.name.equals(LegendarySurvivalOverhaul.MOD_ID + ":thirst"));
+			JsonThirstConsumable jsonThirstConsumable = ThirstDataManager.getConsumable(currentHeldItemStack);
+			heldItemHydration = (jsonThirstConsumable != null) ? jsonThirstConsumable.hydration : 0;
+			heldItemSaturation = (jsonThirstConsumable != null) ? jsonThirstConsumable.saturation : 0;
+			heldItemThirst = jsonThirstConsumable != null && jsonThirstConsumable.effects.stream().anyMatch(jsonEffectParameter -> jsonEffectParameter.name.equals(LegendarySurvivalOverhaul.MOD_ID + ":thirst"));
 			// Force a reset flash when item becomes edible && avoid this reset if moving from edible to edible
 			// Improve the sync with appleskin flashing
 			if (heldItemOnPreview == null || currentHeldItemStack.isEdible() != heldItemOnPreview.isEdible()) {

@@ -210,6 +210,8 @@
 	"effect.legendarysurvivaloverhaul.cold_drink.description": "Decreases player temperature thanks to drink item.",
 	"effect.legendarysurvivaloverhaul.painkiller": "Painkiller",
 	"effect.legendarysurvivaloverhaul.painkiller.description": "Negates the effects caused by limbs conditions.",
+	"effect.legendarysurvivaloverhaul.painkiller_addiction": "Painkiller Addiction",
+	"effect.legendarysurvivaloverhaul.painkiller_addiction.description": "Prevents the use of morphine.",
 	"effect.legendarysurvivaloverhaul.hard_falling": "Hard Falling",
 	"effect.legendarysurvivaloverhaul.hard_falling.description": "Fall damage is increased by 20% per level.",
 	"effect.legendarysurvivaloverhaul.vulnerability": "Vulnerability",
@@ -271,5 +273,6 @@
 	"message.legendarysurvivaloverhaul.sereneseasons.no_season_dimension": "No season in this dimension",
 	"message.legendarysurvivaloverhaul.sereneseasons.no_serene_season_loaded": "Serene Seasons mod not loaded",
 	"message.legendarysurvivaloverhaul.heart_container.additional_health_full": "You have reach your maximum health",
-	"message.legendarysurvivaloverhaul.filled_map.destination": "Destination at XZ: %s / %s"
+	"message.legendarysurvivaloverhaul.filled_map.destination": "Destination at XZ: %s / %s",
+	"message.legendarysurvivaloverhaul.morphine_use_under_painkiller_addiction": "You're currently addicted to painkillers"
 }

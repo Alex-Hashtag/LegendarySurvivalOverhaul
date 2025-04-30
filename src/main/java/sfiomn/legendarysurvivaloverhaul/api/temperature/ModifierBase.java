@@ -7,8 +7,10 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
-import sfiomn.legendarysurvivaloverhaul.api.config.json.temperature.JsonBiomeIdentity;
-import sfiomn.legendarysurvivaloverhaul.config.json.JsonConfig;
+import sfiomn.legendarysurvivaloverhaul.api.config.json_old.temperature.JsonBiomeIdentity;
+import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonTemperatureBiomeOverride;
+import sfiomn.legendarysurvivaloverhaul.api.data.manager.TemperatureDataManager;
+import sfiomn.legendarysurvivaloverhaul.config.json_old.JsonConfig;
 import sfiomn.legendarysurvivaloverhaul.util.WorldUtil;
 
 /**
@@ -72,15 +74,15 @@ public abstract class ModifierBase {
 	protected float getNormalizedTempForBiome(Level world, Biome biome)
 	{
 		// Minecraft's temperatures is defined from -0.7 to 2.0, plains are at 0.8
-		// Get the biome's temperature, clamp it between -0.5 and 2.0 in case of extreme biomes from other mods,
+		// Get the biome temperature, clamp it between -0.5 and 2.0 in case of extreme biomes from other mods,
 		// and then normalize it from 0 to 1
 		// Plains returned temperature 0.44, savanna 0.7, Ice plain 0.26
 
 		ResourceLocation name = WorldUtil.getBiomeName(world, biome);
-		if (name != null && JsonConfig.biomeOverrides.containsKey(name.toString()))
+		JsonTemperatureBiomeOverride biomeInfo = TemperatureDataManager.getBiome(name);
+		if (name != null && biomeInfo != null)
 		{
-			JsonBiomeIdentity identity = JsonConfig.biomeOverrides.get(name.toString());
-			return clampNormalizeTemperature(identity.temperature);
+			return clampNormalizeTemperature(biomeInfo.temperature);
 		}
 
 		return clampNormalizeTemperature(biome.getBaseTemperature());
@@ -102,11 +104,10 @@ public abstract class ModifierBase {
 		// Dry biomes have humidity below 0.2
 
 		ResourceLocation name = WorldUtil.getBiomeName(world, biome);
-		if (name != null && JsonConfig.biomeOverrides.containsKey(name.toString()))
+		JsonTemperatureBiomeOverride biomeInfo = TemperatureDataManager.getBiome(name);
+		if (name != null && biomeInfo != null)
 		{
-			JsonBiomeIdentity identity = JsonConfig.biomeOverrides.get(name.toString());
-
-			return identity.isDry ? 0.1f : 0.5f;
+			return biomeInfo.isDry ? 0.1f : 0.5f;
 		}
 
 		return biome.getModifiedClimateSettings().downfall();

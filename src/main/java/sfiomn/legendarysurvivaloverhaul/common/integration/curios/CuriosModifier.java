@@ -5,8 +5,9 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.loading.FMLLoader;
 import net.minecraftforge.registries.ForgeRegistries;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
-import sfiomn.legendarysurvivaloverhaul.api.config.json.temperature.JsonTemperatureResistance;
-import sfiomn.legendarysurvivaloverhaul.config.json.JsonConfig;
+import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonTemperatureResistance;
+import sfiomn.legendarysurvivaloverhaul.api.data.manager.TemperatureDataManager;
+import sfiomn.legendarysurvivaloverhaul.config.json_old.JsonConfig;
 import sfiomn.legendarysurvivaloverhaul.registry.AttributeRegistry;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.event.CurioAttributeModifierEvent;
@@ -29,10 +30,9 @@ public class CuriosModifier
 			return;
 
 		ResourceLocation itemRegistryName = ForgeRegistries.ITEMS.getKey(event.getItemStack().getItem());
+		JsonTemperatureResistance tempConfig = TemperatureDataManager.getItem(itemRegistryName);
 
-		if (itemRegistryName != null && JsonConfig.itemTemperatures.containsKey(itemRegistryName.toString())) {
-			JsonTemperatureResistance tempConfig = JsonConfig.itemTemperatures.get(itemRegistryName.toString());
-
+		if (itemRegistryName != null && tempConfig != null) {
 			for (ISlotType slot : CuriosApi.getItemStackSlots(event.getItemStack(), FMLLoader.getDist() == Dist.CLIENT).values()) {
 				if (slot.getIdentifier().equals(event.getSlotContext().identifier())) {
 					UUID itemUuid = UUID.nameUUIDFromBytes(itemRegistryName.toString().getBytes());

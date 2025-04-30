@@ -1,8 +1,6 @@
 package sfiomn.legendarysurvivaloverhaul.common.items.drink;
 
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
@@ -18,11 +16,10 @@ import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.common.ForgeMod;
-import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
-import sfiomn.legendarysurvivaloverhaul.api.config.json.thirst.JsonBlockFluidThirst;
-import sfiomn.legendarysurvivaloverhaul.api.config.json.thirst.JsonConsumableThirst;
+import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonThirstConsumable;
+import sfiomn.legendarysurvivaloverhaul.api.data.manager.ThirstDataManager;
 import sfiomn.legendarysurvivaloverhaul.api.thirst.HydrationEnum;
 import sfiomn.legendarysurvivaloverhaul.api.thirst.ThirstUtil;
 import sfiomn.legendarysurvivaloverhaul.api.wetness.WetnessUtil;
@@ -45,7 +42,7 @@ public class CanteenItem extends DrinkItem {
         return canDrink(stack) ? 40 : 0;
     }
 
-    public boolean canDrink(ItemStack stack){
+    public static boolean canDrink(ItemStack stack){
         return ThirstUtil.getCapacityTag(stack) > 0 && ThirstUtil.getHydrationEnumTag(stack) != null;
     }
 
@@ -103,17 +100,13 @@ public class CanteenItem extends DrinkItem {
     }
 
     @Override
-    public ItemStack finishUsingItem(ItemStack stack, net.minecraft.world.level.Level world, LivingEntity entity) {
+    public ItemStack finishUsingItem(ItemStack stack, Level world, LivingEntity entity) {
         if (entity instanceof Player player && canDrink(stack) && !world.isClientSide) {
 
-            JsonConsumableThirst jsonConsumableThirst = null;
+            JsonThirstConsumable jsonThirstConsumable = ThirstDataManager.getConsumable(stack);
 
-            ResourceLocation registryName = ForgeRegistries.ITEMS.getKey(this);
-            if (registryName != null)
-                jsonConsumableThirst = ThirstUtil.getConsumableThirstJsonConfig(registryName, stack);
-
-            if (jsonConsumableThirst != null) {
-                ThirstUtil.takeDrink(player, jsonConsumableThirst.hydration, jsonConsumableThirst.saturation, jsonConsumableThirst.effects);
+            if (jsonThirstConsumable != null) {
+                ThirstUtil.takeDrink(player, jsonThirstConsumable.hydration, jsonThirstConsumable.saturation, jsonThirstConsumable.effects);
             }
 
             runSecondaryEffect(player, stack);
@@ -122,7 +115,7 @@ public class CanteenItem extends DrinkItem {
         return stack;
     }
 
-    private void shrinkCapacity(ItemStack stack) {
+    public static void shrinkCapacity(ItemStack stack) {
         int newCapacity = ThirstUtil.getCapacityTag(stack) - 1;
         ThirstUtil.setCapacityTag(stack, newCapacity);
         if (newCapacity == 0)

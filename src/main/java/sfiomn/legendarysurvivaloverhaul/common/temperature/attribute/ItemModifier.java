@@ -3,9 +3,9 @@ package sfiomn.legendarysurvivaloverhaul.common.temperature.attribute;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.registries.ForgeRegistries;
-import sfiomn.legendarysurvivaloverhaul.api.config.json.temperature.JsonTemperatureResistance;
+import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonTemperatureResistance;
+import sfiomn.legendarysurvivaloverhaul.api.data.manager.TemperatureDataManager;
 import sfiomn.legendarysurvivaloverhaul.api.temperature.AttributeModifierBase;
-import sfiomn.legendarysurvivaloverhaul.config.json.JsonConfig;
 
 public class ItemModifier extends AttributeModifierBase
 {
@@ -15,12 +15,8 @@ public class ItemModifier extends AttributeModifierBase
 	public JsonTemperatureResistance getItemAttributes(ItemStack stack)
 	{
 		ResourceLocation itemRegistryName = ForgeRegistries.ITEMS.getKey(stack.getItem());
-		JsonTemperatureResistance config = new JsonTemperatureResistance();
+		JsonTemperatureResistance config = TemperatureDataManager.getItem(itemRegistryName);
 
-		if (itemRegistryName != null && JsonConfig.itemTemperatures.containsKey(itemRegistryName.toString())) {
-			config = JsonConfig.itemTemperatures.get(itemRegistryName.toString());
-		}
-
-		return config;
+		return config == null ? new JsonTemperatureResistance() : config;
 	}
 }

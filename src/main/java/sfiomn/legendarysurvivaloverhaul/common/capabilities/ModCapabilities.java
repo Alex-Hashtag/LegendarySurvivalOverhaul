@@ -274,9 +274,9 @@ public class ModCapabilities
 	{
 		if (!player.level().isClientSide())
 		{
-			UpdateTemperaturesPacket packet = new UpdateTemperaturesPacket(CapabilityUtil.getTempCapability(player).writeNBT());
-
-			NetworkHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer) player), packet);
+			UpdateTemperaturesPacket.sendTo(
+					PacketDistributor.PLAYER.with(() -> (ServerPlayer) player),
+					CapabilityUtil.getTempCapability(player).writeNBT());
 		}
 	}
 
@@ -284,9 +284,9 @@ public class ModCapabilities
 	{
 		if (!player.level().isClientSide)
 		{
-			UpdateWetnessPacket packet = new UpdateWetnessPacket(CapabilityUtil.getWetnessCapability(player).writeNBT());
-
-			NetworkHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer) player), packet);
+			UpdateWetnessPacket.sendTo(
+					PacketDistributor.PLAYER.with(() -> (ServerPlayer) player),
+					CapabilityUtil.getWetnessCapability(player).writeNBT());
 		}
 	}
 
@@ -294,9 +294,9 @@ public class ModCapabilities
 	{
 		if (!player.level().isClientSide)
 		{
-			UpdateThirstPacket packet = new UpdateThirstPacket(CapabilityUtil.getThirstCapability(player).writeNBT());
-
-			NetworkHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer) player), packet);
+			UpdateThirstPacket.sendTo(
+					PacketDistributor.PLAYER.with(() -> (ServerPlayer) player),
+					CapabilityUtil.getThirstCapability(player).writeNBT());
 		}
 	}
 
@@ -304,9 +304,9 @@ public class ModCapabilities
 	{
 		if (!player.level().isClientSide)
 		{
-			UpdateBodyDamagePacket packet = new UpdateBodyDamagePacket(CapabilityUtil.getBodyDamageCapability(player).writeNBT());
-
-			NetworkHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer) player), packet);
+			UpdateBodyDamagePacket.sendTo(
+					PacketDistributor.PLAYER.with(() -> (ServerPlayer) player),
+					CapabilityUtil.getBodyDamageCapability(player).writeNBT());
 		}
 	}
 
@@ -314,9 +314,9 @@ public class ModCapabilities
 	{
 		if (!player.level().isClientSide)
 		{
-			UpdateHeartsPacket packet = new UpdateHeartsPacket(CapabilityUtil.getHealthCapability(player).writeNBT());
-			
-			NetworkHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer) player), packet);
+			UpdateHeartsPacket.sendTo(
+					PacketDistributor.PLAYER.with(() -> (ServerPlayer) player),
+					CapabilityUtil.getHealthCapability(player).writeNBT());
 		}
 	}
 

@@ -8,7 +8,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.tuple.Pair;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.temperature.TemperatureDisplayEnum;
-import sfiomn.legendarysurvivaloverhaul.config.json.JsonConfigRegistration;
+import sfiomn.legendarysurvivaloverhaul.config.json_old.JsonConfigRegistration;
 import sfiomn.legendarysurvivaloverhaul.util.ItemUtil;
 
 import java.io.IOException;
@@ -217,6 +217,7 @@ public class Config
 		public final ForgeConfigSpec.DoubleValue healthRatioRecoveredFromSleep;
 		public final ForgeConfigSpec.DoubleValue bodyHealingFoodExhaustion;
 		public final ForgeConfigSpec.IntValue minFoodOnBodyHealing;
+		public final ForgeConfigSpec.IntValue painkillerAddictionDuration;
 
 		public final ForgeConfigSpec.IntValue healingHerbsUseTime;
 		public final ForgeConfigSpec.IntValue healingHerbsRegenerationAmplifier;
@@ -233,6 +234,8 @@ public class Config
 		public final ForgeConfigSpec.IntValue medikitUseTime;
 		public final ForgeConfigSpec.IntValue medikitRegenerationAmplifier;
 		public final ForgeConfigSpec.IntValue medikitRegenerationTickDuration;
+		public final ForgeConfigSpec.IntValue morphineUseTime;
+		public final ForgeConfigSpec.IntValue morphinePainkillerTickDuration;
 
 		public final ForgeConfigSpec.ConfigValue<String> bodyPartHealthMode;
 		public final ForgeConfigSpec.DoubleValue headPartHealth;
@@ -800,6 +803,11 @@ public class Config
 							" Each hunger icon has a value of 2 in the hunger bar.")
 					.defineInRange("Minimum Food On Body Healing", 0, 0, 1000);
 
+			painkillerAddictionDuration = builder
+					.comment(" How long in ticks is the Addiction Effect lasting. 0 deactivate the feature",
+							" The Addiction Effect prevents you from re-using the morphine item.")
+					.defineInRange("Painkiller Addiction Duration", 3600, 0, 100000);
+
 			builder.push("healing-items");
 			builder.push("healing-herbs");
 			healingHerbsUseTime = builder
@@ -858,6 +866,15 @@ public class Config
 			medikitRegenerationTickDuration = builder
 					.comment(" Regeneration effect duration in ticks.")
 					.defineInRange("Medikit Regeneration Duration", 140, 0, 10000);
+			builder.pop();
+
+			builder.push("morphine");
+			morphineUseTime = builder
+					.comment(" Item use time in ticks.")
+					.defineInRange("Morphine Use Time", 30, 0, 1000);
+			morphinePainkillerTickDuration = builder
+					.comment(" Painkiller effect duration in ticks. This effect prevents the player to be affected by broken limbs effects.")
+					.defineInRange("Morphine Painkiller Duration", 1800, 0, 10000);
 			builder.pop();
 			builder.pop();
 
@@ -1281,6 +1298,7 @@ public class Config
 		public static double healthRatioRecoveredFromSleep;
 		public static double bodyHealingFoodExhaustion;
 		public static int minFoodOnBodyHealing;
+		public static int painkillerAddictionDuration;
 
 		public static String bodyPartHealthMode;
 		public static double headPartHealth;
@@ -1304,6 +1322,8 @@ public class Config
 		public static int medikitUseTime;
 		public static int medikitRegenerationAmplifier;
 		public static int medikitRegenerationTickDuration;
+		public static int morphineUseTime;
+		public static int morphinePainkillerTickDuration;
 
 		public static List<? extends String> headPartEffects;
 		public static List<? extends Integer> headPartEffectAmplifiers;
@@ -1533,6 +1553,7 @@ public class Config
 				healthRatioRecoveredFromSleep = COMMON.healthRatioRecoveredFromSleep.get();
 				bodyHealingFoodExhaustion = COMMON.bodyHealingFoodExhaustion.get();
 				minFoodOnBodyHealing = COMMON.minFoodOnBodyHealing.get();
+				painkillerAddictionDuration = COMMON.painkillerAddictionDuration.get();
 
 				healingHerbsUseTime = COMMON.healingHerbsUseTime.get();
 				healingHerbsRegenerationAmplifier = COMMON.healingHerbsRegenerationAmplifier.get();
@@ -1549,6 +1570,8 @@ public class Config
 				medikitUseTime = COMMON.medikitUseTime.get();
 				medikitRegenerationAmplifier = COMMON.medikitRegenerationAmplifier.get();
 				medikitRegenerationTickDuration = COMMON.medikitRegenerationTickDuration.get();
+				morphineUseTime = COMMON.morphineUseTime.get();
+				morphinePainkillerTickDuration = COMMON.morphinePainkillerTickDuration.get();
 
 				bodyPartHealthMode = COMMON.bodyPartHealthMode.get();
 				headPartHealth = COMMON.headPartHealth.get();

@@ -8,9 +8,11 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.network.NetworkEvent;
+import net.minecraftforge.network.PacketDistributor;
 import sfiomn.legendarysurvivaloverhaul.api.health.HealthUtil;
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.health.HealthCapability;
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.health.HealthProvider;
+import sfiomn.legendarysurvivaloverhaul.network.NetworkHandler;
 import sfiomn.legendarysurvivaloverhaul.util.CapabilityUtil;
 
 import java.util.function.Supplier;
@@ -25,15 +27,15 @@ public class UpdateHeartsPacket
 	}
 	
 	public UpdateHeartsPacket() {}
+
+	public static void encode(UpdateHeartsPacket message, FriendlyByteBuf buffer)
+	{
+		buffer.writeNbt(message.compound);
+	}
 	
 	public static UpdateHeartsPacket decode(FriendlyByteBuf buffer)
 	{
 		return new UpdateHeartsPacket(buffer.readNbt());
-	}
-	
-	public static void encode(UpdateHeartsPacket message, FriendlyByteBuf buffer)
-	{
-		buffer.writeNbt(message.compound);
 	}
 	
 	public static void handle(UpdateHeartsPacket message, Supplier<NetworkEvent.Context> supplier)
@@ -62,5 +64,9 @@ public class UpdateHeartsPacket
 				}
 			}
 		};
+	}
+
+	public static void sendTo(PacketDistributor.PacketTarget packetDistributor, Tag compound) {
+		NetworkHandler.INSTANCE.send(packetDistributor, new UpdateHeartsPacket(compound));
 	}
 }

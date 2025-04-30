@@ -5,11 +5,15 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.network.NetworkEvent;
+import net.minecraftforge.network.PacketDistributor;
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.bodydamage.BodyDamageCapability;
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.bodydamage.BodyDamageProvider;
+import sfiomn.legendarysurvivaloverhaul.network.NetworkHandler;
+import sfiomn.legendarysurvivaloverhaul.util.CapabilityUtil;
 
 import java.util.function.Supplier;
 
@@ -23,15 +27,15 @@ public class UpdateBodyDamagePacket
 	}
 
 	public UpdateBodyDamagePacket() {}
+
+	public static void encode(UpdateBodyDamagePacket message, FriendlyByteBuf buffer)
+	{
+		buffer.writeNbt(message.compound);
+	}
 	
 	public static UpdateBodyDamagePacket decode(FriendlyByteBuf buffer)
 	{
 		return new UpdateBodyDamagePacket(buffer.readNbt());
-	}
-	
-	public static void encode(UpdateBodyDamagePacket message, FriendlyByteBuf buffer)
-	{
-		buffer.writeNbt(message.compound);
 	}
 	
 	public static void handle(UpdateBodyDamagePacket message, Supplier<NetworkEvent.Context> supplier)
@@ -60,5 +64,9 @@ public class UpdateBodyDamagePacket
 				}
 			}
 		};
+	}
+
+	public static void sendTo(PacketDistributor.PacketTarget packetDistributor, Tag compound) {
+		NetworkHandler.INSTANCE.send(packetDistributor, new UpdateBodyDamagePacket(compound));
 	}
 }

@@ -3,9 +3,11 @@ package sfiomn.legendarysurvivaloverhaul;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
+import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModList;
@@ -20,8 +22,11 @@ import net.minecraftforge.fml.loading.FMLPaths;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import sfiomn.legendarysurvivaloverhaul.api.bodydamage.BodyDamageUtil;
+import sfiomn.legendarysurvivaloverhaul.api.data.manager.BodyDamageDataManager;
+import sfiomn.legendarysurvivaloverhaul.api.data.manager.TemperatureDataManager;
 import sfiomn.legendarysurvivaloverhaul.api.health.HealthUtil;
 import sfiomn.legendarysurvivaloverhaul.api.temperature.TemperatureUtil;
+import sfiomn.legendarysurvivaloverhaul.api.data.manager.ThirstDataManager;
 import sfiomn.legendarysurvivaloverhaul.api.thirst.ThirstUtil;
 import sfiomn.legendarysurvivaloverhaul.api.wetness.WetnessUtil;
 import sfiomn.legendarysurvivaloverhaul.client.itemproperties.CanteenProperty;
@@ -43,6 +48,7 @@ import sfiomn.legendarysurvivaloverhaul.common.integration.origins.OriginsEvents
 import sfiomn.legendarysurvivaloverhaul.common.integration.sereneseasons.SereneSeasonsUtil;
 import sfiomn.legendarysurvivaloverhaul.common.integration.vampirism.VampirismEvents;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
+import sfiomn.legendarysurvivaloverhaul.config.listeners.*;
 import sfiomn.legendarysurvivaloverhaul.network.NetworkHandler;
 import sfiomn.legendarysurvivaloverhaul.registry.*;
 import sfiomn.legendarysurvivaloverhaul.util.internal.*;
@@ -85,6 +91,7 @@ public class LegendarySurvivalOverhaul
 	public static boolean vampirismLoaded = false;
 	public static boolean originsLoaded = false;
 	public static boolean mutantMonstersLoaded = false;
+	public static boolean supplementariesLoaded = false;
 	
 	public static Path configPath = FMLPaths.CONFIGDIR.get();
 	public static Path modConfigPath = Paths.get(configPath.toAbsolutePath().toString(), "legendarysurvivaloverhaul");
@@ -98,8 +105,9 @@ public class LegendarySurvivalOverhaul
 		
 		modBus.addListener(this::commonSetup);
 		modBus.addListener(this::onModConfigLoadEvent);
-		modBus.addListener(this::onModConfigReloadEvent);
 		modBus.addListener(this::onLoadComplete);
+
+		forgeBus.addListener(this::addReloadListenerEvent);
 
 		Config.register(context);
 
@@ -134,6 +142,7 @@ public class LegendarySurvivalOverhaul
 		vampirismLoaded = ModList.get().isLoaded("vampirism");
 		originsLoaded = ModList.get().isLoaded("origins");
 		mutantMonstersLoaded = ModList.get().isLoaded("mutantmonsters");
+		supplementariesLoaded = ModList.get().isLoaded("supplementaries");
 
 		if (sereneSeasonsLoaded)
 			LOGGER.debug("Serene Seasons is loaded, enabling compatibility");
@@ -159,8 +168,8 @@ public class LegendarySurvivalOverhaul
 			forgeBus.register(OriginsEvents.class);
 		}
 
-		if (surviveLoaded)
-			LOGGER.debug("Survive is loaded, I hope you know what you're doing");
+		if (supplementariesLoaded)
+			LOGGER.debug("supplementariesLoaded is loaded, enabling compatibility");
 
 		if (surviveLoaded)
 			LOGGER.debug("Survive is loaded, I hope you know what you're doing");
@@ -222,6 +231,34 @@ public class LegendarySurvivalOverhaul
 		// Since client config is not shared, we want it to update instantly whenever it's saved
 		if (config.getSpec() == Config.CLIENT_SPEC)
 			Config.Baked.bakeClient();
+	}
+
+	private void addReloadListenerEvent(final AddReloadListenerEvent event)
+	{
+		TemperatureDataManager.internalConsumable = new TemperatureConsumableListener();
+		TemperatureDataManager.internalBlock = new TemperatureBlockListener();
+		TemperatureDataManager.internalItem = new TemperatureItemListener();
+		TemperatureDataManager.internalBiome = new TemperatureBiomeListener();
+		TemperatureDataManager.internalFuelItem = new TemperatureFuelItemListener();
+		TemperatureDataManager.internalDimension = new TemperatureDimensionListener();
+		TemperatureDataManager.internalMount = new TemperatureMountListener();
+		event.addListener((PreparableReloadListener) TemperatureDataManager.internalConsumable);
+		event.addListener((PreparableReloadListener) TemperatureDataManager.internalBlock);
+		event.addListener((PreparableReloadListener) TemperatureDataManager.internalItem);
+		event.addListener((PreparableReloadListener) TemperatureDataManager.internalBiome);
+		event.addListener((PreparableReloadListener) TemperatureDataManager.internalFuelItem);
+		event.addListener((PreparableReloadListener) TemperatureDataManager.internalDimension);
+		event.addListener((PreparableReloadListener) TemperatureDataManager.internalMount);
+
+		ThirstDataManager.internalConsumable = new ThirstConsumableListener();
+		ThirstDataManager.internalBlock = new ThirstBlockListener();
+		event.addListener((PreparableReloadListener) ThirstDataManager.internalConsumable);
+		event.addListener((PreparableReloadListener) ThirstDataManager.internalBlock);
+
+		BodyDamageDataManager.internalBodyPartsDamageSource = new BodyPartsDamageSourceListener();
+		BodyDamageDataManager.internalHealingConsumable = new BodyDamageHealingConsumableListener();
+		event.addListener((PreparableReloadListener) BodyDamageDataManager.internalBodyPartsDamageSource);
+		event.addListener((PreparableReloadListener) BodyDamageDataManager.internalHealingConsumable);
 	}
 
 	@Mod.EventBusSubscriber(modid = MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)

@@ -21,10 +21,11 @@ import net.minecraftforge.registries.ForgeRegistries;
 import sfiomn.legendarysurvivaloverhaul.api.bodydamage.BodyDamageUtil;
 import sfiomn.legendarysurvivaloverhaul.api.bodydamage.BodyPartEnum;
 import sfiomn.legendarysurvivaloverhaul.api.bodydamage.IBodyDamageCapability;
-import sfiomn.legendarysurvivaloverhaul.api.config.json.bodydamage.JsonConsumableHeal;
+import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonHealingConsumable;
+import sfiomn.legendarysurvivaloverhaul.api.data.manager.BodyDamageDataManager;
 import sfiomn.legendarysurvivaloverhaul.client.ClientHooks;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
-import sfiomn.legendarysurvivaloverhaul.config.json.JsonConfig;
+import sfiomn.legendarysurvivaloverhaul.config.json_old.JsonConfig;
 import sfiomn.legendarysurvivaloverhaul.registry.SoundRegistry;
 import sfiomn.legendarysurvivaloverhaul.util.CapabilityUtil;
 
@@ -65,11 +66,8 @@ public class BodyHealingItem extends Item {
             return InteractionResultHolder.success(stack);
         }
 
-        JsonConsumableHeal  jsonConsumableHeal = null;
-
         ResourceLocation registryName = ForgeRegistries.ITEMS.getKey(this);
-        if (registryName != null)
-            jsonConsumableHeal = JsonConfig.consumableHeal.get(registryName.toString());
+        JsonHealingConsumable jsonConsumableHeal = BodyDamageDataManager.getHealingItem(registryName);
 
         if(jsonConsumableHeal != null) {
             IBodyDamageCapability capability = CapabilityUtil.getBodyDamageCapability(player);
@@ -102,11 +100,8 @@ public class BodyHealingItem extends Item {
             return stack;
         }
 
-        JsonConsumableHeal  jsonConsumableHeal = null;
-
         ResourceLocation registryName = ForgeRegistries.ITEMS.getKey(this);
-        if (registryName != null)
-            jsonConsumableHeal = JsonConfig.consumableHeal.get(registryName.toString());
+        JsonHealingConsumable  jsonConsumableHeal = BodyDamageDataManager.getHealingItem(registryName);
 
         if (jsonConsumableHeal != null) {
             if (jsonConsumableHeal.healingCharges > 0) {

@@ -13,9 +13,7 @@ import org.jetbrains.annotations.NotNull;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.bodydamage.BodyDamageUtil;
 import sfiomn.legendarysurvivaloverhaul.api.bodydamage.BodyPartEnum;
-import sfiomn.legendarysurvivaloverhaul.common.items.heal.BodyHealingItem;
-import sfiomn.legendarysurvivaloverhaul.network.NetworkHandler;
-import sfiomn.legendarysurvivaloverhaul.network.packets.MessageBodyPartHealingTime;
+import sfiomn.legendarysurvivaloverhaul.network.packets.BodyPartHealingTimeMessage;
 import sfiomn.legendarysurvivaloverhaul.util.MathUtil;
 
 import java.util.HashMap;
@@ -82,8 +80,7 @@ public class BodyHealthScreen extends Screen {
 
     public void sendBodyPartHeal(BodyPartEnum bodyPart) {
         if (healingCharges > 0) {
-            MessageBodyPartHealingTime messageBodyPartHealingTimeToServer = new MessageBodyPartHealingTime(bodyPart, this.hand, this.consumeItem, this.healingValue, this.healingTime);
-            NetworkHandler.INSTANCE.sendToServer(messageBodyPartHealingTimeToServer);
+            BodyPartHealingTimeMessage.sendToServer(bodyPart, this.hand, this.consumeItem, this.healingValue, this.healingTime);
             BodyDamageUtil.applyHealingTimeBodyPart(player, bodyPart, this.healingValue, this.healingTime);
             if (this.consumeItem)
                 this.consumeItem = false;

@@ -22,9 +22,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 import sfiomn.legendarysurvivaloverhaul.api.block.ThermalTypeEnum;
-import sfiomn.legendarysurvivaloverhaul.api.config.json.temperature.JsonFuelItem;
+import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonTemperatureFuelItem;
+import sfiomn.legendarysurvivaloverhaul.api.data.manager.TemperatureDataManager;
 import sfiomn.legendarysurvivaloverhaul.common.blocks.ThermalBlock;
-import sfiomn.legendarysurvivaloverhaul.config.json.JsonConfig;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -127,13 +127,13 @@ public abstract class AbstractThermalBlockEntity extends BaseContainerBlockEntit
     }
 
     private void consumeFuel() {
-        this.fuelTime--;
+        this.fuelTime -= 20;
     }
 
     public void refillFuel() {
         for(int i = 0; i < getContainerSize(); i++) {
             if (getItem(i).getCount() > 0 && this.isItemValid(getItem(i).getItem())) {
-                int fuelValue = getFuelValue(items.get(i));
+                int fuelValue = getFuelDuration(items.get(i));
                 if (fuelValue > 0) {
                     this.fuelTime = fuelValue;
                     this.fuelDuration = fuelValue;
@@ -146,22 +146,14 @@ public abstract class AbstractThermalBlockEntity extends BaseContainerBlockEntit
 
     public boolean isItemValid(Item item) {
         ResourceLocation registryNameItem = ForgeRegistries.ITEMS.getKey(item);
-        if (registryNameItem != null) {
-            JsonFuelItem fuelInfo = JsonConfig.fuelItems.get(registryNameItem.toString());
-            return fuelInfo != null && fuelInfo.thermalType == thermalType && fuelInfo.fuelValue > 0;
-        }
-        return false;
+        JsonTemperatureFuelItem fuelInfo = TemperatureDataManager.getFuelItem(registryNameItem);
+        return fuelInfo != null && fuelInfo.thermalType == thermalType && fuelInfo.duration > 0;
     }
 
-    public int getFuelValue(ItemStack item) {
+    public int getFuelDuration(ItemStack item) {
         ResourceLocation registryNameItem = ForgeRegistries.ITEMS.getKey(item.getItem());
-        if (registryNameItem != null) {
-            JsonFuelItem fuelInfo = JsonConfig.fuelItems.get(registryNameItem.toString());
-            if (fuelInfo != null) {
-                return fuelInfo.fuelValue;
-            }
-        }
-        return 0;
+        JsonTemperatureFuelItem fuelInfo = TemperatureDataManager.getFuelItem(registryNameItem);
+        return fuelInfo != null ? fuelInfo.duration : 0;
     }
 
     public boolean isLit() {
@@ -185,7 +177,7 @@ public abstract class AbstractThermalBlockEntity extends BaseContainerBlockEntit
     }
 
     @Override
-    public int[] getSlotsForFace(Direction direction) {
+    public int @NotNull [] getSlotsForFace(@NotNull Direction direction) {
         return new int[]{0, 1, 2, 3};
     }
 
@@ -195,12 +187,12 @@ public abstract class AbstractThermalBlockEntity extends BaseContainerBlockEntit
     }
 
     @Override
-    public boolean canPlaceItemThroughFace(int slot, ItemStack itemStack, @Nullable Direction direction) {
+    public boolean canPlaceItemThroughFace(int slot, @NotNull ItemStack itemStack, @Nullable Direction direction) {
         return this.canPlaceItem(slot, itemStack);
     }
 
     @Override
-    public boolean canTakeItemThroughFace(int slot, ItemStack stack, Direction direction) {
+    public boolean canTakeItemThroughFace(int slot, @NotNull ItemStack stack, @NotNull Direction direction) {
         return slot < SLOT_COUNT;
     }
 
@@ -246,7 +238,7 @@ public abstract class AbstractThermalBlockEntity extends BaseContainerBlockEntit
     }
 
     @Override
-    public boolean stillValid(Player player) {
+    public boolean stillValid(@NotNull Player player) {
         return Container.stillValidBlockEntity(this, player);
     }
 

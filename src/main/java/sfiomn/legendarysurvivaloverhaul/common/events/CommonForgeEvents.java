@@ -2,6 +2,7 @@ package sfiomn.legendarysurvivaloverhaul.common.events;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffects;
@@ -14,12 +15,14 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.storage.LevelData;
 import net.minecraft.world.level.storage.PrimaryLevelData;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.event.ItemAttributeModifierEvent;
+import net.minecraftforge.event.OnDatapackSyncEvent;
 import net.minecraftforge.event.entity.living.*;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
@@ -32,17 +35,17 @@ import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.loading.FMLEnvironment;
+import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.registries.ForgeRegistries;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.ModDamageTypes;
 import sfiomn.legendarysurvivaloverhaul.api.bodydamage.BodyDamageUtil;
 import sfiomn.legendarysurvivaloverhaul.api.bodydamage.BodyPartEnum;
 import sfiomn.legendarysurvivaloverhaul.api.bodydamage.DamageDistributionEnum;
-import sfiomn.legendarysurvivaloverhaul.api.config.json.bodydamage.JsonBodyPartsDamageSource;
-import sfiomn.legendarysurvivaloverhaul.api.config.json.bodydamage.JsonConsumableHeal;
-import sfiomn.legendarysurvivaloverhaul.api.config.json.temperature.JsonConsumableTemperature;
-import sfiomn.legendarysurvivaloverhaul.api.config.json.thirst.JsonBlockFluidThirst;
-import sfiomn.legendarysurvivaloverhaul.api.config.json.thirst.JsonConsumableThirst;
+import sfiomn.legendarysurvivaloverhaul.api.data.json.*;
+import sfiomn.legendarysurvivaloverhaul.api.data.manager.BodyDamageDataManager;
+import sfiomn.legendarysurvivaloverhaul.api.data.manager.TemperatureDataManager;
+import sfiomn.legendarysurvivaloverhaul.api.data.manager.ThirstDataManager;
 import sfiomn.legendarysurvivaloverhaul.api.health.HealthUtil;
 import sfiomn.legendarysurvivaloverhaul.api.temperature.TemperatureUtil;
 import sfiomn.legendarysurvivaloverhaul.api.thirst.ThirstUtil;
@@ -50,10 +53,11 @@ import sfiomn.legendarysurvivaloverhaul.client.ClientHooks;
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.health.HealthCapability;
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.thirst.ThirstCapability;
 import sfiomn.legendarysurvivaloverhaul.common.integration.curios.CuriosUtil;
+import sfiomn.legendarysurvivaloverhaul.common.integration.supplementaries.SupplementariesUtil;
 import sfiomn.legendarysurvivaloverhaul.common.items.drink.DrinkItem;
 import sfiomn.legendarysurvivaloverhaul.common.items.heal.BodyHealingItem;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
-import sfiomn.legendarysurvivaloverhaul.config.json.JsonConfig;
+import sfiomn.legendarysurvivaloverhaul.config.listeners.*;
 import sfiomn.legendarysurvivaloverhaul.registry.ItemRegistry;
 import sfiomn.legendarysurvivaloverhaul.registry.MobEffectRegistry;
 import sfiomn.legendarysurvivaloverhaul.registry.SoundRegistry;
@@ -95,35 +99,38 @@ public class CommonForgeEvents {
         if (!(entity instanceof Player player))
             return;
 
-        ResourceLocation itemRegistryName = ForgeRegistries.ITEMS.getKey(event.getItem().getItem());
+        ItemStack usedItemStack = event.getItem();
+        if (LegendarySurvivalOverhaul.supplementariesLoaded) {
+            ItemStack itemStackInBasket = SupplementariesUtil.getSelectedItemInLunchBasket(event.getItem());
+            if (itemStackInBasket != ItemStack.EMPTY)
+                usedItemStack = itemStackInBasket;
+        }
+
+        ResourceLocation itemRegistryName = ForgeRegistries.ITEMS.getKey(usedItemStack.getItem());
 
         if (Config.Baked.temperatureEnabled && !entity.level().isClientSide) {
-            List<JsonConsumableTemperature> jsonConsumableTemperatures = null;
-            if (itemRegistryName != null)
-                jsonConsumableTemperatures = JsonConfig.consumableTemperature.get(itemRegistryName.toString());
+            List<JsonTemperatureConsumable> jsonConsumableTemperatures = TemperatureDataManager.getConsumable(itemRegistryName);
 
             if (jsonConsumableTemperatures != null) {
-                for (JsonConsumableTemperature jct : jsonConsumableTemperatures) {
-                    if (jct.getEffect() != null) {
-                        player.addEffect(new MobEffectInstance(jct.getEffect(), jct.duration, (Math.abs(jct.temperatureLevel) - 1), false, false, true));
-                        player.removeEffect(jct.getOppositeEffect());
+                for (JsonTemperatureConsumable jtc : jsonConsumableTemperatures) {
+                    if (jtc.getEffect() != null) {
+                        player.addEffect(new MobEffectInstance(jtc.getEffect(), jtc.duration, (Math.abs(jtc.temperatureLevel) - 1), false, false, true));
+                        player.removeEffect(jtc.getOppositeEffect());
                     }
                 }
             }
         }
 
-        if (Config.Baked.thirstEnabled && ThirstUtil.isThirstActive(player) && !entity.level().isClientSide && !(event.getItem().getItem() instanceof DrinkItem)) {
-            JsonConsumableThirst jsonConsumableThirst = ThirstUtil.getConsumableThirstJsonConfig(itemRegistryName, event.getItem());
+        if (Config.Baked.thirstEnabled && ThirstUtil.isThirstActive(player) && !entity.level().isClientSide && !(usedItemStack.getItem() instanceof DrinkItem)) {
+            JsonThirstConsumable jsonThirstConsumable = ThirstDataManager.getConsumable(usedItemStack);
 
-            if (jsonConsumableThirst != null) {
-                ThirstUtil.takeDrink(player, jsonConsumableThirst.hydration, jsonConsumableThirst.saturation, jsonConsumableThirst.effects);
+            if (jsonThirstConsumable != null) {
+                ThirstUtil.takeDrink(player, jsonThirstConsumable.hydration, jsonThirstConsumable.saturation, jsonThirstConsumable.effects);
             }
         }
 
-        if (Config.Baked.localizedBodyDamageEnabled && !(event.getItem().getItem() instanceof BodyHealingItem)) {
-            JsonConsumableHeal jsonConsumableHeal = null;
-            if (itemRegistryName != null)
-                jsonConsumableHeal = JsonConfig.consumableHeal.get(itemRegistryName.toString());
+        if (Config.Baked.localizedBodyDamageEnabled && !(usedItemStack.getItem() instanceof BodyHealingItem)) {
+            JsonHealingConsumable jsonConsumableHeal = BodyDamageDataManager.getHealingItem(itemRegistryName);
 
             if (jsonConsumableHeal != null) {
                 if (jsonConsumableHeal.healingCharges > 0) {
@@ -189,7 +196,7 @@ public class CommonForgeEvents {
 
                 ThirstCapability thirstCapability = CapabilityUtil.getThirstCapability(player);
                 if (!thirstCapability.isHydrationLevelAtMax()) {
-                    JsonBlockFluidThirst jsonBlockFluidThirst = ThirstUtil.getJsonBlockFluidThirstLookedAt(player, player.getAttributeValue(ForgeMod.BLOCK_REACH.get()) / 2);
+                    JsonThirstBlock jsonBlockFluidThirst = ThirstUtil.getJsonBlockThirstLookedAt(player, player.getAttributeValue(ForgeMod.BLOCK_REACH.get()) / 2);
 
                     if (jsonBlockFluidThirst != null && (jsonBlockFluidThirst.hydration != 0 || jsonBlockFluidThirst.saturation != 0)) {
                         if (event.getLevel().isClientSide)
@@ -239,7 +246,7 @@ public class CommonForgeEvents {
             float bodyPartDamageValue = event.getAmount() * (float) Config.Baked.bodyDamageMultiplier;
             DamageSource source = event.getSource();
 
-            JsonBodyPartsDamageSource damageSourceBodyParts = JsonConfig.damageSourceBodyParts.get(source.getMsgId());
+            JsonBodyPartsDamageSource damageSourceBodyParts = BodyDamageDataManager.getBodyParts(source.getMsgId());
             List<BodyPartEnum> hitBodyParts = new ArrayList<>();
             if (damageSourceBodyParts != null) {
 
@@ -349,6 +356,26 @@ public class CommonForgeEvents {
                 primaryLevelData.getGameRules().getRule(GameRules.RULE_NATURAL_REGENERATION).set(Config.Baked.naturalRegenerationEnabled, event.getLevel().getServer());
             }
         }
+    }
+
+    @SubscribeEvent
+    public static void onDataPackSyncEvent(OnDatapackSyncEvent event) {
+        final ServerPlayer player = event.getPlayer();
+        final PacketDistributor.PacketTarget target = player == null ? PacketDistributor.ALL.noArg() : PacketDistributor.PLAYER.with(() -> player);
+
+        ThirstBlockListener.sendDataToClient(target);
+        ThirstConsumableListener.sendDataToClient(target);
+
+        TemperatureConsumableListener.sendDataToClient(target);
+        TemperatureBlockListener.sendDataToClient(target);
+        TemperatureItemListener.sendDataToClient(target);
+        TemperatureBiomeListener.sendDataToClient(target);
+        TemperatureFuelItemListener.sendDataToClient(target);
+        TemperatureBiomeListener.sendDataToClient(target);
+        TemperatureMountListener.sendDataToClient(target);
+
+        BodyDamageHealingConsumableListener.sendDataToClient(target);
+        BodyPartsDamageSourceListener.sendDataToClient(target);
     }
 
     private static boolean shouldApplyThirst(Player player)

@@ -3,7 +3,6 @@ package sfiomn.legendarysurvivaloverhaul.common.blocks;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -24,12 +23,10 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import sfiomn.legendarysurvivaloverhaul.api.block.ThermalTypeEnum;
 import sfiomn.legendarysurvivaloverhaul.common.blockentities.AbstractThermalBlockEntity;
 import sfiomn.legendarysurvivaloverhaul.common.blockentities.CoolerBlockEntity;
 import sfiomn.legendarysurvivaloverhaul.common.blockentities.HeaterBlockEntity;
-import sfiomn.legendarysurvivaloverhaul.registry.BlockEntityRegistry;
 
 public class ThermalBlock extends BaseEntityBlock implements EntityBlock
 {

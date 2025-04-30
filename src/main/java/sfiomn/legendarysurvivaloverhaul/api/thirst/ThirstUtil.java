@@ -1,12 +1,10 @@
 package sfiomn.legendarysurvivaloverhaul.api.thirst;
 
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
-import sfiomn.legendarysurvivaloverhaul.api.config.json.thirst.JsonBlockFluidThirst;
-import sfiomn.legendarysurvivaloverhaul.api.config.json.thirst.JsonConsumableThirst;
-import sfiomn.legendarysurvivaloverhaul.api.config.json.thirst.JsonEffectParameter;
+import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonThirstBlock;
+import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonMobEffect;
 
 import java.util.List;
 
@@ -21,7 +19,7 @@ public class ThirstUtil
 	 * @param saturation
 	 * @param effects
 	 */
-	public static void takeDrink(Player player, int hydration, float saturation, List<JsonEffectParameter> effects)
+	public static void takeDrink(Player player, int hydration, float saturation, List<JsonMobEffect> effects)
 	{
 		internal.takeDrink(player, hydration, saturation, effects);
 	}
@@ -52,8 +50,8 @@ public class ThirstUtil
 	 * @param player
 	 * @param finalDistance
 	 */
-	public static JsonBlockFluidThirst getJsonBlockFluidThirstLookedAt(Player player, double finalDistance) {
-		return internal.getJsonBlockFluidThirstLookedAt(player, finalDistance);
+	public static JsonThirstBlock getJsonBlockThirstLookedAt(Player player, double finalDistance) {
+		return internal.getJsonBlockThirstLookedAt(player, finalDistance);
 	}
 
 	/**
@@ -114,17 +112,6 @@ public class ThirstUtil
 	{
 		internal.removeCapacityTag(stack);
 	}
-
-    /**
-     * Retrieves the JsonConsumableThirst from the jsonThirstConsumable json file for the given itemStack
-     *
-     * @param itemRegistryName Item stack registry name
-     * @param itemStack        Item stack
-     */
-	@Nullable
-    public static JsonConsumableThirst getConsumableThirstJsonConfig(ResourceLocation itemRegistryName, ItemStack itemStack) {
-        return internal.getConsumableThirstJsonConfig(itemRegistryName, itemStack);
-    }
 
 	/**
 	 * Deactivate the thirst system for the given player
