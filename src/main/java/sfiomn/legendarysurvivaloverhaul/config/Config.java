@@ -39,9 +39,7 @@ public class Config
 
 	public static void register(FMLJavaModLoadingContext context)
 	{
-		for (Path configPath: new Path[]{LegendarySurvivalOverhaul.modConfigPath,
-				LegendarySurvivalOverhaul.modConfigJsons,
-				LegendarySurvivalOverhaul.modIntegrationConfigJsons}) {
+		for (Path configPath: new Path[]{LegendarySurvivalOverhaul.modConfigPath}) {
 			try {
 				Files.createDirectory(configPath);
 			} catch (FileAlreadyExistsException ignored) {

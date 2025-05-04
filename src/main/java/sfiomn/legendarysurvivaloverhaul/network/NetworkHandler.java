@@ -36,6 +36,7 @@ public class NetworkHandler
 		INSTANCE.registerMessage(id++, SyncTemperatureFuelItemsPacket.class, SyncTemperatureFuelItemsPacket::encode, SyncTemperatureFuelItemsPacket::decode, SyncTemperatureFuelItemsPacket::handle);
 		INSTANCE.registerMessage(id++, SyncTemperatureMountsPacket.class, SyncTemperatureMountsPacket::encode, SyncTemperatureMountsPacket::decode, SyncTemperatureMountsPacket::handle);
 		INSTANCE.registerMessage(id++, SyncTemperatureDimensionsPacket.class, SyncTemperatureDimensionsPacket::encode, SyncTemperatureDimensionsPacket::decode, SyncTemperatureDimensionsPacket::handle);
+		INSTANCE.registerMessage(id++, SyncTemperatureOriginsPacket.class, SyncTemperatureOriginsPacket::encode, SyncTemperatureOriginsPacket::decode, SyncTemperatureOriginsPacket::handle);
 
 		INSTANCE.registerMessage(id++, SyncThirstBlocksPacket.class, SyncThirstBlocksPacket::encode, SyncThirstBlocksPacket::decode, SyncThirstBlocksPacket::handle);
 		INSTANCE.registerMessage(id++, SyncThirstConsumablesPacket.class, SyncThirstConsumablesPacket::encode, SyncThirstConsumablesPacket::decode, SyncThirstConsumablesPacket::handle);

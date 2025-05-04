@@ -48,6 +48,8 @@ import sfiomn.legendarysurvivaloverhaul.common.integration.origins.OriginsEvents
 import sfiomn.legendarysurvivaloverhaul.common.integration.sereneseasons.SereneSeasonsUtil;
 import sfiomn.legendarysurvivaloverhaul.common.integration.vampirism.VampirismEvents;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
+import sfiomn.legendarysurvivaloverhaul.config.json_old.JsonConfig;
+import sfiomn.legendarysurvivaloverhaul.config.json_old.JsonConfigRegistration;
 import sfiomn.legendarysurvivaloverhaul.config.listeners.*;
 import sfiomn.legendarysurvivaloverhaul.network.NetworkHandler;
 import sfiomn.legendarysurvivaloverhaul.registry.*;
@@ -131,6 +133,7 @@ public class LegendarySurvivalOverhaul
 		forgeBus.register(this);
 
 		modIntegration(forgeBus);
+		//JsonConfigRegistration.deleteJsonDirs();
 	}
 	
 	private void modIntegration(IEventBus forgeBus)
@@ -242,6 +245,7 @@ public class LegendarySurvivalOverhaul
 		TemperatureDataManager.internalFuelItem = new TemperatureFuelItemListener();
 		TemperatureDataManager.internalDimension = new TemperatureDimensionListener();
 		TemperatureDataManager.internalMount = new TemperatureMountListener();
+		TemperatureDataManager.internalOrigin = new TemperatureOriginListener();
 		event.addListener((PreparableReloadListener) TemperatureDataManager.internalConsumable);
 		event.addListener((PreparableReloadListener) TemperatureDataManager.internalBlock);
 		event.addListener((PreparableReloadListener) TemperatureDataManager.internalItem);
@@ -249,6 +253,7 @@ public class LegendarySurvivalOverhaul
 		event.addListener((PreparableReloadListener) TemperatureDataManager.internalFuelItem);
 		event.addListener((PreparableReloadListener) TemperatureDataManager.internalDimension);
 		event.addListener((PreparableReloadListener) TemperatureDataManager.internalMount);
+		event.addListener((PreparableReloadListener) TemperatureDataManager.internalOrigin);
 
 		ThirstDataManager.internalConsumable = new ThirstConsumableListener();
 		ThirstDataManager.internalBlock = new ThirstBlockListener();

@@ -8,6 +8,9 @@ import sfiomn.legendarysurvivaloverhaul.api.temperature.TemporaryModifierGroupEn
 
 import java.util.concurrent.CompletableFuture;
 
+import static sfiomn.legendarysurvivaloverhaul.api.temperature.TemporaryModifierGroupEnum.DRINK;
+import static sfiomn.legendarysurvivaloverhaul.api.temperature.TemporaryModifierGroupEnum.FOOD;
+
 public class FarmersdelightTemperatureProvider extends TemperatureDataProvider {
 
     public FarmersdelightTemperatureProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper fileHelper) {
@@ -21,13 +24,10 @@ public class FarmersdelightTemperatureProvider extends TemperatureDataProvider {
                 .addTemperature(temperatureBlock(7.5f).addProperty("lit", "true"))
                 .addTemperature(temperatureBlock(0.0f).addProperty("lit", "false"));
 
-        consumable("beef_stew").addTemperature(temperatureConsumable(TemporaryModifierGroupEnum.FOOD).temperatureLevel(2).duration(2400));
-        consumable("chicken_soup").addTemperature(temperatureConsumable(TemporaryModifierGroupEnum.FOOD).temperatureLevel(2).duration(2400));
-        consumable("vegetable_soup").addTemperature(temperatureConsumable(TemporaryModifierGroupEnum.FOOD).temperatureLevel(2).duration(2400));
-        consumable("fish_stew").addTemperature(temperatureConsumable(TemporaryModifierGroupEnum.FOOD).temperatureLevel(2).duration(2400));
-        consumable("pumpkin_soup").addTemperature(temperatureConsumable(TemporaryModifierGroupEnum.FOOD).temperatureLevel(2).duration(2400));
-        consumable("baked_cod_stew").addTemperature(temperatureConsumable(TemporaryModifierGroupEnum.FOOD).temperatureLevel(2).duration(2400));
-        consumable("hot_cocoa").addTemperature(temperatureConsumable(TemporaryModifierGroupEnum.DRINK).temperatureLevel(3).duration(3600));
-        consumable("melon_juice").addTemperature(temperatureConsumable(TemporaryModifierGroupEnum.DRINK).temperatureLevel(-1).duration(1200));
+        consumable("beef_stew").addTemperature(temperatureConsumable(FOOD).temperatureLevel(2).duration(2400));
+        consumable("fish_stew").addTemperature(temperatureConsumable(FOOD).temperatureLevel(2).duration(2400));
+        consumable("baked_cod_stew").addTemperature(temperatureConsumable(FOOD).temperatureLevel(2).duration(2400));
+        consumable("hot_cocoa").addTemperature(temperatureConsumable(DRINK).temperatureLevel(3).duration(3600));
+        consumable("melon_juice").addTemperature(temperatureConsumable(DRINK).temperatureLevel(-1).duration(1200));
     }
 }

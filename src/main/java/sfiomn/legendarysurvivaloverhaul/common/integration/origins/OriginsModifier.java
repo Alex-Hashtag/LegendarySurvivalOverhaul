@@ -7,8 +7,9 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.common.util.LazyOptional;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
+import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonTemperatureResistance;
+import sfiomn.legendarysurvivaloverhaul.api.data.manager.TemperatureDataManager;
 import sfiomn.legendarysurvivaloverhaul.api.temperature.ModifierBase;
-import sfiomn.legendarysurvivaloverhaul.common.integration.jsonConfig.JsonIntegrationConfig;
 
 
 public class OriginsModifier extends ModifierBase {
@@ -27,9 +28,8 @@ public class OriginsModifier extends ModifierBase {
         if (optionalOrigin.isPresent() && optionalOrigin.resolve().isPresent()) {
             IOriginContainer origins = optionalOrigin.resolve().get();
             for (ResourceKey<Origin> origin : origins.getOrigins().values()) {
-                if (JsonIntegrationConfig.originsTemperatures.containsKey(origin.location().toString())) {
-                    temp += JsonIntegrationConfig.originsTemperatures.get(origin.location().toString()).temperature;
-                }
+                JsonTemperatureResistance config = TemperatureDataManager.getOrigin(origin.location());
+                temp += config != null ? config.temperature : 0;
             }
         }
 

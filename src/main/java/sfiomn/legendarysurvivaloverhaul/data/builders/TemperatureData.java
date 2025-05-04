@@ -3,10 +3,10 @@ package sfiomn.legendarysurvivaloverhaul.data.builders;
 import com.google.gson.JsonObject;
 import sfiomn.legendarysurvivaloverhaul.api.data.builder.ITemperatureData;
 
-public class TemperatureMountData implements ITemperatureData {
+public class TemperatureData implements ITemperatureData {
     private float temperature;
 
-    public TemperatureMountData() {
+    public TemperatureData() {
     }
 
     @Override

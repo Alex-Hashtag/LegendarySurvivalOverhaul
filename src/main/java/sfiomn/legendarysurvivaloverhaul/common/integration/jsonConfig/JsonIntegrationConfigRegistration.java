@@ -7,8 +7,7 @@ import sfiomn.legendarysurvivaloverhaul.config.JsonFileName;
 import java.io.File;
 import java.util.Map;
 
-import static sfiomn.legendarysurvivaloverhaul.config.json_old.JsonConfigRegistration.manuallyWriteToJson;
-import static sfiomn.legendarysurvivaloverhaul.config.json_old.JsonConfigRegistration.processJson;
+import static sfiomn.legendarysurvivaloverhaul.config.json_old.JsonConfigRegistration.*;
 
 public class JsonIntegrationConfigRegistration
 {
@@ -17,23 +16,28 @@ public class JsonIntegrationConfigRegistration
 
 		processAllIntegrationsJson(configDir);
 
-		writeAllIntegrationsToJson(configDir);
+		//deleteAllIntegrationsJson(configDir);
+		//writeAllIntegrationsToJson(configDir);
 	}
 	
 	public static void registerIntegrationDefaults(File configDir)
 	{
 		if (LegendarySurvivalOverhaul.originsLoaded) {
-			JsonIntegrationConfig.registerOriginsTemperature("origins:blazeborn", -5, 15, -2, 0);
-			JsonIntegrationConfig.registerOriginsTemperature("origins:merling", 0, 0, 3, 0);
-			JsonIntegrationConfig.registerOriginsTemperature("origins:arachnid", 0, -5, 0, 0);
-			JsonIntegrationConfig.registerOriginsTemperature("origins:feline", 0, 0, 0, 2);
-			JsonIntegrationConfig.registerOriginsTemperature("origins:enderian", 0, 0, 10, 0);
+			JsonIntegrationConfig.registerDefaultOriginsTemperature("origins:blazeborn", -5, 15, -2, 0);
+			JsonIntegrationConfig.registerDefaultOriginsTemperature("origins:merling", 0, 0, 3, 0);
+			JsonIntegrationConfig.registerDefaultOriginsTemperature("origins:arachnid", 0, -5, 0, 0);
+			JsonIntegrationConfig.registerDefaultOriginsTemperature("origins:feline", 0, 0, 0, 2);
+			JsonIntegrationConfig.registerDefaultOriginsTemperature("origins:enderian", 0, 0, 10, 0);
 		}
 	}
 
 	public static void writeAllIntegrationsToJson(File jsonDir) {
 		if (LegendarySurvivalOverhaul.originsLoaded)
 			manuallyWriteToJson(JsonFileName.ORIGINS_TEMP, JsonIntegrationConfig.originsTemperatures, jsonDir);
+	}
+
+	public static void deleteAllIntegrationsJson(File jsonDir) {
+		deleteJson(JsonFileName.ORIGINS_TEMP, jsonDir);
 	}
 	
 	public static void processAllIntegrationsJson(File jsonDir)
@@ -44,7 +48,7 @@ public class JsonIntegrationConfigRegistration
 		if (jsonOriginsTemperatures != null)
 		{
 			// remove default item config
-			JsonIntegrationConfig.originsTemperatures.clear();
+			//JsonIntegrationConfig.originsTemperatures.clear();
 			LegendarySurvivalOverhaul.LOGGER.debug("Loaded " + jsonOriginsTemperatures.size() + " origins temperature values from JSON");
 			for (Map.Entry<String, JsonTemperatureResistance> entry : jsonOriginsTemperatures.entrySet())
 			{

@@ -373,6 +373,7 @@ public class CommonForgeEvents {
         TemperatureFuelItemListener.sendDataToClient(target);
         TemperatureBiomeListener.sendDataToClient(target);
         TemperatureMountListener.sendDataToClient(target);
+        TemperatureOriginListener.sendDataToClient(target);
 
         BodyDamageHealingConsumableListener.sendDataToClient(target);
         BodyPartsDamageSourceListener.sendDataToClient(target);

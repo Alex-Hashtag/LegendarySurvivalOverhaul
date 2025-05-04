@@ -8,10 +8,10 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.common.util.LazyOptional;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
-import sfiomn.legendarysurvivaloverhaul.api.config.json_old.temperature.JsonTemperatureResistance;
+import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonTemperatureResistance;
+import sfiomn.legendarysurvivaloverhaul.api.data.manager.TemperatureDataManager;
 import sfiomn.legendarysurvivaloverhaul.api.temperature.DynamicModifierBase;
 import sfiomn.legendarysurvivaloverhaul.api.temperature.TemperatureEnum;
-import sfiomn.legendarysurvivaloverhaul.common.integration.jsonConfig.JsonIntegrationConfig;
 
 public class OriginsDynamicModifier extends DynamicModifierBase {
     public OriginsDynamicModifier() {}
@@ -29,8 +29,8 @@ public class OriginsDynamicModifier extends DynamicModifierBase {
         if (optionalOrigin.isPresent() && optionalOrigin.resolve().isPresent()) {
             IOriginContainer origins = optionalOrigin.resolve().get();
             for (ResourceKey<Origin> origin : origins.getOrigins().values()) {
-                if (JsonIntegrationConfig.originsTemperatures.containsKey(origin.location().toString())) {
-                    JsonTemperatureResistance config = JsonIntegrationConfig.originsTemperatures.get(origin.location().toString());
+                JsonTemperatureResistance config = TemperatureDataManager.getOrigin(origin.location());
+                if (config != null) {
 
                     double maxResistance = config.thermalResistance;
 

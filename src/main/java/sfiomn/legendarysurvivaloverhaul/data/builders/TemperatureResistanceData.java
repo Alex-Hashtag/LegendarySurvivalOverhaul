@@ -3,13 +3,13 @@ package sfiomn.legendarysurvivaloverhaul.data.builders;
 import com.google.gson.JsonObject;
 import sfiomn.legendarysurvivaloverhaul.api.data.builder.ITemperatureResistanceData;
 
-public class TemperatureItemData implements ITemperatureResistanceData {
+public class TemperatureResistanceData implements ITemperatureResistanceData {
     private float temperature;
     private float heatResistance;
     private float coldResistance;
     private float thermalResistance;
 
-    public TemperatureItemData() {
+    public TemperatureResistanceData() {
     }
 
     @Override
