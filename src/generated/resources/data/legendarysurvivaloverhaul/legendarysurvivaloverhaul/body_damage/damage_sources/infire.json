@@ -1,0 +1,9 @@
+{
+  "body_parts": [
+    "LEFT_FOOT",
+    "RIGHT_FOOT",
+    "LEFT_LEG",
+    "RIGHT_LEG"
+  ],
+  "damage_distribution": "ALL"
+}

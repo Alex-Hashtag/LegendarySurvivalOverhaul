@@ -1,0 +1,20 @@
+[
+  {
+    "properties": {
+      "litstate": "2"
+    },
+    "temperature": 1.5
+  },
+  {
+    "properties": {
+      "litstate": "1"
+    },
+    "temperature": 0.75
+  },
+  {
+    "properties": {
+      "litstate": "0"
+    },
+    "temperature": 0.0
+  }
+]

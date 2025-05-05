@@ -1,0 +1,44 @@
+[
+  {
+    "properties": {
+      "heat_level": "6"
+    },
+    "temperature": 15.0
+  },
+  {
+    "properties": {
+      "heat_level": "5"
+    },
+    "temperature": 13.0
+  },
+  {
+    "properties": {
+      "heat_level": "4"
+    },
+    "temperature": 11.0
+  },
+  {
+    "properties": {
+      "heat_level": "3"
+    },
+    "temperature": 9.0
+  },
+  {
+    "properties": {
+      "heat_level": "2"
+    },
+    "temperature": 6.0
+  },
+  {
+    "properties": {
+      "heat_level": "1"
+    },
+    "temperature": 3.0
+  },
+  {
+    "properties": {
+      "heat_level": "0"
+    },
+    "temperature": 0.0
+  }
+]
