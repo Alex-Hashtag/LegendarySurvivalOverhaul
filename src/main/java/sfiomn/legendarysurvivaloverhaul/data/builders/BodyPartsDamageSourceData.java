@@ -6,13 +6,15 @@ import sfiomn.legendarysurvivaloverhaul.api.bodydamage.BodyPartEnum;
 import sfiomn.legendarysurvivaloverhaul.api.bodydamage.DamageDistributionEnum;
 import sfiomn.legendarysurvivaloverhaul.api.data.builder.IBodyPartsDamageSourceData;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class BodyPartsDamageSourceData implements IBodyPartsDamageSourceData {
     private DamageDistributionEnum damageDistribution;
-    private List<BodyPartEnum> bodyParts;
+    private final List<BodyPartEnum> bodyParts;
 
     public BodyPartsDamageSourceData() {
+        bodyParts = new ArrayList<>();
     }
 
     @Override

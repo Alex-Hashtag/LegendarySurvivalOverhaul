@@ -41,8 +41,11 @@ public final class DataGenerators
 		gen.addProvider(event.includeServer(), new ModItemTagProvider(packOutput, lookupProvider, blockTagProvider.contentsGetter(), existingFileHelper));
 
 		gen.addProvider(event.includeServer(), new ModGlobalLootModifierProvider(packOutput));
+		gen.addProvider(event.includeServer(), new ModTemperatureProvider(packOutput, lookupProvider, existingFileHelper));
 		gen.addProvider(event.includeServer(), new ModThirstProvider(packOutput, lookupProvider, existingFileHelper));
+		gen.addProvider(event.includeServer(), new ModBodyDamageProvider(packOutput, lookupProvider, existingFileHelper));
 		gen.addProvider(event.includeServer(), new MinecraftThirstProvider(packOutput, lookupProvider, existingFileHelper));
+		gen.addProvider(event.includeServer(), new MinecraftTemperatureProvider(packOutput, lookupProvider, existingFileHelper));
 
 		IntegrationDataGenerators.addIntegrationProviders(event, gen, packOutput, lookupProvider, existingFileHelper);
 	}

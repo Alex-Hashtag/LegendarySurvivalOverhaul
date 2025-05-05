@@ -45,7 +45,7 @@ public class Config
 			} catch (FileAlreadyExistsException ignored) {
 			} catch (IOException e) {
 				LegendarySurvivalOverhaul.LOGGER.error("Failed to create Legendary Survival Overhaul config directory " + configPath);
-				e.printStackTrace();
+				LegendarySurvivalOverhaul.LOGGER.error(e.getStackTrace());
 			}
 		}
 

@@ -4,7 +4,7 @@ import com.google.gson.JsonObject;
 import sfiomn.legendarysurvivaloverhaul.api.data.builder.IHealingConsumableData;
 
 public class HealingConsumableData implements IHealingConsumableData {
-    private int healingCharge;
+    private int healingCharges;
     private float healingValue;
     private int healingTime;
 
@@ -12,8 +12,8 @@ public class HealingConsumableData implements IHealingConsumableData {
     }
 
     @Override
-    public IHealingConsumableData healingCharge(int healingCharge) {
-        this.healingCharge = healingCharge;
+    public IHealingConsumableData healingCharges(int healingCharges) {
+        this.healingCharges = healingCharges;
         return this;
     }
 
@@ -32,7 +32,7 @@ public class HealingConsumableData implements IHealingConsumableData {
     @Override
     public JsonObject build() {
         JsonObject json = new JsonObject();
-        json.addProperty("healing_charge", this.healingCharge);
+        json.addProperty("healing_charges", this.healingCharges);
         json.addProperty("healing_value", this.healingValue);
         json.addProperty("healing_time", this.healingTime);
         return json;

@@ -6,7 +6,7 @@ import sfiomn.legendarysurvivaloverhaul.api.block.ThermalTypeEnum;
 
 public class JsonTemperatureFuelItem {
     public static final Codec<JsonTemperatureFuelItem> CODEC = RecordCodecBuilder.<JsonTemperatureFuelItem>create((inst) -> inst.group(
-            Codec.STRING.fieldOf("thermal_type").forGetter(d -> d.thermalType.getName()),
+            Codec.STRING.fieldOf("thermal_type").forGetter(d -> d.thermalType.name()),
             Codec.INT.fieldOf("duration").forGetter(d -> d.duration)
     ).apply(inst, JsonTemperatureFuelItem::new));
 
@@ -15,7 +15,7 @@ public class JsonTemperatureFuelItem {
 
     public JsonTemperatureFuelItem(String thermalType, int duration)
     {
-        this.thermalType = ThermalTypeEnum.valueOf(thermalType);
+        this.thermalType = ThermalTypeEnum.get(thermalType);
         this.duration = duration;
     }
 }

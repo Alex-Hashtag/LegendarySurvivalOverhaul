@@ -62,35 +62,35 @@ public abstract class TemperatureDataProvider implements DataProvider {
             List<CompletableFuture<?>> list = new ArrayList<>();
             this.generate(p_255484_, this.fileHelper);
             this.consumableBuilders.forEach((consumable, builder) -> {
-                Path path = this.consumablesPathProvider.json(new ResourceLocation(this.modId, consumable));
+                Path path = this.consumablesPathProvider.json(new ResourceLocation(this.modId, consumable.toLowerCase()));
                 list.add(DataProvider.saveStable(pOutput, builder.build(), path));
             });
             this.blockBuilders.forEach((block, builder) -> {
-                Path path = this.blocksPathProvider.json(new ResourceLocation(this.modId, block));
+                Path path = this.blocksPathProvider.json(new ResourceLocation(this.modId, block.toLowerCase()));
                 list.add(DataProvider.saveStable(pOutput, builder.build(), path));
             });
-            this.itemBuilders.forEach((block, builder) -> {
-                Path path = this.itemsPathProvider.json(new ResourceLocation(this.modId, block));
+            this.itemBuilders.forEach((item, builder) -> {
+                Path path = this.itemsPathProvider.json(new ResourceLocation(this.modId, item.toLowerCase()));
                 list.add(DataProvider.saveStable(pOutput, builder.build(), path));
             });
-            this.biomeBuilders.forEach((block, builder) -> {
-                Path path = this.biomesPathProvider.json(new ResourceLocation(this.modId, block));
+            this.biomeBuilders.forEach((biome, builder) -> {
+                Path path = this.biomesPathProvider.json(new ResourceLocation(this.modId, biome.toLowerCase()));
                 list.add(DataProvider.saveStable(pOutput, builder.build(), path));
             });
-            this.fuelItemBuilders.forEach((block, builder) -> {
-                Path path = this.fuelItemPathProvider.json(new ResourceLocation(this.modId, block));
+            this.fuelItemBuilders.forEach((fuelItem, builder) -> {
+                Path path = this.fuelItemPathProvider.json(new ResourceLocation(this.modId, fuelItem.toLowerCase()));
                 list.add(DataProvider.saveStable(pOutput, builder.build(), path));
             });
-            this.dimensionBuilders.forEach((block, builder) -> {
-                Path path = this.dimensionPathProvider.json(new ResourceLocation(this.modId, block));
+            this.dimensionBuilders.forEach((dimension, builder) -> {
+                Path path = this.dimensionPathProvider.json(new ResourceLocation(this.modId, dimension.toLowerCase()));
                 list.add(DataProvider.saveStable(pOutput, builder.build(), path));
             });
-            this.mountBuilders.forEach((block, builder) -> {
-                Path path = this.mountPathProvider.json(new ResourceLocation(this.modId, block));
+            this.mountBuilders.forEach((mount, builder) -> {
+                Path path = this.mountPathProvider.json(new ResourceLocation(this.modId, mount.toLowerCase()));
                 list.add(DataProvider.saveStable(pOutput, builder.build(), path));
             });
-            this.originBuilders.forEach((block, builder) -> {
-                Path path = this.originPathProvider.json(new ResourceLocation(this.modId, block));
+            this.originBuilders.forEach((origin, builder) -> {
+                Path path = this.originPathProvider.json(new ResourceLocation(this.modId, origin.toLowerCase()));
                 list.add(DataProvider.saveStable(pOutput, builder.build(), path));
             });
             return CompletableFuture.allOf(list.toArray(CompletableFuture[]::new));

@@ -10,7 +10,7 @@ import java.util.List;
 
 public class JsonTemperatureConsumable {
     public static final Codec<JsonTemperatureConsumable> CODEC = RecordCodecBuilder.<JsonTemperatureConsumable>create((inst) -> inst.group(
-            Codec.STRING.fieldOf("group").forGetter(c -> c.group.group),
+            Codec.STRING.fieldOf("group").forGetter(c -> c.group.name()),
             Codec.INT.fieldOf("temperature_level").forGetter(c -> c.temperatureLevel),
             Codec.INT.fieldOf("duration").forGetter(c -> c.duration)
     ).apply(inst, JsonTemperatureConsumable::new));
@@ -27,7 +27,7 @@ public class JsonTemperatureConsumable {
 
         this.temperatureLevel = temperatureLevel;
         this.duration = duration;
-        this.group = TemporaryModifierGroupEnum.valueOf(group);
+        this.group = TemporaryModifierGroupEnum.get(group);
         this.effect = null;
         this.oppositeEffect = null;
         if (temperatureLevel > 0) {

@@ -1,6 +1,7 @@
 package sfiomn.legendarysurvivaloverhaul.network.packets;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -13,6 +14,7 @@ import sfiomn.legendarysurvivaloverhaul.config.listeners.TemperatureBlockListene
 import sfiomn.legendarysurvivaloverhaul.config.listeners.TemperatureConsumableListener;
 import sfiomn.legendarysurvivaloverhaul.network.NetworkHandler;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,8 +36,9 @@ public class SyncTemperatureBlocksPacket
 		buffer.writeInt(message.size);
 		for (Map.Entry<ResourceLocation, List<JsonTemperatureBlock>> e : message.temperatureBlocks.entrySet()) {
 			buffer.writeResourceLocation(e.getKey());
+			buffer.writeInt(e.getValue().size());
 			var r = JsonTemperatureBlock.LIST_CODEC.encodeStart(NbtOps.INSTANCE, e.getValue());
-			r.result().ifPresent(j -> buffer.writeNbt((CompoundTag) j));
+			r.result().ifPresent(j -> ((ListTag) j).forEach(k -> buffer.writeNbt((CompoundTag) k)));
 		}
 	}
 	
@@ -45,13 +48,17 @@ public class SyncTemperatureBlocksPacket
 		Map<ResourceLocation, List<JsonTemperatureBlock>> temperatureBlocks = new HashMap<>();
 		for (int i = 0; i < size; i++) {
 			ResourceLocation key = buffer.readResourceLocation();
-			CompoundTag tag = buffer.readNbt();
-			if (tag != null) {
-				var r = JsonTemperatureBlock.LIST_CODEC.parse(NbtOps.INSTANCE, tag);
-				r.result().ifPresent(t -> temperatureBlocks.put(key, t));
+			int jtbSize = buffer.readInt();
+			List<JsonTemperatureBlock> jtbList = new ArrayList<>();
+			for (int j = 0; j < jtbSize; j++) {
+				CompoundTag tag = buffer.readNbt();
+				if (tag != null) {
+					var r = JsonTemperatureBlock.CODEC.parse(NbtOps.INSTANCE, tag);
+					r.result().ifPresent(jtbList::add);
+				}
 			}
+			temperatureBlocks.put(key, jtbList);
 		}
-
 		return new SyncTemperatureBlocksPacket(temperatureBlocks);
 	}
 	

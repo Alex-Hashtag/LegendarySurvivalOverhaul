@@ -9,12 +9,8 @@ import net.minecraftforge.common.data.ExistingFileHelper;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.data.builder.IBodyPartsDamageSourceData;
 import sfiomn.legendarysurvivaloverhaul.api.data.builder.IHealingConsumableData;
-import sfiomn.legendarysurvivaloverhaul.api.data.builder.IThirstData;
-import sfiomn.legendarysurvivaloverhaul.api.data.builder.IThirstDataHolder;
 import sfiomn.legendarysurvivaloverhaul.data.builders.BodyPartsDamageSourceData;
 import sfiomn.legendarysurvivaloverhaul.data.builders.HealingConsumableData;
-import sfiomn.legendarysurvivaloverhaul.data.builders.ThirstData;
-import sfiomn.legendarysurvivaloverhaul.data.builders.ThirstDataHolder;
 
 import javax.annotation.Nonnull;
 import java.nio.file.Path;
@@ -49,11 +45,11 @@ public abstract class BodyDamageDataProvider implements DataProvider {
             List<CompletableFuture<?>> list = new ArrayList<>();
             this.generate(p_255484_, this.fileHelper);
             this.consumablesBuilders.forEach((consumable, builder) -> {
-                Path path = this.consumablesPathProvider.json(new ResourceLocation(this.modId, consumable));
+                Path path = this.consumablesPathProvider.json(new ResourceLocation(this.modId, consumable.toLowerCase()));
                 list.add(DataProvider.saveStable(pOutput, builder.build(), path));
             });
-            this.bodyPartsDamageSourceBuilders.forEach((block, builder) -> {
-                Path path = this.bodyPartsDamageSourcePathProvider.json(new ResourceLocation(this.modId, block));
+            this.bodyPartsDamageSourceBuilders.forEach((damageSource, builder) -> {
+                Path path = this.bodyPartsDamageSourcePathProvider.json(new ResourceLocation(this.modId, damageSource.toLowerCase()));
                 list.add(DataProvider.saveStable(pOutput, builder.build(), path));
             });
             return CompletableFuture.allOf(list.toArray(CompletableFuture[]::new));

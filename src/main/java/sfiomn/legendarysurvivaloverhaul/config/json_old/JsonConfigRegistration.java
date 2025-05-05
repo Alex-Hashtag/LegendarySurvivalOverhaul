@@ -4,7 +4,11 @@ import com.google.common.collect.MapDifference;
 import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.stream.JsonReader;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.io.FileUtils;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.block.ThermalTypeEnum;
@@ -24,18 +28,26 @@ import sfiomn.legendarysurvivaloverhaul.common.blocks.SunFernBlock;
 import sfiomn.legendarysurvivaloverhaul.common.integration.IntegrationController;
 import sfiomn.legendarysurvivaloverhaul.config.JsonFileName;
 import sfiomn.legendarysurvivaloverhaul.config.JsonTypeToken;
+import sfiomn.legendarysurvivaloverhaul.data.builders.*;
 
 import javax.annotation.Nullable;
 import java.io.File;
 import java.io.FileReader;
+import java.io.IOException;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
+import java.nio.file.FileAlreadyExistsException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 
 import static sfiomn.legendarysurvivaloverhaul.util.internal.ThirstUtilInternal.HYDRATION_ENUM_TAG;
 
 public class JsonConfigRegistration
 {
+	public static Path customDatapackFolder = Paths.get(LegendarySurvivalOverhaul.modConfigPath.toString(), "customDataPack");
+
 	public static void init(File configDir) {
 
 		if (configDir.exists()) {
@@ -264,10 +276,43 @@ public class JsonConfigRegistration
 		if (LegendarySurvivalOverhaul.modConfigJsons.toFile().exists())
 			LegendarySurvivalOverhaul.modConfigJsons.toFile().delete();
 	}
+
+	private static void createDirectories(Path directory) {
+		try {
+			Files.createDirectories(directory);
+		} catch (FileAlreadyExistsException ignored) {
+		} catch (IOException e) {
+			LegendarySurvivalOverhaul.LOGGER.error("Failed to create custom datapack directory {}", directory);
+			LegendarySurvivalOverhaul.LOGGER.error(e.getStackTrace());
+		}
+	}
+
+	private static void writeInFile(File file, JsonObject json) {
+
+		try {
+			FileUtils.write(file, json.toString(), (String) null);
+		} catch (IOException err) {
+
+			LegendarySurvivalOverhaul.LOGGER.error("Failed to create json file {}", file);
+			LegendarySurvivalOverhaul.LOGGER.error(err.getStackTrace());
+		}
+	}
+
+	private static void writeInFile(File file, JsonArray json) {
+
+		try {
+			FileUtils.write(file, json.toString(), (String) null);
+		} catch (IOException err) {
+
+			LegendarySurvivalOverhaul.LOGGER.error("Failed to create json file {}", file);
+			LegendarySurvivalOverhaul.LOGGER.error(err.getStackTrace());
+		}
+	}
 	
 	public static void processAllJson(File jsonDir)
 	{
 		Gson gson = buildNewGson();
+		Path customDatapackFolder = Paths.get(LegendarySurvivalOverhaul.modConfigPath.toString(), "customDataPack");
 
 		// Temperature
 		Map<String, JsonTemperature> jsonDimensionTemperatures = processJson(JsonFileName.DIMENSION_TEMP, jsonDir);
@@ -283,11 +328,25 @@ public class JsonConfigRegistration
 			}
 
 			MapDifference<String, JsonTemperature> diff = Maps.difference(gson.fromJson(gson.toJson(JsonConfig.defaultDimensionTemperatures, Objects.requireNonNull(JsonTypeToken.get(JsonFileName.DIMENSION_TEMP))), Map.class), gson.fromJson(gson.toJson(JsonConfig.dimensionTemperatures, Objects.requireNonNull(JsonTypeToken.get(JsonFileName.DIMENSION_TEMP))), Map.class));
-			for (Map.Entry<String, MapDifference.ValueDifference<JsonTemperature>> e: diff.entriesDiffering().entrySet()) {
-				LegendarySurvivalOverhaul.LOGGER.debug(e.getKey() + " diff : " + e.getValue());
-			}
-			for (Map.Entry<String, JsonTemperature> e: diff.entriesInCommon().entrySet()) {
-				LegendarySurvivalOverhaul.LOGGER.debug(e.getKey() + " common : " + e.getValue());
+
+			List<String> entriesToKeep = new ArrayList<>();
+			if (!diff.entriesOnlyOnRight().isEmpty() || !diff.entriesDiffering().isEmpty()) {
+				entriesToKeep.addAll(diff.entriesOnlyOnRight().keySet());
+				entriesToKeep.addAll(diff.entriesDiffering().keySet());
+
+				for (String e: entriesToKeep) {
+					ResourceLocation rl = new ResourceLocation(e);
+					Path endPath = Paths.get(customDatapackFolder.toString(), rl.getNamespace(), "temperature", "dimensions");
+					if (!endPath.toFile().exists()) {
+						createDirectories(endPath);
+					}
+
+					File jsonFile = new File(endPath.toFile(), rl.getPath() + ".json");
+					TemperatureData td = new TemperatureData();
+					td.temperature(JsonConfig.dimensionTemperatures.get(e).temperature);
+
+					writeInFile(jsonFile, td.build());
+				}
 			}
 		}
 
@@ -302,6 +361,29 @@ public class JsonConfigRegistration
 			{
 				JsonConfig.registerBiomeOverride(entry.getKey(), entry.getValue().temperature, entry.getValue().isDry);
 			}
+
+			MapDifference<String, JsonBiomeIdentity> diff = Maps.difference(gson.fromJson(gson.toJson(JsonConfig.defaultBiomeOverrides, Objects.requireNonNull(JsonTypeToken.get(JsonFileName.BIOME_TEMP))), Map.class), gson.fromJson(gson.toJson(JsonConfig.biomeOverrides, Objects.requireNonNull(JsonTypeToken.get(JsonFileName.BIOME_TEMP))), Map.class));
+
+			List<String> entriesToKeep = new ArrayList<>();
+			if (!diff.entriesOnlyOnRight().isEmpty() || !diff.entriesDiffering().isEmpty()) {
+				entriesToKeep.addAll(diff.entriesOnlyOnRight().keySet());
+				entriesToKeep.addAll(diff.entriesDiffering().keySet());
+
+				for (String e: entriesToKeep) {
+					ResourceLocation rl = new ResourceLocation(e);
+					Path endPath = Paths.get(customDatapackFolder.toString(), rl.getNamespace(), "temperature", "biomes");
+					if (!endPath.toFile().exists()) {
+						createDirectories(endPath);
+					}
+
+					File jsonFile = new File(endPath.toFile(), rl.getPath() + ".json");
+					TemperatureBiomeOverrideData td = new TemperatureBiomeOverrideData();
+					td.temperature(JsonConfig.biomeOverrides.get(e).temperature);
+					td.isDry(JsonConfig.biomeOverrides.get(e).isDry);
+
+					writeInFile(jsonFile, td.build());
+				}
+			}
 		}
 
 		Map<String, JsonTemperatureResistance> jsonItemTemperatures = processJson(JsonFileName.ITEM_TEMP, jsonDir);
@@ -315,6 +397,31 @@ public class JsonConfigRegistration
 			{
 				JsonConfig.registerItemTemperature(entry.getKey(), entry.getValue().temperature, entry.getValue().heatResistance, entry.getValue().coldResistance, entry.getValue().thermalResistance);
 			}
+
+			MapDifference<String, JsonBiomeIdentity> diff = Maps.difference(gson.fromJson(gson.toJson(JsonConfig.defaultItemTemperatures, Objects.requireNonNull(JsonTypeToken.get(JsonFileName.ITEM_TEMP))), Map.class), gson.fromJson(gson.toJson(JsonConfig.itemTemperatures, Objects.requireNonNull(JsonTypeToken.get(JsonFileName.ITEM_TEMP))), Map.class));
+
+			List<String> entriesToKeep = new ArrayList<>();
+			if (!diff.entriesOnlyOnRight().isEmpty() || !diff.entriesDiffering().isEmpty()) {
+				entriesToKeep.addAll(diff.entriesOnlyOnRight().keySet());
+				entriesToKeep.addAll(diff.entriesDiffering().keySet());
+
+				for (String e: entriesToKeep) {
+					ResourceLocation rl = new ResourceLocation(e);
+					Path endPath = Paths.get(customDatapackFolder.toString(), rl.getNamespace(), "temperature", "items");
+					if (!endPath.toFile().exists()) {
+						createDirectories(endPath);
+					}
+
+					File jsonFile = new File(endPath.toFile(), rl.getPath() + ".json");
+					TemperatureResistanceData td = new TemperatureResistanceData();
+					td.temperature(JsonConfig.itemTemperatures.get(e).temperature);
+					td.heatResistance(JsonConfig.itemTemperatures.get(e).heatResistance);
+					td.coldResistance(JsonConfig.itemTemperatures.get(e).coldResistance);
+					td.thermalResistance(JsonConfig.itemTemperatures.get(e).thermalResistance);
+
+					writeInFile(jsonFile, td.build());
+				}
+			}
 		}
 
 		Map<String, JsonTemperature> jsonEntityTemperatures = processJson(JsonFileName.ENTITY_TEMP, jsonDir);
@@ -327,6 +434,28 @@ public class JsonConfigRegistration
 			for (Map.Entry<String, JsonTemperature> entry : jsonEntityTemperatures.entrySet())
 			{
 				JsonConfig.registerEntityTemperature(entry.getKey(), entry.getValue().temperature);
+			}
+
+			MapDifference<String, JsonBiomeIdentity> diff = Maps.difference(gson.fromJson(gson.toJson(JsonConfig.defaultEntityTemperatures, Objects.requireNonNull(JsonTypeToken.get(JsonFileName.ENTITY_TEMP))), Map.class), gson.fromJson(gson.toJson(JsonConfig.entityTemperatures, Objects.requireNonNull(JsonTypeToken.get(JsonFileName.ENTITY_TEMP))), Map.class));
+
+			List<String> entriesToKeep = new ArrayList<>();
+			if (!diff.entriesOnlyOnRight().isEmpty() || !diff.entriesDiffering().isEmpty()) {
+				entriesToKeep.addAll(diff.entriesOnlyOnRight().keySet());
+				entriesToKeep.addAll(diff.entriesDiffering().keySet());
+
+				for (String e: entriesToKeep) {
+					ResourceLocation rl = new ResourceLocation(e);
+					Path endPath = Paths.get(customDatapackFolder.toString(), rl.getNamespace(), "temperature", "entities");
+					if (!endPath.toFile().exists()) {
+						createDirectories(endPath);
+					}
+
+					File jsonFile = new File(endPath.toFile(), rl.getPath() + ".json");
+					TemperatureData td = new TemperatureData();
+					td.temperature(JsonConfig.entityTemperatures.get(e).temperature);
+
+					writeInFile(jsonFile, td.build());
+				}
 			}
 		}
 		
@@ -344,6 +473,35 @@ public class JsonConfigRegistration
 					JsonConfig.registerBlockFluidTemperature(entry.getKey(), propTemp.temperature, propTemp.getPropertyArray());
 				}
 			}
+
+			MapDifference<String, List<JsonBlockFluidTemperature>> diff = Maps.difference(gson.fromJson(gson.toJson(JsonConfig.defaultBlockFluidTemperatures, Objects.requireNonNull(JsonTypeToken.get(JsonFileName.BLOCK_TEMP))), Map.class), gson.fromJson(gson.toJson(JsonConfig.blockFluidTemperatures, Objects.requireNonNull(JsonTypeToken.get(JsonFileName.BLOCK_TEMP))), Map.class));
+
+			List<String> entriesToKeep = new ArrayList<>();
+			if (!diff.entriesOnlyOnRight().isEmpty() || !diff.entriesDiffering().isEmpty()) {
+				entriesToKeep.addAll(diff.entriesOnlyOnRight().keySet());
+				entriesToKeep.addAll(diff.entriesDiffering().keySet());
+
+				for (String e: entriesToKeep) {
+					ResourceLocation rl = new ResourceLocation(e);
+					Path endPath = Paths.get(customDatapackFolder.toString(), rl.getNamespace(), "temperature", "blocks");
+					if (!endPath.toFile().exists()) {
+						createDirectories(endPath);
+					}
+
+					File jsonFile = new File(endPath.toFile(), rl.getPath() + ".json");
+					JsonArray ja = new JsonArray();
+					for (JsonBlockFluidTemperature jbft: JsonConfig.blockFluidTemperatures.get(e)) {
+						TemperatureBlockData tbd = new TemperatureBlockData();
+						tbd.temperature(jbft.temperature);
+						for (Map.Entry<String, String> prop: jbft.properties.entrySet()) {
+							tbd.addProperty(prop.getKey(), prop.getValue());
+						}
+						ja.add(tbd.build());
+					}
+
+					writeInFile(jsonFile, ja);
+				}
+			}
 		}
 
 		Map<String, JsonFuelItem> jsonFuelItemIdentities = processJson(JsonFileName.FUEL, jsonDir);
@@ -356,6 +514,29 @@ public class JsonConfigRegistration
 			for (Map.Entry<String, JsonFuelItem> entry : jsonFuelItemIdentities.entrySet())
 			{
 				JsonConfig.registerFuelItems(entry.getKey(), entry.getValue().thermalType, entry.getValue().fuelValue);
+			}
+
+			MapDifference<String, JsonFuelItem> diff = Maps.difference(gson.fromJson(gson.toJson(JsonConfig.defaultFuelItems, Objects.requireNonNull(JsonTypeToken.get(JsonFileName.FUEL))), Map.class), gson.fromJson(gson.toJson(JsonConfig.fuelItems, Objects.requireNonNull(JsonTypeToken.get(JsonFileName.FUEL))), Map.class));
+
+			List<String> entriesToKeep = new ArrayList<>();
+			if (!diff.entriesOnlyOnRight().isEmpty() || !diff.entriesDiffering().isEmpty()) {
+				entriesToKeep.addAll(diff.entriesOnlyOnRight().keySet());
+				entriesToKeep.addAll(diff.entriesDiffering().keySet());
+
+				for (String e: entriesToKeep) {
+					ResourceLocation rl = new ResourceLocation(e);
+					Path endPath = Paths.get(customDatapackFolder.toString(), rl.getNamespace(), "temperature", "fuel_items");
+					if (!endPath.toFile().exists()) {
+						createDirectories(endPath);
+					}
+
+					File jsonFile = new File(endPath.toFile(), rl.getPath() + ".json");
+					TemperatureFuelItemData td = new TemperatureFuelItemData();
+					td.thermalType(JsonConfig.fuelItems.get(e).thermalType);
+					td.duration(JsonConfig.fuelItems.get(e).fuelValue * 20);
+
+					writeInFile(jsonFile, td.build());
+				}
 			}
 		}
 		
@@ -370,6 +551,34 @@ public class JsonConfigRegistration
 			{
 				for (JsonConsumableTemperature jct: entry.getValue()) {
 					JsonConfig.registerConsumableTemperature(jct.group, entry.getKey(), jct.temperatureLevel, jct.duration);
+				}
+			}
+
+			MapDifference<String, JsonConsumableTemperature> diff = Maps.difference(gson.fromJson(gson.toJson(JsonConfig.defaultConsumableTemperature, Objects.requireNonNull(JsonTypeToken.get(JsonFileName.CONSUMABLE_TEMP))), Map.class), gson.fromJson(gson.toJson(JsonConfig.consumableTemperature, Objects.requireNonNull(JsonTypeToken.get(JsonFileName.CONSUMABLE_TEMP))), Map.class));
+
+			List<String> entriesToKeep = new ArrayList<>();
+			if (!diff.entriesOnlyOnRight().isEmpty() || !diff.entriesDiffering().isEmpty()) {
+				entriesToKeep.addAll(diff.entriesOnlyOnRight().keySet());
+				entriesToKeep.addAll(diff.entriesDiffering().keySet());
+
+				for (String e: entriesToKeep) {
+					ResourceLocation rl = new ResourceLocation(e);
+					Path endPath = Paths.get(customDatapackFolder.toString(), rl.getNamespace(), "temperature", "consumables");
+					if (!endPath.toFile().exists()) {
+						createDirectories(endPath);
+					}
+
+					File jsonFile = new File(endPath.toFile(), rl.getPath() + ".json");
+					JsonArray ja = new JsonArray();
+					for (JsonConsumableTemperature jct: JsonConfig.consumableTemperature.get(e)) {
+						TemperatureConsumableData tcd = new TemperatureConsumableData();
+						tcd.group(jct.group);
+						tcd.duration(jct.duration);
+						tcd.temperatureLevel(jct.temperatureLevel);
+						ja.add(tcd.build());
+					}
+
+					writeInFile(jsonFile, ja);
 				}
 			}
 		}
@@ -390,6 +599,40 @@ public class JsonConfigRegistration
 					JsonConfig.registerBlockFluidThirst(entry.getKey(), propThirst.hydration, propThirst.saturation, propThirst.effects.toArray(new JsonEffectParameter[0]), propThirst.getPropertyArray());
 				}
 			}
+
+			MapDifference<String, List<JsonBlockFluidThirst>> diff = Maps.difference(gson.fromJson(gson.toJson(JsonConfig.defaultBlockFluidThirst, Objects.requireNonNull(JsonTypeToken.get(JsonFileName.BLOCK_THIRST))), Map.class), gson.fromJson(gson.toJson(JsonConfig.blockFluidThirst, Objects.requireNonNull(JsonTypeToken.get(JsonFileName.BLOCK_THIRST))), Map.class));
+
+			List<String> entriesToKeep = new ArrayList<>();
+			if (!diff.entriesOnlyOnRight().isEmpty() || !diff.entriesDiffering().isEmpty()) {
+				entriesToKeep.addAll(diff.entriesOnlyOnRight().keySet());
+				entriesToKeep.addAll(diff.entriesDiffering().keySet());
+
+				for (String e: entriesToKeep) {
+					ResourceLocation rl = new ResourceLocation(e);
+					Path endPath = Paths.get(customDatapackFolder.toString(), rl.getNamespace(), "thirst", "blocks");
+					if (!endPath.toFile().exists()) {
+						createDirectories(endPath);
+					}
+
+					File jsonFile = new File(endPath.toFile(), rl.getPath() + ".json");
+					JsonArray ja = new JsonArray();
+					for (JsonBlockFluidThirst jbft: JsonConfig.blockFluidThirst.get(e)) {
+						ThirstData td = new ThirstData();
+						td.hydration(jbft.hydration);
+						td.saturation(jbft.saturation);
+						for (JsonEffectParameter jep: jbft.effects) {
+							MobEffect me = ForgeRegistries.MOB_EFFECTS.getValue(new ResourceLocation(jep.name));
+							td.addEffect(me, jep.duration, jep.chance, jep.amplifier);
+						}
+						for (Map.Entry<String, String> prop: jbft.properties.entrySet()) {
+							td.addProperty(prop.getKey(), prop.getValue());
+						}
+						ja.add(td.build());
+					}
+
+					writeInFile(jsonFile, ja);
+				}
+			}
 		}
 
 		Map<String, List<JsonConsumableThirst>> jsonConsumableThirsts = processJson(JsonFileName.CONSUMABLE_THIRST, jsonDir);
@@ -402,6 +645,40 @@ public class JsonConfigRegistration
 			for (Map.Entry<String, List<JsonConsumableThirst>> entry : jsonConsumableThirsts.entrySet()) {
 				for (JsonConsumableThirst jct: entry.getValue())
 					JsonConfig.registerConsumableThirst(entry.getKey(), jct.hydration, jct.saturation, jct.effects.toArray(new JsonEffectParameter[0]), jct.getNbtArray());
+			}
+
+			MapDifference<String, List<JsonConsumableThirst>> diff = Maps.difference(gson.fromJson(gson.toJson(JsonConfig.defaultConsumableThirst, Objects.requireNonNull(JsonTypeToken.get(JsonFileName.CONSUMABLE_THIRST))), Map.class), gson.fromJson(gson.toJson(JsonConfig.consumableThirst, Objects.requireNonNull(JsonTypeToken.get(JsonFileName.CONSUMABLE_THIRST))), Map.class));
+
+			List<String> entriesToKeep = new ArrayList<>();
+			if (!diff.entriesOnlyOnRight().isEmpty() || !diff.entriesDiffering().isEmpty()) {
+				entriesToKeep.addAll(diff.entriesOnlyOnRight().keySet());
+				entriesToKeep.addAll(diff.entriesDiffering().keySet());
+
+				for (String e: entriesToKeep) {
+					ResourceLocation rl = new ResourceLocation(e);
+					Path endPath = Paths.get(customDatapackFolder.toString(), rl.getNamespace(), "thirst", "consumables");
+					if (!endPath.toFile().exists()) {
+						createDirectories(endPath);
+					}
+
+					File jsonFile = new File(endPath.toFile(), rl.getPath() + ".json");
+					JsonArray ja = new JsonArray();
+					for (JsonConsumableThirst jct: JsonConfig.consumableThirst.get(e)) {
+						ThirstData td = new ThirstData();
+						td.hydration(jct.hydration);
+						td.saturation(jct.saturation);
+						for (JsonEffectParameter jep: jct.effects) {
+							MobEffect me = ForgeRegistries.MOB_EFFECTS.getValue(new ResourceLocation(jep.name));
+							td.addEffect(me, jep.duration, jep.chance, jep.amplifier);
+						}
+						for (Map.Entry<String, String> prop: jct.nbt.entrySet()) {
+							td.addProperty(prop.getKey(), prop.getValue());
+						}
+						ja.add(td.build());
+					}
+
+					writeInFile(jsonFile, ja);
+				}
 			}
 		}
 
@@ -417,6 +694,30 @@ public class JsonConfigRegistration
 			{
 				JsonConfig.registerConsumableHeal(entry.getKey(), entry.getValue().healingCharges, entry.getValue().healingValue, entry.getValue().healingTime);
 			}
+
+			MapDifference<String, JsonConsumableHeal> diff = Maps.difference(gson.fromJson(gson.toJson(JsonConfig.defaultConsumableHeal, Objects.requireNonNull(JsonTypeToken.get(JsonFileName.CONSUMABLE_HEAL))), Map.class), gson.fromJson(gson.toJson(JsonConfig.consumableHeal, Objects.requireNonNull(JsonTypeToken.get(JsonFileName.CONSUMABLE_HEAL))), Map.class));
+
+			List<String> entriesToKeep = new ArrayList<>();
+			if (!diff.entriesOnlyOnRight().isEmpty() || !diff.entriesDiffering().isEmpty()) {
+				entriesToKeep.addAll(diff.entriesOnlyOnRight().keySet());
+				entriesToKeep.addAll(diff.entriesDiffering().keySet());
+
+				for (String e: entriesToKeep) {
+					ResourceLocation rl = new ResourceLocation(e);
+					Path endPath = Paths.get(customDatapackFolder.toString(), rl.getNamespace(), "body_damage", "consumables");
+					if (!endPath.toFile().exists()) {
+						createDirectories(endPath);
+					}
+
+					File jsonFile = new File(endPath.toFile(), rl.getPath() + ".json");
+					HealingConsumableData td = new HealingConsumableData();
+					td.duration(JsonConfig.consumableHeal.get(e).healingTime);
+					td.healingCharges(JsonConfig.consumableHeal.get(e).healingCharges);
+					td.healingValue(JsonConfig.consumableHeal.get(e).healingValue);
+
+					writeInFile(jsonFile, td.build());
+				}
+			}
 		}
 
 		// Damage Sources Body Parts
@@ -431,6 +732,39 @@ public class JsonConfigRegistration
 			{
 				JsonConfig.registerDamageSourceBodyParts(entry.getKey(), entry.getValue().damageDistribution, entry.getValue().bodyParts);
 			}
+
+			MapDifference<String, JsonBodyPartsDamageSource> diff = Maps.difference(gson.fromJson(gson.toJson(JsonConfig.defaultDamageSourceBodyParts, Objects.requireNonNull(JsonTypeToken.get(JsonFileName.DAMAGE_SOURCE_BODY_PARTS))), Map.class), gson.fromJson(gson.toJson(JsonConfig.damageSourceBodyParts, Objects.requireNonNull(JsonTypeToken.get(JsonFileName.DAMAGE_SOURCE_BODY_PARTS))), Map.class));
+
+			List<String> entriesToKeep = new ArrayList<>();
+			if (!diff.entriesOnlyOnRight().isEmpty() || !diff.entriesDiffering().isEmpty()) {
+				entriesToKeep.addAll(diff.entriesOnlyOnRight().keySet());
+				entriesToKeep.addAll(diff.entriesDiffering().keySet());
+
+				for (String e: entriesToKeep) {
+					ResourceLocation rl = new ResourceLocation(e);
+					Path endPath = Paths.get(customDatapackFolder.toString(), rl.getNamespace(), "body_damage", "damage_sources");
+					if (!endPath.toFile().exists()) {
+						createDirectories(endPath);
+					}
+
+					File jsonFile = new File(endPath.toFile(), rl.getPath() + ".json");
+					BodyPartsDamageSourceData td = new BodyPartsDamageSourceData();
+					td.addBodyParts(JsonConfig.damageSourceBodyParts.get(e).bodyParts);
+					td.damageDistribution(JsonConfig.damageSourceBodyParts.get(e).damageDistribution);
+
+					writeInFile(jsonFile, td.build());
+				}
+			}
+		}
+
+		if (customDatapackFolder.toFile().exists()) {
+			JsonObject packMcMetaContent = new JsonObject();
+			JsonObject packMcMetaContent2 = new JsonObject();
+			packMcMetaContent2.addProperty("pack_format", 10);
+			packMcMetaContent2.addProperty("description", "DO NOT REMOVE ! Legendary datapack (modifies loot/structures)");
+			packMcMetaContent.add("pack", packMcMetaContent2);
+			File packMcMeta = new File(customDatapackFolder.toFile(), "pack.mcmeta");
+			writeInFile(packMcMeta, packMcMetaContent);
 		}
 	}
 	

@@ -19,11 +19,11 @@ public class ModBodyDamageProvider extends BodyDamageDataProvider {
 
     @Override
     public void generate(HolderLookup.Provider provider, ExistingFileHelper existingFileHelper) {
-        consumable("healing_herbs").healingCharge(1).healingValue(2).duration(600);
-        consumable("plaster").healingCharge(1).healingValue(3).duration(400);
-        consumable("bandage").healingCharge(3).healingValue(3).duration(300);
-        consumable("tonic").healingCharge(0).healingValue(5).duration(600);
-        consumable("medikit").healingCharge(0).healingValue(8).duration(400);
+        consumable("healing_herbs").healingCharges(1).healingValue(2).duration(600);
+        consumable("plaster").healingCharges(1).healingValue(3).duration(400);
+        consumable("bandage").healingCharges(3).healingValue(3).duration(300);
+        consumable("tonic").healingCharges(0).healingValue(5).duration(600);
+        consumable("medikit").healingCharges(0).healingValue(8).duration(400);
 
         damageSource("fall")
                 .damageDistribution(DamageDistributionEnum.ALL)

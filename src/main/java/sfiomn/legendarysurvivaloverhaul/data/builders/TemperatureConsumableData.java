@@ -43,8 +43,8 @@ public class TemperatureConsumableData implements ITemperatureConsumableData {
     @Override
     public JsonObject build() {
         JsonObject json = new JsonObject();
-        json.addProperty("group", this.group.group);
-        json.addProperty("temperatureLevel", this.temperatureLevel);
+        json.addProperty("group", this.group.name());
+        json.addProperty("temperature_level", this.temperatureLevel);
         json.addProperty("duration", this.durationInTick);
 
         return json;

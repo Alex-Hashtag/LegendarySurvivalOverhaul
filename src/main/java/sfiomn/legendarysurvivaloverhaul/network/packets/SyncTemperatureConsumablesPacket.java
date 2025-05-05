@@ -1,6 +1,7 @@
 package sfiomn.legendarysurvivaloverhaul.network.packets;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -8,12 +9,14 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.network.NetworkEvent;
 import net.minecraftforge.network.PacketDistributor;
+import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonTemperatureBlock;
 import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonTemperatureConsumable;
 import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonTemperatureResistance;
 import sfiomn.legendarysurvivaloverhaul.config.listeners.TemperatureConsumableListener;
 import sfiomn.legendarysurvivaloverhaul.config.listeners.TemperatureItemListener;
 import sfiomn.legendarysurvivaloverhaul.network.NetworkHandler;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,8 +38,9 @@ public class SyncTemperatureConsumablesPacket
 		buffer.writeInt(message.size);
 		for (Map.Entry<ResourceLocation, List<JsonTemperatureConsumable>> e : message.temperatureConsumables.entrySet()) {
 			buffer.writeResourceLocation(e.getKey());
+			buffer.writeInt(e.getValue().size());
 			var r = JsonTemperatureConsumable.LIST_CODEC.encodeStart(NbtOps.INSTANCE, e.getValue());
-			r.result().ifPresent(j -> buffer.writeNbt((CompoundTag) j));
+			r.result().ifPresent(j -> ((ListTag) j).forEach(k -> buffer.writeNbt((CompoundTag) k)));
 		}
 	}
 	
@@ -46,11 +50,16 @@ public class SyncTemperatureConsumablesPacket
 		Map<ResourceLocation, List<JsonTemperatureConsumable>> temperatureConsumables = new HashMap<>();
 		for (int i = 0; i < size; i++) {
 			ResourceLocation key = buffer.readResourceLocation();
-			CompoundTag tag = buffer.readNbt();
-			if (tag != null) {
-				var r = JsonTemperatureConsumable.LIST_CODEC.parse(NbtOps.INSTANCE, tag);
-				r.result().ifPresent(t -> temperatureConsumables.put(key, t));
+			int jtcSize = buffer.readInt();
+			List<JsonTemperatureConsumable> jtcList = new ArrayList<>();
+			for (int j = 0; j < jtcSize; j++) {
+				CompoundTag tag = buffer.readNbt();
+				if (tag != null) {
+					var r = JsonTemperatureConsumable.CODEC.parse(NbtOps.INSTANCE, tag);
+					r.result().ifPresent(jtcList::add);
+				}
 			}
+			temperatureConsumables.put(key, jtcList);
 		}
 
 		return new SyncTemperatureConsumablesPacket(temperatureConsumables);

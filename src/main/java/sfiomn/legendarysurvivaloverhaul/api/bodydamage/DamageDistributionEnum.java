@@ -19,4 +19,10 @@ public enum DamageDistributionEnum {
         }
         return bodyParts;
     }
+
+    public static DamageDistributionEnum get(String name) {
+        for(DamageDistributionEnum b : values())
+            if(b.name().equalsIgnoreCase(name)) return b;
+        throw new IllegalArgumentException();
+    }
 }

@@ -4,7 +4,7 @@ import com.google.gson.JsonObject;
 
 public interface IHealingConsumableData {
 
-    IHealingConsumableData healingCharge(int healingCharge);
+    IHealingConsumableData healingCharges(int healingCharges);
 
     IHealingConsumableData healingValue(float healingValue);
 

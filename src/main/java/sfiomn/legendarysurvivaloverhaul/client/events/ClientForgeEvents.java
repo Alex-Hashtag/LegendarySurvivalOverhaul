@@ -28,10 +28,12 @@ import sfiomn.legendarysurvivaloverhaul.client.integration.sereneseasons.RenderS
 import sfiomn.legendarysurvivaloverhaul.client.render.*;
 import sfiomn.legendarysurvivaloverhaul.client.ClientHooks;
 import sfiomn.legendarysurvivaloverhaul.client.effects.TemperatureBreathEffect;
+import sfiomn.legendarysurvivaloverhaul.client.screens.WarningDataPackScreen;
 import sfiomn.legendarysurvivaloverhaul.client.sounds.TemperatureBreathSound;
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.thirst.ThirstCapability;
 import sfiomn.legendarysurvivaloverhaul.common.integration.curios.CuriosUtil;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
+import sfiomn.legendarysurvivaloverhaul.config.json_old.JsonConfigRegistration;
 import sfiomn.legendarysurvivaloverhaul.network.NetworkHandler;
 import sfiomn.legendarysurvivaloverhaul.network.packets.DrinkBlockFluidMessage;
 import sfiomn.legendarysurvivaloverhaul.registry.ItemRegistry;
@@ -49,6 +51,8 @@ import static sfiomn.legendarysurvivaloverhaul.util.WorldUtil.timeInGame;
 
 @Mod.EventBusSubscriber(modid = LegendarySurvivalOverhaul.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
 public class ClientForgeEvents {
+
+    public static boolean hasOpened = false;
 
     @SubscribeEvent
     public static void onItemRightClick(PlayerInteractEvent.RightClickItem event){
@@ -173,6 +177,11 @@ public class ClientForgeEvents {
 
                 if (LegendarySurvivalOverhaul.curiosLoaded && player.tickCount % 10 == 0)
                     CuriosUtil.isThermometerEquipped = CuriosUtil.isCurioItemEquipped(player, ItemRegistry.THERMOMETER.get());
+            }
+
+            if (!hasOpened && JsonConfigRegistration.customDatapackFolder.toFile().exists()) {
+                Minecraft.getInstance().setScreen(new WarningDataPackScreen());
+                hasOpened = true;
             }
         }
     }

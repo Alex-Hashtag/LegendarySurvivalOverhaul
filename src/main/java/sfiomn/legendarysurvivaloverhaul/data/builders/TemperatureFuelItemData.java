@@ -26,7 +26,7 @@ public class TemperatureFuelItemData implements ITemperatureFuelItemData {
     @Override
     public JsonObject build() {
         JsonObject json = new JsonObject();
-        json.addProperty("thermal_type", this.thermalType.getName());
+        json.addProperty("thermal_type", this.thermalType.name());
         json.addProperty("duration", this.duration);
         return json;
     }

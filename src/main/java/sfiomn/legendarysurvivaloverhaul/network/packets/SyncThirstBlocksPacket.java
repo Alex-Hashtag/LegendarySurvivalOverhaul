@@ -1,6 +1,7 @@
 package sfiomn.legendarysurvivaloverhaul.network.packets;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -9,10 +10,12 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.network.NetworkEvent;
 import net.minecraftforge.network.PacketDistributor;
+import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonTemperatureBlock;
 import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonThirstBlock;
 import sfiomn.legendarysurvivaloverhaul.config.listeners.ThirstBlockListener;
 import sfiomn.legendarysurvivaloverhaul.network.NetworkHandler;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,8 +37,9 @@ public class SyncThirstBlocksPacket
 		buffer.writeInt(message.size);
 		for (Map.Entry<ResourceLocation, List<JsonThirstBlock>> e : message.thirstBlocks.entrySet()) {
 			buffer.writeResourceLocation(e.getKey());
+			buffer.writeInt(e.getValue().size());
 			var r = JsonThirstBlock.LIST_CODEC.encodeStart(NbtOps.INSTANCE, e.getValue());
-			r.result().ifPresent(j -> buffer.writeNbt((CompoundTag) j));
+			r.result().ifPresent(j -> ((ListTag) j).forEach(k -> buffer.writeNbt((CompoundTag) k)));
 		}
 	}
 	
@@ -45,11 +49,16 @@ public class SyncThirstBlocksPacket
 		Map<ResourceLocation, List<JsonThirstBlock>> thirstBlocks = new HashMap<>();
 		for (int i = 0; i < size; i++) {
 			ResourceLocation key = buffer.readResourceLocation();
-			CompoundTag tag = buffer.readNbt();
-			if (tag != null) {
-				var r = JsonThirstBlock.LIST_CODEC.parse(NbtOps.INSTANCE, tag);
-				r.result().ifPresent(t -> thirstBlocks.put(key, t));
+			int jtbSize = buffer.readInt();
+			List<JsonThirstBlock> jtbList = new ArrayList<>();
+			for (int j = 0; j < jtbSize; j++) {
+				CompoundTag tag = buffer.readNbt();
+				if (tag != null) {
+					var r = JsonThirstBlock.CODEC.parse(NbtOps.INSTANCE, tag);
+					r.result().ifPresent(jtbList::add);
+				}
 			}
+			thirstBlocks.put(key, jtbList);
 		}
 
 		return new SyncThirstBlocksPacket(thirstBlocks);

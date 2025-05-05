@@ -274,5 +274,9 @@
 	"message.legendarysurvivaloverhaul.sereneseasons.no_serene_season_loaded": "Serene Seasons mod not loaded",
 	"message.legendarysurvivaloverhaul.heart_container.additional_health_full": "You have reach your maximum health",
 	"message.legendarysurvivaloverhaul.filled_map.destination": "Destination at XZ: %s / %s",
-	"message.legendarysurvivaloverhaul.morphine_use_under_painkiller_addiction": "You're currently addicted to painkillers"
+	"message.legendarysurvivaloverhaul.morphine_use_under_painkiller_addiction": "You're currently addicted to painkillers",
+
+	"screen.legendarysurvivaloverhaul.datapack_transfer.title": "WARNING - CONFIG NOW ON DATAPACK",
+	"screen.legendarysurvivaloverhaul.datapack_transfer.text": "If you see this message, it means you have custom configuration values defined within the Json Config files (Config > lso > json folder).\n\nLegendary Survival Overhaul is now using DATAPACKS to REPLACE those JSON files, for numerous reasons.\n\nA datapack-ready folder has been created with all the custom values you have defined : your work IS NOT LOST.\n\nThis folder is named 'customDataPack' and created in the config folder of LSO.\n\nIF YOU PLAY ON A SERVER :\nON SERVER SIDE : copy paste the 'customDataPack' folder in the SERVER folder saves > 'Your world' > datapacks, your custom configs will work.\nThe datapack will now sync automatically to the client, no need to update it on client side.\nON CLIENT SIDE : remove/rename/move away the customDataPack & the json folders.\n\nIF YOU PLAY LOCALLY :\nJust copy paste the 'customDataPack' folder in the saves > 'your world' > datapacks folder.\n\n\nDON'T FORGET to remove/rename/move away the json folder & customDataPack folders both on SERVER & CLIENT, otherwise this message will be rendered at every launch.",
+	"screen.legendarysurvivaloverhaul.datapack_transfer.open_folder": "Open Config folder"
 }

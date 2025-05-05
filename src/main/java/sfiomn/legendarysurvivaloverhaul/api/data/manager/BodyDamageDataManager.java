@@ -17,7 +17,7 @@ public class BodyDamageDataManager {
      */
     @Nullable
     public static JsonBodyPartsDamageSource getBodyParts(String damageSourceName) {
-        return internalBodyPartsDamageSource.get(damageSourceName);
+        return internalBodyPartsDamageSource.get(damageSourceName.toLowerCase());
     }
 
     /**

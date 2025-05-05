@@ -18,8 +18,8 @@ public class JsonBodyPartsDamageSource {
     public DamageDistributionEnum damageDistribution;
 
     public JsonBodyPartsDamageSource(String damageDistribution, List<String> bodyParts) {
-        this.damageDistribution = DamageDistributionEnum.valueOf(damageDistribution);
-        this.bodyParts = bodyParts.stream().map(BodyPartEnum::valueOf).toList();
+        this.damageDistribution = DamageDistributionEnum.get(damageDistribution);
+        this.bodyParts = bodyParts.stream().map(BodyPartEnum::get).toList();
     }
 
     public List<BodyPartEnum> getBodyParts(Player player) {

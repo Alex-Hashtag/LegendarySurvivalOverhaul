@@ -1,5 +1,7 @@
 package sfiomn.legendarysurvivaloverhaul.api.bodydamage;
 
+import sfiomn.legendarysurvivaloverhaul.api.block.ThermalTypeEnum;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -36,5 +38,11 @@ public enum BodyPartEnum {
             default:
                 return emptyList();
         }
+    }
+
+    public static BodyPartEnum get(String name) {
+        for(BodyPartEnum b : values())
+            if(b.name().equalsIgnoreCase(name)) return b;
+        throw new IllegalArgumentException();
     }
 }

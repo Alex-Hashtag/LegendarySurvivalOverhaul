@@ -1,6 +1,7 @@
 package sfiomn.legendarysurvivaloverhaul.network.packets;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -8,10 +9,12 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.network.NetworkEvent;
 import net.minecraftforge.network.PacketDistributor;
+import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonTemperatureBlock;
 import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonThirstConsumable;
 import sfiomn.legendarysurvivaloverhaul.config.listeners.ThirstConsumableListener;
 import sfiomn.legendarysurvivaloverhaul.network.NetworkHandler;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,8 +36,9 @@ public class SyncThirstConsumablesPacket
 		buffer.writeInt(message.size);
 		for (Map.Entry<ResourceLocation, List<JsonThirstConsumable>> e : message.thirstConsumables.entrySet()) {
 			buffer.writeResourceLocation(e.getKey());
+			buffer.writeInt(e.getValue().size());
 			var r = JsonThirstConsumable.LIST_CODEC.encodeStart(NbtOps.INSTANCE, e.getValue());
-			r.result().ifPresent(j -> buffer.writeNbt((CompoundTag) j));
+			r.result().ifPresent(j -> ((ListTag) j).forEach(k -> buffer.writeNbt((CompoundTag) k)));
 		}
 	}
 	
@@ -44,11 +48,16 @@ public class SyncThirstConsumablesPacket
 		Map<ResourceLocation, List<JsonThirstConsumable>> thirstConsumables = new HashMap<>();
 		for (int i = 0; i < size; i++) {
 			ResourceLocation key = buffer.readResourceLocation();
-			CompoundTag tag = buffer.readNbt();
-			if (tag != null) {
-				var r = JsonThirstConsumable.LIST_CODEC.parse(NbtOps.INSTANCE, tag);
-				r.result().ifPresent(t -> thirstConsumables.put(key, t));
+			int jtcSize = buffer.readInt();
+			List<JsonThirstConsumable> jtcList = new ArrayList<>();
+			for (int j = 0; j < jtcSize; j++) {
+				CompoundTag tag = buffer.readNbt();
+				if (tag != null) {
+					var r = JsonThirstConsumable.CODEC.parse(NbtOps.INSTANCE, tag);
+					r.result().ifPresent(jtcList::add);
+				}
 			}
+			thirstConsumables.put(key, jtcList);
 		}
 
 		return new SyncThirstConsumablesPacket(thirstConsumables);
