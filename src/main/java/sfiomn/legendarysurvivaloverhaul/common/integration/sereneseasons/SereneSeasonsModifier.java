@@ -1,7 +1,7 @@
 package sfiomn.legendarysurvivaloverhaul.common.integration.sereneseasons;
 
-import net.minecraft.core.Vec3i;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Vec3i;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import sereneseasons.api.season.ISeasonState;

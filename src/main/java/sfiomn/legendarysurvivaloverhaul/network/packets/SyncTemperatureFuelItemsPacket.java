@@ -8,9 +8,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.network.NetworkEvent;
 import net.minecraftforge.network.PacketDistributor;
-import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonTemperatureBiomeOverride;
 import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonTemperatureFuelItem;
-import sfiomn.legendarysurvivaloverhaul.config.listeners.TemperatureBiomeListener;
 import sfiomn.legendarysurvivaloverhaul.config.listeners.TemperatureFuelItemListener;
 import sfiomn.legendarysurvivaloverhaul.network.NetworkHandler;
 
@@ -58,12 +56,12 @@ public class SyncTemperatureFuelItemsPacket
 	public static void handle(SyncTemperatureFuelItemsPacket message, Supplier<NetworkEvent.Context> supplier)
 	{
 		final NetworkEvent.Context context = supplier.get();
-		context.enqueueWork(() -> DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> syncTemperatureItems(message.temperatureFuelItems)));
+		context.enqueueWork(() -> DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> syncTemperatureFuelItems(message.temperatureFuelItems)));
 		
 		supplier.get().setPacketHandled(true);
 	}
 
-	public static DistExecutor.SafeRunnable syncTemperatureItems(Map<ResourceLocation, JsonTemperatureFuelItem> temperatureFuelItems)
+	public static DistExecutor.SafeRunnable syncTemperatureFuelItems(Map<ResourceLocation, JsonTemperatureFuelItem> temperatureFuelItems)
 	{
 		return new DistExecutor.SafeRunnable()
 		{

@@ -3,7 +3,8 @@ package sfiomn.legendarysurvivaloverhaul.data.builders;
 import com.google.gson.JsonObject;
 import sfiomn.legendarysurvivaloverhaul.api.data.builder.ITemperatureBlockData;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public class TemperatureBlockData implements ITemperatureBlockData {
     private float temperature;

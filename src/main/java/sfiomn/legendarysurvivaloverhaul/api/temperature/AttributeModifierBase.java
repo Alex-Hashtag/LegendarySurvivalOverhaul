@@ -9,7 +9,7 @@ public class AttributeModifierBase {
     {
     }
 
-    //  Stack up the temperature values in the JsonItemTemperature object to apply all of them to the player
+    //  Stack up the temperature values in the JsonTemperatureResistance object to apply all of them to the player
     //  Will automatically be applied to the preferred equipment slot
     public JsonTemperatureResistance getItemAttributes(ItemStack stack)
     {

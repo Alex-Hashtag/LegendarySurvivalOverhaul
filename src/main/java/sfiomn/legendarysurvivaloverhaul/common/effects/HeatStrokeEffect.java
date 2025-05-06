@@ -2,15 +2,14 @@ package sfiomn.legendarysurvivaloverhaul.common.effects;
 
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
-import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import sfiomn.legendarysurvivaloverhaul.api.ModDamageTypes;
 import sfiomn.legendarysurvivaloverhaul.registry.MobEffectRegistry;
 import sfiomn.legendarysurvivaloverhaul.util.DamageSourceUtil;
 import sfiomn.legendarysurvivaloverhaul.util.DamageUtil;
-import net.minecraft.world.entity.player.Player;
 
 public class HeatStrokeEffect extends MobEffect
 {

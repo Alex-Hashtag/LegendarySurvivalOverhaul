@@ -6,7 +6,6 @@ import de.teamlapen.vampirism.api.entity.factions.IFactionPlayerHandler;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.common.util.LazyOptional;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
-import sfiomn.legendarysurvivaloverhaul.config.Config;
 
 import static de.teamlapen.vampirism.api.VReference.VAMPIRE_FACTION;
 

@@ -69,6 +69,8 @@ public class RenderHealthGui
 		int left = width / 2 - 91; // Same x offset as the health bar
 		int top = height - forgeGui.leftHeight;
 
+		int playerHearts = Mth.ceil(player.getMaxHealth() / 2.0f);
+
 		int healthRows = Mth.ceil((Mth.ceil(shieldHealth / 2.0F) + brokenHearts)  / 10.0F);
 
 		forgeGui.leftHeight += healthRows * 10;

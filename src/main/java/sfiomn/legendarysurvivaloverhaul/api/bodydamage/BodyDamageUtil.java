@@ -1,7 +1,7 @@
 package sfiomn.legendarysurvivaloverhaul.api.bodydamage;
 
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.entity.player.Player;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.List;

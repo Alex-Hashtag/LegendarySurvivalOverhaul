@@ -1,10 +1,10 @@
 package sfiomn.legendarysurvivaloverhaul.common.capabilities;
 
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.TickEvent.Phase;
@@ -32,7 +32,6 @@ import sfiomn.legendarysurvivaloverhaul.common.capabilities.thirst.ThirstProvide
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.wetness.WetnessCapability;
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.wetness.WetnessProvider;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
-import sfiomn.legendarysurvivaloverhaul.network.NetworkHandler;
 import sfiomn.legendarysurvivaloverhaul.network.packets.*;
 import sfiomn.legendarysurvivaloverhaul.util.CapabilityUtil;
 

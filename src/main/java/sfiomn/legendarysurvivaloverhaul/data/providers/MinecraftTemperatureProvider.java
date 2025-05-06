@@ -18,7 +18,7 @@ public class MinecraftTemperatureProvider extends TemperatureDataProvider {
     @Override
     public void generate(HolderLookup.Provider provider, ExistingFileHelper existingFileHelper) {
         dimension("overworld").temperature(20);
-        dimension("the_end").temperature(-13);
+        dimension("the_end").temperature(-15);
         dimension("the_nether").temperature(28);
 
         block("campfire")

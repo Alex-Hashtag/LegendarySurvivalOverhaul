@@ -14,7 +14,6 @@ import org.jetbrains.annotations.NotNull;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonTemperature;
 import sfiomn.legendarysurvivaloverhaul.api.data.manager.ITemperatureMountManager;
-import sfiomn.legendarysurvivaloverhaul.network.packets.SyncTemperatureDimensionsPacket;
 import sfiomn.legendarysurvivaloverhaul.network.packets.SyncTemperatureMountsPacket;
 
 import java.util.HashMap;

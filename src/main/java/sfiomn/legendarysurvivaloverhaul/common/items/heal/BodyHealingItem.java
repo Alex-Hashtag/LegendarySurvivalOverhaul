@@ -25,7 +25,6 @@ import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonHealingConsumable;
 import sfiomn.legendarysurvivaloverhaul.api.data.manager.BodyDamageDataManager;
 import sfiomn.legendarysurvivaloverhaul.client.ClientHooks;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
-import sfiomn.legendarysurvivaloverhaul.config.json_old.JsonConfig;
 import sfiomn.legendarysurvivaloverhaul.registry.SoundRegistry;
 import sfiomn.legendarysurvivaloverhaul.util.CapabilityUtil;
 

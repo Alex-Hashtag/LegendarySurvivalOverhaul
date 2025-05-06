@@ -5,7 +5,6 @@ import net.minecraft.data.PackOutput;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import sfiomn.legendarysurvivaloverhaul.api.block.ThermalTypeEnum;
 import sfiomn.legendarysurvivaloverhaul.api.data.providers.TemperatureDataProvider;
-import sfiomn.legendarysurvivaloverhaul.api.temperature.TemporaryModifierGroupEnum;
 
 import java.util.concurrent.CompletableFuture;
 

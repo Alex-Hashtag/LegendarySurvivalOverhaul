@@ -15,7 +15,6 @@ import org.jetbrains.annotations.NotNull;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonThirstConsumable;
 import sfiomn.legendarysurvivaloverhaul.api.data.manager.IThirstConsumableManager;
-import sfiomn.legendarysurvivaloverhaul.network.packets.SyncThirstBlocksPacket;
 import sfiomn.legendarysurvivaloverhaul.network.packets.SyncThirstConsumablesPacket;
 
 import java.util.HashMap;

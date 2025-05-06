@@ -7,7 +7,6 @@ import net.minecraftforge.registries.ForgeRegistries;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonTemperatureResistance;
 import sfiomn.legendarysurvivaloverhaul.api.data.manager.TemperatureDataManager;
-import sfiomn.legendarysurvivaloverhaul.config.json_old.JsonConfig;
 import sfiomn.legendarysurvivaloverhaul.registry.AttributeRegistry;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.event.CurioAttributeModifierEvent;

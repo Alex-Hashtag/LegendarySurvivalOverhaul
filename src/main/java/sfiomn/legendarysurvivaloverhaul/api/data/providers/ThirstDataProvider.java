@@ -1,12 +1,5 @@
 package sfiomn.legendarysurvivaloverhaul.api.data.providers;
 
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-import javax.annotation.Nonnull;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
@@ -18,6 +11,14 @@ import sfiomn.legendarysurvivaloverhaul.api.data.builder.IThirstData;
 import sfiomn.legendarysurvivaloverhaul.api.data.builder.IThirstDataHolder;
 import sfiomn.legendarysurvivaloverhaul.data.builders.ThirstData;
 import sfiomn.legendarysurvivaloverhaul.data.builders.ThirstDataHolder;
+
+import javax.annotation.Nonnull;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 public abstract class ThirstDataProvider implements DataProvider {
     private final String modId;

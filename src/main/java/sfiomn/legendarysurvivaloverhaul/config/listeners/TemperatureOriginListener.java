@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonTemperatureResistance;
 import sfiomn.legendarysurvivaloverhaul.api.data.manager.ITemperatureOriginManager;
-import sfiomn.legendarysurvivaloverhaul.network.packets.SyncTemperatureItemsPacket;
+import sfiomn.legendarysurvivaloverhaul.network.packets.SyncTemperatureOriginsPacket;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -46,7 +46,7 @@ public class TemperatureOriginListener extends SimpleJsonResourceReloadListener 
     }
 
     public static void sendDataToClient(PacketDistributor.PacketTarget packetTarget) {
-        SyncTemperatureItemsPacket.sendTo(packetTarget, TEMPERATURE_ORIGINS);
+        SyncTemperatureOriginsPacket.sendTo(packetTarget, TEMPERATURE_ORIGINS);
     }
 
     public static void acceptServerTemperatureOrigins(Map<ResourceLocation, JsonTemperatureResistance> temperatureOrigins) {

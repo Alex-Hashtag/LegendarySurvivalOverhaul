@@ -3,18 +3,18 @@ package sfiomn.legendarysurvivaloverhaul.common.events;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.DamageTypeTags;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageTypes;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.damagesource.DamageTypes;
-import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.storage.LevelData;
@@ -64,7 +64,10 @@ import sfiomn.legendarysurvivaloverhaul.registry.SoundRegistry;
 import sfiomn.legendarysurvivaloverhaul.util.CapabilityUtil;
 import sfiomn.legendarysurvivaloverhaul.util.PlayerModelUtil;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 
 
 @Mod.EventBusSubscriber(modid = LegendarySurvivalOverhaul.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
@@ -328,14 +331,14 @@ public class CommonForgeEvents {
         if (event.isEndConquered())
             return;
 
-        if (Config.Baked.temperatureImmunityOnDeathEnabled) {
+        if (Config.Baked.temperatureImmunityOnDeathEnabled && Config.Baked.temperatureEnabled) {
             event.getEntity().addEffect(new MobEffectInstance(MobEffectRegistry.TEMPERATURE_IMMUNITY.get(), Config.Baked.temperatureImmunityOnDeathTime, 0, false, false, true));
         }
     }
 
     @SubscribeEvent
     public static void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
-        if (Config.Baked.temperatureImmunityOnFirstSpawnEnabled && !event.getEntity().getPersistentData().getBoolean("tempImmuneOnSpawn")) {
+        if (Config.Baked.temperatureImmunityOnFirstSpawnEnabled && Config.Baked.temperatureEnabled && !event.getEntity().getPersistentData().getBoolean("tempImmuneOnSpawn")) {
             event.getEntity().getPersistentData().putBoolean("tempImmuneOnSpawn", true);
             event.getEntity().addEffect(new MobEffectInstance(MobEffectRegistry.TEMPERATURE_IMMUNITY.get(), Config.Baked.temperatureImmunityOnFirstSpawnTime, 0, false, false, true));
         }
@@ -366,12 +369,12 @@ public class CommonForgeEvents {
         ThirstBlockListener.sendDataToClient(target);
         ThirstConsumableListener.sendDataToClient(target);
 
-        TemperatureConsumableListener.sendDataToClient(target);
+        TemperatureBiomeListener.sendDataToClient(target);
         TemperatureBlockListener.sendDataToClient(target);
-        TemperatureItemListener.sendDataToClient(target);
-        TemperatureBiomeListener.sendDataToClient(target);
+        TemperatureConsumableListener.sendDataToClient(target);
+        TemperatureDimensionListener.sendDataToClient(target);
         TemperatureFuelItemListener.sendDataToClient(target);
-        TemperatureBiomeListener.sendDataToClient(target);
+        TemperatureItemListener.sendDataToClient(target);
         TemperatureMountListener.sendDataToClient(target);
         TemperatureOriginListener.sendDataToClient(target);
 

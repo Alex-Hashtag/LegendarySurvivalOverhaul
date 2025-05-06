@@ -1,10 +1,7 @@
 package sfiomn.legendarysurvivaloverhaul.data.providers;
 
-import net.dries007.tfc.util.advancements.BlockActionTrigger;
-import net.dries007.tfc.util.advancements.GenericTrigger;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.FrameType;
-import net.minecraft.advancements.RequirementsStrategy;
 import net.minecraft.advancements.critereon.*;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;

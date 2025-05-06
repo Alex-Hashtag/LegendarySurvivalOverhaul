@@ -2,8 +2,8 @@ package sfiomn.legendarysurvivaloverhaul.config;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.config.ModConfig;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.tuple.Pair;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
@@ -37,7 +37,7 @@ public class Config
 		CLIENT = client.getLeft();
 	}
 
-	public static void register(FMLJavaModLoadingContext context)
+	public static void register()
 	{
 		for (Path configPath: new Path[]{LegendarySurvivalOverhaul.modConfigPath}) {
 			try {
@@ -49,8 +49,8 @@ public class Config
 			}
 		}
 
-		context.registerConfig(ModConfig.Type.CLIENT, CLIENT_SPEC, LegendarySurvivalOverhaul.MOD_ID + "/" + LegendarySurvivalOverhaul.MOD_ID +"-client.toml");
-		context.registerConfig(ModConfig.Type.COMMON, COMMON_SPEC, LegendarySurvivalOverhaul.MOD_ID + "/" + LegendarySurvivalOverhaul.MOD_ID +"-common.toml");
+		ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, CLIENT_SPEC, LegendarySurvivalOverhaul.MOD_ID + "/" + LegendarySurvivalOverhaul.MOD_ID +"-client.toml");
+		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, COMMON_SPEC, LegendarySurvivalOverhaul.MOD_ID + "/" + LegendarySurvivalOverhaul.MOD_ID +"-common.toml");
 
 		JsonConfigRegistration.init(LegendarySurvivalOverhaul.modConfigJsons.toFile());
 	}
@@ -1004,6 +1004,8 @@ public class Config
 		public final ForgeConfigSpec.IntValue hydrationBarOffsetX;
 		public final ForgeConfigSpec.IntValue hydrationBarOffsetY;
 
+		public final ForgeConfigSpec.BooleanValue appendBrokenShieldHeartsToHealthBar;
+
 		Client(ForgeConfigSpec.Builder builder)
 		{
 
@@ -1125,6 +1127,13 @@ public class Config
 					.comment(" How much the hydration bar is moved to the bottom.")
 					.defineInRange("Hydration Bar Offset Y", 0, -10000, 10000);
 			builder.pop();
+			builder.pop();
+
+			builder.push("health-overhaul");
+			appendBrokenShieldHeartsToHealthBar = builder
+					.comment(" If enabled, will try to append the broken and shield hearts at the end of the Health Bar.",
+							" A compat is made with overflowing-bars mod.")
+					.define("Append Broken/Shield Hearts To Health Bar", true);
 			builder.pop();
 		}
 	}

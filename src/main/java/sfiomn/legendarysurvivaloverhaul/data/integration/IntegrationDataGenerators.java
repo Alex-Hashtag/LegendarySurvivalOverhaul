@@ -5,11 +5,7 @@ import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.data.event.GatherDataEvent;
-import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.data.integration.providers.*;
-import sfiomn.legendarysurvivaloverhaul.data.providers.ModBlockTagProvider;
-import sfiomn.legendarysurvivaloverhaul.data.providers.ModGlobalLootModifierProvider;
-import sfiomn.legendarysurvivaloverhaul.data.providers.ModItemTagProvider;
 
 import java.util.concurrent.CompletableFuture;
 

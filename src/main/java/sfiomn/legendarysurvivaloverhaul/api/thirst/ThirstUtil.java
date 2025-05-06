@@ -3,8 +3,8 @@ package sfiomn.legendarysurvivaloverhaul.api.thirst;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
-import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonThirstBlock;
 import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonMobEffect;
+import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonThirstBlock;
 
 import java.util.List;
 

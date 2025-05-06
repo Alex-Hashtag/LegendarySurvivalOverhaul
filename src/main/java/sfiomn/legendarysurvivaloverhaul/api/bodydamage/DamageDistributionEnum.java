@@ -1,7 +1,6 @@
 package sfiomn.legendarysurvivaloverhaul.api.bodydamage;
 
 import net.minecraft.world.entity.player.Player;
-import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 
 import java.util.Collections;
 import java.util.List;

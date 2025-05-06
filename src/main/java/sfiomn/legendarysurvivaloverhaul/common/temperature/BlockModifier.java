@@ -16,7 +16,9 @@ import sfiomn.legendarysurvivaloverhaul.config.Config;
 import sfiomn.legendarysurvivaloverhaul.util.MathUtil;
 import sfiomn.legendarysurvivaloverhaul.util.SpreadPoint;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 
 public class BlockModifier extends ModifierBase
 {

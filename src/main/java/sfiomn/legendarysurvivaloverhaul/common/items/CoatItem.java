@@ -15,10 +15,7 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.item.CoatEnum;
-import sfiomn.legendarysurvivaloverhaul.config.Config;
 import sfiomn.legendarysurvivaloverhaul.registry.KeyMappingRegistry;
-import sfiomn.legendarysurvivaloverhaul.util.MathUtil;
-import sfiomn.legendarysurvivaloverhaul.util.WorldUtil;
 
 import java.util.List;
 import java.util.Objects;

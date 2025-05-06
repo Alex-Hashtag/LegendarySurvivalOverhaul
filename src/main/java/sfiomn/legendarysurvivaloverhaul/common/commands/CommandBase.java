@@ -3,7 +3,6 @@ package sfiomn.legendarysurvivaloverhaul.common.commands;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-
 import net.minecraft.commands.CommandSourceStack;
 
 //cmd execute template

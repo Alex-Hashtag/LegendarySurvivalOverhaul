@@ -2,7 +2,6 @@ package sfiomn.legendarysurvivaloverhaul.api.temperature;
 
 import net.minecraft.world.effect.MobEffect;
 import net.minecraftforge.registries.RegistryObject;
-import sfiomn.legendarysurvivaloverhaul.api.bodydamage.BodyPartEnum;
 import sfiomn.legendarysurvivaloverhaul.registry.MobEffectRegistry;
 
 public enum TemporaryModifierGroupEnum

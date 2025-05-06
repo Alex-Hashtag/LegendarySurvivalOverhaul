@@ -1,16 +1,14 @@
 package sfiomn.legendarysurvivaloverhaul.api.temperature;
 
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.biome.Biome;
 import org.jetbrains.annotations.Nullable;
-import sfiomn.legendarysurvivaloverhaul.api.config.json_old.temperature.JsonBiomeIdentity;
 import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonTemperatureBiomeOverride;
 import sfiomn.legendarysurvivaloverhaul.api.data.manager.TemperatureDataManager;
-import sfiomn.legendarysurvivaloverhaul.config.json_old.JsonConfig;
 import sfiomn.legendarysurvivaloverhaul.util.WorldUtil;
 
 /**

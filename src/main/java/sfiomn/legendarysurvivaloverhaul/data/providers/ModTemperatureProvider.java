@@ -42,6 +42,6 @@ public class ModTemperatureProvider extends TemperatureDataProvider {
         item("nether_chalice").temperature(2.0f);
 
         consumable("melon_juice").addTemperature(temperatureConsumable(TemporaryModifierGroupEnum.DRINK).temperatureLevel(-1).duration(1200));
-        consumable("melon_juice").addTemperature(temperatureConsumable(TemporaryModifierGroupEnum.DRINK).temperatureLevel(-2).duration(1200));
+        consumable("glistering_melon_juice").addTemperature(temperatureConsumable(TemporaryModifierGroupEnum.DRINK).temperatureLevel(-2).duration(3600));
     }
 }

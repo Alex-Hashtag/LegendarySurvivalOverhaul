@@ -48,8 +48,6 @@ import sfiomn.legendarysurvivaloverhaul.common.integration.origins.OriginsEvents
 import sfiomn.legendarysurvivaloverhaul.common.integration.sereneseasons.SereneSeasonsUtil;
 import sfiomn.legendarysurvivaloverhaul.common.integration.vampirism.VampirismEvents;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
-import sfiomn.legendarysurvivaloverhaul.config.json_old.JsonConfig;
-import sfiomn.legendarysurvivaloverhaul.config.json_old.JsonConfigRegistration;
 import sfiomn.legendarysurvivaloverhaul.config.listeners.*;
 import sfiomn.legendarysurvivaloverhaul.network.NetworkHandler;
 import sfiomn.legendarysurvivaloverhaul.registry.*;
@@ -100,9 +98,9 @@ public class LegendarySurvivalOverhaul
 	public static Path modConfigJsons = Paths.get(modConfigPath.toString(), "json");
 	public static Path modIntegrationConfigJsons = Paths.get(modConfigJsons.toString(), "integration");
 	
-	public LegendarySurvivalOverhaul(FMLJavaModLoadingContext context)
+	public LegendarySurvivalOverhaul()
 	{
-		IEventBus modBus = context.getModEventBus();
+		IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
 		IEventBus forgeBus = MinecraftForge.EVENT_BUS;
 		
 		modBus.addListener(this::commonSetup);
@@ -111,7 +109,7 @@ public class LegendarySurvivalOverhaul
 
 		forgeBus.addListener(this::addReloadListenerEvent);
 
-		Config.register(context);
+		Config.register();
 
 		AttributeRegistry.register(modBus);
 		ItemRegistry.register(modBus);
@@ -133,7 +131,6 @@ public class LegendarySurvivalOverhaul
 		forgeBus.register(this);
 
 		modIntegration(forgeBus);
-		//JsonConfigRegistration.deleteJsonDirs();
 	}
 	
 	private void modIntegration(IEventBus forgeBus)

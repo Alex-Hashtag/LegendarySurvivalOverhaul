@@ -9,18 +9,16 @@ import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.UseAnim;
+import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.health.HealthCapability;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
 import sfiomn.legendarysurvivaloverhaul.registry.SoundRegistry;
 import sfiomn.legendarysurvivaloverhaul.util.CapabilityUtil;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Level;
-
-import static sfiomn.legendarysurvivaloverhaul.common.integration.sereneseasons.SereneSeasonsUtil.seasonTooltip;
 
 public class HeartContainerItem extends Item
 {

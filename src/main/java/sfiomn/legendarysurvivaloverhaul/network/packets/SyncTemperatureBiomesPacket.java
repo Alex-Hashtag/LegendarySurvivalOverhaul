@@ -56,12 +56,12 @@ public class SyncTemperatureBiomesPacket
 	public static void handle(SyncTemperatureBiomesPacket message, Supplier<NetworkEvent.Context> supplier)
 	{
 		final NetworkEvent.Context context = supplier.get();
-		context.enqueueWork(() -> DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> syncTemperatureItems(message.temperatureBiomes)));
+		context.enqueueWork(() -> DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> syncTemperatureBiomes(message.temperatureBiomes)));
 		
 		supplier.get().setPacketHandled(true);
 	}
 
-	public static DistExecutor.SafeRunnable syncTemperatureItems(Map<ResourceLocation, JsonTemperatureBiomeOverride> temperatureBiomes)
+	public static DistExecutor.SafeRunnable syncTemperatureBiomes(Map<ResourceLocation, JsonTemperatureBiomeOverride> temperatureBiomes)
 	{
 		return new DistExecutor.SafeRunnable()
 		{

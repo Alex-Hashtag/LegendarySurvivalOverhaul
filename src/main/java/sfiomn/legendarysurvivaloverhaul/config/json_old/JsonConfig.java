@@ -14,7 +14,10 @@ import sfiomn.legendarysurvivaloverhaul.api.config.json_old.thirst.JsonConsumabl
 import sfiomn.legendarysurvivaloverhaul.api.config.json_old.thirst.JsonEffectParameter;
 import sfiomn.legendarysurvivaloverhaul.api.temperature.TemporaryModifierGroupEnum;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 public class JsonConfig
 {

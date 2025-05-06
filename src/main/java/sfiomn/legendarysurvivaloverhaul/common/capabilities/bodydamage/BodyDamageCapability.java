@@ -1,19 +1,19 @@
 package sfiomn.legendarysurvivaloverhaul.common.capabilities.bodydamage;
 
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.event.TickEvent;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
-import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
-import sfiomn.legendarysurvivaloverhaul.api.bodydamage.*;
-import sfiomn.legendarysurvivaloverhaul.api.health.HealthUtil;
+import sfiomn.legendarysurvivaloverhaul.api.bodydamage.BodyDamageUtil;
+import sfiomn.legendarysurvivaloverhaul.api.bodydamage.BodyPartEnum;
+import sfiomn.legendarysurvivaloverhaul.api.bodydamage.IBodyDamageCapability;
+import sfiomn.legendarysurvivaloverhaul.api.bodydamage.MalusBodyPartEnum;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
 import sfiomn.legendarysurvivaloverhaul.registry.AttributeRegistry;
 import sfiomn.legendarysurvivaloverhaul.registry.MobEffectRegistry;

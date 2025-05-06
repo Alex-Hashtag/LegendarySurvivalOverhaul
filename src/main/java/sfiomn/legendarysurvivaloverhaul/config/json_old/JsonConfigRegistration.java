@@ -312,7 +312,6 @@ public class JsonConfigRegistration
 	public static void processAllJson(File jsonDir)
 	{
 		Gson gson = buildNewGson();
-		Path customDatapackFolder = Paths.get(LegendarySurvivalOverhaul.modConfigPath.toString(), "customDataPack");
 
 		// Temperature
 		Map<String, JsonTemperature> jsonDimensionTemperatures = processJson(JsonFileName.DIMENSION_TEMP, jsonDir);
@@ -336,7 +335,7 @@ public class JsonConfigRegistration
 
 				for (String e: entriesToKeep) {
 					ResourceLocation rl = new ResourceLocation(e);
-					Path endPath = Paths.get(customDatapackFolder.toString(), rl.getNamespace(), "temperature", "dimensions");
+					Path endPath = Paths.get(customDatapackFolder.toString(), "data", rl.getNamespace(), LegendarySurvivalOverhaul.MOD_ID, "temperature", "dimensions");
 					if (!endPath.toFile().exists()) {
 						createDirectories(endPath);
 					}
@@ -371,7 +370,7 @@ public class JsonConfigRegistration
 
 				for (String e: entriesToKeep) {
 					ResourceLocation rl = new ResourceLocation(e);
-					Path endPath = Paths.get(customDatapackFolder.toString(), rl.getNamespace(), "temperature", "biomes");
+					Path endPath = Paths.get(customDatapackFolder.toString(), "data", rl.getNamespace(), LegendarySurvivalOverhaul.MOD_ID	, "temperature", "biomes");
 					if (!endPath.toFile().exists()) {
 						createDirectories(endPath);
 					}
@@ -407,7 +406,7 @@ public class JsonConfigRegistration
 
 				for (String e: entriesToKeep) {
 					ResourceLocation rl = new ResourceLocation(e);
-					Path endPath = Paths.get(customDatapackFolder.toString(), rl.getNamespace(), "temperature", "items");
+					Path endPath = Paths.get(customDatapackFolder.toString(), "data", rl.getNamespace(), LegendarySurvivalOverhaul.MOD_ID, "temperature", "items");
 					if (!endPath.toFile().exists()) {
 						createDirectories(endPath);
 					}
@@ -445,7 +444,7 @@ public class JsonConfigRegistration
 
 				for (String e: entriesToKeep) {
 					ResourceLocation rl = new ResourceLocation(e);
-					Path endPath = Paths.get(customDatapackFolder.toString(), rl.getNamespace(), "temperature", "entities");
+					Path endPath = Paths.get(customDatapackFolder.toString(), "data", rl.getNamespace(), LegendarySurvivalOverhaul.MOD_ID, "temperature", "entities");
 					if (!endPath.toFile().exists()) {
 						createDirectories(endPath);
 					}
@@ -483,7 +482,7 @@ public class JsonConfigRegistration
 
 				for (String e: entriesToKeep) {
 					ResourceLocation rl = new ResourceLocation(e);
-					Path endPath = Paths.get(customDatapackFolder.toString(), rl.getNamespace(), "temperature", "blocks");
+					Path endPath = Paths.get(customDatapackFolder.toString(), "data", rl.getNamespace(), LegendarySurvivalOverhaul.MOD_ID, "temperature", "blocks");
 					if (!endPath.toFile().exists()) {
 						createDirectories(endPath);
 					}
@@ -525,7 +524,7 @@ public class JsonConfigRegistration
 
 				for (String e: entriesToKeep) {
 					ResourceLocation rl = new ResourceLocation(e);
-					Path endPath = Paths.get(customDatapackFolder.toString(), rl.getNamespace(), "temperature", "fuel_items");
+					Path endPath = Paths.get(customDatapackFolder.toString(), "data", rl.getNamespace(), LegendarySurvivalOverhaul.MOD_ID, "temperature", "fuel_items");
 					if (!endPath.toFile().exists()) {
 						createDirectories(endPath);
 					}
@@ -563,7 +562,7 @@ public class JsonConfigRegistration
 
 				for (String e: entriesToKeep) {
 					ResourceLocation rl = new ResourceLocation(e);
-					Path endPath = Paths.get(customDatapackFolder.toString(), rl.getNamespace(), "temperature", "consumables");
+					Path endPath = Paths.get(customDatapackFolder.toString(), "data", rl.getNamespace(), LegendarySurvivalOverhaul.MOD_ID, "temperature", "consumables");
 					if (!endPath.toFile().exists()) {
 						createDirectories(endPath);
 					}
@@ -609,7 +608,7 @@ public class JsonConfigRegistration
 
 				for (String e: entriesToKeep) {
 					ResourceLocation rl = new ResourceLocation(e);
-					Path endPath = Paths.get(customDatapackFolder.toString(), rl.getNamespace(), "thirst", "blocks");
+					Path endPath = Paths.get(customDatapackFolder.toString(), "data", rl.getNamespace(), LegendarySurvivalOverhaul.MOD_ID, "thirst", "blocks");
 					if (!endPath.toFile().exists()) {
 						createDirectories(endPath);
 					}
@@ -656,7 +655,7 @@ public class JsonConfigRegistration
 
 				for (String e: entriesToKeep) {
 					ResourceLocation rl = new ResourceLocation(e);
-					Path endPath = Paths.get(customDatapackFolder.toString(), rl.getNamespace(), "thirst", "consumables");
+					Path endPath = Paths.get(customDatapackFolder.toString(), "data", rl.getNamespace(), LegendarySurvivalOverhaul.MOD_ID, "thirst", "consumables");
 					if (!endPath.toFile().exists()) {
 						createDirectories(endPath);
 					}
@@ -704,7 +703,7 @@ public class JsonConfigRegistration
 
 				for (String e: entriesToKeep) {
 					ResourceLocation rl = new ResourceLocation(e);
-					Path endPath = Paths.get(customDatapackFolder.toString(), rl.getNamespace(), "body_damage", "consumables");
+					Path endPath = Paths.get(customDatapackFolder.toString(), "data", rl.getNamespace(), LegendarySurvivalOverhaul.MOD_ID, "body_damage", "consumables");
 					if (!endPath.toFile().exists()) {
 						createDirectories(endPath);
 					}
@@ -742,7 +741,7 @@ public class JsonConfigRegistration
 
 				for (String e: entriesToKeep) {
 					ResourceLocation rl = new ResourceLocation(e);
-					Path endPath = Paths.get(customDatapackFolder.toString(), rl.getNamespace(), "body_damage", "damage_sources");
+					Path endPath = Paths.get(customDatapackFolder.toString(), "data", rl.getNamespace(), LegendarySurvivalOverhaul.MOD_ID, "body_damage", "damage_sources");
 					if (!endPath.toFile().exists()) {
 						createDirectories(endPath);
 					}
@@ -761,7 +760,7 @@ public class JsonConfigRegistration
 			JsonObject packMcMetaContent = new JsonObject();
 			JsonObject packMcMetaContent2 = new JsonObject();
 			packMcMetaContent2.addProperty("pack_format", 10);
-			packMcMetaContent2.addProperty("description", "DO NOT REMOVE ! Legendary datapack (modifies loot/structures)");
+			packMcMetaContent2.addProperty("description", "Legendary Survival Overhaul datapack (modifies temperature/thirst/body damage values)");
 			packMcMetaContent.add("pack", packMcMetaContent2);
 			File packMcMeta = new File(customDatapackFolder.toFile(), "pack.mcmeta");
 			writeInFile(packMcMeta, packMcMetaContent);

@@ -6,7 +6,10 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class JsonThirstConsumable {
     public static final Codec<JsonThirstConsumable> CODEC = RecordCodecBuilder.<JsonThirstConsumable>create((inst) -> inst.group(

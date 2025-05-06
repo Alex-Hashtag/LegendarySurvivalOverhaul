@@ -3,9 +3,9 @@ package sfiomn.legendarysurvivaloverhaul.common.capabilities.temperature;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.common.capabilities.*;
+import net.minecraftforge.common.util.LazyOptional;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import net.minecraftforge.common.util.LazyOptional;
 
 public class TemperatureProvider implements ICapabilityProvider, ICapabilitySerializable<CompoundTag>
 {

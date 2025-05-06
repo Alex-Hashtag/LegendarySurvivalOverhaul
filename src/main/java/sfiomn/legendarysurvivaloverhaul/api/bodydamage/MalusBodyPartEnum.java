@@ -1,12 +1,8 @@
 package sfiomn.legendarysurvivaloverhaul.api.bodydamage;
 
-import com.google.common.collect.ImmutableList;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
 
 import java.util.List;
-
-import static java.util.Collections.emptyList;
-import static java.util.Collections.singletonList;
 
 public enum MalusBodyPartEnum {
     HEAD(Config.Baked.headPartEffects, Config.Baked.headPartEffectAmplifiers, Config.Baked.headPartEffectThresholds),

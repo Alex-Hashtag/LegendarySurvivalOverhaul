@@ -4,6 +4,7 @@ import com.google.gson.annotations.SerializedName;
 import net.minecraft.world.entity.player.Player;
 import sfiomn.legendarysurvivaloverhaul.api.bodydamage.BodyPartEnum;
 import sfiomn.legendarysurvivaloverhaul.api.bodydamage.DamageDistributionEnum;
+
 import java.util.List;
 
 public class JsonBodyPartsDamageSource {

@@ -1,11 +1,10 @@
 package sfiomn.legendarysurvivaloverhaul.api.bodydamage;
 
-import sfiomn.legendarysurvivaloverhaul.api.block.ThermalTypeEnum;
-
 import java.util.Arrays;
 import java.util.List;
 
-import static java.util.Collections.*;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 
 public enum BodyPartEnum {
     HEAD(),

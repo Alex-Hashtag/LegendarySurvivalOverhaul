@@ -11,8 +11,8 @@ import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraftforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
-import sfiomn.legendarysurvivaloverhaul.api.data.manager.IThirstBlockManager;
 import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonThirstBlock;
+import sfiomn.legendarysurvivaloverhaul.api.data.manager.IThirstBlockManager;
 import sfiomn.legendarysurvivaloverhaul.network.packets.SyncThirstBlocksPacket;
 
 import java.util.HashMap;

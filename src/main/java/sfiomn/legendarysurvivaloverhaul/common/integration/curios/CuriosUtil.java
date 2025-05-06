@@ -1,6 +1,5 @@
 package sfiomn.legendarysurvivaloverhaul.common.integration.curios;
 
-import net.minecraft.client.renderer.PostChain;
 import net.minecraft.core.NonNullList;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.InteractionHand;

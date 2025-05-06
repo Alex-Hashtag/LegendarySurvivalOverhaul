@@ -1,18 +1,15 @@
 package sfiomn.legendarysurvivaloverhaul.util.internal;
 
-import net.minecraft.util.Mth;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.tuple.Pair;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.bodydamage.*;
 import sfiomn.legendarysurvivaloverhaul.api.health.HealthUtil;
-import sfiomn.legendarysurvivaloverhaul.common.capabilities.bodydamage.BodyPart;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
-import sfiomn.legendarysurvivaloverhaul.registry.AttributeRegistry;
-import sfiomn.legendarysurvivaloverhaul.util.AttributeBuilder;
 import sfiomn.legendarysurvivaloverhaul.util.CapabilityUtil;
 
 import java.util.*;

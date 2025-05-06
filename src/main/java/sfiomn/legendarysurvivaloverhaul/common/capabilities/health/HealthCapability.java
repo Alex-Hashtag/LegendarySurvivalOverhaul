@@ -1,7 +1,7 @@
 package sfiomn.legendarysurvivaloverhaul.common.capabilities.health;
 
-import net.minecraft.util.Mth;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.Mth;
 import sfiomn.legendarysurvivaloverhaul.api.health.IHealthCapability;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
 

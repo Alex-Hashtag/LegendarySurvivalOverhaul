@@ -9,19 +9,19 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.client.particles.BreathParticle;
+import sfiomn.legendarysurvivaloverhaul.client.particles.FernBlossomParticle;
 import sfiomn.legendarysurvivaloverhaul.client.tooltips.HydrationClientTooltipComponent;
 import sfiomn.legendarysurvivaloverhaul.client.tooltips.HydrationTooltipComponent;
-import sfiomn.legendarysurvivaloverhaul.client.particles.FernBlossomParticle;
 import sfiomn.legendarysurvivaloverhaul.registry.ParticleTypeRegistry;
 
 import static sfiomn.legendarysurvivaloverhaul.client.integration.sereneseasons.RenderSeasonCards.SEASON_CARD_GUI;
 import static sfiomn.legendarysurvivaloverhaul.client.render.RenderBodyDamageGui.BODY_DAMAGE_GUI;
 import static sfiomn.legendarysurvivaloverhaul.client.render.RenderHealthGui.HEALTH_GUI;
-import static sfiomn.legendarysurvivaloverhaul.client.render.RenderTooltipFrame.TOOLTIP_ITEM_FRAME;
 import static sfiomn.legendarysurvivaloverhaul.client.render.RenderTemperatureGui.FOOD_BAR_COLD_EFFECT_GUI;
 import static sfiomn.legendarysurvivaloverhaul.client.render.RenderTemperatureGui.TEMPERATURE_GUI;
 import static sfiomn.legendarysurvivaloverhaul.client.render.RenderTemperatureOverlay.TEMPERATURE_OVERLAY;
 import static sfiomn.legendarysurvivaloverhaul.client.render.RenderThirstGui.THIRST_GUI;
+import static sfiomn.legendarysurvivaloverhaul.client.render.RenderTooltipFrame.TOOLTIP_ITEM_FRAME;
 import static sfiomn.legendarysurvivaloverhaul.client.render.RenderWetnessGui.WETNESS_GUI;
 
 @Mod.EventBusSubscriber(modid = LegendarySurvivalOverhaul.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
