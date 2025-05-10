@@ -5,7 +5,9 @@ import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 import net.minecraftforge.common.data.ExistingFileHelper;
+import net.minecraftforge.registries.ForgeRegistries;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.data.builder.IBodyPartsDamageSourceData;
 import sfiomn.legendarysurvivaloverhaul.api.data.builder.IHealingConsumableData;
@@ -45,8 +47,9 @@ public abstract class BodyDamageDataProvider implements DataProvider {
             List<CompletableFuture<?>> list = new ArrayList<>();
             this.generate(p_255484_, this.fileHelper);
             this.consumablesBuilders.forEach((consumable, builder) -> {
-                Path path = this.consumablesPathProvider.json(new ResourceLocation(this.modId, consumable.toLowerCase()));
-                list.add(DataProvider.saveStable(pOutput, builder.build(), path));
+                ResourceLocation jsonKey = consumable.split(":").length == 1 ?
+                        new ResourceLocation(this.modId, consumable.toLowerCase()) : new ResourceLocation(consumable);
+                list.add(DataProvider.saveStable(pOutput, builder.build(), this.consumablesPathProvider.json(jsonKey)));
             });
             this.bodyPartsDamageSourceBuilders.forEach((damageSource, builder) -> {
                 Path path = this.bodyPartsDamageSourcePathProvider.json(new ResourceLocation(this.modId, damageSource.toLowerCase()));
@@ -58,6 +61,12 @@ public abstract class BodyDamageDataProvider implements DataProvider {
 
     public final IHealingConsumableData consumable(String id) {
         return this.consumablesBuilders.computeIfAbsent(id, (k) -> new HealingConsumableData());
+    }
+
+    public final IHealingConsumableData consumable(Item item) {
+        ResourceLocation itemRegistryName = ForgeRegistries.ITEMS.getKey(item);
+        assert itemRegistryName != null;
+        return this.consumablesBuilders.computeIfAbsent(itemRegistryName.toString(), (k) -> new HealingConsumableData());
     }
 
     public final IBodyPartsDamageSourceData damageSource(String id) {

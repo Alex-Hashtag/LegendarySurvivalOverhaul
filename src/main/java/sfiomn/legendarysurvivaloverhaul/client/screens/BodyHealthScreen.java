@@ -179,8 +179,8 @@ public class BodyHealthScreen extends Screen {
                 TEX_HEALTH_BAR_Y + HEALTH_BAR_HEIGHT * HealthBarCondition.DEAD.iconIndexY,
                 HEALTH_BAR_WIDTH, HEALTH_BAR_HEIGHT);
 
-        int healthBarWidth = Math.round(HEALTH_BAR_WIDTH * healthRatio);
-        int healthBarPreviewWidth = Math.min(Math.round(HEALTH_BAR_WIDTH * totalRemainingHealingRatio), HEALTH_BAR_WIDTH - healthBarWidth);
+        int healthBarWidth = (int) Math.ceil(HEALTH_BAR_WIDTH * healthRatio);
+        int healthBarPreviewWidth = (int) Math.min(Math.ceil(HEALTH_BAR_WIDTH * totalRemainingHealingRatio), HEALTH_BAR_WIDTH - healthBarWidth);
 
         // Draw current health bar
         if (healthBarWidth > 0)

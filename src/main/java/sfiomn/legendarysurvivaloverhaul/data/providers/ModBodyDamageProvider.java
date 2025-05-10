@@ -7,6 +7,7 @@ import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.bodydamage.BodyPartEnum;
 import sfiomn.legendarysurvivaloverhaul.api.bodydamage.DamageDistributionEnum;
 import sfiomn.legendarysurvivaloverhaul.api.data.providers.BodyDamageDataProvider;
+import sfiomn.legendarysurvivaloverhaul.registry.ItemRegistry;
 
 import java.util.Arrays;
 import java.util.concurrent.CompletableFuture;
@@ -19,11 +20,11 @@ public class ModBodyDamageProvider extends BodyDamageDataProvider {
 
     @Override
     public void generate(HolderLookup.Provider provider, ExistingFileHelper existingFileHelper) {
-        consumable("healing_herbs").healingCharges(1).healingValue(2).duration(600);
-        consumable("plaster").healingCharges(1).healingValue(3).duration(400);
-        consumable("bandage").healingCharges(3).healingValue(3).duration(300);
-        consumable("tonic").healingCharges(0).healingValue(5).duration(600);
-        consumable("medikit").healingCharges(0).healingValue(8).duration(400);
+        consumable(ItemRegistry.HEALING_HERBS.get()).healingCharges(1).healingValue(2).duration(600);
+        consumable(ItemRegistry.PLASTER.get()).healingCharges(1).healingValue(3).duration(400);
+        consumable(ItemRegistry.BANDAGE.get()).healingCharges(3).healingValue(3).duration(300);
+        consumable(ItemRegistry.TONIC.get()).healingCharges(0).healingValue(5).duration(600);
+        consumable(ItemRegistry.MEDIKIT.get()).healingCharges(0).healingValue(8).duration(400);
 
         damageSource("fall")
                 .damageDistribution(DamageDistributionEnum.ALL)

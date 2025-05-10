@@ -147,7 +147,7 @@ public class ThirstCapability implements IThirstCapability
 		// Apply dehydration damages
 		this.addThirstDamageCounter(1);
 		float thirstDamageToApply = (float) (this.getThirstDamageCounter() * Config.Baked.dehydrationDamageScaling);
-		player.hurt(DamageSourceUtil.getDamageSource(player.level(), ModDamageTypes.DEHYDRATION), thirstDamageToApply);
+		ModDamageTypes.dehydration(player, thirstDamageToApply);
 	}
 
 	@Override

@@ -9,7 +9,7 @@ import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.network.NetworkEvent;
 import net.minecraftforge.network.PacketDistributor;
 import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonHealingConsumable;
-import sfiomn.legendarysurvivaloverhaul.config.listeners.BodyDamageHealingConsumableListener;
+import sfiomn.legendarysurvivaloverhaul.common.listeners.BodyDamageHealingConsumableListener;
 import sfiomn.legendarysurvivaloverhaul.network.NetworkHandler;
 
 import java.util.HashMap;

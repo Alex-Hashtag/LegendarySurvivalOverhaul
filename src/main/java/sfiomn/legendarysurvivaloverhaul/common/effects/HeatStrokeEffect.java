@@ -27,7 +27,7 @@ public class HeatStrokeEffect extends MobEffect
 
             if (DamageUtil.isModDangerous(level) && DamageUtil.healthAboveDifficulty(level, player) && !player.isSleeping())
 			{
-				player.hurt(DamageSourceUtil.getDamageSource(level, ModDamageTypes.HYPERTHERMIA), 1.0f);
+				ModDamageTypes.hyperthermia(player, 1.0f);
 			}
 		}
 	}

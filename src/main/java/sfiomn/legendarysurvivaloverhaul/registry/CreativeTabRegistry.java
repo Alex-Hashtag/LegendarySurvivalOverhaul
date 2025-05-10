@@ -88,6 +88,10 @@ public class CreativeTabRegistry {
                         ItemRegistry.THERMOMETER.get().getDefaultInstance(),
                         ItemRegistry.NETHER_CHALICE.get().getDefaultInstance(),
                         ItemRegistry.SPONGE.get().getDefaultInstance(),
+                        ItemRegistry.HEAT_RESISTANCE_RING.get().getDefaultInstance(),
+                        ItemRegistry.COLD_RESISTANCE_RING.get().getDefaultInstance(),
+                        ItemRegistry.THERMAL_RESISTANCE_RING.get().getDefaultInstance(),
+                        ItemRegistry.FIRST_AID_SUPPLIES.get().getDefaultInstance(),
 
                         ItemRegistry.HEART_CONTAINER.get().getDefaultInstance(),
                         ItemRegistry.HEART_FRAGMENT.get().getDefaultInstance(),

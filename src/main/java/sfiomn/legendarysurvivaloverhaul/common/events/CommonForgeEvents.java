@@ -17,6 +17,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameRules;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.LevelData;
 import net.minecraft.world.level.storage.PrimaryLevelData;
 import net.minecraftforge.api.distmarker.Dist;
@@ -56,8 +57,8 @@ import sfiomn.legendarysurvivaloverhaul.common.integration.curios.CuriosUtil;
 import sfiomn.legendarysurvivaloverhaul.common.integration.supplementaries.SupplementariesUtil;
 import sfiomn.legendarysurvivaloverhaul.common.items.drink.DrinkItem;
 import sfiomn.legendarysurvivaloverhaul.common.items.heal.BodyHealingItem;
+import sfiomn.legendarysurvivaloverhaul.common.listeners.*;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
-import sfiomn.legendarysurvivaloverhaul.config.listeners.*;
 import sfiomn.legendarysurvivaloverhaul.registry.ItemRegistry;
 import sfiomn.legendarysurvivaloverhaul.registry.MobEffectRegistry;
 import sfiomn.legendarysurvivaloverhaul.registry.SoundRegistry;
@@ -211,6 +212,29 @@ public class CommonForgeEvents {
                 }
             }
         }
+
+        if (Config.Baked.temperatureEnabled) {
+
+            // Only run on main hand (otherwise it runs twice)
+            if (event.getHand() == InteractionHand.MAIN_HAND && !event.getLevel().isClientSide())
+            {
+                Player player = event.getEntity();
+                BlockState usedBlock = event.getLevel().getBlockState(event.getHitVec().getBlockPos());
+                ResourceLocation blockRegistryName = ForgeRegistries.BLOCKS.getKey(usedBlock.getBlock());
+                if (player != null && blockRegistryName != null) {
+                    List<JsonTemperatureConsumable> jsonConsumableTemperatures = TemperatureDataManager.getConsumable(blockRegistryName);
+
+                    if (jsonConsumableTemperatures != null) {
+                        for (JsonTemperatureConsumable jtc : jsonConsumableTemperatures) {
+                            if (jtc.getEffect() != null) {
+                                player.addEffect(new MobEffectInstance(jtc.getEffect(), jtc.duration, (Math.abs(jtc.temperatureLevel) - 1), false, false, true));
+                                player.removeEffect(jtc.getOppositeEffect());
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
@@ -282,7 +306,7 @@ public class CommonForgeEvents {
                     && Config.Baked.headCriticalShotMultiplier > 1
                     && player.getItemBySlot(EquipmentSlot.HEAD).isEmpty()) {
                 event.setAmount(event.getAmount() * (float) Config.Baked.headCriticalShotMultiplier);
-                player.level().playSound(null, player, SoundRegistry.HEADSHOT.get(), SoundSource.HOSTILE, 1.0F, 1.0F);
+                player.level().playLocalSound(player.blockPosition(), SoundRegistry.HEADSHOT.get(), SoundSource.HOSTILE, 1.0F, 1.0F, false);
             }
         }
     }
@@ -319,7 +343,6 @@ public class CommonForgeEvents {
                 event.setResult(Event.Result.DENY);
             }
             if (event.getEffectInstance().getEffect() == MobEffectRegistry.THIRST.get() &&
-                    LegendarySurvivalOverhaul.curiosLoaded &&
                     CuriosUtil.isCurioItemEquipped(player, ItemRegistry.WATER_PURIFIER.get())) {
                 event.setResult(Event.Result.DENY);
             }

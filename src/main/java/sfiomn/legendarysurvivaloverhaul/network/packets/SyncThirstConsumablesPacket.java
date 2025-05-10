@@ -9,9 +9,8 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.network.NetworkEvent;
 import net.minecraftforge.network.PacketDistributor;
-import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonTemperatureBlock;
 import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonThirstConsumable;
-import sfiomn.legendarysurvivaloverhaul.config.listeners.ThirstConsumableListener;
+import sfiomn.legendarysurvivaloverhaul.common.listeners.ThirstConsumableListener;
 import sfiomn.legendarysurvivaloverhaul.network.NetworkHandler;
 
 import java.util.ArrayList;

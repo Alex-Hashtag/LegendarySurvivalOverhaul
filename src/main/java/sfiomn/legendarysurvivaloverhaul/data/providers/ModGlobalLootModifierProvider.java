@@ -8,7 +8,7 @@ import net.minecraftforge.common.loot.LootTableIdCondition;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.common.loot_modifiers.AdditionalLootTable;
 
-import static sfiomn.legendarysurvivaloverhaul.data.loot.ModChestLootTables.heartFragmentInjectedLootTables;
+import static sfiomn.legendarysurvivaloverhaul.data.loot.ModChestLootTables.chestInjectedLootTables;
 import static sfiomn.legendarysurvivaloverhaul.data.loot.ModEntityLootTables.entityInjectedLootTables;
 import static sfiomn.legendarysurvivaloverhaul.data.loot.ModFishingLootTables.fishingInjectedLootTables;
 
@@ -20,7 +20,7 @@ public class ModGlobalLootModifierProvider extends GlobalLootModifierProvider {
 
     @Override
     protected void start() {
-        for (ResourceLocation lootTable: heartFragmentInjectedLootTables) {
+        for (ResourceLocation lootTable: chestInjectedLootTables.keySet()) {
             this.add(lootTable.getPath(), new AdditionalLootTable(
                     new LootItemCondition[]{LootTableIdCondition.builder(lootTable).build()},
                     new ResourceLocation(LegendarySurvivalOverhaul.MOD_ID,

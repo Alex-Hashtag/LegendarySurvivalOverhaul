@@ -68,8 +68,8 @@ public class SpreadPoint {
         return !blockState.isFaceSturdy(level, pos, direction);
     }
 
-    public void setCanSeeSky() {
-        this.canSeeSky = level.dimensionType().hasCeiling() || level.canSeeSky(pos);
+    public void setCanSeeSky(boolean canSeeSky) {
+        this.canSeeSky = canSeeSky;
     }
 
     private double consumptionMultiplier(Direction originDirection) {

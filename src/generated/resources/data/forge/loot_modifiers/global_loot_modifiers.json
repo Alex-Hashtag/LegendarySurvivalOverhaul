@@ -1,11 +1,12 @@
 {
   "entries": [
+    "legendarysurvivaloverhaul:chests/pillager_outpost",
     "legendarysurvivaloverhaul:chests/abandoned_mineshaft",
     "legendarysurvivaloverhaul:gameplay/fishing/treasure",
     "legendarysurvivaloverhaul:chests/bastion_treasure",
+    "legendarysurvivaloverhaul:chests/desert_pyramid",
     "legendarysurvivaloverhaul:chests/jungle_temple",
     "legendarysurvivaloverhaul:chests/buried_treasure",
-    "legendarysurvivaloverhaul:chests/stronghold_corridor",
     "legendarysurvivaloverhaul:entities/drowned"
   ],
   "replace": false

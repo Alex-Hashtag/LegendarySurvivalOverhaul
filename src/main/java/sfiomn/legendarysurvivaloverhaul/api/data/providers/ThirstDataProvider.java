@@ -5,7 +5,10 @@ import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
 import net.minecraftforge.common.data.ExistingFileHelper;
+import net.minecraftforge.registries.ForgeRegistries;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.data.builder.IThirstData;
 import sfiomn.legendarysurvivaloverhaul.api.data.builder.IThirstDataHolder;
@@ -13,7 +16,6 @@ import sfiomn.legendarysurvivaloverhaul.data.builders.ThirstData;
 import sfiomn.legendarysurvivaloverhaul.data.builders.ThirstDataHolder;
 
 import javax.annotation.Nonnull;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -45,12 +47,14 @@ public abstract class ThirstDataProvider implements DataProvider {
             List<CompletableFuture<?>> list = new ArrayList<>();
             this.generate(p_255484_, this.fileHelper);
             this.consumablesBuilders.forEach((consumable, builder) -> {
-                Path path = this.consumablesPathProvider.json(new ResourceLocation(this.modId, consumable.toLowerCase()));
-                list.add(DataProvider.saveStable(pOutput, builder.build(), path));
+                ResourceLocation jsonKey = consumable.split(":").length == 1 ?
+                        new ResourceLocation(this.modId, consumable.toLowerCase()) : new ResourceLocation(consumable);
+                list.add(DataProvider.saveStable(pOutput, builder.build(), this.consumablesPathProvider.json(jsonKey)));
             });
             this.blocksBuilders.forEach((block, builder) -> {
-                Path path = this.blocksPathProvider.json(new ResourceLocation(this.modId, block.toLowerCase()));
-                list.add(DataProvider.saveStable(pOutput, builder.build(), path));
+                ResourceLocation jsonKey = block.split(":").length == 1 ?
+                        new ResourceLocation(this.modId, block.toLowerCase()) : new ResourceLocation(block);
+                list.add(DataProvider.saveStable(pOutput, builder.build(), this.blocksPathProvider.json(jsonKey)));
             });
             return CompletableFuture.allOf(list.toArray(CompletableFuture[]::new));
         });
@@ -60,8 +64,20 @@ public abstract class ThirstDataProvider implements DataProvider {
         return this.consumablesBuilders.computeIfAbsent(id, (k) -> new ThirstDataHolder());
     }
 
+    public final IThirstDataHolder consumable(Item item) {
+        ResourceLocation itemRegistryName = ForgeRegistries.ITEMS.getKey(item);
+        assert itemRegistryName != null;
+        return this.consumablesBuilders.computeIfAbsent(itemRegistryName.toString(), (k) -> new ThirstDataHolder());
+    }
+
     public final IThirstDataHolder block(String id) {
         return this.blocksBuilders.computeIfAbsent(id, (k) -> new ThirstDataHolder());
+    }
+
+    public final IThirstDataHolder block(Block block) {
+        ResourceLocation blockRegistryName = ForgeRegistries.BLOCKS.getKey(block);
+        assert blockRegistryName != null;
+        return this.blocksBuilders.computeIfAbsent(blockRegistryName.toString(), (k) -> new ThirstDataHolder());
     }
 
     public final IThirstData thirstData(int hydration, float saturation) {

@@ -47,8 +47,8 @@ import sfiomn.legendarysurvivaloverhaul.common.integration.jsonConfig.JsonIntegr
 import sfiomn.legendarysurvivaloverhaul.common.integration.origins.OriginsEvents;
 import sfiomn.legendarysurvivaloverhaul.common.integration.sereneseasons.SereneSeasonsUtil;
 import sfiomn.legendarysurvivaloverhaul.common.integration.vampirism.VampirismEvents;
+import sfiomn.legendarysurvivaloverhaul.common.listeners.*;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
-import sfiomn.legendarysurvivaloverhaul.config.listeners.*;
 import sfiomn.legendarysurvivaloverhaul.network.NetworkHandler;
 import sfiomn.legendarysurvivaloverhaul.registry.*;
 import sfiomn.legendarysurvivaloverhaul.util.internal.*;
@@ -63,11 +63,11 @@ public class LegendarySurvivalOverhaul
 {
 	public static final Logger LOGGER = LogManager.getLogger();
 	public static final String MOD_ID = "legendarysurvivaloverhaul";
-	
+
 	/** Serene Seasons and Better Weather both add their own seasons system,
 	 *  so we'll probably want to integrate those with the temperature,
 	 *  i.e. making it so that winter is colder, summer is hotter.
-	 */ 
+	 */
 	public static boolean betterWeatherLoaded = false;
 	public static boolean sereneSeasonsLoaded = false;
 
@@ -77,7 +77,7 @@ public class LegendarySurvivalOverhaul
 	 * take directly this calculation, and all similar modifiers will be disabled
 	 */
 	public static boolean terraFirmaCraftLoaded = false;
-	
+
 	/**
 	 * Since my mod and Survive both do very similar things, it might be
 	 * a good idea to let the user know that should probably only choose
@@ -92,7 +92,9 @@ public class LegendarySurvivalOverhaul
 	public static boolean originsLoaded = false;
 	public static boolean mutantMonstersLoaded = false;
 	public static boolean supplementariesLoaded = false;
-	
+	public static boolean beachpartyLoaded = false;
+	public static boolean meadowLoaded = false;
+
 	public static Path configPath = FMLPaths.CONFIGDIR.get();
 	public static Path modConfigPath = Paths.get(configPath.toAbsolutePath().toString(), "legendarysurvivaloverhaul");
 	public static Path modConfigJsons = Paths.get(modConfigPath.toString(), "json");
@@ -143,6 +145,8 @@ public class LegendarySurvivalOverhaul
 		originsLoaded = ModList.get().isLoaded("origins");
 		mutantMonstersLoaded = ModList.get().isLoaded("mutantmonsters");
 		supplementariesLoaded = ModList.get().isLoaded("supplementaries");
+		beachpartyLoaded = ModList.get().isLoaded("beachparty");
+		meadowLoaded = ModList.get().isLoaded("meadow");
 
 		if (sereneSeasonsLoaded)
 			LOGGER.debug("Serene Seasons is loaded, enabling compatibility");
@@ -169,7 +173,13 @@ public class LegendarySurvivalOverhaul
 		}
 
 		if (supplementariesLoaded)
-			LOGGER.debug("supplementariesLoaded is loaded, enabling compatibility");
+			LOGGER.debug("Supplementarie is loaded, enabling compatibility");
+
+		if (beachpartyLoaded)
+			LOGGER.debug("Let's do Beachparty is loaded, enabling compatibility");
+
+		if (meadowLoaded)
+			LOGGER.debug("Let's do Meadow is loaded, enabling compatibility");
 
 		if (surviveLoaded)
 			LOGGER.debug("Survive is loaded, I hope you know what you're doing");

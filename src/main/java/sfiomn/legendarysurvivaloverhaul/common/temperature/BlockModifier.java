@@ -1,5 +1,6 @@
 package sfiomn.legendarysurvivaloverhaul.common.temperature;
 
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
@@ -16,9 +17,7 @@ import sfiomn.legendarysurvivaloverhaul.config.Config;
 import sfiomn.legendarysurvivaloverhaul.util.MathUtil;
 import sfiomn.legendarysurvivaloverhaul.util.SpreadPoint;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 public class BlockModifier extends ModifierBase
 {
@@ -45,7 +44,7 @@ public class BlockModifier extends ModifierBase
 		hotTotal = 0.0f;
 		coldTotal = 0.0f;
 		
-		doBlocksAndFluidsRoutine(level, pos.above());
+		doBlocksAndFluidsRoutine(level, pos);
 		
 		hotTotal -= hottestValue;
 		coldTotal -= coldestValue;
@@ -80,20 +79,21 @@ public class BlockModifier extends ModifierBase
 		HashSet<BlockPos> visitedBlockPos = new HashSet<>();
 		ArrayList<SpreadPoint> visitedSpreadPoints = new ArrayList<>();
 		ArrayList<SpreadPoint> spreadPointsToProcess = new ArrayList<>();
+		Map<Pair<Integer, Integer>, Map<Boolean, Integer>> cachedCanSeeSky = new HashMap<>();
 
-		SpreadPoint spreadPointHeadPlayer = new SpreadPoint(pos.above(), Direction.UP, tempInfluenceMaximumDist(), 0, level);
 		SpreadPoint spreadPointFeetPlayer = new SpreadPoint(pos, Direction.DOWN, tempInfluenceMaximumDist(), 0, level);
-		spreadPointsToProcess.add(spreadPointHeadPlayer);
+		SpreadPoint spreadPointHeadPlayer = new SpreadPoint(pos.above(), Direction.UP, tempInfluenceMaximumDist(), 0, level);
 		spreadPointsToProcess.add(spreadPointFeetPlayer);
+		spreadPointsToProcess.add(spreadPointHeadPlayer);
 
-		visitedBlockPos.add(spreadPointHeadPlayer.position());
 		visitedBlockPos.add(spreadPointFeetPlayer.position());
-		visitedSpreadPoints.add(spreadPointHeadPlayer);
+		visitedBlockPos.add(spreadPointHeadPlayer.position());
 		visitedSpreadPoints.add(spreadPointFeetPlayer);
+		visitedSpreadPoints.add(spreadPointHeadPlayer);
 
 		while (!spreadPointsToProcess.isEmpty()) {
 			SpreadPoint spreadPoint = spreadPointsToProcess.remove(0);
-			spreadPoint.setCanSeeSky();
+			spreadPoint.setCanSeeSky(canSeeSky(level, spreadPoint.position(), cachedCanSeeSky));
 			Direction oppositeDirection = spreadPoint.originalDirection().getOpposite();
 
 			for (Direction direction : Direction.values()) {
@@ -131,9 +131,35 @@ public class BlockModifier extends ModifierBase
 			}
 		}
 
+		Map<ResourceLocation, List<JsonTemperatureBlock>> cachedTemperatureBlocks = new HashMap<>();
+
 		for (SpreadPoint spreadPoint : visitedSpreadPoints) {
-			processTemp(getTemperatureFromSpreadPoint(level, spreadPoint));
+			processTemp(getTemperatureFromSpreadPoint(level, spreadPoint, cachedTemperatureBlocks));
 		}
+	}
+
+	private boolean canSeeSky(Level level, BlockPos pos, Map<Pair<Integer, Integer>, Map<Boolean, Integer>> cachedCanSeeSky) {
+		if (level.dimensionType().hasCeiling())
+			return false;
+
+		Pair<Integer, Integer> hPos = Pair.of(pos.getX(), pos.getZ());
+
+		Map<Boolean, Integer> yPosCanSeeSky = cachedCanSeeSky.get(hPos);
+
+		if (yPosCanSeeSky != null) {
+			Integer canSeeSkyAtHeight = yPosCanSeeSky.get(true);
+			Integer cantSeeSkyAtHeight = yPosCanSeeSky.get(false);
+			if (canSeeSkyAtHeight != null && pos.getY() >= canSeeSkyAtHeight) {
+				return true;
+			} else if (cantSeeSkyAtHeight != null && pos.getY() <= cantSeeSkyAtHeight) {
+				return false;
+			}
+		}
+		boolean canSeeSky = level.canSeeSky(pos);
+		yPosCanSeeSky = new HashMap<>();
+		yPosCanSeeSky.put(canSeeSky, pos.getY());
+		cachedCanSeeSky.put(hPos, yPosCanSeeSky);
+		return canSeeSky;
 	}
 
 	private SpreadPoint processDirectionTo(ArrayList<SpreadPoint> spreadPointsToProcess, HashSet<BlockPos> visitedBlockPos, ArrayList<SpreadPoint> visitedSpreadPoints, SpreadPoint parentSpreadPoint, BlockPos newBlockPos, Direction originDirection, float distance) {
@@ -201,7 +227,7 @@ public class BlockModifier extends ModifierBase
 		}
 	}
 
-	private float getTemperatureFromSpreadPoint(Level level, SpreadPoint spreadPoint) {
+	private float getTemperatureFromSpreadPoint(Level level, SpreadPoint spreadPoint, Map<ResourceLocation, List<JsonTemperatureBlock>> cachedTemperatureBlocks) {
 		BlockState blockState = level.getBlockState(spreadPoint.position());
 		float temperature = 0.0f;
 		ResourceLocation registryName = ForgeRegistries.BLOCKS.getKey(blockState.getBlock());
@@ -211,7 +237,14 @@ public class BlockModifier extends ModifierBase
 		}
 
 		// List of combination of a temperature and a list of properties a block must have in order to generate this temperature
-		List<JsonTemperatureBlock> tempPropertyList = TemperatureDataManager.getBlock(registryName);
+		List<JsonTemperatureBlock> tempPropertyList;
+
+		if (cachedTemperatureBlocks.containsKey(registryName)) {
+			tempPropertyList = cachedTemperatureBlocks.get(registryName);
+		} else {
+			tempPropertyList = TemperatureDataManager.getBlock(registryName);
+			cachedTemperatureBlocks.put(registryName, tempPropertyList);
+		}
 
 		if (tempPropertyList == null) {
 			return 0.0f;
@@ -227,7 +260,7 @@ public class BlockModifier extends ModifierBase
 			}
 		}
 
-		return temperatureAfterDistanceInfluence(temperature, spreadPoint);
+		return temperature == 0.0f ? temperature : temperatureAfterDistanceInfluence(temperature, spreadPoint);
 	}
 /*
 	private float temperatureAfterDistanceInfluence(float tempIn, SpreadPoint spreadPoint) {
@@ -255,7 +288,8 @@ public class BlockModifier extends ModifierBase
 		// I use the sqrt(x) graph to convert how much the block temp should be decreased vs the distance to the block
 		// [1] max spread - spread capacity = spread consumed to reach the point
 		//     divided by max spread capacity to know the % of spread capacity consumed
-		float capacityConsumed = MathUtil.round((float) (tempInfluenceMaximumDist() - spreadPoint.spreadCapacity()) / tempInfluenceMaximumDist(), 2);
+		float capacityConsumed = MathUtil.round((float) Math.max(tempInfluenceMaximumDist() - spreadPoint.spreadCapacity() - 1.0, 0) / tempInfluenceMaximumDist(), 2);
+
 		// [2] sqrt([1]) = % of temperature the block influence has lost
 		// [3] (1 - [2]) * block temp = block influence based on distance of the player
 		return MathUtil.round((float) Math.sqrt(1 - capacityConsumed) * tempIn, 2);

@@ -12,9 +12,14 @@ public final class MathUtil
 		return (value - from) / (to - from);
 	}
 
-	public static float round (float value, int precision) {
+	public static float round(float value, int precision) {
 		int scale = (int) Math.pow(10, precision);
 		return (float) Math.round(value * scale) / scale;
+	}
+
+	public static float ceil(float value, int precision) {
+		int scale = (int) Math.pow(10, precision);
+		return (float) Math.ceil(value * scale) / scale;
 	}
 
 	public static AABB inflateMultiplier(AABB aabb1, AABB aabb2) {

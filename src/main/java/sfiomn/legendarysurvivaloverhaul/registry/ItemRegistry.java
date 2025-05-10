@@ -36,6 +36,18 @@ public class ItemRegistry {
 			tooltipComponents.add(Component.translatable("tooltip." + LegendarySurvivalOverhaul.MOD_ID + ".sponge.description"));
 		}
 	});
+	public static final RegistryObject<Item> HEAT_RESISTANCE_RING = ITEMS.register("heat_resistance_ring", () -> new WearableCurioItem(new Item.Properties().stacksTo(1).rarity(Rarity.RARE)));
+	public static final RegistryObject<Item> COLD_RESISTANCE_RING = ITEMS.register("cold_resistance_ring", () -> new WearableCurioItem(new Item.Properties().stacksTo(1).rarity(Rarity.RARE)));
+	public static final RegistryObject<Item> THERMAL_RESISTANCE_RING = ITEMS.register("thermal_resistance_ring", () -> new WearableCurioItem(new Item.Properties().stacksTo(1).rarity(Rarity.EPIC)));
+	public static final RegistryObject<Item> FIRST_AID_SUPPLIES = ITEMS.register("first_aid_supplies", () -> new WearableCurioItem(new Item.Properties().stacksTo(1).rarity(Rarity.RARE)) {
+
+		@Override
+		public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
+			super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
+
+			tooltipComponents.add(Component.translatable("tooltip." + LegendarySurvivalOverhaul.MOD_ID + ".first_aid_supplies.description"));
+		}
+	});
 
 	public static final RegistryObject<Item> SNOW_HELMET = ITEMS.register("snow_helmet", () -> new ArmorItem(SNOW, ArmorItem.Type.HELMET, new Item.Properties()));
 	public static final RegistryObject<Item> SNOW_CHEST = ITEMS.register("snow_chestplate", () -> new ArmorItem(SNOW, ArmorItem.Type.CHESTPLATE, new Item.Properties()));

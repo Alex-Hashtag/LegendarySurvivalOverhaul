@@ -18,6 +18,8 @@ public interface IBodyDamageCapability
 
 	public void setBodyPartMaxHealth(BodyPartEnum part, float maxHealthValue);
 
+	public void healWithFoodExhaustion(Player player, BodyPartEnum part, float healingValue);
+
 	public void heal(BodyPartEnum part, float healingValue);
 
 	public void hurt(BodyPartEnum part, float damageValue);

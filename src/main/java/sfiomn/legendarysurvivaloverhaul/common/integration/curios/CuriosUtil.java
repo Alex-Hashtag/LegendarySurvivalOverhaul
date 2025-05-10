@@ -32,8 +32,11 @@ public class CuriosUtil {
             if (curiosInventory.isPresent() && curiosInventory.resolve().isPresent()) {
                 return curiosInventory.resolve().get().isEquipped(item);
             }
+            return false;
+        } else {
+            return player.getItemInHand(InteractionHand.MAIN_HAND).is(item) ||
+                    player.getItemInHand(InteractionHand.OFF_HAND).is(item);
         }
-        return false;
     }
 
     public static boolean isCuriosItem(ItemStack stack) {

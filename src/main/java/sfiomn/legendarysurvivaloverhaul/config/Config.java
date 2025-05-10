@@ -217,6 +217,12 @@ public class Config
 		public final ForgeConfigSpec.IntValue minFoodOnBodyHealing;
 		public final ForgeConfigSpec.IntValue painkillerAddictionDuration;
 
+		public final ForgeConfigSpec.DoubleValue firstAidSuppliesLimbHealthRegenerated;
+		public final ForgeConfigSpec.ConfigValue<String> firstAidSuppliesLimbRegenerationMode;
+		public final ForgeConfigSpec.BooleanValue firstAidSuppliesHealingOverflow;
+		public final ForgeConfigSpec.IntValue firstAidSuppliesTickTimer;
+		public final ForgeConfigSpec.BooleanValue firstAidSuppliesExhaustsFood;
+
 		public final ForgeConfigSpec.IntValue healingHerbsUseTime;
 		public final ForgeConfigSpec.IntValue healingHerbsRegenerationAmplifier;
 		public final ForgeConfigSpec.IntValue healingHerbsRegenerationTickDuration;
@@ -588,9 +594,9 @@ public class Config
 			builder.pop();
 
 			builder.push("summer");
-			earlySummerModifier = builder.defineInRange("Early Summer Modifier", 5.0, -1000, 1000);
-			midSummerModifier = builder.defineInRange("Mid Summer Modifier", 8.0, -1000, 1000);
-			lateSummerModifier = builder.defineInRange("Late Summer Modifier", 5.0, -1000, 1000);
+			earlySummerModifier = builder.defineInRange("Early Summer Modifier", 6.0, -1000, 1000);
+			midSummerModifier = builder.defineInRange("Mid Summer Modifier", 10.0, -1000, 1000);
+			lateSummerModifier = builder.defineInRange("Late Summer Modifier", 6.0, -1000, 1000);
 			builder.pop();
 
 			builder.push("autumn");
@@ -774,6 +780,7 @@ public class Config
 					.comment(" Amount of Broken Hearts added per limbs fully injured.")
 					.defineInRange("Added Broken Hearts Per Injured Limb", 1, 0, 10000);
 			builder.pop();
+			builder.pop();
 
 			builder.comment(" Options related to localized body damage",
 					" The damageSourceBodyParts.json allows you to define for specific damage source, the damage spread across specified body parts.",
@@ -793,8 +800,8 @@ public class Config
 
 			bodyHealingFoodExhaustion = builder
 					.comment(" How much food is exhausted when a limb regenerates based on the amount of health regenerated.",
-							" Each 1 health regenerated, the food is exhausted by this value.")
-					.defineInRange("Body Healing Food Exhaustion", 0.1d, 0, 1000.0D);
+							" For each 1 health regenerated, the food is exhausted by this value.")
+					.defineInRange("Body Healing Food Exhaustion", 0.5d, 0, 1000.0D);
 
 			minFoodOnBodyHealing = builder
 					.comment(" The hunger bar won't drop below this value while body is healing.",
@@ -802,11 +809,33 @@ public class Config
 					.defineInRange("Minimum Food On Body Healing", 0, 0, 1000);
 
 			painkillerAddictionDuration = builder
-					.comment(" How long in ticks is the Addiction Effect lasting. 0 deactivate the feature",
+					.comment(" How long in ticks is the Addiction Effect lasting. 0 deactivates the feature.",
 							" The Addiction Effect prevents you from re-using the morphine item.")
 					.defineInRange("Painkiller Addiction Duration", 3600, 0, 100000);
 
 			builder.push("healing-items");
+			builder.push("first-aid-supplies");
+			firstAidSuppliesLimbHealthRegenerated = builder
+					.comment(" The First Aid Supplies regenerate limb health passively, either by holding it or using Curios mod, the most damaged limb first.")
+					.defineInRange("First Aid Supplies Limb Health Regenerated", 0.25, 0, 1000);
+			firstAidSuppliesLimbRegenerationMode = builder
+					.comment(" How a player's limb health regenerated is defined. Accepted values are as follows:",
+							"   SIMPLE - The limb health regenerated is a fixed value defined in First Aid Supplies Limb Health Regenerated.",
+							"   PLAYER_DYNAMIC - The limb health regenerated is a percentage value of the player max health using the percentage value defined in First Aid Supplies Limb Health Regenerated.",
+							"   LIMB_DYNAMIC - The limb health regenerated is a percentage value of the limb max health using the percentage value defined in First Aid Supplies Limb Health Regenerated.",
+							" Any other value will default to SIMPLE.")
+					.define("First Aid Supplies Limb Regeneration Mode", "LIMB_DYNAMIC");
+			firstAidSuppliesHealingOverflow = builder
+					.comment(" The exceeded limb health regenerated will heal the next most damaged limb.",
+							" Only available for Regeneration Mode SIMPLE or PLAYER_DYNAMIC.")
+					.define("First Aid Supplies Healing Overflow", false);
+			firstAidSuppliesTickTimer = builder
+					.comment(" The First Aid Supplies regenerate limb health passively every X tick timer.")
+					.defineInRange("First Aid Supplies Tick Timer", 300, 0, 10000);
+			firstAidSuppliesExhaustsFood = builder
+					.comment(" The First Aid Supplies exhausts food such as the other healing items.")
+					.define("First Aid Supplies Exhausts Food", true);
+			builder.pop();
 			builder.push("healing-herbs");
 			healingHerbsUseTime = builder
 					.comment(" Item use time in ticks.")
@@ -1307,6 +1336,12 @@ public class Config
 		public static int minFoodOnBodyHealing;
 		public static int painkillerAddictionDuration;
 
+		public static double firstAidSuppliesLimbHealthRegenerated;
+		public static String firstAidSuppliesLimbRegenerationMode;
+		public static boolean firstAidSuppliesHealingOverflow;
+		public static int firstAidSuppliesTickTimer;
+		public static boolean firstAidSuppliesExhaustsFood;
+
 		public static String bodyPartHealthMode;
 		public static double headPartHealth;
 		public static double armsPartHealth;
@@ -1561,6 +1596,12 @@ public class Config
 				bodyHealingFoodExhaustion = COMMON.bodyHealingFoodExhaustion.get();
 				minFoodOnBodyHealing = COMMON.minFoodOnBodyHealing.get();
 				painkillerAddictionDuration = COMMON.painkillerAddictionDuration.get();
+
+				firstAidSuppliesLimbHealthRegenerated = COMMON.firstAidSuppliesLimbHealthRegenerated.get();
+				firstAidSuppliesLimbRegenerationMode = COMMON.firstAidSuppliesLimbRegenerationMode.get();
+				firstAidSuppliesHealingOverflow = COMMON.firstAidSuppliesHealingOverflow.get();
+				firstAidSuppliesTickTimer = COMMON.firstAidSuppliesTickTimer.get();
+				firstAidSuppliesExhaustsFood = COMMON.firstAidSuppliesExhaustsFood.get();
 
 				healingHerbsUseTime = COMMON.healingHerbsUseTime.get();
 				healingHerbsRegenerationAmplifier = COMMON.healingHerbsRegenerationAmplifier.get();

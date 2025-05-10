@@ -272,6 +272,21 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .unlockedBy("has_heart_fragment", has(ItemRegistry.HEART_FRAGMENT.get()))
                 .save(consumer);
 
+        CompoundTag nbt = new CompoundTag();
+        nbt.putString("Potion",  LegendarySurvivalOverhaul.MOD_ID + ":temperature_immunity");
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ItemRegistry.THERMAL_RESISTANCE_RING.get())
+                .pattern(" wh")
+                .pattern("stw")
+                .pattern("cs ")
+                .define('w', ItemRegistry.WARM_STRING.get())
+                .define('s', ItemRegistry.COLD_STRING.get())
+                .define('t', PartialNBTIngredient.of(nbt, Items.POTION))
+                .define('h', ItemRegistry.HEAT_RESISTANCE_RING.get())
+                .define('c', ItemRegistry.COLD_RESISTANCE_RING.get())
+                .unlockedBy("has_heat_resistance_ring", has(ItemRegistry.HEAT_RESISTANCE_RING.get()))
+                .unlockedBy("has_cold_resistance_ring", has(ItemRegistry.COLD_RESISTANCE_RING.get()))
+                .save(consumer);
+
         juice(consumer, Items.APPLE, ItemRegistry.APPLE_JUICE.get());
         juice(consumer, Items.BEETROOT, ItemRegistry.BEETROOT_JUICE.get());
         juice(consumer, Items.CACTUS, ItemRegistry.CACTUS_JUICE.get());
@@ -368,7 +383,7 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .unlockedBy(getHasName(ItemRegistry.HEALING_HERBS.get()), has(ItemRegistry.HEALING_HERBS.get()))
                 .save(consumer);
 
-        CompoundTag nbt = new CompoundTag();
+        nbt = new CompoundTag();
         nbt.putString("Potion", "minecraft:water");
         smelting(consumer, PartialNBTIngredient.of(nbt, Items.POTION), ItemRegistry.PURIFIED_WATER_BOTTLE.get(), 1.0f, 200, "purified_water_bottle");
         blasting(consumer, PartialNBTIngredient.of(nbt, Items.POTION), ItemRegistry.PURIFIED_WATER_BOTTLE.get(), 1.0f, 60, "purified_water_bottle");

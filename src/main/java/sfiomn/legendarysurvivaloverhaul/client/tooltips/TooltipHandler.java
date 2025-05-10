@@ -22,15 +22,13 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.registries.ForgeRegistries;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
-import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonHealingConsumable;
-import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonMobEffect;
-import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonTemperatureConsumable;
-import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonThirstConsumable;
+import sfiomn.legendarysurvivaloverhaul.api.data.json.*;
 import sfiomn.legendarysurvivaloverhaul.api.data.manager.BodyDamageDataManager;
 import sfiomn.legendarysurvivaloverhaul.api.data.manager.TemperatureDataManager;
 import sfiomn.legendarysurvivaloverhaul.api.data.manager.ThirstDataManager;
 import sfiomn.legendarysurvivaloverhaul.api.item.CoatEnum;
 import sfiomn.legendarysurvivaloverhaul.api.temperature.TemperatureUtil;
+import sfiomn.legendarysurvivaloverhaul.common.integration.beachparty.BeachpartyUtil;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
 import sfiomn.legendarysurvivaloverhaul.registry.AttributeRegistry;
 import sfiomn.legendarysurvivaloverhaul.registry.MobEffectRegistry;
@@ -82,6 +80,9 @@ public class TooltipHandler
 
 			if (Config.Baked.localizedBodyDamageEnabled)
 				addHealingText(stack, tooltips);
+
+			if (LegendarySurvivalOverhaul.beachpartyLoaded)
+				addShadeText(stack, tooltips);
 		}
 	}
 
@@ -177,6 +178,17 @@ public class TooltipHandler
 					Component.translatable("tooltip.legendarysurvivaloverhaul.body_heal_item.healing_value",
 									jsonConsumableHeal.healingValue, MathUtil.round(jsonConsumableHeal.healingTime / 20.0f, 1))
 							.withStyle(ChatFormatting.BLUE));
+		}
+	}
+
+	private static void addShadeText(ItemStack stack, List<Component> tooltips) {
+
+		ResourceLocation itemRegistryName = ForgeRegistries.ITEMS.getKey(stack.getItem());
+
+		if (itemRegistryName != null && BeachpartyUtil.canProvideShade(itemRegistryName)) {
+			tooltips.add(
+					Component.translatable("tooltip.legendarysurvivaloverhaul.beachparty.provide_shade")
+							.withStyle(ChatFormatting.WHITE));
 		}
 	}
 

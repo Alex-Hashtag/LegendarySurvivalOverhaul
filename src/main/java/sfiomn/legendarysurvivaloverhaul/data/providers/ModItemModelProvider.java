@@ -54,6 +54,10 @@ public class ModItemModelProvider extends ItemModelProvider {
         simpleItem(ItemRegistry.NETHER_CHALICE);
         simpleItem(ItemRegistry.SPONGE);
         simpleItem(ItemRegistry.WATER_PURIFIER);
+        simpleItem(ItemRegistry.HEAT_RESISTANCE_RING);
+        simpleItem(ItemRegistry.COLD_RESISTANCE_RING);
+        simpleItem(ItemRegistry.THERMAL_RESISTANCE_RING);
+        simpleItem(ItemRegistry.FIRST_AID_SUPPLIES);
         simpleItem(ItemRegistry.HEART_CONTAINER);
         simpleItem(ItemRegistry.HEART_FRAGMENT);
         simpleItem(ItemRegistry.SHIELD_CONTAINER);

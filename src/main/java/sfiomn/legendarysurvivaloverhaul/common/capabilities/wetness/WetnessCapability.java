@@ -22,6 +22,7 @@ import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
 import sfiomn.legendarysurvivaloverhaul.api.wetness.IWetnessCapability;
 import sfiomn.legendarysurvivaloverhaul.common.integration.curios.CuriosUtil;
+import sfiomn.legendarysurvivaloverhaul.common.integration.meadow.MeadowUtil;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
 import sfiomn.legendarysurvivaloverhaul.registry.ItemRegistry;
 import sfiomn.legendarysurvivaloverhaul.util.MathUtil;
@@ -133,7 +134,7 @@ public class WetnessCapability implements IWetnessCapability
 
 		// If no fluid on the pos of the player (or above if in a boat)
 		// only check for raining on pos above player (to avoid issue with half blocks)
-		if (fluidState.isEmpty() && !blockState.is(Blocks.WATER_CAULDRON)) {
+		if (fluidState.isEmpty() && !blockState.is(Blocks.WATER_CAULDRON) && !MeadowUtil.isInWoodenCauldron(blockState)) {
 			if (wetness < WETNESS_LIMIT && level.isRainingAt(player.blockPosition().above()))
 				this.addWetness(Config.Baked.wetnessRainIncrease);
 			else if (this.wetness > 0)
@@ -146,7 +147,7 @@ public class WetnessCapability implements IWetnessCapability
 			if (!fluidState.isEmpty()) {
 				fluid = fluidState.getType();
 				fractionalLevel = MathUtil.invLerp(1, 8, fluidState.getAmount());
-			} else if (blockState.is(Blocks.WATER_CAULDRON)) {
+			} else if (blockState.is(Blocks.WATER_CAULDRON) || MeadowUtil.isInWoodenCauldron(blockState)) {
 				fluid = Fluids.WATER;
 				if (blockState.hasProperty(LayeredCauldronBlock.LEVEL))
 					fractionalLevel = MathUtil.invLerp(1, 3, blockState.getValue(LayeredCauldronBlock.LEVEL));

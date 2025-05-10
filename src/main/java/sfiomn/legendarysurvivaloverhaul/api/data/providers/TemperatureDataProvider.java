@@ -5,7 +5,10 @@ import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
 import net.minecraftforge.common.data.ExistingFileHelper;
+import net.minecraftforge.registries.ForgeRegistries;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.data.builder.*;
 import sfiomn.legendarysurvivaloverhaul.api.temperature.TemporaryModifierGroupEnum;
@@ -62,24 +65,28 @@ public abstract class TemperatureDataProvider implements DataProvider {
             List<CompletableFuture<?>> list = new ArrayList<>();
             this.generate(p_255484_, this.fileHelper);
             this.consumableBuilders.forEach((consumable, builder) -> {
-                Path path = this.consumablesPathProvider.json(new ResourceLocation(this.modId, consumable.toLowerCase()));
-                list.add(DataProvider.saveStable(pOutput, builder.build(), path));
+                ResourceLocation jsonKey = consumable.split(":").length == 1 ?
+                        new ResourceLocation(this.modId, consumable.toLowerCase()) : new ResourceLocation(consumable);
+                list.add(DataProvider.saveStable(pOutput, builder.build(), this.consumablesPathProvider.json(jsonKey)));
             });
             this.blockBuilders.forEach((block, builder) -> {
-                Path path = this.blocksPathProvider.json(new ResourceLocation(this.modId, block.toLowerCase()));
-                list.add(DataProvider.saveStable(pOutput, builder.build(), path));
+                ResourceLocation jsonKey = block.split(":").length == 1 ?
+                        new ResourceLocation(this.modId, block.toLowerCase()) : new ResourceLocation(block);
+                list.add(DataProvider.saveStable(pOutput, builder.build(), this.blocksPathProvider.json(jsonKey)));
             });
             this.itemBuilders.forEach((item, builder) -> {
-                Path path = this.itemsPathProvider.json(new ResourceLocation(this.modId, item.toLowerCase()));
-                list.add(DataProvider.saveStable(pOutput, builder.build(), path));
+                ResourceLocation jsonKey = item.split(":").length == 1 ?
+                        new ResourceLocation(this.modId, item.toLowerCase()) : new ResourceLocation(item);
+                list.add(DataProvider.saveStable(pOutput, builder.build(), this.itemsPathProvider.json(jsonKey)));
             });
             this.biomeBuilders.forEach((biome, builder) -> {
                 Path path = this.biomesPathProvider.json(new ResourceLocation(this.modId, biome.toLowerCase()));
                 list.add(DataProvider.saveStable(pOutput, builder.build(), path));
             });
             this.fuelItemBuilders.forEach((fuelItem, builder) -> {
-                Path path = this.fuelItemPathProvider.json(new ResourceLocation(this.modId, fuelItem.toLowerCase()));
-                list.add(DataProvider.saveStable(pOutput, builder.build(), path));
+                ResourceLocation jsonKey = fuelItem.split(":").length == 1 ?
+                        new ResourceLocation(this.modId, fuelItem.toLowerCase()) : new ResourceLocation(fuelItem);
+                list.add(DataProvider.saveStable(pOutput, builder.build(), this.fuelItemPathProvider.json(jsonKey)));
             });
             this.dimensionBuilders.forEach((dimension, builder) -> {
                 Path path = this.dimensionPathProvider.json(new ResourceLocation(this.modId, dimension.toLowerCase()));
@@ -101,6 +108,12 @@ public abstract class TemperatureDataProvider implements DataProvider {
         return this.consumableBuilders.computeIfAbsent(id, (k) -> new TemperatureConsumableDataHolder());
     }
 
+    public final ITemperatureConsumableDataHolder consumable(Item item) {
+        ResourceLocation itemRegistryName = ForgeRegistries.ITEMS.getKey(item);
+        assert itemRegistryName != null;
+        return this.consumableBuilders.computeIfAbsent(itemRegistryName.toString(), (k) -> new TemperatureConsumableDataHolder());
+    }
+
     public final ITemperatureConsumableData temperatureConsumable(TemporaryModifierGroupEnum group) {
         return new TemperatureConsumableData().group(group);
     }
@@ -109,12 +122,24 @@ public abstract class TemperatureDataProvider implements DataProvider {
         return this.blockBuilders.computeIfAbsent(id, (k) -> new TemperatureBlockDataHolder());
     }
 
+    public final ITemperatureBlockDataHolder block(Block block) {
+        ResourceLocation blockRegistryName = ForgeRegistries.BLOCKS.getKey(block);
+        assert blockRegistryName != null;
+        return this.blockBuilders.computeIfAbsent(blockRegistryName.toString(), (k) -> new TemperatureBlockDataHolder());
+    }
+
     public final ITemperatureBlockData temperatureBlock(float temperatureValue) {
         return new TemperatureBlockData().temperature(temperatureValue);
     }
 
     public final ITemperatureResistanceData item(String id) {
         return this.itemBuilders.computeIfAbsent(id, (k) -> new TemperatureResistanceData());
+    }
+
+    public final ITemperatureResistanceData item(Item item) {
+        ResourceLocation itemRegistryName = ForgeRegistries.ITEMS.getKey(item);
+        assert itemRegistryName != null;
+        return this.itemBuilders.computeIfAbsent(itemRegistryName.toString(), (k) -> new TemperatureResistanceData());
     }
 
     public final ITemperatureBiomeOverrideData biome(String id) {
