@@ -197,6 +197,21 @@ public class LegendarySurvivalOverhaul
 			BodyDamageUtil.internal = new BodyDamageUtilInternal();
 			WetnessUtil.internal = new WetnessUtilInternal();
 			HealthUtil.internal = new HealthUtilInternal();
+
+			TemperatureDataManager.internalConsumable = new TemperatureConsumableListener();
+			TemperatureDataManager.internalBlock = new TemperatureBlockListener();
+			TemperatureDataManager.internalItem = new TemperatureItemListener();
+			TemperatureDataManager.internalBiome = new TemperatureBiomeListener();
+			TemperatureDataManager.internalFuelItem = new TemperatureFuelItemListener();
+			TemperatureDataManager.internalDimension = new TemperatureDimensionListener();
+			TemperatureDataManager.internalMount = new TemperatureMountListener();
+			TemperatureDataManager.internalOrigin = new TemperatureOriginListener();
+
+			ThirstDataManager.internalConsumable = new ThirstConsumableListener();
+			ThirstDataManager.internalBlock = new ThirstBlockListener();
+
+			BodyDamageDataManager.internalBodyPartsDamageSource = new BodyPartsDamageSourceListener();
+			BodyDamageDataManager.internalHealingConsumable = new BodyDamageHealingConsumableListener();
 		});
 	}
 
@@ -245,14 +260,6 @@ public class LegendarySurvivalOverhaul
 
 	private void addReloadListenerEvent(final AddReloadListenerEvent event)
 	{
-		TemperatureDataManager.internalConsumable = new TemperatureConsumableListener();
-		TemperatureDataManager.internalBlock = new TemperatureBlockListener();
-		TemperatureDataManager.internalItem = new TemperatureItemListener();
-		TemperatureDataManager.internalBiome = new TemperatureBiomeListener();
-		TemperatureDataManager.internalFuelItem = new TemperatureFuelItemListener();
-		TemperatureDataManager.internalDimension = new TemperatureDimensionListener();
-		TemperatureDataManager.internalMount = new TemperatureMountListener();
-		TemperatureDataManager.internalOrigin = new TemperatureOriginListener();
 		event.addListener((PreparableReloadListener) TemperatureDataManager.internalConsumable);
 		event.addListener((PreparableReloadListener) TemperatureDataManager.internalBlock);
 		event.addListener((PreparableReloadListener) TemperatureDataManager.internalItem);
@@ -261,14 +268,8 @@ public class LegendarySurvivalOverhaul
 		event.addListener((PreparableReloadListener) TemperatureDataManager.internalDimension);
 		event.addListener((PreparableReloadListener) TemperatureDataManager.internalMount);
 		event.addListener((PreparableReloadListener) TemperatureDataManager.internalOrigin);
-
-		ThirstDataManager.internalConsumable = new ThirstConsumableListener();
-		ThirstDataManager.internalBlock = new ThirstBlockListener();
 		event.addListener((PreparableReloadListener) ThirstDataManager.internalConsumable);
 		event.addListener((PreparableReloadListener) ThirstDataManager.internalBlock);
-
-		BodyDamageDataManager.internalBodyPartsDamageSource = new BodyPartsDamageSourceListener();
-		BodyDamageDataManager.internalHealingConsumable = new BodyDamageHealingConsumableListener();
 		event.addListener((PreparableReloadListener) BodyDamageDataManager.internalBodyPartsDamageSource);
 		event.addListener((PreparableReloadListener) BodyDamageDataManager.internalHealingConsumable);
 	}
