@@ -1,6 +1,7 @@
 package sfiomn.legendarysurvivaloverhaul.common.capabilities.bodydamage;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -8,9 +9,9 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
-import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.bodydamage.BodyDamageUtil;
 import sfiomn.legendarysurvivaloverhaul.api.bodydamage.BodyPartEnum;
 import sfiomn.legendarysurvivaloverhaul.api.bodydamage.IBodyDamageCapability;
@@ -33,7 +34,7 @@ public class BodyDamageCapability implements IBodyDamageCapability
 	private Map<BodyPartEnum, BodyPart> bodyParts;
 	private int headacheTimer;
 	private int expectedBrokenHearts;
-	private int healingTickTimer;
+	private float healingTickTimer;
 
 	// Unsaved data
 	private int oldExpectedBrokenHearts;
@@ -186,7 +187,20 @@ public class BodyDamageCapability implements IBodyDamageCapability
 		}
 
 		if (CuriosUtil.isCurioItemEquipped(player, ItemRegistry.FIRST_AID_SUPPLIES.get())) {
-			if (healingTickTimer++ >= Config.Baked.firstAidSuppliesTickTimer) {
+			boolean boostedHealingTickTimer = false;
+			if (Config.Baked.firstAidSuppliesBoostedTickTimerMultiplier < 0) {
+				for (String effectRegistryName: Config.Baked.firstAidSuppliesBoostedOnEffects) {
+					if (ResourceLocation.isValidResourceLocation(effectRegistryName)) {
+						MobEffect boostedEffect = ForgeRegistries.MOB_EFFECTS.getValue(new ResourceLocation(effectRegistryName));
+						if (boostedEffect != null && player.hasEffect(boostedEffect)) {
+							boostedHealingTickTimer = true;
+							break;
+						}
+					}
+				}
+			}
+			healingTickTimer += (float) (boostedHealingTickTimer ? Config.Baked.firstAidSuppliesBoostedTickTimerMultiplier : 1);
+			if (healingTickTimer >= Config.Baked.firstAidSuppliesTickTimer) {
 				healingTickTimer = 0;
 				BodyPart mostDamaged = getLowestHealthBodyPart();
 				float damage = mostDamaged.getDamage();
@@ -199,10 +213,6 @@ public class BodyDamageCapability implements IBodyDamageCapability
 				} else {
 					healingValue = (float) Config.Baked.firstAidSuppliesLimbHealthRegenerated;
 				}
-
-				LegendarySurvivalOverhaul.LOGGER.debug("healing value : " + healingValue);
-				LegendarySurvivalOverhaul.LOGGER.debug("most damaged : " + mostDamaged.getBodyPartEnum());
-				LegendarySurvivalOverhaul.LOGGER.debug("most damaged max health : " + mostDamaged.getMaxHealth());
 
 				if (Config.Baked.firstAidSuppliesExhaustsFood)
 					healWithFoodExhaustion(player, mostDamaged.getBodyPartEnum(), healingValue);
@@ -234,7 +244,7 @@ public class BodyDamageCapability implements IBodyDamageCapability
 	private BodyPart getLowestHealthBodyPart() {
 		return bodyParts.entrySet()
 				.stream()
-				.min((entry1, entry2) -> Float.compare(entry1.getValue().getMaxHealth() - entry1.getValue().getDamage(), entry2.getValue().getMaxHealth() - entry2.getValue().getDamage()))
+				.min((entry1, entry2) -> Float.compare(getBodyPartHealthRatio(entry1.getKey()), getBodyPartHealthRatio(entry2.getKey())))
 				.map(Map.Entry::getValue)
 				.orElse(null); // or throw an exception if you prefer
 	}
@@ -347,7 +357,7 @@ public class BodyDamageCapability implements IBodyDamageCapability
 		}
 		compound.putInt("headacheTimer", this.headacheTimer);
 		compound.putInt("expectedBrokenHearts", this.expectedBrokenHearts);
-		compound.putInt("healingTickTimer", this.healingTickTimer);
+		compound.putFloat("healingTickTimer", this.healingTickTimer);
 
 		return compound;
 	}
@@ -361,6 +371,6 @@ public class BodyDamageCapability implements IBodyDamageCapability
 
 		this.headacheTimer = compound.getInt("headacheTimer");
 		this.expectedBrokenHearts = compound.getInt("expectedBrokenHearts");
-		this.healingTickTimer = compound.getInt("healingTickTimer");
+		this.healingTickTimer = compound.getFloat("healingTickTimer");
 	}
 }

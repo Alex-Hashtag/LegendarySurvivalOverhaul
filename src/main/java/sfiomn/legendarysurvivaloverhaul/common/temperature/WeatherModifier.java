@@ -33,7 +33,7 @@ public class WeatherModifier extends ModifierBase
 		if(Config.Baked.shadeTimeModifier != 0 && time <= 12000)
 		{
 			if ((TemperatureModifierRegistry.BIOME.get().getWorldInfluence(player, level, pos) +
-					TemperatureModifierRegistry.SERENE_SEASONS.get().getWorldInfluence(player, level, pos)) > 12) {
+					TemperatureModifierRegistry.SERENE_SEASONS.get().getWorldInfluence(player, level, pos)) >= Config.Baked.shadeTimeModifierThreshold) {
 				float shadeTemperature = (float) Config.Baked.shadeTimeModifier * (float) Math.sin((time * Math.PI) / 12000.0f);
 				weatherTemperature += shadeTemperature;
 			}

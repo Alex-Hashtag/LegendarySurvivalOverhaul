@@ -96,6 +96,7 @@ public class Config
 		public final ForgeConfigSpec.DoubleValue timeModifier;
 		public final ForgeConfigSpec.DoubleValue biomeTimeMultiplier;
 		public final ForgeConfigSpec.DoubleValue shadeTimeModifier;
+		public final ForgeConfigSpec.DoubleValue shadeTimeModifierThreshold;
 
 		public final ForgeConfigSpec.DoubleValue altitudeModifier;
 		public final ForgeConfigSpec.DoubleValue sprintModifier;
@@ -222,6 +223,8 @@ public class Config
 		public final ForgeConfigSpec.BooleanValue firstAidSuppliesHealingOverflow;
 		public final ForgeConfigSpec.IntValue firstAidSuppliesTickTimer;
 		public final ForgeConfigSpec.BooleanValue firstAidSuppliesExhaustsFood;
+		public final ForgeConfigSpec.ConfigValue<List<? extends String>> firstAidSuppliesBoostedOnEffects;
+		public final ForgeConfigSpec.DoubleValue firstAidSuppliesBoostedTickTimerMultiplier;
 
 		public final ForgeConfigSpec.IntValue healingHerbsUseTime;
 		public final ForgeConfigSpec.IntValue healingHerbsRegenerationAmplifier;
@@ -492,8 +495,11 @@ public class Config
 			shadeTimeModifier = builder
 					.comment(" Staying in the shade or during cloudy weather will reduce player's temperature by this amount based on time of the day (maximum effect at noon, following sinusoidal).",
 							" It means that for a value of -6, the body temperature of the player is reduced by 6.",
-							" Only effective in hot biomes and during day time!")
+							" Only effective when reaching the threshold and during day time!")
 					.defineInRange("Shade Time Modifier", -6.0, -1000, 1000);
+			shadeTimeModifierThreshold = builder
+					.comment(" Defines when the biome temperature added by the season temperature (if seasons mod loaded) will trigger a shade effect.")
+					.defineInRange("Shade Time Modifier Threshold", 9.0, 0, 10000);
 			builder.pop();
 
 			builder.comment(" Temperature coat adds temperature effects on armors by using the sewing table.",
@@ -826,15 +832,21 @@ public class Config
 							" Any other value will default to SIMPLE.")
 					.define("First Aid Supplies Limb Regeneration Mode", "LIMB_DYNAMIC");
 			firstAidSuppliesHealingOverflow = builder
-					.comment(" The exceeded limb health regenerated will heal the next most damaged limb.",
+					.comment(" Whether or not the exceeded limb health regenerated will heal the next most damaged limb.",
 							" Only available for Regeneration Mode SIMPLE or PLAYER_DYNAMIC.")
 					.define("First Aid Supplies Healing Overflow", false);
 			firstAidSuppliesTickTimer = builder
-					.comment(" The First Aid Supplies regenerate limb health passively every X tick timer.")
+					.comment(" How fast in ticks the First Aid Supplies will heal limbs. 20 ticks = 1s")
 					.defineInRange("First Aid Supplies Tick Timer", 300, 0, 10000);
 			firstAidSuppliesExhaustsFood = builder
-					.comment(" The First Aid Supplies exhausts food such as the other healing items.")
+					.comment(" Whether or not the First Aid Supplies exhaust food when healing limbs, such as the other healing items.")
 					.define("First Aid Supplies Exhausts Food", true);
+			firstAidSuppliesBoostedOnEffects = builder
+					.comment(" The First Aid Supplies will heal limbs faster when the player is under one of the mentioned effect.")
+					.define("First Aid Supplies Boosted On Effects", List.of("minecraft:regeneration", "farmersdelight:comfort"));
+			firstAidSuppliesBoostedTickTimerMultiplier = builder
+					.comment(" How much the First Aid Supplies tick timer is multiplied when boosted. A value of 1 would deactivate the speed boost.")
+					.defineInRange("First Aid Supplies Tick Timer Multiplier", 0.5, 0.1, 1);
 			builder.pop();
 			builder.push("healing-herbs");
 			healingHerbsUseTime = builder
@@ -1230,6 +1242,7 @@ public class Config
 		public static double timeModifier;
 		public static double biomeTimeMultiplier;
 		public static double shadeTimeModifier;
+		public static double shadeTimeModifierThreshold;
 		public static int tempInfluenceMaximumDist;
 		public static double tempInfluenceUpDistMultiplier;
 		public static double tempInfluenceOutsideDistMultiplier;
@@ -1341,6 +1354,8 @@ public class Config
 		public static boolean firstAidSuppliesHealingOverflow;
 		public static int firstAidSuppliesTickTimer;
 		public static boolean firstAidSuppliesExhaustsFood;
+		public static List<? extends String> firstAidSuppliesBoostedOnEffects;
+		public static double firstAidSuppliesBoostedTickTimerMultiplier;
 
 		public static String bodyPartHealthMode;
 		public static double headPartHealth;
@@ -1487,6 +1502,7 @@ public class Config
 				timeModifier = COMMON.timeModifier.get();
 				biomeTimeMultiplier = COMMON.biomeTimeMultiplier.get();
 				shadeTimeModifier = COMMON.shadeTimeModifier.get();
+				shadeTimeModifierThreshold = COMMON.shadeTimeModifierThreshold.get();
 
 				tempInfluenceMaximumDist = COMMON.tempInfluenceMaximumDist.get();
 				tempInfluenceUpDistMultiplier = COMMON.tempInfluenceUpDistMultiplier.get();
@@ -1602,6 +1618,8 @@ public class Config
 				firstAidSuppliesHealingOverflow = COMMON.firstAidSuppliesHealingOverflow.get();
 				firstAidSuppliesTickTimer = COMMON.firstAidSuppliesTickTimer.get();
 				firstAidSuppliesExhaustsFood = COMMON.firstAidSuppliesExhaustsFood.get();
+				firstAidSuppliesBoostedOnEffects = COMMON.firstAidSuppliesBoostedOnEffects.get();
+				firstAidSuppliesBoostedTickTimerMultiplier = COMMON.firstAidSuppliesBoostedTickTimerMultiplier.get();
 
 				healingHerbsUseTime = COMMON.healingHerbsUseTime.get();
 				healingHerbsRegenerationAmplifier = COMMON.healingHerbsRegenerationAmplifier.get();

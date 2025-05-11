@@ -38,7 +38,7 @@ displayURL="https://github.com/sfiomn/LegendarySurvivalOverhaul" #optional
 logoFile="logo.png" #optional
 
 # A text field displayed in the mod UI
-credits="Charles445, Glitchfiend, Icey" #optional
+credits="Charles445, Icey" #optional
 
 # A text field displayed in the mod UI
 authors="${mod_authors}" #optional
@@ -83,5 +83,12 @@ Making survival harder. Highly configurable so you can play the way you want.
     modId="curios"
     mandatory=false
     versionRange="[5.9.0+1.20.1,)"
+    ordering="BEFORE"
+    side="BOTH"
+
+[[dependencies.${mod_id}]]
+    modId="beachparty"
+    mandatory=false
+    versionRange="[2.0.0,)"
     ordering="BEFORE"
     side="BOTH"

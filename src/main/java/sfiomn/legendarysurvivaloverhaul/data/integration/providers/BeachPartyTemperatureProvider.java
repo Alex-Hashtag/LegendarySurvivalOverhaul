@@ -47,7 +47,5 @@ public class BeachPartyTemperatureProvider extends TemperatureDataProvider {
         item("tall_palm_torch").temperature(2.0f);
         block("palm_torch_item").addTemperature(temperatureBlock(1.5f));
         block("tall_palm_torch").addTemperature(temperatureBlock(2.0f));
-
-        mount("chair").temperature(-4.0f);
     }
 }

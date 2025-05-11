@@ -174,9 +174,9 @@ dependencies {
     compileOnly(fg.deobf("curse.maven:mutantmonsters-852665:5107399"))
     compileOnly(fg.deobf("curse.maven:vampirism-233029:5990073"))
     compileOnly(fg.deobf("curse.maven:supplementaries-412082:6451876"))
-    compileOnly(fg.deobf("curse.maven:beachparty-858691:6458692"))
+    implementation(fg.deobf("curse.maven:beachparty-858691:6458692"))
     compileOnly(fg.deobf("curse.maven:meadow-821483:6467344"))
-    compileOnly(fg.deobf("curse.maven:architectury-419699:5137938"))
+    implementation(fg.deobf("curse.maven:architectury-419699:5137938"))
     //implementation(fg.deobf("curse.maven:werewolves-417851:5406832"))
     //implementation(fg.deobf("curse.maven:medsandherbs-418682:4840824"))
 
