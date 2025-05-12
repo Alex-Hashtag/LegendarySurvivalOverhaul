@@ -379,11 +379,11 @@ public class Config
 					.define("Cold Temperature Secondary Effects", true);
 			heatThirstEffectModifier = builder
 					.comment(" How much thirst exhaustion will be added every 50 ticks with no amplification effect, when the player suffers from heat.")
-					.defineInRange("Heat Thirst Effect Modifier", 0.1d, 0, 1000.0d);
+					.defineInRange("Heat Thirst Effect Modifier", 0.2d, 0, 1000.0d);
 			coldHungerEffectModifier = builder
 					.comment(" How much food exhaustion will be added every 50 ticks with no amplification effect, when the player suffers from frostbite.",
 							" As reference, the hunger effect add 0.025 food exhaustion every 50 ticks.")
-					.defineInRange("Cold Hunger Modifier", 0.05d, 0, 1000.0d);
+					.defineInRange("Cold Hunger Modifier", 0.1d, 0, 1000.0d);
 			builder.pop();
 
 			onFireModifier = builder
@@ -845,8 +845,9 @@ public class Config
 					.comment(" The First Aid Supplies will heal limbs faster when the player is under one of the mentioned effect.")
 					.define("First Aid Supplies Boosted On Effects", List.of("minecraft:regeneration", "farmersdelight:comfort"));
 			firstAidSuppliesBoostedTickTimerMultiplier = builder
-					.comment(" How much the First Aid Supplies tick timer is multiplied when boosted. A value of 1 would deactivate the speed boost.")
-					.defineInRange("First Aid Supplies Tick Timer Multiplier", 0.5, 0.1, 1);
+					.comment(" How much the First Aid Supplies tick timer is multiplied when boosted. ",
+							" A value of 1 would deactivate the speed boost. 0.5 makes the heal twice faster.")
+					.defineInRange("First Aid Supplies Tick Timer Multiplier", 0.75, 0.1, 1);
 			builder.pop();
 			builder.push("healing-herbs");
 			healingHerbsUseTime = builder
