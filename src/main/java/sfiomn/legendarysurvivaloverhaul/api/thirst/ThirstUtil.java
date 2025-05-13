@@ -46,12 +46,21 @@ public class ThirstUtil
 	}
 
 	/**
-	 * Get block or fluid json config that the player is looking at, with the given maximum distance
+	 * Get fluid json config that the player is looking at, with the given maximum distance
 	 * @param player
 	 * @param finalDistance
 	 */
-	public static JsonThirstBlock getJsonBlockThirstLookedAt(Player player, double finalDistance) {
-		return internal.getJsonBlockThirstLookedAt(player, finalDistance);
+	public static JsonThirstBlock getFluidThirstLookedAt(Player player, double finalDistance) {
+		return internal.getFluidThirstLookedAt(player, finalDistance);
+	}
+
+	/**
+	 * Get block json config that the player is looking at, with the given maximum distance
+	 * @param player
+	 * @param finalDistance
+	 */
+	public static JsonThirstBlock getBlockThirstLookedAt(Player player, double finalDistance) {
+		return internal.getBlockThirstLookedAt(player, finalDistance);
 	}
 
 	/**

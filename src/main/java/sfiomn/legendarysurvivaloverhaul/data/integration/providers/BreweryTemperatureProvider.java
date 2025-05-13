@@ -42,5 +42,15 @@ public class BreweryTemperatureProvider extends TemperatureDataProvider {
         consumable("beer_nettle").addTemperature(temperatureConsumable(DRINK).temperatureLevel(-1).duration(2400));
         consumable("beer_oat").addTemperature(temperatureConsumable(DRINK).temperatureLevel(-1).duration(2400));
         consumable("beer_haley").addTemperature(temperatureConsumable(DRINK).temperatureLevel(-2).duration(2400));
+
+        item("brewfest_hat").heatResistance(1.0f);
+        item("brewfest_regalia").heatResistance(1.5f);
+        item("brewfest_trousers").heatResistance(1.0f);
+        item("brewfest_boots").heatResistance(0.5f);
+
+        item("brewfest_hat_red").heatResistance(1.0f);
+        item("brewfest_blouse").heatResistance(1.5f);
+        item("brewfest_dress").heatResistance(1.0f);
+        item("brewfest_shoes").heatResistance(0.5f);
     }
 }

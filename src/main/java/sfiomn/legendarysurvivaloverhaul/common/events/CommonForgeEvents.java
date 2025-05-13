@@ -7,6 +7,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -200,14 +201,25 @@ public class CommonForgeEvents {
 
                 ThirstCapability thirstCapability = CapabilityUtil.getThirstCapability(player);
                 if (!thirstCapability.isHydrationLevelAtMax()) {
-                    JsonThirstBlock jsonBlockFluidThirst = ThirstUtil.getJsonBlockThirstLookedAt(player, player.getAttributeValue(ForgeMod.BLOCK_REACH.get()) / 2);
+                    JsonThirstBlock jsonBlockThirst = ThirstUtil.getBlockThirstLookedAt(player, player.getAttributeValue(ForgeMod.BLOCK_REACH.get()) / 2);
+                    JsonThirstBlock jsonFluidThirst = ThirstUtil.getFluidThirstLookedAt(player, player.getAttributeValue(ForgeMod.BLOCK_REACH.get()) / 2);
 
-                    if (jsonBlockFluidThirst != null && (jsonBlockFluidThirst.hydration != 0 || jsonBlockFluidThirst.saturation != 0)) {
+                    if (jsonFluidThirst != null && (jsonFluidThirst.hydration != 0 || jsonFluidThirst.saturation != 0)) {
                         if (event.getLevel().isClientSide)
                             playerDrinkEffect(event.getEntity());
                         else {
-                            ThirstUtil.takeDrink(event.getEntity(), jsonBlockFluidThirst.hydration, jsonBlockFluidThirst.saturation, jsonBlockFluidThirst.effects);
+                            ThirstUtil.takeDrink(event.getEntity(), jsonFluidThirst.hydration, jsonFluidThirst.saturation, jsonFluidThirst.effects);
                         }
+                        return;
+                    } else if (jsonBlockThirst != null && (jsonBlockThirst.hydration != 0 || jsonBlockThirst.saturation != 0) && !event.getEntity().isCrouching()) {
+                        if (event.getLevel().isClientSide)
+                            playerDrinkEffect(event.getEntity());
+                        else {
+                            ThirstUtil.takeDrink(event.getEntity(), jsonBlockThirst.hydration, jsonBlockThirst.saturation, jsonBlockThirst.effects);
+                        }
+                        event.setCanceled(true);
+                        event.setCancellationResult(InteractionResult.CONSUME);
+                        return;
                     }
                 }
             }

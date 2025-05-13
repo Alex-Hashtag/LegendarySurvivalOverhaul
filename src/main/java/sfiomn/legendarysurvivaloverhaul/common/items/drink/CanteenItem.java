@@ -87,12 +87,10 @@ public class CanteenItem extends DrinkItem {
     @Override
     public @NotNull InteractionResult useOn(UseOnContext useOnContext) {
         boolean isWater = isWater(useOnContext.getLevel(), useOnContext.getClickedPos());
-
         ItemStack canteen = useOnContext.getItemInHand();
         Player player = useOnContext.getPlayer();
         if (canFill(canteen) && isWater && player != null) {
             player.swing(InteractionHand.MAIN_HAND, true);
-            useOnContext.getLevel().playLocalSound(player.blockPosition(), SoundEvents.BOTTLE_FILL, SoundSource.PLAYERS, 1.0f, 1.0f, true);
 
             if (player instanceof ServerPlayer serverPlayer) {
                 ForgeRegistries.SOUND_EVENTS.getHolder(SoundEvents.BOTTLE_FILL).ifPresent(soundHolder -> serverPlayer.connection.send(
@@ -101,15 +99,10 @@ public class CanteenItem extends DrinkItem {
                                 serverPlayer.getY(), serverPlayer.getZ(), 1.0F, 1.0F, player.level().getRandom().nextLong())));
             }
             this.fill(canteen);
-            return InteractionResult.PASS;
+            return InteractionResult.CONSUME;
         }
 
-        if (canDrink(canteen) && player != null && !CapabilityUtil.getThirstCapability(player).isHydrationLevelAtMax()) {
-            player.startUsingItem(useOnContext.getHand());
-            return InteractionResult.PASS;
-        }
-
-        return InteractionResult.FAIL;
+        return InteractionResult.PASS;
     }
 
     @Override
@@ -127,7 +120,7 @@ public class CanteenItem extends DrinkItem {
             player.swing(InteractionHand.MAIN_HAND);
             player.playSound(SoundEvents.BOTTLE_FILL, 1.0f, 1.0f);
             this.fill(canteen);
-            return InteractionResultHolder.pass(canteen);
+            return InteractionResultHolder.consume(canteen);
         }
 
         if (player.isCrouching() && player.getViewXRot(1.0f) < -60.0f && canDrink(canteen) && Config.Baked.selfWateringCanteenEnabled) {
@@ -136,13 +129,14 @@ public class CanteenItem extends DrinkItem {
                 player.setSecondsOnFire(0);
             if (Config.Baked.selfWateringCanteenWetnessIncrease > 0)
                 WetnessUtil.addWetness(player, Config.Baked.selfWateringCanteenWetnessIncrease);
+            player.swing(InteractionHand.MAIN_HAND);
             shrinkCapacity(canteen);
-            return InteractionResultHolder.pass(canteen);
+            return InteractionResultHolder.consume(canteen);
         }
 
         if (canDrink(canteen) && !CapabilityUtil.getThirstCapability(player).isHydrationLevelAtMax()) {
             player.startUsingItem(hand);
-            return InteractionResultHolder.pass(canteen);
+            return InteractionResultHolder.consume(canteen);
         }
         return InteractionResultHolder.fail(canteen);
     }

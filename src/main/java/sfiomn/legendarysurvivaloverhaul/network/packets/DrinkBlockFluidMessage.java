@@ -2,11 +2,9 @@ package sfiomn.legendarysurvivaloverhaul.network.packets;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.InteractionHand;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkEvent;
-import sfiomn.legendarysurvivaloverhaul.api.bodydamage.BodyPartEnum;
 import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonThirstBlock;
 import sfiomn.legendarysurvivaloverhaul.api.thirst.ThirstUtil;
 import sfiomn.legendarysurvivaloverhaul.network.NetworkHandler;
@@ -43,12 +41,12 @@ public class DrinkBlockFluidMessage
     }
 
     public static void DrinkWaterOnServer(ServerPlayer player) {
-        JsonThirstBlock jsonBlockFluidThirst = ThirstUtil.getJsonBlockThirstLookedAt(player, player.getAttributeValue(ForgeMod.BLOCK_REACH.get()) / 2);
+        JsonThirstBlock jsonFluidThirst = ThirstUtil.getFluidThirstLookedAt(player, player.getAttributeValue(ForgeMod.BLOCK_REACH.get()) / 2);
 
-        if (jsonBlockFluidThirst == null)
+        if (jsonFluidThirst == null)
             return;
 
-        ThirstUtil.takeDrink(player, jsonBlockFluidThirst.hydration, jsonBlockFluidThirst.saturation, jsonBlockFluidThirst.effects);
+        ThirstUtil.takeDrink(player, jsonFluidThirst.hydration, jsonFluidThirst.saturation, jsonFluidThirst.effects);
     }
 
     public static void sendToServer() {

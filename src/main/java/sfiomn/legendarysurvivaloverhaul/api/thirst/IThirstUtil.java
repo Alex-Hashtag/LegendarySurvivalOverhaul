@@ -15,7 +15,9 @@ public interface IThirstUtil
 
 	public void addExhaustion(Player player, float exhaustion);
 
-	public JsonThirstBlock getJsonBlockThirstLookedAt(Player player, double finalDistance);
+	public JsonThirstBlock getFluidThirstLookedAt(Player player, double finalDistance);
+
+	public JsonThirstBlock getBlockThirstLookedAt(Player player, double finalDistance);
 
 	public void setThirstEnumTag(final ItemStack stack, HydrationEnum hydrationEnum);
 
