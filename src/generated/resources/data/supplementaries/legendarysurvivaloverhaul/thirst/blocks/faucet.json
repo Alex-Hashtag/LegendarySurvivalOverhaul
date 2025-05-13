@@ -10,7 +10,8 @@
     ],
     "hydration": 3,
     "properties": {
-      "filled": "true"
+      "enabled": "true",
+      "has_water": "true"
     },
     "saturation": 0.0
   }

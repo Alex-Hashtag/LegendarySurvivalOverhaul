@@ -1,13 +1,19 @@
 package sfiomn.legendarysurvivaloverhaul.common.items.drink;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.protocol.game.ClientboundSoundPacket;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
@@ -16,14 +22,18 @@ import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.common.ForgeMod;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
+import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonMobEffect;
+import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonThirstBlock;
 import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonThirstConsumable;
 import sfiomn.legendarysurvivaloverhaul.api.data.manager.ThirstDataManager;
 import sfiomn.legendarysurvivaloverhaul.api.thirst.HydrationEnum;
 import sfiomn.legendarysurvivaloverhaul.api.thirst.ThirstUtil;
 import sfiomn.legendarysurvivaloverhaul.api.wetness.WetnessUtil;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
+import sfiomn.legendarysurvivaloverhaul.registry.MobEffectRegistry;
 import sfiomn.legendarysurvivaloverhaul.registry.SoundRegistry;
 import sfiomn.legendarysurvivaloverhaul.util.CapabilityUtil;
 
@@ -50,7 +60,7 @@ public class CanteenItem extends DrinkItem {
         // Prevent filling if canteen contains other than normal water
         return Config.Baked.allowOverridePurifiedWater ?
                 ThirstUtil.getCapacityTag(stack) < getMaxCapacity() :
-                ThirstUtil.getCapacityTag(stack) < getMaxCapacity() && ThirstUtil.getHydrationEnumTag(stack) == HydrationEnum.NORMAL;
+                ThirstUtil.getCapacityTag(stack) < getMaxCapacity() && ThirstUtil.getHydrationEnumTag(stack) != HydrationEnum.PURIFIED;
     }
 
     public void fill(ItemStack stack) {
@@ -58,45 +68,83 @@ public class CanteenItem extends DrinkItem {
         ThirstUtil.setHydrationEnumTag(stack, HydrationEnum.NORMAL);
     }
 
+    public boolean isWater(Level level, BlockPos blockPos) {
+
+        FluidState fluidState = level.getFluidState(blockPos);
+        JsonThirstBlock thirstInfo = ThirstDataManager.getBlock(fluidState);
+        if (thirstInfo == null)
+            thirstInfo = ThirstDataManager.getBlock(level.getBlockState(blockPos));
+
+        if (thirstInfo != null && thirstInfo.hydration == 3 && thirstInfo.saturation == 0 && !thirstInfo.effects.isEmpty()) {
+            for (JsonMobEffect jsonMobEffect : thirstInfo.effects) {
+                if (jsonMobEffect.name.equalsIgnoreCase(MobEffectRegistry.THIRST.getId().toString()))
+                    return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public @NotNull InteractionResult useOn(UseOnContext useOnContext) {
+        boolean isWater = isWater(useOnContext.getLevel(), useOnContext.getClickedPos());
+
+        ItemStack canteen = useOnContext.getItemInHand();
+        Player player = useOnContext.getPlayer();
+        if (canFill(canteen) && isWater && player != null) {
+            player.swing(InteractionHand.MAIN_HAND, true);
+            useOnContext.getLevel().playLocalSound(player.blockPosition(), SoundEvents.BOTTLE_FILL, SoundSource.PLAYERS, 1.0f, 1.0f, true);
+
+            if (player instanceof ServerPlayer serverPlayer) {
+                ForgeRegistries.SOUND_EVENTS.getHolder(SoundEvents.BOTTLE_FILL).ifPresent(soundHolder -> serverPlayer.connection.send(
+                        new ClientboundSoundPacket(
+                                soundHolder, SoundSource.PLAYERS, serverPlayer.getX(),
+                                serverPlayer.getY(), serverPlayer.getZ(), 1.0F, 1.0F, player.level().getRandom().nextLong())));
+            }
+            this.fill(canteen);
+            return InteractionResult.PASS;
+        }
+
+        if (canDrink(canteen) && player != null && !CapabilityUtil.getThirstCapability(player).isHydrationLevelAtMax()) {
+            player.startUsingItem(useOnContext.getHand());
+            return InteractionResult.PASS;
+        }
+
+        return InteractionResult.FAIL;
+    }
+
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         HitResult positionLookedAt = player.pick(player.getAttributeValue(ForgeMod.BLOCK_REACH.get()) / 2, 0.0F, true);
-        FluidState fluidState = null;
-        BlockState blockState = null;
+
+        boolean isWater = false;
         if (positionLookedAt.getType() == HitResult.Type.BLOCK) {
-            fluidState = level.getFluidState(((BlockHitResult) positionLookedAt).getBlockPos());
-            blockState = level.getBlockState(((BlockHitResult) positionLookedAt).getBlockPos());
+            isWater = isWater(level, ((BlockHitResult) positionLookedAt).getBlockPos());
         }
 
-        ItemStack itemstack = player.getItemInHand(hand);
-        boolean isWater = false;
-        if (fluidState != null && (fluidState.is(Fluids.FLOWING_WATER) || fluidState.is(Fluids.WATER)))
-            isWater = true;
-        else if (blockState != null && blockState.is(Blocks.WATER_CAULDRON))
-            isWater = true;
+        ItemStack canteen = player.getItemInHand(hand);
 
-        if (canFill(itemstack) && isWater) {
+        if (canFill(canteen) && isWater) {
             player.swing(InteractionHand.MAIN_HAND);
             player.playSound(SoundEvents.BOTTLE_FILL, 1.0f, 1.0f);
-            this.fill(itemstack);
-            return InteractionResultHolder.success(itemstack);
+            this.fill(canteen);
+            return InteractionResultHolder.pass(canteen);
         }
 
-        if (player.isCrouching() && player.getViewXRot(1.0f) < -60.0f && canDrink(itemstack) && Config.Baked.selfWateringCanteenEnabled) {
+        if (player.isCrouching() && player.getViewXRot(1.0f) < -60.0f && canDrink(canteen) && Config.Baked.selfWateringCanteenEnabled) {
             player.playSound(SoundRegistry.SELF_WATERING.get(), 1.0f, 1.0f);
             if (player.isOnFire())
                 player.setSecondsOnFire(0);
             if (Config.Baked.selfWateringCanteenWetnessIncrease > 0)
                 WetnessUtil.addWetness(player, Config.Baked.selfWateringCanteenWetnessIncrease);
-            shrinkCapacity(itemstack);
-            return InteractionResultHolder.success(itemstack);
+            shrinkCapacity(canteen);
+            return InteractionResultHolder.pass(canteen);
         }
 
-        if (canDrink(itemstack) && !CapabilityUtil.getThirstCapability(player).isHydrationLevelAtMax()) {
+        if (canDrink(canteen) && !CapabilityUtil.getThirstCapability(player).isHydrationLevelAtMax()) {
             player.startUsingItem(hand);
-            return InteractionResultHolder.success(itemstack);
+            return InteractionResultHolder.pass(canteen);
         }
-        return InteractionResultHolder.fail(itemstack);
+        return InteractionResultHolder.fail(canteen);
     }
 
     @Override

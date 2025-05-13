@@ -40,5 +40,6 @@ public class MinecraftThirstProvider extends ThirstDataProvider {
         consumable(Items.GLOW_BERRIES).addThirst(thirstData(2, 0.5f));
         consumable(Items.ROTTEN_FLESH).addThirst(thirstData(-4, 0.0f).addEffect(MobEffectRegistry.THIRST.get(), 600));
         consumable(Items.SPIDER_EYE).addThirst(thirstData(-4, 0.0f).addEffect(MobEffectRegistry.THIRST.get(), 600));
+        consumable(Items.MILK_BUCKET).addThirst(thirstData(5, 1.0f).addEffect(MobEffectRegistry.THIRST.get(), 600));
     }
 }

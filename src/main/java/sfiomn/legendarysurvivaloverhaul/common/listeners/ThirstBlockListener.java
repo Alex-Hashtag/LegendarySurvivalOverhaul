@@ -8,11 +8,18 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.FluidState;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.network.PacketDistributor;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonThirstBlock;
+import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonThirstConsumable;
 import sfiomn.legendarysurvivaloverhaul.api.data.manager.IThirstBlockManager;
 import sfiomn.legendarysurvivaloverhaul.network.packets.SyncThirstBlocksPacket;
 
@@ -58,5 +65,47 @@ public class ThirstBlockListener extends SimpleJsonResourceReloadListener implem
     @Override
     public List<JsonThirstBlock> get(ResourceLocation resourceLocation) {
         return THIRST_BLOCKS.get(resourceLocation);
+    }
+
+    @Override
+    public JsonThirstBlock get(BlockState block) {
+        List<JsonThirstBlock> jsonThirstBlocks = null;
+        JsonThirstBlock defaultJct = null;
+
+        ResourceLocation blockRegistryName = ForgeRegistries.BLOCKS.getKey(block.getBlock());
+
+        if (blockRegistryName != null)
+            jsonThirstBlocks = THIRST_BLOCKS.get(blockRegistryName);
+
+        if (jsonThirstBlocks != null)
+            for (JsonThirstBlock jtb: jsonThirstBlocks) {
+                if (jtb.matchesState(block))
+                    return jtb;
+                if (jtb.isDefault())
+                    defaultJct = jtb;
+            }
+
+        return defaultJct;
+    }
+
+    @Override
+    public JsonThirstBlock get(FluidState fluid) {
+        List<JsonThirstBlock> jsonThirstBlocks = null;
+        JsonThirstBlock defaultJct = null;
+
+        ResourceLocation fluidRegistryName = ForgeRegistries.FLUIDS.getKey(fluid.getType());
+
+        if (fluidRegistryName != null)
+            jsonThirstBlocks = THIRST_BLOCKS.get(fluidRegistryName);
+
+        if (jsonThirstBlocks != null)
+            for (JsonThirstBlock jtb: jsonThirstBlocks) {
+                if (jtb.matchesState(fluid))
+                    return jtb;
+                if (jtb.isDefault())
+                    defaultJct = jtb;
+            }
+
+        return defaultJct;
     }
 }

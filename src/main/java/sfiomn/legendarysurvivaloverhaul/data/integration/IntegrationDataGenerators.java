@@ -72,6 +72,7 @@ public final class IntegrationDataGenerators {
         gen.addProvider(event.includeServer(), new SeasonalsTemperatureProvider(packOutput, lookupProvider, existingFileHelper));
         gen.addProvider(event.includeServer(), new SeasonalsThirstProvider(packOutput, lookupProvider, existingFileHelper));
         gen.addProvider(event.includeServer(), new SupplementariesBodyDamageProvider(packOutput, lookupProvider, existingFileHelper));
+        gen.addProvider(event.includeServer(), new SupplementariesThirstProvider(packOutput, lookupProvider, existingFileHelper));
         gen.addProvider(event.includeServer(), new TerraFirmaCraftTemperatureProvider(packOutput, lookupProvider, existingFileHelper));
         gen.addProvider(event.includeServer(), new UpgradeAquaticThirstProvider(packOutput, lookupProvider, existingFileHelper));
         gen.addProvider(event.includeServer(), new VineryTemperatureProvider(packOutput, lookupProvider, existingFileHelper));

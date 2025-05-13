@@ -25,7 +25,14 @@ public class FarmersdelightTemperatureProvider extends TemperatureDataProvider {
 
         consumable("beef_stew").addTemperature(temperatureConsumable(FOOD).temperatureLevel(2).duration(2400));
         consumable("fish_stew").addTemperature(temperatureConsumable(FOOD).temperatureLevel(2).duration(2400));
+        consumable("ratatouille").addTemperature(temperatureConsumable(FOOD).temperatureLevel(2).duration(3600));
         consumable("baked_cod_stew").addTemperature(temperatureConsumable(FOOD).temperatureLevel(2).duration(2400));
+        consumable("melon_popsicle").addTemperature(temperatureConsumable(FOOD).temperatureLevel(-2).duration(3600));
+        consumable("fruit_salad").addTemperature(temperatureConsumable(FOOD).temperatureLevel(-1).duration(2400));
+
+        consumable("chicken_soup").addTemperature(temperatureConsumable(DRINK).temperatureLevel(2).duration(2400));
+        consumable("vegetable_soup").addTemperature(temperatureConsumable(DRINK).temperatureLevel(2).duration(2400));
+        consumable("pumpkin_soup").addTemperature(temperatureConsumable(DRINK).temperatureLevel(2).duration(2400));
         consumable("hot_cocoa").addTemperature(temperatureConsumable(DRINK).temperatureLevel(3).duration(3600));
         consumable("melon_juice").addTemperature(temperatureConsumable(DRINK).temperatureLevel(-1).duration(1200));
     }
