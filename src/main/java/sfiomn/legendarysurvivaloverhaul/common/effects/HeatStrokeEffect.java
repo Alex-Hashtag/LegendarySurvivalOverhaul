@@ -8,8 +8,7 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import sfiomn.legendarysurvivaloverhaul.api.ModDamageTypes;
 import sfiomn.legendarysurvivaloverhaul.registry.MobEffectRegistry;
-import sfiomn.legendarysurvivaloverhaul.util.DamageSourceUtil;
-import sfiomn.legendarysurvivaloverhaul.util.DamageUtil;
+import sfiomn.legendarysurvivaloverhaul.util.DifficultyUtil;
 
 public class HeatStrokeEffect extends MobEffect
 {
@@ -25,7 +24,7 @@ public class HeatStrokeEffect extends MobEffect
 		{
 			Level level = entity.getCommandSenderWorld();
 
-            if (DamageUtil.isModDangerous(level) && DamageUtil.healthAboveDifficulty(level, player) && !player.isSleeping())
+            if (DifficultyUtil.isModDangerous(level) && DifficultyUtil.healthAboveDifficulty(level, player) && !player.isSleeping())
 			{
 				ModDamageTypes.hyperthermia(player, 1.0f);
 			}

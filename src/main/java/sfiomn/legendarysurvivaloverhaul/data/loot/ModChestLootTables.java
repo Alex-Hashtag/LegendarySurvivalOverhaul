@@ -12,6 +12,7 @@ import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 import org.jetbrains.annotations.NotNull;
+import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.registry.ItemRegistry;
 
 import java.util.List;
@@ -73,6 +74,9 @@ public class ModChestLootTables implements LootTableSubProvider {
             if (entry.getValue().contains(ItemRegistry.FIRST_AID_SUPPLIES.get())) {
                 lootTable.withPool(firstAidSupplies);
             }
+            biConsumer.accept(
+                    new ResourceLocation(LegendarySurvivalOverhaul.MOD_ID, "inject/" + entry.getKey().getPath()),
+                    lootTable);
         }
     }
 }
