@@ -320,7 +320,7 @@ public class Config
 					.define("Hide Info From Debug", true);
 			naturalRegenerationEnabled = builder
 					.comment(" If enabled, the player can regenerate health naturally if their hunger is full enough (doesn't affect external healing, such as golden apples, the Regeneration effect, etc.)")
-					.define("Natural Regeneration Enabled", false);
+					.define("Natural Regeneration Enabled", true);
 			vanillaFreezeEnabled = builder
 					.comment(" If enabled, the player suffers vanilla freeze when inside powder snow.")
 					.define("Vanilla Freeze Enabled", false);
