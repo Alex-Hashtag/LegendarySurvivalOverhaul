@@ -10,8 +10,7 @@ import sfiomn.legendarysurvivaloverhaul.api.ModDamageTypes;
 import sfiomn.legendarysurvivaloverhaul.api.thirst.IThirstCapability;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
 import sfiomn.legendarysurvivaloverhaul.registry.MobEffectRegistry;
-import sfiomn.legendarysurvivaloverhaul.util.DamageSourceUtil;
-import sfiomn.legendarysurvivaloverhaul.util.DamageUtil;
+import sfiomn.legendarysurvivaloverhaul.util.DifficultyUtil;
 
 
 public class ThirstCapability implements IThirstCapability
@@ -109,7 +108,7 @@ public class ThirstCapability implements IThirstCapability
 				// Exhaust from saturation
 				this.addSaturationLevel(-1.0f);
 			}
-			else if(DamageUtil.isModDangerous(level))
+			else if(DifficultyUtil.isModDangerous(level))
 			{
 				// Exhaust from thirst
 				this.addHydrationLevel(-1);
@@ -126,8 +125,8 @@ public class ThirstCapability implements IThirstCapability
 			{
 				this.setThirstDamageTickTimer(0);
 
-				if(DamageUtil.isModDangerous(level) &&
-						DamageUtil.healthAboveDifficulty(level, player) &&
+				if(DifficultyUtil.isModDangerous(level) &&
+						DifficultyUtil.healthAboveDifficulty(level, player) &&
 						!player.isSpectator() && !player.isCreative() &&
 						Config.Baked.dangerousDehydration)
 				{

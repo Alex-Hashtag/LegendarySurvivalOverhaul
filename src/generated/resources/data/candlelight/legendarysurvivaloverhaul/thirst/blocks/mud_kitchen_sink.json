@@ -1,23 +1,44 @@
 [
   {
-    "effects": [],
-    "hydration": 4,
+    "effects": [
+      {
+        "amplifier": 0,
+        "chance": 0.75,
+        "duration": 300,
+        "effect": "legendarysurvivaloverhaul:thirst"
+      }
+    ],
+    "hydration": 3,
     "properties": {
       "filled": "true"
     },
     "saturation": 0.0
   },
   {
-    "effects": [],
-    "hydration": 4,
+    "effects": [
+      {
+        "amplifier": 0,
+        "chance": 0.75,
+        "duration": 300,
+        "effect": "legendarysurvivaloverhaul:thirst"
+      }
+    ],
+    "hydration": 3,
     "properties": {
       "filled": "true"
     },
     "saturation": 0.0
   },
   {
-    "effects": [],
-    "hydration": 4,
+    "effects": [
+      {
+        "amplifier": 0,
+        "chance": 0.75,
+        "duration": 300,
+        "effect": "legendarysurvivaloverhaul:thirst"
+      }
+    ],
+    "hydration": 3,
     "properties": {
       "filled": "true"
     },

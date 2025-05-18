@@ -42,18 +42,21 @@ public class JsonThirstBlock {
         return this.properties.isEmpty();
     }
 
-    public boolean matchesState(BlockState blockState) {
-        for(Property<?> property : blockState.getProperties()) {
+
+    public boolean matchesState(BlockState blockState)
+    {
+        for(Property<?> property : blockState.getProperties())
+        {
             String name = property.getName();
 
-            if (properties.containsKey(name)) {
+            if(properties.containsKey(name))
+            {
                 String stateValue = blockState.getValue(property).toString();
 
-                if (!properties.get(name).equalsIgnoreCase(stateValue)) {
+                if(!properties.get(name).equalsIgnoreCase(stateValue))
+                {
                     return false;
                 }
-            } else {
-                return false;
             }
         }
 
@@ -62,17 +65,18 @@ public class JsonThirstBlock {
 
     public boolean matchesState(FluidState fluidState)
     {
-        for(Property<?> property : fluidState.getProperties()) {
+        for(Property<?> property : fluidState.getProperties())
+        {
             String name = property.getName();
 
-            if (properties.containsKey(name)) {
+            if(properties.containsKey(name))
+            {
                 String stateValue = fluidState.getValue(property).toString();
 
-                if (!properties.get(name).equalsIgnoreCase(stateValue)) {
+                if(!properties.get(name).equalsIgnoreCase(stateValue))
+                {
                     return false;
                 }
-            } else {
-                return false;
             }
         }
 

@@ -5,6 +5,7 @@ import net.minecraft.data.PackOutput;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import sfiomn.legendarysurvivaloverhaul.api.data.builder.IThirstData;
 import sfiomn.legendarysurvivaloverhaul.api.data.providers.ThirstDataProvider;
+import sfiomn.legendarysurvivaloverhaul.registry.MobEffectRegistry;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -17,12 +18,14 @@ public class CandlelightThirstProvider extends ThirstDataProvider {
     @Override
     public void generate(HolderLookup.Provider provider, ExistingFileHelper existingFileHelper) {
 
-        IThirstData sinkThirst = thirstData(4, 0.0f).addProperty("filled", "true");
+        IThirstData sinkThirst = thirstData(3, 0)
+                .addEffect(MobEffectRegistry.THIRST.get(), 300, 0.75f)
+                .addProperty("filled", "true");
         block("cobblestone_kitchen_sink").addThirst(sinkThirst);
         block("sandstone_kitchen_sink").addThirst(sinkThirst);
         block("stone_bricks_kitchen_sink").addThirst(sinkThirst);
         block("deepslate_kitchen_sink").addThirst(sinkThirst);
-        block("granit_kitchen_sink").addThirst(sinkThirst);
+        block("granite_kitchen_sink").addThirst(sinkThirst);
         block("end_kitchen_sink").addThirst(sinkThirst);
         block("mud_kitchen_sink").addThirst(sinkThirst);
         block("quartz_kitchen_sink").addThirst(sinkThirst);

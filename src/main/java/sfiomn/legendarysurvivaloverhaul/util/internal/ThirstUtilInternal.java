@@ -165,7 +165,7 @@ public class ThirstUtilInternal implements IThirstUtil {
     }
 
     @Override
-    public JsonThirstBlock getJsonBlockThirstLookedAt(Player player, double finalDistance) {
+    public JsonThirstBlock getFluidThirstLookedAt(Player player, double finalDistance) {
         ResourceLocation rain = new ResourceLocation("rain");
 
         // Check if player is looking up, if it's raining, if they can see sky, and if drinkFromRain is enabled
@@ -178,7 +178,7 @@ public class ThirstUtilInternal implements IThirstUtil {
                 return null;
             }
 
-            return ThirstDataManager.getBlock(rain).get(0);
+            return thirstPropertyList.get(0);
         }
 
         HitResult positionLookedAt = player.pick(finalDistance, 0.0F, true);
@@ -187,7 +187,7 @@ public class ThirstUtilInternal implements IThirstUtil {
 
             FluidState fluidState = player.level().getFluidState(((BlockHitResult) positionLookedAt).getBlockPos());
             ResourceLocation fluidRegistryName = ForgeRegistries.FLUIDS.getKey(fluidState.getType());
-            JsonThirstBlock defaultJsonBlockFluidThirst = null;
+            JsonThirstBlock defaultThirst = null;
 
             if (fluidRegistryName != null && !fluidState.isEmpty()) {
 
@@ -213,38 +213,50 @@ public class ThirstUtilInternal implements IThirstUtil {
                         continue;
 
                     if (thirstInfo.isDefault())
-                        defaultJsonBlockFluidThirst = thirstInfo;
+                        defaultThirst = thirstInfo;
 
                     if (thirstInfo.matchesState(fluidState)) {
                         return thirstInfo;
                     }
                 }
-                return defaultJsonBlockFluidThirst;
+                return defaultThirst;
 
-            } else {
-                BlockState blockState = player.level().getBlockState(((BlockHitResult) positionLookedAt).getBlockPos());
-                ResourceLocation blockRegistryName = ForgeRegistries.BLOCKS.getKey(blockState.getBlock());
+            }
+        }
+        return null;
+    }
 
-                if (blockRegistryName != null) {
-                    List<JsonThirstBlock> jsonBlockFluidThirsts = ThirstDataManager.getBlock(blockRegistryName);
+    @Override
+    public JsonThirstBlock getBlockThirstLookedAt(Player player, double finalDistance) {
 
-                    if (jsonBlockFluidThirsts == null)
-                        return null;
+        HitResult positionLookedAt = player.pick(finalDistance, 0.0F, true);
 
-                    for (JsonThirstBlock thirstInfo : jsonBlockFluidThirsts) {
-                        if (thirstInfo == null)
-                            continue;
+        if (positionLookedAt.getType() == HitResult.Type.BLOCK) {
 
-                        if (thirstInfo.isDefault())
-                            defaultJsonBlockFluidThirst = thirstInfo;
+            JsonThirstBlock defaultThirst = null;
 
-                        if (thirstInfo.matchesState(blockState)) {
-                            return thirstInfo;
-                        }
+            BlockState blockState = player.level().getBlockState(((BlockHitResult) positionLookedAt).getBlockPos());
+            ResourceLocation blockRegistryName = ForgeRegistries.BLOCKS.getKey(blockState.getBlock());
+
+            if (blockRegistryName != null) {
+                List<JsonThirstBlock> jsonBlockFluidThirsts = ThirstDataManager.getBlock(blockRegistryName);
+
+                if (jsonBlockFluidThirsts == null)
+                    return null;
+
+                for (JsonThirstBlock thirstInfo : jsonBlockFluidThirsts) {
+                    if (thirstInfo == null)
+                        continue;
+
+                    if (thirstInfo.isDefault())
+                        defaultThirst = thirstInfo;
+
+                    if (thirstInfo.matchesState(blockState)) {
+                        return thirstInfo;
                     }
-
-                    return defaultJsonBlockFluidThirst;
                 }
+
+                return defaultThirst;
             }
         }
         return null;

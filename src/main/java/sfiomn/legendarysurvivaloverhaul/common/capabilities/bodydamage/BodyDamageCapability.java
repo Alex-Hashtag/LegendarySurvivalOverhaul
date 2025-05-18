@@ -9,7 +9,6 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 import sfiomn.legendarysurvivaloverhaul.api.bodydamage.BodyDamageUtil;
@@ -188,18 +187,10 @@ public class BodyDamageCapability implements IBodyDamageCapability
 
 		if (CuriosUtil.isCurioItemEquipped(player, ItemRegistry.FIRST_AID_SUPPLIES.get())) {
 			boolean boostedHealingTickTimer = false;
-			if (Config.Baked.firstAidSuppliesBoostedTickTimerMultiplier < 0) {
-				for (String effectRegistryName: Config.Baked.firstAidSuppliesBoostedOnEffects) {
-					if (ResourceLocation.isValidResourceLocation(effectRegistryName)) {
-						MobEffect boostedEffect = ForgeRegistries.MOB_EFFECTS.getValue(new ResourceLocation(effectRegistryName));
-						if (boostedEffect != null && player.hasEffect(boostedEffect)) {
-							boostedHealingTickTimer = true;
-							break;
-						}
-					}
-				}
+			if (Config.Baked.firstAidSuppliesBoostedTickTimerMultiplier < 1) {
+				boostedHealingTickTimer = BodyDamageUtil.hasPlayerFirstAidSuppliesBoostingEffect(player);
 			}
-			healingTickTimer += (float) (boostedHealingTickTimer ? Config.Baked.firstAidSuppliesBoostedTickTimerMultiplier : 1);
+			healingTickTimer += boostedHealingTickTimer ? MathUtil.round((float) (1 / Config.Baked.firstAidSuppliesBoostedTickTimerMultiplier), 2) : 1;
 			if (healingTickTimer >= Config.Baked.firstAidSuppliesTickTimer) {
 				healingTickTimer = 0;
 				BodyPart mostDamaged = getLowestHealthBodyPart();

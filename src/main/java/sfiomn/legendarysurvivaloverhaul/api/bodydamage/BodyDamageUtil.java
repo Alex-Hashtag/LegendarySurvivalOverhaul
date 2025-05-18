@@ -23,6 +23,14 @@ public class BodyDamageUtil
 	}
 
 	/**
+	 * Check if the player has an effect that can boost the First Aid Supplies
+	 * @param player player to check the effects
+	 */
+	public static boolean hasPlayerFirstAidSuppliesBoostingEffect(Player player) {
+		return internal.hasPlayerFirstAidSuppliesBoostingEffect(player);
+	}
+
+	/**
 	 * Apply healing item on player's body limb, defined in its body damage capability. <br>
 	 * @param player player to heal
 	 * @param bodyPart bodyPart enum where healing item is applied

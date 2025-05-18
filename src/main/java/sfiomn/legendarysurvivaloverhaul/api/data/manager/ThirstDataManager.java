@@ -2,6 +2,8 @@ package sfiomn.legendarysurvivaloverhaul.api.data.manager;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.FluidState;
 import org.jetbrains.annotations.Nullable;
 import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonThirstBlock;
 import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonThirstConsumable;
@@ -22,6 +24,28 @@ public class ThirstDataManager {
     public static List<JsonThirstBlock> getBlock(ResourceLocation blockRegistryName)
     {
         return internalBlock.get(blockRegistryName);
+    }
+
+    /**
+     * Retrieves the Thirst Information matching the provided block state
+     * @param block block state
+     * @return Thirst Information
+     */
+    @Nullable
+    public static JsonThirstBlock getBlock(BlockState block)
+    {
+        return internalBlock.get(block);
+    }
+
+    /**
+     * Retrieves the Thirst Information matching the provided fluid state
+     * @param fluid fluid state
+     * @return Thirst Information
+     */
+    @Nullable
+    public static JsonThirstBlock getBlock(FluidState fluid)
+    {
+        return internalBlock.get(fluid);
     }
 
     /**

@@ -1,19 +1,14 @@
 package sfiomn.legendarysurvivaloverhaul.common.effects;
 
-import net.dries007.tfc.common.TFCDamageSources;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 import sfiomn.legendarysurvivaloverhaul.api.ModDamageTypes;
 import sfiomn.legendarysurvivaloverhaul.registry.MobEffectRegistry;
-import sfiomn.legendarysurvivaloverhaul.util.DamageSourceUtil;
-import sfiomn.legendarysurvivaloverhaul.util.DamageUtil;
+import sfiomn.legendarysurvivaloverhaul.util.DifficultyUtil;
 
 public class FrostbiteEffect extends MobEffect
 {
@@ -29,7 +24,7 @@ public class FrostbiteEffect extends MobEffect
 		if(entity instanceof Player player && !entity.hasEffect(MobEffectRegistry.COLD_IMMUNITY.get()))
 		{
 			Level level = entity.getCommandSenderWorld();
-            if (DamageUtil.isModDangerous(level) && DamageUtil.healthAboveDifficulty(level, player) && !player.isSleeping())
+            if (DifficultyUtil.isModDangerous(level) && DifficultyUtil.healthAboveDifficulty(level, player) && !player.isSleeping())
 			{
 				ModDamageTypes.hypothermia(player, 1.0f);
 			}

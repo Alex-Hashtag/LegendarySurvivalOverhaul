@@ -51,6 +51,15 @@ public class CandlelightTemperatureProvider extends TemperatureDataProvider {
         block("bamboo_stove").addTemperature(stoveTemp).addTemperature(stoveTempOff);
 
         item("flower_crown").heatResistance(1.0f);
+        item("necktie").heatResistance(1.0f);
         item("dress").heatResistance(1.5f);
+        item("shirt").heatResistance(1.5f);
+
+        item("cooking_hat").heatResistance(1.0f);
+        item("chefs_jacket").heatResistance(1.5f);
+        item("chefs_pant").heatResistance(1.0f);
+        item("chef_boots").heatResistance(0.5f);
+
+        item("trousers_and_vest").heatResistance(1.0f);
     }
 }

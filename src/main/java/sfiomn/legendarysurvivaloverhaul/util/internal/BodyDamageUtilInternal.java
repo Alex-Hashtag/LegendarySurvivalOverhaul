@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 public class BodyDamageUtilInternal implements IBodyDamageUtil {
     public static final UUID BROKEN_HEART_ATTRIBUTE_UUID = UUID.fromString("2e3cede5-3c18-45c2-8a46-31b89fb9c027");
 
+    private static final List<MobEffect> firstAidSuppliesBoostingEffects = new ArrayList<>();
     private static final Map<MalusBodyPartEnum, Map<Float, Pair<MobEffect, Integer>>> bodyPartMalusEffects = new HashMap<>();
 
     public BodyDamageUtilInternal() {}
@@ -55,6 +56,30 @@ public class BodyDamageUtilInternal implements IBodyDamageUtil {
         }
     }
 
+    public static void initFirstAidSuppliesBoostingEffects() {
+        for (String effectRegistryName: Config.Baked.firstAidSuppliesBoostedOnEffects) {
+            if (!ResourceLocation.isValidResourceLocation(effectRegistryName))
+                LegendarySurvivalOverhaul.LOGGER.info("Not valid effect registry name : {}", effectRegistryName);
+
+            MobEffect boostingEffect = ForgeRegistries.MOB_EFFECTS.getValue(new ResourceLocation(effectRegistryName));
+            if (boostingEffect == null) {
+                LegendarySurvivalOverhaul.LOGGER.info("Unknown effect {}", effectRegistryName);
+                continue;
+            }
+            firstAidSuppliesBoostingEffects.add(boostingEffect);
+        }
+    }
+
+    @Override
+    public boolean hasPlayerFirstAidSuppliesBoostingEffect(Player player) {
+        for (MobEffect effect: firstAidSuppliesBoostingEffects) {
+            if (player.hasEffect(effect))
+                return true;
+        }
+        return false;
+    }
+
+    @Override
     public List<Pair<MobEffect, Integer>> getEffects(MalusBodyPartEnum bodyPart, float healthRatio) {
         List<Pair<MobEffect, Integer>> effects = new ArrayList<>();
         if(bodyPart == null)
@@ -68,6 +93,7 @@ public class BodyDamageUtilInternal implements IBodyDamageUtil {
         return effects;
     }
 
+    @Override
     public void applyHealingTimeBodyPart(Player player, BodyPartEnum bodyPartEnum, float healingValue, int healingTime) {
 
         if(!Config.Baked.localizedBodyDamageEnabled || bodyPartEnum == null)

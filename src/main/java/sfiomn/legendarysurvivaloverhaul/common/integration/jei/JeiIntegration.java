@@ -20,6 +20,7 @@ import sfiomn.legendarysurvivaloverhaul.api.temperature.TemperatureUtil;
 import sfiomn.legendarysurvivaloverhaul.client.screens.SewingTableScreen;
 import sfiomn.legendarysurvivaloverhaul.common.items.CoatItem;
 import sfiomn.legendarysurvivaloverhaul.common.recipe.SewingRecipe;
+import sfiomn.legendarysurvivaloverhaul.config.Config;
 import sfiomn.legendarysurvivaloverhaul.registry.BlockRegistry;
 import sfiomn.legendarysurvivaloverhaul.registry.ItemRegistry;
 
@@ -40,36 +41,47 @@ public class JeiIntegration implements IModPlugin {
 
     @Override
     public void registerCategories(IRecipeCategoryRegistration registration) {
-        registration.addRecipeCategories(new SewingRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
+
+        if (Config.Baked.temperatureEnabled) {
+            registration.addRecipeCategories(new SewingRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
+        }
     }
 
     @Override
     public void registerItemSubtypes(ISubtypeRegistration registration) {
-        registration.registerSubtypeInterpreter(ItemRegistry.CANTEEN.get(), CanteenSubtypeInterpreter.INSTANCE);
-        registration.registerSubtypeInterpreter(ItemRegistry.LARGE_CANTEEN.get(), CanteenSubtypeInterpreter.INSTANCE);
+        if (Config.Baked.thirstEnabled) {
+            registration.registerSubtypeInterpreter(ItemRegistry.CANTEEN.get(), CanteenSubtypeInterpreter.INSTANCE);
+            registration.registerSubtypeInterpreter(ItemRegistry.LARGE_CANTEEN.get(), CanteenSubtypeInterpreter.INSTANCE);
+        }
         IModPlugin.super.registerItemSubtypes(registration);
     }
 
     @Override
     public void registerRecipes(@NotNull IRecipeRegistration registration) {
         Level world = Minecraft.getInstance().level;
-        if (world != null) {
-            RecipeManager rm = world.getRecipeManager();
-            registration.addRecipes(SewingRecipeCategory.SEWING_RECIPE_TYPE, rm.getAllRecipesFor(SewingRecipe.Type.INSTANCE).stream()
-                    .filter(Objects::nonNull).collect(Collectors.toList()));
-        }
+        if (Config.Baked.temperatureEnabled) {
+            if (world != null) {
+                RecipeManager rm = world.getRecipeManager();
+                registration.addRecipes(SewingRecipeCategory.SEWING_RECIPE_TYPE, rm.getAllRecipesFor(SewingRecipe.Type.INSTANCE).stream()
+                        .filter(Objects::nonNull).collect(Collectors.toList()));
+            }
 
-        registration.addRecipes(SewingRecipeCategory.SEWING_RECIPE_TYPE, sewingCoatRecipes());
+            registration.addRecipes(SewingRecipeCategory.SEWING_RECIPE_TYPE, sewingCoatRecipes());
+        }
     }
 
     @Override
     public void registerGuiHandlers(IGuiHandlerRegistration registration) {
-        registration.addRecipeClickArea(SewingTableScreen.class, 40, 37, 20, 20, SewingRecipeCategory.SEWING_RECIPE_TYPE);
+        if (Config.Baked.temperatureEnabled) {
+            registration.addRecipeClickArea(SewingTableScreen.class, 40, 37, 20, 20, SewingRecipeCategory.SEWING_RECIPE_TYPE);
+        }
     }
 
     @Override
     public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
-        registration.addRecipeCatalyst(new ItemStack(BlockRegistry.SEWING_TABLE.get()), SewingRecipeCategory.SEWING_RECIPE_TYPE);
+        if (Config.Baked.temperatureEnabled) {
+            registration.addRecipeCatalyst(new ItemStack(BlockRegistry.SEWING_TABLE.get()), SewingRecipeCategory.SEWING_RECIPE_TYPE);
+        }
     }
 
     public static class CanteenSubtypeInterpreter implements IIngredientSubtypeInterpreter<ItemStack> {
