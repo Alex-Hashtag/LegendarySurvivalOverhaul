@@ -27,8 +27,9 @@ public class ModItemModelProvider extends ItemModelProvider {
         simpleJuiceItem(ItemRegistry.GOLDEN_CARROT_JUICE);
         simpleJuiceItem(ItemRegistry.MELON_JUICE);
         simpleJuiceItem(ItemRegistry.PUMPKIN_JUICE);
+        simpleJuiceItem(ItemRegistry.SWEET_BERRIES_JUICE);
+        simpleJuiceItem(ItemRegistry.GLOW_BERRIES_JUICE);
         simpleJuiceItem(ItemRegistry.GOLDEN_APPLE_JUICE);
-        simpleJuiceItem(ItemRegistry.GOLDEN_CARROT_JUICE);
 
         simpleHealingItem(ItemRegistry.BANDAGE);
         simpleHealingItem(ItemRegistry.HEALING_HERBS);

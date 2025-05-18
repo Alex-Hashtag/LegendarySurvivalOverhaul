@@ -23,16 +23,18 @@ public class ModThirstProvider extends ThirstDataProvider {
     @Override
     public void generate(HolderLookup.Provider provider, ExistingFileHelper existingFileHelper) {
         consumable(ItemRegistry.APPLE_JUICE.get()).addThirst(thirstData(6, 3.0f));
-        consumable(ItemRegistry.BEETROOT_JUICE.get()).addThirst(thirstData(9, 4.0f));
+        consumable(ItemRegistry.BEETROOT_JUICE.get()).addThirst(thirstData(8, 4.0f));
         consumable(ItemRegistry.CACTUS_JUICE.get()).addThirst(thirstData(9, 3.0f));
         consumable(ItemRegistry.CARROT_JUICE.get()).addThirst(thirstData(4, 2.0f));
-        consumable(ItemRegistry.CHORUS_FRUIT_JUICE.get()).addThirst(thirstData(12, 8.0f));
-        consumable(ItemRegistry.GOLDEN_APPLE_JUICE.get()).addThirst(thirstData(17, 17.0f));
+        consumable(ItemRegistry.CHORUS_FRUIT_JUICE.get()).addThirst(thirstData(12, 14.0f));
+        consumable(ItemRegistry.GOLDEN_APPLE_JUICE.get()).addThirst(thirstData(10, 12.0f));
         consumable(ItemRegistry.GOLDEN_CARROT_JUICE.get()).addThirst(thirstData(8, 6.0f));
-        consumable(ItemRegistry.GLISTERING_MELON_JUICE.get()).addThirst(thirstData(12, 8.0f));
-        consumable(ItemRegistry.MELON_JUICE.get()).addThirst(thirstData(8, 4.0f));
-        consumable(ItemRegistry.PUMPKIN_JUICE.get()).addThirst(thirstData(6, 1.5f));
-        consumable(ItemRegistry.PURIFIED_WATER_BOTTLE.get()).addThirst(thirstData(3, 0.0f));
+        consumable(ItemRegistry.GLISTERING_MELON_JUICE.get()).addThirst(thirstData(6, 6.0f));
+        consumable(ItemRegistry.MELON_JUICE.get()).addThirst(thirstData(7, 4.0f));
+        consumable(ItemRegistry.PUMPKIN_JUICE.get()).addThirst(thirstData(6, 3.5f));
+        consumable(ItemRegistry.GLOW_BERRIES_JUICE.get()).addThirst(thirstData(4, 6.0f));
+        consumable(ItemRegistry.SWEET_BERRIES_JUICE.get()).addThirst(thirstData(9, 5.0f));
+        consumable(ItemRegistry.PURIFIED_WATER_BOTTLE.get()).addThirst(thirstData(6, 1.5f));
         consumable(ItemRegistry.WATER_PLANT_BAG.get()).addThirst(thirstData(3, 0.0f));
 
         IThirstData dirtyWaterCanteen = thirstData(3, 0.0f)

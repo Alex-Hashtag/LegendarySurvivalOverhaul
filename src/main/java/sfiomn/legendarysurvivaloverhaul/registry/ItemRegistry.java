@@ -103,6 +103,8 @@ public class ItemRegistry {
 	public static final RegistryObject<Item> GLISTERING_MELON_JUICE = ITEMS.register("glistering_melon_juice", () -> new JuiceItem(new Item.Properties().rarity(Rarity.UNCOMMON)));
 	public static final RegistryObject<Item> MELON_JUICE = ITEMS.register("melon_juice", () -> new JuiceItem(new Item.Properties()));
 	public static final RegistryObject<Item> PUMPKIN_JUICE = ITEMS.register("pumpkin_juice", () -> new JuiceItem(new Item.Properties()));
+	public static final RegistryObject<Item> SWEET_BERRIES_JUICE = ITEMS.register("sweet_berries_juice", () -> new JuiceItem(new Item.Properties()));
+	public static final RegistryObject<Item> GLOW_BERRIES_JUICE = ITEMS.register("glow_berries_juice", () -> new JuiceItem(new Item.Properties()));
 	public static final RegistryObject<Item> PURIFIED_WATER_BOTTLE = ITEMS.register("purified_water_bottle", () -> new PurifiedWaterBottleItem(new Item.Properties()));
 	public static final RegistryObject<Item> WATER_PLANT_BAG = ITEMS.register("water_plant_bag", () -> new DrinkItem(new Item.Properties()));
 	public static final RegistryObject<Item> WATER_PLANT_SEEDS = ITEMS.register("water_plant_seeds", () -> new ItemNameBlockItem(BlockRegistry.WATER_PLANT_CROP.get(), new Item.Properties()));

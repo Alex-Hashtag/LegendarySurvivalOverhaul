@@ -297,6 +297,8 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
         juice(consumer, Items.GOLDEN_CARROT, ItemRegistry.GOLDEN_CARROT_JUICE.get());
         juice(consumer, Items.MELON_SLICE, ItemRegistry.MELON_JUICE.get());
         juice(consumer, Items.PUMPKIN, ItemRegistry.PUMPKIN_JUICE.get());
+        juice(consumer, Items.SWEET_BERRIES, ItemRegistry.SWEET_BERRIES_JUICE.get());
+        juice(consumer, Items.GLOW_BERRIES, ItemRegistry.GLOW_BERRIES_JUICE.get());
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ItemRegistry.CANTEEN.get())
                 .pattern(" i ")

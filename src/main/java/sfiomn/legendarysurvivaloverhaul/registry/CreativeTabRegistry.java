@@ -39,6 +39,8 @@ public class CreativeTabRegistry {
                         ItemRegistry.GOLDEN_CARROT_JUICE.get().getDefaultInstance(),
                         ItemRegistry.MELON_JUICE.get().getDefaultInstance(),
                         ItemRegistry.PUMPKIN_JUICE.get().getDefaultInstance(),
+                        ItemRegistry.SWEET_BERRIES_JUICE.get().getDefaultInstance(),
+                        ItemRegistry.GLOW_BERRIES_JUICE.get().getDefaultInstance(),
 
                         ItemRegistry.WATER_PURIFIER.get().getDefaultInstance(),
                         ItemRegistry.CANTEEN.get().getDefaultInstance(),
