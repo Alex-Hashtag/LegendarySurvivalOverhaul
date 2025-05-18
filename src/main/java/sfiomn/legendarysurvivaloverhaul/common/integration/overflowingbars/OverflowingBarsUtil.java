@@ -1,17 +1,13 @@
 package sfiomn.legendarysurvivaloverhaul.common.integration.overflowingbars;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Level;
+import fuzs.overflowingbars.OverflowingBars;
+import fuzs.overflowingbars.config.ClientConfig;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 
 
 public class OverflowingBarsUtil {
 
-    public static boolean isUnderParasol(Player player, Level level, BlockPos pos) {
-        if (LegendarySurvivalOverhaul.overflowingbarsLoaded) {
-
-        }
-        return LegendarySurvivalOverhaul.overflowingbarsLoaded;
+    public static boolean isHealthBarOverflowing() {
+        return LegendarySurvivalOverhaul.overflowingbarsLoaded && OverflowingBars.CONFIG.get(ClientConfig.class).health.allowLayers;
     }
 }

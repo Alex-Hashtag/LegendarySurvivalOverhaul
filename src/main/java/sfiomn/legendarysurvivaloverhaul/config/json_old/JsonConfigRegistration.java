@@ -621,7 +621,8 @@ public class JsonConfigRegistration
 						td.saturation(jbft.saturation);
 						for (JsonEffectParameter jep: jbft.effects) {
 							MobEffect me = ForgeRegistries.MOB_EFFECTS.getValue(new ResourceLocation(jep.name));
-							td.addEffect(me, jep.duration, jep.chance, jep.amplifier);
+							if (me != null)
+								td.addEffect(me, jep.duration, jep.chance, jep.amplifier);
 						}
 						for (Map.Entry<String, String> prop: jbft.properties.entrySet()) {
 							td.addProperty(prop.getKey(), prop.getValue());
@@ -668,7 +669,8 @@ public class JsonConfigRegistration
 						td.saturation(jct.saturation);
 						for (JsonEffectParameter jep: jct.effects) {
 							MobEffect me = ForgeRegistries.MOB_EFFECTS.getValue(new ResourceLocation(jep.name));
-							td.addEffect(me, jep.duration, jep.chance, jep.amplifier);
+							if (me != null)
+								td.addEffect(me, jep.duration, jep.chance, jep.amplifier);
 						}
 						for (Map.Entry<String, String> prop: jct.nbt.entrySet()) {
 							td.addProperty(prop.getKey(), prop.getValue());

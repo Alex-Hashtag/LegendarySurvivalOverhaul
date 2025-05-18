@@ -169,7 +169,7 @@ dependencies {
     // compile against the JEI API but do not include it at runtime
     compileOnly(fg.deobf("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}"))
     compileOnly(fg.deobf("mezz.jei:jei-${minecraft_version}-forge-api:${jei_version}"))
-    compileOnly(fg.deobf("curse.maven:terrafirmacraft-302973:5571484"))
+    compileOnly(fg.deobf("curse.maven:terrafirmacraft-302973:6187491"))
     compileOnly(fg.deobf("curse.maven:origins-474438:5314209"))
     compileOnly(fg.deobf("curse.maven:mutantmonsters-852665:5107399"))
     compileOnly(fg.deobf("curse.maven:vampirism-233029:5990073"))
@@ -177,6 +177,8 @@ dependencies {
     compileOnly(fg.deobf("curse.maven:beachparty-858691:6458692"))
     compileOnly(fg.deobf("curse.maven:meadow-821483:6467344"))
     compileOnly(fg.deobf("curse.maven:architectury-419699:5137938"))
+    implementation(fg.deobf("curse.maven:overflowingbars-852662:5763974"))
+    implementation(fg.deobf("curse.maven:puzzlelib-495476:6387081"))
     //implementation(fg.deobf("curse.maven:werewolves-417851:5406832"))
     //implementation(fg.deobf("curse.maven:medsandherbs-418682:4840824"))
 
@@ -214,7 +216,7 @@ dependencies {
     //runtimeOnly(fg.deobf("curse.maven:ftblibrary-404465:5925398"))
     //runtimeOnly(fg.deobf("curse.maven:ftbteams-404468:5267190"))
     
-    //runtimeOnly fg.deobf("curse.maven:create-328085:4835191")
+    //runtimeOnly fg.deobf("curse.maven:create-328085:6323270")
     //runtimeOnly(fg.deobf("curse.maven:patchouli-306770:4966125"))
     //runtimeOnly fg.deobf("curse.maven:firma-civilization-714158:5737719")
     //runtimeOnly fg.deobf("curse.maven:alekis-nifty-ships-1068445:5669604")

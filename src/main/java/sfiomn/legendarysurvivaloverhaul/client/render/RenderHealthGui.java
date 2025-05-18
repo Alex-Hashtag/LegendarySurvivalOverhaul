@@ -12,6 +12,7 @@ import net.minecraftforge.client.gui.overlay.ForgeGui;
 import net.minecraftforge.client.gui.overlay.IGuiOverlay;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.health.HealthCapability;
+import sfiomn.legendarysurvivaloverhaul.common.integration.overflowingbars.OverflowingBarsUtil;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
 import sfiomn.legendarysurvivaloverhaul.registry.AttributeRegistry;
 import sfiomn.legendarysurvivaloverhaul.util.CapabilityUtil;
@@ -69,19 +70,30 @@ public class RenderHealthGui
 		int left = width / 2 - 91; // Same x offset as the health bar
 		int top = height - forgeGui.leftHeight;
 
-		int playerHearts = Mth.ceil(player.getMaxHealth() / 2.0f);
+		int playerHearts = 0;
 
-		int healthRows = Mth.ceil((Mth.ceil(shieldHealth / 2.0F) + brokenHearts)  / 10.0F);
+		int totalHearts = Mth.ceil(shieldHealth / 2.0F) + brokenHearts;
+		if (Config.Baked.appendBrokenShieldHeartsToHealthBar) {
+			playerHearts = Mth.ceil(player.getMaxHealth() / 2.0f);
+
+			if (OverflowingBarsUtil.isHealthBarOverflowing())
+				playerHearts = Math.min(10, playerHearts);
+
+			totalHearts += playerHearts;
+			top += 10;
+			forgeGui.leftHeight -= 10;
+		}
+		int healthRows = Mth.ceil((totalHearts)  / 10.0F);
 
 		forgeGui.leftHeight += healthRows * 10;
 
-		renderHearts(gui, left, top, 10, brokenHearts, Mth.ceil(player.getHealth()), shieldHealth);
+		renderHearts(gui, left, top, 10, playerHearts, brokenHearts, Mth.ceil(player.getHealth()), shieldHealth);
 	}
 
-	public static void renderHearts(GuiGraphics gui, int left, int top, int rowHeight, int brokenHearts, int health, float shieldHealth) {
+	public static void renderHearts(GuiGraphics gui, int left, int top, int rowHeight, int playerHearts, int brokenHearts, int health, float shieldHealth) {
 		int shieldHearts = Mth.ceil((double)shieldHealth / 2.0);
 
-		for(int i1 = shieldHearts + brokenHearts - 1; i1 >= 0; --i1) {
+		for(int i1 = playerHearts + shieldHearts + brokenHearts - 1; i1 >= playerHearts; --i1) {
 			int j1 = i1 / 10;
 			int k1 = i1 % 10;
 			int x = left + k1 * 8;
@@ -90,12 +102,12 @@ public class RenderHealthGui
 				y += rand.nextInt(2);
 			}
 
-			boolean flag = i1 >= shieldHearts;
+			boolean flag = i1 >= brokenHearts + playerHearts;
 			if (flag) {
-				renderHeart(gui, HeartType.BROKEN, x, y, 0, false);
-			} else {
 				renderHeart(gui, HeartType.CONTAINER, x, y, 0, false);
 				renderHeart(gui, HeartType.SHIELD, x, y, 0, shieldHealth < shieldHearts * 2 && i1 == shieldHearts - 1);
+			} else {
+				renderHeart(gui, HeartType.BROKEN, x, y, 0, false);
 			}
 		}
 

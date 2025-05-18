@@ -1450,6 +1450,8 @@ public class Config
 		public static int hydrationBarOffsetX;
 		public static int hydrationBarOffsetY;
 
+		public static boolean appendBrokenShieldHeartsToHealthBar;
+
 		public static void bakeCommon()
 		{
 			LegendarySurvivalOverhaul.LOGGER.debug("Load Common configuration from file");
@@ -1720,6 +1722,8 @@ public class Config
 				showDrinkPreview = CLIENT.showDrinkPreview.get();
 				hydrationBarOffsetX = CLIENT.hydrationBarOffsetX.get();
 				hydrationBarOffsetY = CLIENT.hydrationBarOffsetY.get();
+
+				appendBrokenShieldHeartsToHealthBar = CLIENT.appendBrokenShieldHeartsToHealthBar.get();
 			}
 			catch (Exception e)
 			{
