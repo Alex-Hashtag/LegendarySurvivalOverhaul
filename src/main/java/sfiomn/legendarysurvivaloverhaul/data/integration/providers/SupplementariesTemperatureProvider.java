@@ -18,7 +18,7 @@ public class SupplementariesTemperatureProvider extends TemperatureDataProvider 
     @Override
     public void generate(HolderLookup.Provider provider, ExistingFileHelper existingFileHelper) {
         block("fire_pit")
-                .addTemperature(temperatureBlock(10.0f).addProperty("lit", "true"))
+                .addTemperature(temperatureBlock(12.5f).addProperty("lit", "true"))
                 .addTemperature(temperatureBlock(0).addProperty("lit", "false"));
 
         ITemperatureBlockData candleOn = temperatureBlock(1.5f).addProperty("lit", "true");

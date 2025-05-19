@@ -11,6 +11,7 @@ import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkEvent;
 import sfiomn.legendarysurvivaloverhaul.api.bodydamage.BodyDamageUtil;
 import sfiomn.legendarysurvivaloverhaul.api.bodydamage.BodyPartEnum;
+import sfiomn.legendarysurvivaloverhaul.common.integration.supplementaries.SupplementariesUtil;
 import sfiomn.legendarysurvivaloverhaul.common.items.heal.BodyHealingItem;
 import sfiomn.legendarysurvivaloverhaul.network.NetworkHandler;
 import sfiomn.legendarysurvivaloverhaul.registry.SoundRegistry;
@@ -72,8 +73,13 @@ public class BodyPartHealingTimeMessage
             if (itemStack.getItem() instanceof BodyHealingItem) {
                 ((BodyHealingItem) itemStack.getItem()).runSecondaryEffect(player, itemStack);
             }
-            if (!player.isCreative())
-                itemStack.shrink(1);
+            if (!player.isCreative()) {
+                ItemStack itemStackInBasket = SupplementariesUtil.getSelectedItemInLunchBasket(itemStack);
+                if (itemStackInBasket != ItemStack.EMPTY)
+                    itemStackInBasket.shrink(1);
+                else
+                    itemStack.shrink(1);
+            }
         }
 
         BodyDamageUtil.applyHealingTimeBodyPart(player, bodyPartEnum, nbt.getFloat("healingValue"), nbt.getInt("healingTime"));
