@@ -79,9 +79,13 @@ public class RenderHealthGui
 			if (OverflowingBarsUtil.isHealthBarOverflowing())
 				playerHearts = Math.min(10, playerHearts);
 
-			totalHearts += playerHearts;
-			top += 10;
-			forgeGui.leftHeight -= 10;
+			playerHearts = playerHearts  % 10;
+
+			if (playerHearts > 0) {
+				totalHearts += playerHearts;
+				top += 10;
+				forgeGui.leftHeight -= 10;
+			}
 		}
 		int healthRows = Mth.ceil((totalHearts)  / 10.0F);
 
