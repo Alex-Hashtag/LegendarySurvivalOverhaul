@@ -222,7 +222,7 @@ dependencies {
     //runtimeOnly fg.deobf("curse.maven:alekis-nifty-ships-1068445:5669604")
 
     //runtimeOnly fg.deobf("curse.maven:fruitsdelight-943774:6500940")
-    //runtimeOnly fg.deobf("curse.maven:farmersdelight-398521:6154802")
+    runtimeOnly fg.deobf("curse.maven:farmersdelight-398521:6154802")
 }
 
 // This block of code expands all declared replace properties in the specified resource targets.

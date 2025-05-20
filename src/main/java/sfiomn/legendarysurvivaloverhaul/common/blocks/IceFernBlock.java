@@ -128,7 +128,7 @@ public class IceFernBlock extends CropBlock implements IPlantable {
 
     @Override
     public PlantType getPlantType(BlockGetter level, BlockPos pos) {
-        return PlantType.PLAINS;
+        return PlantType.CROP;
     }
 
     @Override

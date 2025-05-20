@@ -120,6 +120,7 @@ public class BodyDamageUtilInternal implements IBodyDamageUtil {
         capability.heal(bodyPartEnum, healingValue);
     }
 
+    @Override
     public void hurtBodyPart(Player player, BodyPartEnum bodyPartEnum, float damageValue) {
 
         if(!Config.Baked.localizedBodyDamageEnabled || bodyPartEnum == null)
@@ -140,6 +141,7 @@ public class BodyDamageUtilInternal implements IBodyDamageUtil {
         }
     }
 
+    @Override
     public void balancedHurtBodyParts(Player player, List<BodyPartEnum> bodyParts, float damageValue) {
 
         if(!Config.Baked.localizedBodyDamageEnabled || bodyParts.isEmpty())
@@ -152,6 +154,7 @@ public class BodyDamageUtilInternal implements IBodyDamageUtil {
         }
     }
 
+    @Override
     public void randomHurtBodyParts(Player player, List<BodyPartEnum> bodyParts, float damageValue) {
         if(!Config.Baked.localizedBodyDamageEnabled || bodyParts.isEmpty())
             return;
@@ -160,6 +163,7 @@ public class BodyDamageUtilInternal implements IBodyDamageUtil {
         hurtBodyPart(player, bodyParts.get(bodyPartIndex), damageValue);
     }
 
+    @Override
     public float getHealthRatio(Player player, BodyPartEnum bodyPartEnum) {
         if(!Config.Baked.localizedBodyDamageEnabled || bodyPartEnum == null)
             return 0.0f;
@@ -169,6 +173,7 @@ public class BodyDamageUtilInternal implements IBodyDamageUtil {
         return capability.getBodyPartHealthRatio(bodyPartEnum);
     }
 
+    @Override
     public float getTotalRemainingHealing(Player player, BodyPartEnum bodyPartEnum) {
         if(!Config.Baked.localizedBodyDamageEnabled || bodyPartEnum == null)
             return 0.0f;

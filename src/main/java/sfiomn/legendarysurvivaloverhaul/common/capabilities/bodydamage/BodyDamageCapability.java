@@ -1,7 +1,6 @@
 package sfiomn.legendarysurvivaloverhaul.common.capabilities.bodydamage;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -157,7 +156,6 @@ public class BodyDamageCapability implements IBodyDamageCapability
 			}
 
 			// Heal each body limb of the player
-			int expectedBrokenHearts = 0;
 			for (Map.Entry<BodyPartEnum, BodyPart> bodyPartPair: this.bodyParts.entrySet()) {
 				BodyPart bodyPart = bodyPartPair.getValue();
 				if (bodyPart.getRemainingHealingTicks() > 0) {
@@ -168,14 +166,10 @@ public class BodyDamageCapability implements IBodyDamageCapability
 					else
 						bodyPart.reduceRemainingHealingTicks(healingTick);
 				}
-
-				if (Config.Baked.healthOverhaulEnabled && bodyPart.getDamage() == bodyPart.getMaxHealth()) {
-					expectedBrokenHearts += Config.Baked.brokenHeartsPerInjuredLimb;
-				}
 			}
-
-			this.expectedBrokenHearts = expectedBrokenHearts;
 		}
+
+		updateBrokenHearts();
 
 		if (player.hasEffect(MobEffectRegistry.HEADACHE.get())) {
 			if (this.headacheTimer-- < 0) {
@@ -238,6 +232,19 @@ public class BodyDamageCapability implements IBodyDamageCapability
 				.min((entry1, entry2) -> Float.compare(getBodyPartHealthRatio(entry1.getKey()), getBodyPartHealthRatio(entry2.getKey())))
 				.map(Map.Entry::getValue)
 				.orElse(null); // or throw an exception if you prefer
+	}
+
+	@Override
+	public void updateBrokenHearts() {
+		int expectedBrokenHearts = 0;
+		for (Map.Entry<BodyPartEnum, BodyPart> bodyPartPair: this.bodyParts.entrySet()) {
+			BodyPart bodyPart = bodyPartPair.getValue();
+			if (Config.Baked.healthOverhaulEnabled && bodyPart.getDamage() == bodyPart.getMaxHealth()) {
+				expectedBrokenHearts += Config.Baked.brokenHeartsPerInjuredLimb;
+			}
+		}
+
+		this.expectedBrokenHearts = expectedBrokenHearts;
 	}
 
 	@Override

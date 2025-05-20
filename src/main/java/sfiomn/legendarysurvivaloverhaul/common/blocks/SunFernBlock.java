@@ -127,7 +127,7 @@ public class SunFernBlock extends CropBlock implements IPlantable {
 
     @Override
     public PlantType getPlantType(BlockGetter level, BlockPos pos) {
-        return PlantType.DESERT;
+        return PlantType.CROP;
     }
 
     @Override

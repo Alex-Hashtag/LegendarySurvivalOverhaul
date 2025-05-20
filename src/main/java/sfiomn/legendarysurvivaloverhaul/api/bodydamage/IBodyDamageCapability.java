@@ -30,6 +30,8 @@ public interface IBodyDamageCapability
 
 	public float getHealingPerTicks(BodyPartEnum part);
 
+	public void updateBrokenHearts();
+
 	/**
 	 * Check if at least one body part has health below provided health percent
 	 * @param healthPercent health percent of the limb
