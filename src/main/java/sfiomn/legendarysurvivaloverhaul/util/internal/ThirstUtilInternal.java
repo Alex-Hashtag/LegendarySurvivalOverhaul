@@ -130,9 +130,11 @@ public class ThirstUtilInternal implements IThirstUtil {
 
         IThirstCapability capability = CapabilityUtil.getThirstCapability(player);
 
-        capability.addHydrationLevel(hydration);
+        if (!capability.isHydrationLevelAtMax()) {
+            capability.addHydrationLevel(hydration);
 
-        capability.addSaturationLevel(saturation);
+            capability.addSaturationLevel(saturation);
+        }
 
         // Check for effect chance
         for (JsonMobEffect effect: effects) {
