@@ -95,6 +95,7 @@ public class LegendarySurvivalOverhaul
 	public static boolean beachpartyLoaded = false;
 	public static boolean meadowLoaded = false;
 	public static boolean overflowingbarsLoaded = false;
+	public static boolean weather2Loaded = false;
 
 	public static Path configPath = FMLPaths.CONFIGDIR.get();
 	public static Path modConfigPath = Paths.get(configPath.toAbsolutePath().toString(), "legendarysurvivaloverhaul");
@@ -149,6 +150,7 @@ public class LegendarySurvivalOverhaul
 		beachpartyLoaded = ModList.get().isLoaded("beachparty");
 		meadowLoaded = ModList.get().isLoaded("meadow");
 		overflowingbarsLoaded = ModList.get().isLoaded("overflowingbars");
+		weather2Loaded = ModList.get().isLoaded("weather2");
 
 		if (sereneSeasonsLoaded)
 			LOGGER.debug("Serene Seasons is loaded, enabling compatibility");
@@ -185,6 +187,9 @@ public class LegendarySurvivalOverhaul
 
 		if (overflowingbarsLoaded)
 			LOGGER.debug("Overflowing Bars is loaded, enabling compatibility");
+
+		if (weather2Loaded)
+			LOGGER.debug("Weather2 is loaded, enabling compatibility");
 
 		if (surviveLoaded)
 			LOGGER.debug("Survive is loaded, I hope you know what you're doing");

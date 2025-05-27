@@ -60,13 +60,6 @@ public final class WorldUtil
 		}
 	}
 
-	public static ResourceLocation getBiomeName(Level world, Biome biome) {
-		if (world.registryAccess().registry(Registries.BIOME).isPresent()) {
-			return world.registryAccess().registry(Registries.BIOME).get().getKey(biome);
-		}
-		return null;
-	}
-
 	public static boolean isRainingOrSnowingAt(Level world, BlockPos pos) {
 		if (!world.isRaining()) {
 			return false;

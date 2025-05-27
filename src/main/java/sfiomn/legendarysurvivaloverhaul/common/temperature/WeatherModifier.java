@@ -30,7 +30,7 @@ public class WeatherModifier extends ModifierBase
 		float weatherTemperature = 0.0f;
 		long time = level.getLevelData().getDayTime();
 
-		if(Config.Baked.shadeTimeModifier != 0 && time <= 12000)
+		if (Config.Baked.shadeTimeModifier != 0 && time <= 12000)
 		{
 			if ((TemperatureModifierRegistry.BIOME.get().getWorldInfluence(player, level, pos) +
 					TemperatureModifierRegistry.SERENE_SEASONS.get().getWorldInfluence(player, level, pos)) >= Config.Baked.shadeTimeModifierThreshold) {
@@ -39,7 +39,7 @@ public class WeatherModifier extends ModifierBase
 			}
 		}
 
-		if(WorldUtil.isRainingOrSnowingAt(level, pos.above())) {
+		if (WorldUtil.isRainingOrSnowingAt(level, pos.above())) {
 
 			if (biome.getPrecipitationAt(pos.above()) == Biome.Precipitation.SNOW) {
 				weatherTemperature += (float) Config.Baked.snowTemperatureModifier;

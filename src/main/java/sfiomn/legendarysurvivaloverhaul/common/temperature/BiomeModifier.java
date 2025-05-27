@@ -42,22 +42,22 @@ public class BiomeModifier extends ModifierBase
 		long worldTime = level.getLevelData().getDayTime() % 24000;
 		double drynessTimeMultiplier = 1;
 		double drynessAverageMultiplier = 1;
-		if (worldTime > 12000 && !level.dimensionType().hasCeiling() && Config.Baked.biomeDrynessMultiplier > 0) {
-			drynessTimeMultiplier = 1 + Math.sin(worldTime * Math.PI / 12000) * Config.Baked.biomeDrynessMultiplier;
+		if (worldTime > 12000 && !level.dimensionType().hasCeiling() && Config.Baked.biomeDrynessMultiplier < 1) {
+			drynessTimeMultiplier = 1 + Math.sin(worldTime * Math.PI / 12000) * (1 - Config.Baked.biomeDrynessMultiplier);
 			drynessAverageMultiplier = (1 + Config.Baked.biomeDrynessMultiplier) / 2.0f;
 		}
 
 		for (Vec3i offset : posOffsets)
 		{
 			Biome biome = level.getBiome(pos.offset(offset)).get();
-			float humidity = getHumidityForBiome(level, biome);
-			float biomeTemperature = getNormalizedTempForBiome(level, biome);
+			float humidity = getHumidityForBiome(biome);
+			float biomeTemperature = getNormalizedTempForBiome(biome);
 
+			// Deserts are cold at night since heat isn't kept by moisture in the air
 			if (drynessTimeMultiplier < 1 && humidity < 0.2f && biomeTemperature > 0.80f)
 			{
-				// calculated average temp between day and night with the dryness effect (makes nights colder)
+				// calculated average temp between day and night with the dryness effect
 				undergroundAverage += (float) (drynessAverageMultiplier * biomeTemperature);
-				// Deserts are cold at night since heat isn't kept by moisture in the air
 				biomeAverage += (float) (drynessTimeMultiplier * biomeTemperature);
 			}
 			else
@@ -70,9 +70,6 @@ public class BiomeModifier extends ModifierBase
 		biomeAverage /= (float)(posOffsets.length);
 		undergroundAverage /= (float)(posOffsets.length);
 
-		// LegendarySurvivalOverhaul.LOGGER.debug("Biome temp influence : " + normalizeToPositiveNegative(biomeAverage) * ((float) Config.Baked.biomeTemperatureMultiplier));
-		// float tempInfl = applyUndergroundEffect(normalizeToPositiveNegative(biomeAverage) * ((float) Config.Baked.biomeTemperatureMultiplier), world, pos);
-		// LegendarySurvivalOverhaul.LOGGER.debug("Biome temp influence after underground : " + tempInfl);
 		return applyUndergroundEffect(
 				(float) (normalizeToPositiveNegative(biomeAverage) * Config.Baked.biomeTemperatureMultiplier),
 				level,

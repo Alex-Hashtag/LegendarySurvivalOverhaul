@@ -444,8 +444,8 @@ public class Config
 			biomeDrynessMultiplier = builder
 					.comment(" How much hot biome's dryness will make nights really cold.",
 							" Affects only dry (minecraft down fall <0.2) and hot biome.",
-							" 0 means no dryness effect; 0.5 means the biome temp will be divided by 2 at the middle of the night.")
-					.defineInRange("Biome's Dryness Multiplier", 0.8d, 0, 1);
+							" 1 means no dryness effect; 0.5 means the biome temp will be divided by 2 at the middle of the night.")
+					.defineInRange("Biome's Dryness Multiplier", 0.2d, 0, 1);
 			builder.pop();
 
 			builder.comment(" The underground effect starts apply at Start Distance to the world surface.",
