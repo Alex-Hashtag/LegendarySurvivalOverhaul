@@ -4,6 +4,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import sfiomn.legendarysurvivaloverhaul.api.data.builder.ITemperatureBlockData;
+import sfiomn.legendarysurvivaloverhaul.api.data.builder.ITemperatureConsumableData;
 import sfiomn.legendarysurvivaloverhaul.api.data.builder.ITemperatureData;
 import sfiomn.legendarysurvivaloverhaul.api.data.providers.TemperatureDataProvider;
 
@@ -35,6 +36,10 @@ public class CandlelightTemperatureProvider extends TemperatureDataProvider {
         consumable("lasagne").addTemperature(temperatureConsumable(FOOD).temperatureLevel(2).duration(2400));
         consumable("pasta_with_bolognese").addTemperature(temperatureConsumable(FOOD).temperatureLevel(2).duration(2400));
         consumable("beef_with_mushroom_in_wine_and_potatoes").addTemperature(temperatureConsumable(FOOD).temperatureLevel(3).duration(4800));
+
+        ITemperatureConsumableData soupTemperatureData = temperatureConsumable(DRINK).temperatureLevel(2).duration(3600);
+        consumable("tomato_soup").addTemperature(soupTemperatureData);
+        consumable("mushroom_soup").addTemperature(soupTemperatureData);
 
         ITemperatureBlockData stoveTemp = temperatureBlock(6.0f).addProperty("lit", "true");
         ITemperatureBlockData stoveTempOff = temperatureBlock(0.0f).addProperty("lit", "false");

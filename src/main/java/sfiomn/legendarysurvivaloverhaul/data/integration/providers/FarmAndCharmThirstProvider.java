@@ -28,5 +28,12 @@ public class FarmAndCharmThirstProvider extends ThirstDataProvider {
         consumable("strawberry_tea_cup").addThirst(teaThirstData);
         consumable("nettle_tea_cup").addThirst(teaThirstData);
         consumable("ribwort_tea_cup").addThirst(teaThirstData);
+
+        IThirstData soupThirstData = thirstData(4, 3.5f);
+        consumable("simple_tomato_soup").addThirst(soupThirstData);
+        consumable("barley_soup").addThirst(soupThirstData);
+        consumable("onion_soup").addThirst(soupThirstData);
+        consumable("potato_soup").addThirst(soupThirstData);
+        consumable("goulash").addThirst(soupThirstData);
     }
 }

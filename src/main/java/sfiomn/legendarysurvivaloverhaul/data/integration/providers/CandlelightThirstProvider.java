@@ -18,6 +18,12 @@ public class CandlelightThirstProvider extends ThirstDataProvider {
     @Override
     public void generate(HolderLookup.Provider provider, ExistingFileHelper existingFileHelper) {
 
+        consumable("mozzarella").addThirst(thirstData(2, 0.0f));
+
+        IThirstData soupThirstData = thirstData(4, 3.5f);
+        consumable("tomato_soup").addThirst(soupThirstData);
+        consumable("mushroom_soup").addThirst(soupThirstData);
+
         IThirstData sinkThirst = thirstData(3, 0)
                 .addEffect(MobEffectRegistry.THIRST.get(), 300, 0.75f)
                 .addProperty("filled", "true");

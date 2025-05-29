@@ -3,6 +3,7 @@ package sfiomn.legendarysurvivaloverhaul.data.integration.providers;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraftforge.common.data.ExistingFileHelper;
+import sfiomn.legendarysurvivaloverhaul.api.data.builder.ITemperatureConsumableData;
 import sfiomn.legendarysurvivaloverhaul.api.data.providers.TemperatureDataProvider;
 
 import java.util.concurrent.CompletableFuture;
@@ -27,6 +28,12 @@ public class FarmAndCharmTemperatureProvider extends TemperatureDataProvider {
         consumable("stuffed_chicken").addTemperature(temperatureConsumable(FOOD).temperatureLevel(1).duration(2400));
         consumable("farmers_breakfast").addTemperature(temperatureConsumable(FOOD).temperatureLevel(1).duration(7200));
         consumable("sausage_with_oat_patty").addTemperature(temperatureConsumable(FOOD).temperatureLevel(2).duration(4800));
+
+        ITemperatureConsumableData soupTemperatureData = temperatureConsumable(DRINK).temperatureLevel(2).duration(3600);
+        consumable("simple_tomato_soup").addTemperature(soupTemperatureData);
+        consumable("barley_soup").addTemperature(soupTemperatureData);
+        consumable("onion_soup").addTemperature(soupTemperatureData);
+        consumable("potato_soup").addTemperature(soupTemperatureData);
 
         consumable("strawberry_tea").addTemperature(temperatureConsumable(DRINK).temperatureLevel(-2).duration(3600));
         consumable("nettle_tea").addTemperature(temperatureConsumable(DRINK).temperatureLevel(-2).duration(3600));
