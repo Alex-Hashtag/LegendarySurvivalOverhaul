@@ -13,7 +13,7 @@ import net.minecraftforge.fml.ModList;
 import net.minecraftforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
-import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonTemperature;
+import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonTemperatureDimension;
 import sfiomn.legendarysurvivaloverhaul.api.data.manager.ITemperatureDimensionManager;
 import sfiomn.legendarysurvivaloverhaul.network.packets.SyncTemperatureDimensionsPacket;
 
@@ -23,7 +23,7 @@ import java.util.Map;
 public class TemperatureDimensionListener extends SimpleJsonResourceReloadListener implements ITemperatureDimensionManager {
 
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
-    private static final Map<ResourceLocation, JsonTemperature> TEMPERATURE_DIMENSIONS = new HashMap<>();
+    private static final Map<ResourceLocation, JsonTemperatureDimension> TEMPERATURE_DIMENSIONS = new HashMap<>();
 
     public TemperatureDimensionListener() {
         super(GSON, LegendarySurvivalOverhaul.MOD_ID + "/temperature/dimensions");
@@ -35,10 +35,10 @@ public class TemperatureDimensionListener extends SimpleJsonResourceReloadListen
 
         resourceLocationJsonElementMap.forEach((key, json) -> {
             try {
-                var parsedJson = JsonTemperature.CODEC.parse(JsonOps.INSTANCE, json);
-                JsonTemperature temperature = parsedJson.getOrThrow(false, error -> LegendarySurvivalOverhaul.LOGGER.error("Failed parsing temperature dimension : {}", error));
+                var parsedJson = JsonTemperatureDimension.CODEC.parse(JsonOps.INSTANCE, json);
+                JsonTemperatureDimension temperatureDimension = parsedJson.getOrThrow(false, error -> LegendarySurvivalOverhaul.LOGGER.error("Failed parsing temperature dimension : {}", error));
                 if (ModList.get().isLoaded(key.getNamespace()))
-                    TEMPERATURE_DIMENSIONS.put(key, temperature);
+                    TEMPERATURE_DIMENSIONS.put(key, temperatureDimension);
             } catch (JsonParseException error) {
                 LegendarySurvivalOverhaul.LOGGER.error("Failed to parse temperature dimension json {}", key);
             }
@@ -51,13 +51,13 @@ public class TemperatureDimensionListener extends SimpleJsonResourceReloadListen
         SyncTemperatureDimensionsPacket.sendTo(packetTarget, TEMPERATURE_DIMENSIONS);
     }
 
-    public static void acceptServerTemperatureDimensions(Map<ResourceLocation, JsonTemperature> temperatureDimensions) {
+    public static void acceptServerTemperatureDimensions(Map<ResourceLocation, JsonTemperatureDimension> temperatureDimensions) {
         TEMPERATURE_DIMENSIONS.clear();
         TEMPERATURE_DIMENSIONS.putAll(temperatureDimensions);
     }
 
     @Override
-    public JsonTemperature get(ResourceLocation dimensionRegistryName) {
+    public JsonTemperatureDimension get(ResourceLocation dimensionRegistryName) {
         return TEMPERATURE_DIMENSIONS.get(dimensionRegistryName);
     }
 }

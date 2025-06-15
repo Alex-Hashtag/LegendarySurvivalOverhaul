@@ -17,7 +17,7 @@ public class MinecraftTemperatureProvider extends TemperatureDataProvider {
 
     @Override
     public void generate(HolderLookup.Provider provider, ExistingFileHelper existingFileHelper) {
-        dimension("overworld").temperature(20);
+        dimension("overworld").temperature(20).hasAltitude().seaLevelHeight(64);
         dimension("the_end").temperature(-15);
         dimension("the_nether").temperature(28);
 
@@ -105,11 +105,11 @@ public class MinecraftTemperatureProvider extends TemperatureDataProvider {
 
         fuelItem("coal").thermalType(ThermalTypeEnum.HEATING).duration(600);
         fuelItem("charcoal").thermalType(ThermalTypeEnum.HEATING).duration(600);
-        fuelItem("coal_block").thermalType(ThermalTypeEnum.HEATING).duration(5400);
+        fuelItem("coal_block").thermalType(ThermalTypeEnum.HEATING).duration(2700);
         fuelItem("ice").thermalType(ThermalTypeEnum.COOLING).duration(400);
         fuelItem("snowball").thermalType(ThermalTypeEnum.COOLING).duration(400);
         fuelItem("snow_block").thermalType(ThermalTypeEnum.COOLING).duration(600);
-        fuelItem("blue_ice").thermalType(ThermalTypeEnum.COOLING).duration(32400);
-        fuelItem("packed_ice").thermalType(ThermalTypeEnum.COOLING).duration(3600);
+        fuelItem("blue_ice").thermalType(ThermalTypeEnum.COOLING).duration(16200);
+        fuelItem("packed_ice").thermalType(ThermalTypeEnum.COOLING).duration(1800);
     }
 }

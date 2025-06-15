@@ -78,7 +78,7 @@ public class TemperatureDataManager {
      * @return Dimension Temperature
      */
     @Nullable
-    public static JsonTemperature getDimension(ResourceLocation dimensionRegistryName) {
+    public static JsonTemperatureDimension getDimension(ResourceLocation dimensionRegistryName) {
         return internalDimension.get(dimensionRegistryName);
     }
 

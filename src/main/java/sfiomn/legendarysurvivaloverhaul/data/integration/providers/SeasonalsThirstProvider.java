@@ -15,7 +15,7 @@ public class SeasonalsThirstProvider extends ThirstDataProvider {
 
     @Override
     public void generate(HolderLookup.Provider provider, ExistingFileHelper existingFileHelper) {
-        consumable("pumpkin_milkshake").addThirst(thirstData(4, 1.0f));
-        consumable("sweet_berry_milkshake").addThirst(thirstData(4, 1.0f));
+        consumable("pumpkin_milkshake").addThirst(thirstData(5, 2.0f));
+        consumable("sweet_berry_milkshake").addThirst(thirstData(5, 2.0f));
     }
 }

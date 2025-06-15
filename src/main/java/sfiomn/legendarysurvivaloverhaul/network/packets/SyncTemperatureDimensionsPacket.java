@@ -9,6 +9,7 @@ import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.network.NetworkEvent;
 import net.minecraftforge.network.PacketDistributor;
 import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonTemperature;
+import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonTemperatureDimension;
 import sfiomn.legendarysurvivaloverhaul.common.listeners.TemperatureDimensionListener;
 import sfiomn.legendarysurvivaloverhaul.network.NetworkHandler;
 
@@ -18,10 +19,10 @@ import java.util.function.Supplier;
 
 public class SyncTemperatureDimensionsPacket
 {
-	private final Map<ResourceLocation, JsonTemperature> temperatureDimensions;
+	private final Map<ResourceLocation, JsonTemperatureDimension> temperatureDimensions;
 	private int size;
 
-	public SyncTemperatureDimensionsPacket(Map<ResourceLocation, JsonTemperature> temperatureDimensions)
+	public SyncTemperatureDimensionsPacket(Map<ResourceLocation, JsonTemperatureDimension> temperatureDimensions)
 	{
 		this.temperatureDimensions = Map.copyOf(temperatureDimensions);
 		this.size = temperatureDimensions.size();
@@ -30,9 +31,9 @@ public class SyncTemperatureDimensionsPacket
 	public static void encode(SyncTemperatureDimensionsPacket message, FriendlyByteBuf buffer)
 	{
 		buffer.writeInt(message.size);
-		for (Map.Entry<ResourceLocation, JsonTemperature> e : message.temperatureDimensions.entrySet()) {
+		for (Map.Entry<ResourceLocation, JsonTemperatureDimension> e : message.temperatureDimensions.entrySet()) {
 			buffer.writeResourceLocation(e.getKey());
-			var r = JsonTemperature.CODEC.encodeStart(NbtOps.INSTANCE, e.getValue());
+			var r = JsonTemperatureDimension.CODEC.encodeStart(NbtOps.INSTANCE, e.getValue());
 			r.result().ifPresent(j -> buffer.writeNbt((CompoundTag) j));
 		}
 	}
@@ -40,12 +41,12 @@ public class SyncTemperatureDimensionsPacket
 	public static SyncTemperatureDimensionsPacket decode(FriendlyByteBuf buffer)
 	{
 		int size = buffer.readInt();
-		Map<ResourceLocation, JsonTemperature> temperatureDimensions = new HashMap<>();
+		Map<ResourceLocation, JsonTemperatureDimension> temperatureDimensions = new HashMap<>();
 		for (int i = 0; i < size; i++) {
 			ResourceLocation key = buffer.readResourceLocation();
 			CompoundTag tag = buffer.readNbt();
 			if (tag != null) {
-				var r = JsonTemperature.CODEC.parse(NbtOps.INSTANCE, tag);
+				var r = JsonTemperatureDimension.CODEC.parse(NbtOps.INSTANCE, tag);
 				r.result().ifPresent(t -> temperatureDimensions.put(key, t));
 			}
 		}
@@ -61,7 +62,7 @@ public class SyncTemperatureDimensionsPacket
 		supplier.get().setPacketHandled(true);
 	}
 
-	public static DistExecutor.SafeRunnable syncTemperatureDimensions(Map<ResourceLocation, JsonTemperature> temperatureDimensions)
+	public static DistExecutor.SafeRunnable syncTemperatureDimensions(Map<ResourceLocation, JsonTemperatureDimension> temperatureDimensions)
 	{
 		return new DistExecutor.SafeRunnable()
 		{
@@ -75,7 +76,7 @@ public class SyncTemperatureDimensionsPacket
 		};
 	}
 
-	public static void sendTo(PacketDistributor.PacketTarget packetDistributor, Map<ResourceLocation, JsonTemperature> temperatureDimensions) {
+	public static void sendTo(PacketDistributor.PacketTarget packetDistributor, Map<ResourceLocation, JsonTemperatureDimension> temperatureDimensions) {
 		NetworkHandler.INSTANCE.send(packetDistributor, new SyncTemperatureDimensionsPacket(temperatureDimensions));
 	}
 }

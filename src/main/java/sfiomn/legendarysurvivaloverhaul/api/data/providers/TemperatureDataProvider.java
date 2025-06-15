@@ -38,7 +38,7 @@ public abstract class TemperatureDataProvider implements DataProvider {
     private final Map<String, ITemperatureResistanceData> itemBuilders = new HashMap<>();
     private final Map<String, ITemperatureBiomeOverrideData> biomeBuilders = new HashMap<>();
     private final Map<String, ITemperatureFuelItemData> fuelItemBuilders = new HashMap<>();
-    private final Map<String, ITemperatureData> dimensionBuilders = new HashMap<>();
+    private final Map<String, ITemperatureDimensionData> dimensionBuilders = new HashMap<>();
     private final Map<String, ITemperatureData> mountBuilders = new HashMap<>();
     private final Map<String, ITemperatureResistanceData> originBuilders = new HashMap<>();
     private final ExistingFileHelper fileHelper;
@@ -150,8 +150,8 @@ public abstract class TemperatureDataProvider implements DataProvider {
         return this.fuelItemBuilders.computeIfAbsent(id, (k) -> new TemperatureFuelItemData());
     }
 
-    public final ITemperatureData dimension(String id) {
-        return this.dimensionBuilders.computeIfAbsent(id, (k) -> new TemperatureData());
+    public final ITemperatureDimensionData dimension(String id) {
+        return this.dimensionBuilders.computeIfAbsent(id, (k) -> new TemperatureDimensionData());
     }
 
     public final ITemperatureData mount(String id) {
