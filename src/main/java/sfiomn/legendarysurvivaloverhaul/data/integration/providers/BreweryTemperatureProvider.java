@@ -3,6 +3,7 @@ package sfiomn.legendarysurvivaloverhaul.data.integration.providers;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraftforge.common.data.ExistingFileHelper;
+import sfiomn.legendarysurvivaloverhaul.api.data.builder.ITemperatureConsumableData;
 import sfiomn.legendarysurvivaloverhaul.api.data.providers.TemperatureDataProvider;
 
 import java.util.concurrent.CompletableFuture;
@@ -26,22 +27,24 @@ public class BreweryTemperatureProvider extends TemperatureDataProvider {
 
         consumable("potato_salad").addTemperature(temperatureConsumable(FOOD).temperatureLevel(-1).duration(2400));
 
-        consumable("whiskey_jojannik").addTemperature(temperatureConsumable(DRINK).temperatureLevel(1).duration(2400));
-        consumable("whiskey_lilitusinglemalt").addTemperature(temperatureConsumable(DRINK).temperatureLevel(1).duration(2400));
-        consumable("whiskey_cristelwalker").addTemperature(temperatureConsumable(DRINK).temperatureLevel(1).duration(2400));
-        consumable("whiskey_maggoallan").addTemperature(temperatureConsumable(DRINK).temperatureLevel(1).duration(2400));
-        consumable("whiskey_carrasconlabel").addTemperature(temperatureConsumable(DRINK).temperatureLevel(1).duration(2400));
-        consumable("whiskey_ak").addTemperature(temperatureConsumable(DRINK).temperatureLevel(1).duration(2400));
-        consumable("whiskey_highland_hearth").addTemperature(temperatureConsumable(DRINK).temperatureLevel(1).duration(2400));
-        consumable("whiskey_smokey_reverie").addTemperature(temperatureConsumable(DRINK).temperatureLevel(1).duration(2400));
-        consumable("whiskey_jamesons_malt").addTemperature(temperatureConsumable(DRINK).temperatureLevel(1).duration(2400));
+        ITemperatureConsumableData whiskeyTemperature = temperatureConsumable(DRINK).temperatureLevel(1).duration(2400);
+        consumable("whiskey_jojannik").addTemperature(whiskeyTemperature);
+        consumable("whiskey_lilitusinglemalt").addTemperature(whiskeyTemperature);
+        consumable("whiskey_cristelwalker").addTemperature(whiskeyTemperature);
+        consumable("whiskey_maggoallan").addTemperature(whiskeyTemperature);
+        consumable("whiskey_carrasconlabel").addTemperature(whiskeyTemperature);
+        consumable("whiskey_ak").addTemperature(whiskeyTemperature);
+        consumable("whiskey_highland_hearth").addTemperature(whiskeyTemperature);
+        consumable("whiskey_smokey_reverie").addTemperature(whiskeyTemperature);
+        consumable("whiskey_jamesons_malt").addTemperature(whiskeyTemperature);
 
-        consumable("beer_wheat").addTemperature(temperatureConsumable(DRINK).temperatureLevel(-1).duration(2400));
-        consumable("beer_barley").addTemperature(temperatureConsumable(DRINK).temperatureLevel(-1).duration(2400));
-        consumable("beer_hops").addTemperature(temperatureConsumable(DRINK).temperatureLevel(-1).duration(2400));
-        consumable("beer_nettle").addTemperature(temperatureConsumable(DRINK).temperatureLevel(-1).duration(2400));
-        consumable("beer_oat").addTemperature(temperatureConsumable(DRINK).temperatureLevel(-1).duration(2400));
-        consumable("beer_haley").addTemperature(temperatureConsumable(DRINK).temperatureLevel(-2).duration(2400));
+        ITemperatureConsumableData beerTemperature = temperatureConsumable(DRINK).temperatureLevel(-1).duration(2400);
+        consumable("beer_wheat").addTemperature(beerTemperature);
+        consumable("beer_barley").addTemperature(beerTemperature);
+        consumable("beer_hops").addTemperature(beerTemperature);
+        consumable("beer_nettle").addTemperature(beerTemperature);
+        consumable("beer_oat").addTemperature(beerTemperature);
+        consumable("beer_haley").addTemperature(beerTemperature);
 
         item("brewfest_hat").heatResistance(1.0f);
         item("brewfest_regalia").heatResistance(1.5f);

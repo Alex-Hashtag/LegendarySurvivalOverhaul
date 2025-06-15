@@ -21,7 +21,7 @@ public class BreweryThirstProvider extends ThirstDataProvider {
     @Override
     public void generate(HolderLookup.Provider provider, ExistingFileHelper existingFileHelper) {
 
-        IThirstData whiskey_hydration = thirstData(3, 2.0f).addEffect(MobEffectRegistry.THIRST.get(), 800, 0.4f);
+        IThirstData whiskey_hydration = thirstData(4, 4.0f).addEffect(MobEffectRegistry.THIRST.get(), 800, 0.4f);
         consumable("whiskey_jojannik").addThirst(whiskey_hydration);
         consumable("whiskey_lilitusinglemalt").addThirst(whiskey_hydration);
         consumable("whiskey_cristelwalker").addThirst(whiskey_hydration);
@@ -32,7 +32,7 @@ public class BreweryThirstProvider extends ThirstDataProvider {
         consumable("whiskey_smokey_reverie").addThirst(whiskey_hydration);
         consumable("whiskey_jamesons_malt").addThirst(whiskey_hydration);
 
-        IThirstData beer_hydration = thirstData(8, 4.0f).addEffect(MobEffectRegistry.THIRST.get(), 600, 0.2f);
+        IThirstData beer_hydration = thirstData(8, 6.0f).addEffect(MobEffectRegistry.THIRST.get(), 600, 0.2f);
         consumable("beer_wheat").addThirst(beer_hydration);
         consumable("beer_barley").addThirst(beer_hydration);
         consumable("beer_hops").addThirst(beer_hydration);
