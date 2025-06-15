@@ -43,7 +43,8 @@ public class BiomeModifier extends ModifierBase
 		double drynessTimeMultiplier = 1;
 		double drynessAverageMultiplier = 1;
 		if (worldTime > 12000 && !level.dimensionType().hasCeiling() && Config.Baked.biomeDrynessMultiplier < 1) {
-			drynessTimeMultiplier = 1 + Math.sin(worldTime * Math.PI / 12000) * (1 - Config.Baked.biomeDrynessMultiplier);
+			// PI / 12 000 = 0.00026179938
+			drynessTimeMultiplier = 1 + Math.sin(worldTime * 0.00026179938) * (1 - Config.Baked.biomeDrynessMultiplier);
 			drynessAverageMultiplier = (1 + Config.Baked.biomeDrynessMultiplier) / 2.0f;
 		}
 

@@ -1,22 +1,18 @@
 package sfiomn.legendarysurvivaloverhaul.data.providers;
+/**
+ * Disabled because of Neoforge compatibility, ParticleDescriptionProvider doesn't exist in neoforge 1.20.1
+ */
 
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.data.ExistingFileHelper;
-import net.minecraftforge.common.data.ParticleDescriptionProvider;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.registry.ParticleTypeRegistry;
 
 import java.util.ArrayList;
 import java.util.List;
-
+/*
 public class ModParticleProvider extends ParticleDescriptionProvider {
-    /**
-     * Creates an instance of the data provider.
-     *
-     * @param output     the expected root directory the data generator outputs to
-     * @param fileHelper the helper used to validate a texture's existence
-     */
     public ModParticleProvider(PackOutput output, ExistingFileHelper fileHelper) {
         super(output, fileHelper);
     }
@@ -41,4 +37,4 @@ public class ModParticleProvider extends ParticleDescriptionProvider {
         }
         spriteSet(ParticleTypeRegistry.COLD_BREATH.get(), coldBreathSprites);
     }
-}
+}*/

@@ -161,9 +161,9 @@ public class ClientForgeEvents {
                     RenderWetnessGui.updateTimer();
 
                 if (shouldApplyThirst(player) && Config.Baked.lowHydrationEffect)
-                    RenderThirstOverlay.updateThirstEffect(player);
+                    RenderBlurOverlay.updateBlurIntensity(player);
 
-                if (LegendarySurvivalOverhaul.sereneSeasonsLoaded && Config.Baked.seasonCardsEnabled)
+                if (LegendarySurvivalOverhaul.sereneSeasonsLoaded && Config.Baked.ssSeasonCardsEnabled)
                     RenderSeasonCards.updateSeasonCardFading(player);
 
                 if (Config.Baked.localizedBodyDamageEnabled) {
@@ -203,7 +203,7 @@ public class ClientForgeEvents {
         Player player = Minecraft.getInstance().player;
         if (player != null && event.getStage() == RenderLevelStageEvent.Stage.AFTER_WEATHER
                 && Config.Baked.lowHydrationEffect && shouldApplyThirst(player)) {
-            RenderThirstOverlay.render(player);
+            RenderBlurOverlay.render(player);
         }
     }
 

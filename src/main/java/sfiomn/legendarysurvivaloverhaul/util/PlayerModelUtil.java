@@ -153,12 +153,14 @@ public class PlayerModelUtil {
 
         hitVector = new Vec3(hitVector.x, 0, hitVector.z).normalize();
         playerVector = new Vec3(playerVector.x, 0, playerVector.z).normalize();
-        return ((Math.atan2((playerVector.cross(hitVector).dot(new Vec3(0, 1, 0))), playerVector.dot(hitVector)) / (2 * Math.PI)) * 360) % 180;
+        // PI * 2 = 6.28318530718
+        return ((Math.atan2((playerVector.cross(hitVector).dot(new Vec3(0, 1, 0))), playerVector.dot(hitVector)) / 6.28318530718) * 360) % 180;
     }
 
     public static double getRightRatioDistance(Vec3 hitPosition, Player player) {
         Vec3 hitVector = hitPosition.subtract(player.position()).normalize();
-        Vec3 rotatedPlayerRotVector = Vec3.directionFromRotation(0, player.yBodyRot).yRot((float) Math.PI / 2.0f).normalize();
+        // PI / 2 = 1.5707963267948966
+        Vec3 rotatedPlayerRotVector = Vec3.directionFromRotation(0, player.yBodyRot).yRot(1.5707963267948966f).normalize();
         return hitVector.dot(rotatedPlayerRotVector) / player.getBbWidth();
     }
 
@@ -179,7 +181,8 @@ public class PlayerModelUtil {
         Vec3 projectedHitVector = new Vec3(hitVector.x + k * playerVector.x, hitVector.y + k * playerVector.y, hitVector.z + k * playerVector.z);
         // Calculate angle between projection and vertical axis
         Vec3 verticalAxis = new Vec3(0, 1, 0);
-        return ((Math.atan2((projectedHitVector.cross(verticalAxis)).dot(playerVector), projectedHitVector.dot(verticalAxis)) / (2 * Math.PI)) * 360) % 180;
+        // PI * 2 = 6.28318530718
+        return ((Math.atan2((projectedHitVector.cross(verticalAxis)).dot(playerVector), projectedHitVector.dot(verticalAxis)) / 6.28318530718) * 360) % 180;
     }
 
     public enum BoundingBoxBodyPartEnum {

@@ -3,14 +3,11 @@ package sfiomn.legendarysurvivaloverhaul.util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.decoration.ItemFrame;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.EntityHitResult;
@@ -60,12 +57,12 @@ public final class WorldUtil
 		}
 	}
 
-	public static boolean isRainingOrSnowingAt(Level world, BlockPos pos) {
-		if (!world.isRaining()) {
+	public static boolean isRainingOrSnowingAt(Level level, BlockPos pos) {
+		if (!level.isRaining()) {
 			return false;
-		} else if (!world.canSeeSky(pos)) {
+		} else if (!level.canSeeSky(pos)) {
 			return false;
-		} else return world.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING, pos).getY() <= pos.getY();
+		} else return level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING, pos).getY() <= pos.getY();
 	}
 	
 	public static float calculateClientWorldEntityTemperature(Level world, Entity entity)

@@ -19,13 +19,14 @@ public class FernBlossomParticle extends TextureSheetParticle {
         this.setSpriteFromAge(animatedSprite);
         this.animatedSprite = animatedSprite;
 
-        this.angle = this.random.nextFloat() * ((float) Math.PI * 2F);
+        //PI * 2 = 6.28318530718
+        this.angle = this.random.nextFloat() * (6.28318530718f);
 
         //  Duration of particle in ticks
         this.lifetime = this.random.nextInt(75) + 75;
 
         //  Scaling
-        this.quadSize *= (2.0F + this.random.nextFloat() * 0.5);
+        this.quadSize *= (float) (2.0F + this.random.nextFloat() * 0.5);
 
         //  Motion of particles
         this.xd = xd;
@@ -42,7 +43,8 @@ public class FernBlossomParticle extends TextureSheetParticle {
     public void tick() {
         super.tick();
         if (this.age % 5 == 0) {
-            this.angle = (float) Math.random() * ((float) Math.PI * 2F);
+            // PI * 2 = 6.28318530718
+            this.angle = (float) (Math.random() * 6.28318530718);
         }
         this.xd += Math.cos(this.angle) * 0.0005;
         this.zd += Math.sin(this.angle) * 0.0005;

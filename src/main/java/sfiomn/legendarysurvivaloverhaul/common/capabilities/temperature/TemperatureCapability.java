@@ -225,7 +225,8 @@ public class TemperatureCapability implements ITemperatureCapability
 	}
 
 	private void shakePlayer(Player player) {
-		player.setYBodyRot(player.getYRot() + (float) (Math.cos((double) player.tickCount * 3.25D) * Math.PI * (double) 0.4F));
+		// PI * 0.4 = 1.25663706144
+		player.setYBodyRot(player.getYRot() + (float) (Math.cos((double) player.tickCount * 3.25D) * 1.25663706144));
 	}
 	
 	private void tickTemperature(float currentTemp, float destination)

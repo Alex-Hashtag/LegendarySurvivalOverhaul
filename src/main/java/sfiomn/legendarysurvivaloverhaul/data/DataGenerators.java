@@ -27,7 +27,7 @@ public final class DataGenerators
 
 		gen.addProvider(event.includeClient(), new ModBlockStateProvider(packOutput, existingFileHelper));
 		gen.addProvider(event.includeClient(), new ModItemModelProvider(packOutput, existingFileHelper));
-		gen.addProvider(event.includeClient(), new ModParticleProvider(packOutput, existingFileHelper));
+		//gen.addProvider(event.includeClient(), new ModParticleProvider(packOutput, existingFileHelper));
 
 		gen.addProvider(event.includeServer(), new ModDatapackBuiltinEntriesProvider(packOutput, lookupProvider));
 		gen.addProvider(event.includeServer(), new ModEntityTypesTagProvider(packOutput, lookupProvider, existingFileHelper));

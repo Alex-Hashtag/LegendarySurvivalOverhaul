@@ -12,7 +12,7 @@ import sfiomn.legendarysurvivaloverhaul.util.CapabilityUtil;
 import javax.annotation.Nullable;
 
 @OnlyIn(Dist.CLIENT)
-public class RenderThirstOverlay {
+public class RenderBlurOverlay {
 
     private static FocusShader focusShader;
     private static final float DEFAULT_SHADER_INTENSITY = 0;
@@ -34,7 +34,7 @@ public class RenderThirstOverlay {
         }
     }
 
-    public static void updateThirstEffect(@Nullable Player player) {
+    public static void updateBlurIntensity(@Nullable Player player) {
         float targetShaderIntensity = DEFAULT_SHADER_INTENSITY;
         if (player != null && player.isAlive() && !player.isCreative() && !player.isSpectator()) {
 
