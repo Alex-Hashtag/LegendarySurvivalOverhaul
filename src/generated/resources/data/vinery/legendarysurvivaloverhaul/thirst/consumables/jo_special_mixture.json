@@ -8,8 +8,8 @@
         "effect": "legendarysurvivaloverhaul:thirst"
       }
     ],
-    "hydration": 5,
+    "hydration": 7,
     "properties": {},
-    "saturation": 2.0
+    "saturation": 3.0
   }
 ]

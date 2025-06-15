@@ -20,5 +20,11 @@ public class ValhelsiaStructuresTemperatureProvider extends TemperatureDataProvi
                 .addTemperature(temperatureBlock(12.5f).addProperty("lit", "true"))
                 .addTemperature(temperatureBlock(0.0f).addProperty("lit", "false"));
 
+        block("soul_brazier")
+                .addTemperature(temperatureBlock(-12.5f).addProperty("lit", "true"))
+                .addTemperature(temperatureBlock(0.0f).addProperty("lit", "false"));
+
+        item("brazier").temperature(2.5f);
+        item("soul_brazier").temperature(-2.5f);
     }
 }

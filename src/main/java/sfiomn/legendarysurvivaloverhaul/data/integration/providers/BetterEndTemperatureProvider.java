@@ -18,6 +18,14 @@ public class BetterEndTemperatureProvider extends TemperatureDataProvider {
     public void generate(HolderLookup.Provider provider, ExistingFileHelper existingFileHelper) {
         fuelItem("charcoal_block").thermalType(ThermalTypeEnum.HEATING).duration(5400);
 
+        fuelItem("emerald_ice").thermalType(ThermalTypeEnum.COOLING).duration(1800);
+        fuelItem("dense_emerald_ice").thermalType(ThermalTypeEnum.COOLING).duration(3600);
+        fuelItem("ancient_emerald_ice").thermalType(ThermalTypeEnum.COOLING).duration(16200);
+
+        item("emerald_ice").temperature(-2.0f);
+        item("dense_emerald_ice").temperature(-3.0f);
+        item("ancient_emerald_ice").temperature(-4.0f);
+
         item("aeternium_helmet").heatResistance(2.0f);
         item("aeternium_chestplate").heatResistance(3.0f);
         item("aeternium_leggings").heatResistance(2.5f);

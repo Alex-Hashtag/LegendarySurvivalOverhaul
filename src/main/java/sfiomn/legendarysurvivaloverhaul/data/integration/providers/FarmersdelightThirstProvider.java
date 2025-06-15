@@ -26,8 +26,8 @@ public class FarmersdelightThirstProvider extends ThirstDataProvider {
         consumable("melon_popsicle").addThirst(thirstData(4, 1.0f));
         consumable("fruit_salad").addThirst(thirstData(6, 2.0f));
 
-        consumable("chicken_soup").addThirst(thirstData(4, 1.0f));
-        consumable("vegetable_soup").addThirst(thirstData(4, 1.0f));
+        consumable("chicken_soup").addThirst(thirstData(4, 2.0f));
+        consumable("vegetable_soup").addThirst(thirstData(4, 2.0f));
         consumable("pumpkin_soup").addThirst(thirstData(7, 3.0f));
     }
 }

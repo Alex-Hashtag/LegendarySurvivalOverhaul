@@ -41,11 +41,17 @@ public class SupplementariesTemperatureProvider extends TemperatureDataProvider 
         block("candle_holder_magenta").addTemperature(candleOn).addTemperature(candleOff);
         block("candle_holder_pink").addTemperature(candleOn).addTemperature(candleOff);
 
-        block("sconce").addTemperature(candleOn).addTemperature(candleOff);
-        block("sconce_lever").addTemperature(candleOn).addTemperature(candleOff);
+        ITemperatureBlockData sconceOn = temperatureBlock(2.5f).addProperty("lit", "true");
+        ITemperatureBlockData sconceOff = temperatureBlock(0.0f).addProperty("lit", "false");
+        block("sconce").addTemperature(sconceOn).addTemperature(sconceOff);
+        block("sconce_lever").addTemperature(sconceOn).addTemperature(sconceOff);
 
-        ITemperatureBlockData soulSconceOn = temperatureBlock(-1.5f).addProperty("lit", "true");
+        ITemperatureBlockData soulSconceOn = temperatureBlock(-2.5f).addProperty("lit", "true");
         ITemperatureBlockData soulSconceOff = temperatureBlock(0.0f).addProperty("lit", "false");
         block("soul_sconce").addTemperature(soulSconceOn).addTemperature(soulSconceOff);
+
+        item("sconce").temperature(1.5f);
+        item("sconce_lever").temperature(1.5f);
+        item("soul_sconce").temperature(-1.5f);
     }
 }

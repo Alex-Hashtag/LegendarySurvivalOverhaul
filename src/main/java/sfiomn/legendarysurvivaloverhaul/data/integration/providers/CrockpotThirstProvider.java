@@ -18,11 +18,12 @@ public class CrockpotThirstProvider extends ThirstDataProvider {
 
         consumable("asparagus_soup").addThirst(thirstData(4, 2.0f));
         consumable("bone_soup").addThirst(thirstData(4, 2.0f));
-        consumable("iced_tea").addThirst(thirstData(8, 5.0f));
-        consumable("tea").addThirst(thirstData(5, 2.0f));
         consumable("gazpacho").addThirst(thirstData(4, 2.0f));
-        consumable("hot_cocoa").addThirst(thirstData(2, 1.0f));
-        consumable("fruit_medley").addThirst(thirstData(3, 1.0f));
-        consumable("veg_stinger").addThirst(thirstData(5, 2.0f));
+
+        consumable("iced_tea").addThirst(thirstData(8, 5.0f));
+        consumable("tea").addThirst(thirstData(6, 3.0f));
+        consumable("hot_cocoa").addThirst(thirstData(4, 2.0f));
+        consumable("fruit_medley").addThirst(thirstData(6, 3.0f));
+        consumable("veg_stinger").addThirst(thirstData(6, 3.0f));
     }
 }

@@ -17,15 +17,15 @@ public class HerbalBrewsThirstProvider extends ThirstDataProvider {
     @Override
     public void generate(HolderLookup.Provider provider, ExistingFileHelper existingFileHelper) {
 
-        consumable("green_tea").addThirst(thirstData(4, 1.0f));
-        consumable("black_tea").addThirst(thirstData(4, 1.0f));
-        consumable("hibiscus_tea").addThirst(thirstData(4, 1.0f));
-        consumable("lavender_tea").addThirst(thirstData(5, 1.5f));
-        consumable("coffee").addThirst(thirstData(5, 1.5f));
-        consumable("milk_coffee").addThirst(thirstData(6, 2.0f));
-        consumable("rooibos_tea").addThirst(thirstData(6, 3.0f));
-        consumable("oolong_tea").addThirst(thirstData(6, 3.0f));
-        consumable("yerba_mate_tea").addThirst(thirstData(7, 3.0f));
-        consumable("flask").addThirst(thirstData(7, 3.5f));
+        consumable("green_tea").addThirst(thirstData(5, 3.0f));
+        consumable("black_tea").addThirst(thirstData(5, 3.0f));
+        consumable("hibiscus_tea").addThirst(thirstData(6, 4.0f));
+        consumable("lavender_tea").addThirst(thirstData(7, 5.0f));
+        consumable("coffee").addThirst(thirstData(5, 3.5f));
+        consumable("milk_coffee").addThirst(thirstData(6, 4.0f));
+        consumable("rooibos_tea").addThirst(thirstData(9, 7.0f));
+        consumable("oolong_tea").addThirst(thirstData(10, 10.0f));
+        consumable("yerba_mate_tea").addThirst(thirstData(12, 12.0f));
+        consumable("flask").addThirst(thirstData(7, 4.5f));
     }
 }

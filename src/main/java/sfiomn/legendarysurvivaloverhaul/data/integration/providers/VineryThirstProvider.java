@@ -19,8 +19,8 @@ public class VineryThirstProvider extends ThirstDataProvider {
     public void generate(HolderLookup.Provider provider, ExistingFileHelper existingFileHelper) {
         consumable("rotten_cherry").addThirst(thirstData(-4, 0.0f));
 
-        IThirstData grape_hydration = thirstData(2, 0.0f);
-        IThirstData grape_hydration2 = thirstData(4, 1.0f);
+        IThirstData grape_hydration = thirstData(4, 0.0f);
+        IThirstData grape_hydration2 = thirstData(6, 2.0f);
         consumable("cherry").addThirst(grape_hydration);
         consumable("red_grape").addThirst(grape_hydration);
         consumable("white_grape").addThirst(grape_hydration);
@@ -31,8 +31,8 @@ public class VineryThirstProvider extends ThirstDataProvider {
         consumable("jungle_grapes_red").addThirst(grape_hydration2);
         consumable("jungle_grapes_white").addThirst(grape_hydration2);
 
-        IThirstData juice_hydration = thirstData(5, 2.0f);
-        IThirstData juice_hydration2 = thirstData(7, 3.0f);
+        IThirstData juice_hydration = thirstData(7, 3.0f);
+        IThirstData juice_hydration2 = thirstData(9, 5.0f);
         consumable("red_grapejuice").addThirst(juice_hydration);
         consumable("white_grapejuice").addThirst(juice_hydration);
         consumable("red_savanna_grapejuice").addThirst(juice_hydration);
@@ -43,8 +43,8 @@ public class VineryThirstProvider extends ThirstDataProvider {
         consumable("white_jungle_grapejuice").addThirst(juice_hydration2);
         consumable("apple_juice").addThirst(grape_hydration2);
 
-        IThirstData vinery_hydration1 = thirstData(5, 2.0f).addEffect(MobEffectRegistry.THIRST.get(), 400, 0.1f);
-        IThirstData vinery_hydration2 = thirstData(6, 4.0f).addEffect(MobEffectRegistry.THIRST.get(), 400, 0.1f);
+        IThirstData vinery_hydration1 = thirstData(7, 3.0f).addEffect(MobEffectRegistry.THIRST.get(), 400, 0.1f);
+        IThirstData vinery_hydration2 = thirstData(9, 5.0f).addEffect(MobEffectRegistry.THIRST.get(), 400, 0.1f);
         consumable("apple_cider").addThirst(vinery_hydration1);
         consumable("apple_wine").addThirst(vinery_hydration1);
         consumable("noir_wine").addThirst(vinery_hydration1);
@@ -69,14 +69,14 @@ public class VineryThirstProvider extends ThirstDataProvider {
         consumable("stal_wine").addThirst(vinery_hydration2);
         consumable("chenet_wine").addThirst(vinery_hydration2);
 
-        consumable("bottle_mojang_noir").addThirst(thirstData(7, 4.0f).addEffect(MobEffectRegistry.THIRST.get(), 600, 0.2f));
+        consumable("bottle_mojang_noir").addThirst(thirstData(8, 5.0f).addEffect(MobEffectRegistry.THIRST.get(), 600, 0.2f));
 
-        IThirstData vinery_hydration3 = thirstData(8, 5.0f).addEffect(MobEffectRegistry.THIRST.get(), 800, 0.3f);
+        IThirstData vinery_hydration3 = thirstData(9, 8.0f).addEffect(MobEffectRegistry.THIRST.get(), 800, 0.3f);
         // Nether / End
         consumable("mellohi_wine").addThirst(vinery_hydration3);
         consumable("cristel_wine").addThirst(vinery_hydration3);
         consumable("chorus_wine").addThirst(vinery_hydration3);
 
-        consumable("jellie_wine").addThirst(thirstData(12, 7.0f).addEffect(MobEffectRegistry.THIRST.get(), 1000, 0.3f));
+        consumable("jellie_wine").addThirst(thirstData(12, 10.0f).addEffect(MobEffectRegistry.THIRST.get(), 1000, 0.3f));
     }
 }

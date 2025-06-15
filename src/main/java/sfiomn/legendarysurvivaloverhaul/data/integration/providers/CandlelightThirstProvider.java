@@ -20,7 +20,7 @@ public class CandlelightThirstProvider extends ThirstDataProvider {
 
         consumable("mozzarella").addThirst(thirstData(2, 0.0f));
 
-        IThirstData soupThirstData = thirstData(4, 3.5f);
+        IThirstData soupThirstData = thirstData(4, 2.0f);
         consumable("tomato_soup").addThirst(soupThirstData);
         consumable("mushroom_soup").addThirst(soupThirstData);
 
