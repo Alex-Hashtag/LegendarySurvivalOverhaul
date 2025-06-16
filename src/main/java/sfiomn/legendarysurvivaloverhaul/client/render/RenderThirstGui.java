@@ -77,17 +77,21 @@ public class RenderThirstGui
 
 		// Calculation of hydration preview
 		ItemStack currentHeldItemStack = player.getMainHandItem();
-		if (Config.Baked.showDrinkPreview && currentHeldItemStack.getItem() != heldItemOnPreview) {
-			JsonThirstConsumable jsonThirstConsumable = ThirstDataManager.getConsumable(currentHeldItemStack);
-			heldItemHydration = (jsonThirstConsumable != null) ? jsonThirstConsumable.hydration : 0;
-			heldItemSaturation = (jsonThirstConsumable != null) ? jsonThirstConsumable.saturation : 0;
-			heldItemThirst = jsonThirstConsumable != null && jsonThirstConsumable.effects.stream().anyMatch(jsonEffectParameter -> jsonEffectParameter.name.equals(LegendarySurvivalOverhaul.MOD_ID + ":thirst"));
+		if (Config.Baked.showDrinkPreview) {
+
+			if (player.tickCount % 10 == 0) {
+				JsonThirstConsumable jsonThirstConsumable = ThirstDataManager.getConsumable(currentHeldItemStack);
+				heldItemHydration = (jsonThirstConsumable != null) ? jsonThirstConsumable.hydration : 0;
+				heldItemSaturation = (jsonThirstConsumable != null) ? jsonThirstConsumable.saturation : 0;
+				heldItemThirst = jsonThirstConsumable != null && jsonThirstConsumable.effects.stream().anyMatch(jsonEffectParameter -> jsonEffectParameter.name.equals(LegendarySurvivalOverhaul.MOD_ID + ":thirst"));
+			}
+
 			// Force a reset flash when item becomes edible && avoid this reset if moving from edible to edible
 			// Improve the sync with appleskin flashing
 			if (heldItemOnPreview == null || currentHeldItemStack.isEdible() != heldItemOnPreview.isEdible()) {
+				heldItemOnPreview = currentHeldItemStack.getItem();
 				resetFlash();
 			}
-			heldItemOnPreview = currentHeldItemStack.getItem();
 		}
 
 		if (heldItemHydration == 0 && heldItemSaturation == 0 && !heldItemThirst)
