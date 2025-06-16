@@ -1,6 +1,8 @@
 package sfiomn.legendarysurvivaloverhaul.util.internal;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.player.Player;
@@ -8,8 +10,12 @@ import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.tuple.Pair;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.bodydamage.*;
+import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonHealingConsumable;
+import sfiomn.legendarysurvivaloverhaul.api.data.manager.BodyDamageDataManager;
 import sfiomn.legendarysurvivaloverhaul.api.health.HealthUtil;
+import sfiomn.legendarysurvivaloverhaul.client.ClientHooks;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
+import sfiomn.legendarysurvivaloverhaul.registry.SoundRegistry;
 import sfiomn.legendarysurvivaloverhaul.util.CapabilityUtil;
 
 import java.util.*;
@@ -67,6 +73,24 @@ public class BodyDamageUtilInternal implements IBodyDamageUtil {
                 continue;
             }
             firstAidSuppliesBoostingEffects.add(boostingEffect);
+        }
+    }
+
+    @Override
+    public void applyConsumableHealing(Player player, ResourceLocation itemRegistryName) {
+        JsonHealingConsumable jsonConsumableHeal = BodyDamageDataManager.getHealingItem(itemRegistryName);
+
+        if (jsonConsumableHeal != null) {
+            if (jsonConsumableHeal.healingCharges > 0) {
+                if (player.level().isClientSide && Minecraft.getInstance().screen == null)
+                    ClientHooks.openBodyHealthScreen(player, player.getUsedItemHand(), true,
+                            jsonConsumableHeal.healingCharges, jsonConsumableHeal.healingValue, jsonConsumableHeal.healingTime);
+            } else if (jsonConsumableHeal.healingCharges == 0) {
+                for (BodyPartEnum bodyPart : BodyPartEnum.values()) {
+                    BodyDamageUtil.applyHealingTimeBodyPart(player, bodyPart, jsonConsumableHeal.healingValue, jsonConsumableHeal.healingTime);
+                }
+                player.level().playSound(null, player, SoundRegistry.HEAL_BODY_PART.get(), SoundSource.PLAYERS, 1.0f, 1.0f);
+            }
         }
     }
 

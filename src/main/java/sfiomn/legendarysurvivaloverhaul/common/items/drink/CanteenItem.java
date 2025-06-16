@@ -142,18 +142,14 @@ public class CanteenItem extends DrinkItem {
     }
 
     @Override
-    public ItemStack finishUsingItem(ItemStack stack, Level world, LivingEntity entity) {
-        if (entity instanceof Player player && canDrink(stack) && !world.isClientSide) {
+    public ItemStack finishUsingItem(ItemStack stack, Level level, LivingEntity entity) {
+        if(level.isClientSide || !(entity instanceof Player player))
+            return stack;
 
-            JsonThirstConsumable jsonThirstConsumable = ThirstDataManager.getConsumable(stack);
+        runSecondaryEffect(player, stack);
 
-            if (jsonThirstConsumable != null) {
-                ThirstUtil.takeDrink(player, jsonThirstConsumable.hydration, jsonThirstConsumable.saturation, jsonThirstConsumable.effects);
-            }
+        shrinkCapacity(stack);
 
-            runSecondaryEffect(player, stack);
-            shrinkCapacity(stack);
-        }
         return stack;
     }
 

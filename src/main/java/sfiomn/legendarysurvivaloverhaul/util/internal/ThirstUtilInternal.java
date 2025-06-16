@@ -15,10 +15,12 @@ import net.minecraftforge.registries.ForgeRegistries;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonMobEffect;
 import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonThirstBlock;
+import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonThirstConsumable;
 import sfiomn.legendarysurvivaloverhaul.api.data.manager.ThirstDataManager;
 import sfiomn.legendarysurvivaloverhaul.api.thirst.HydrationEnum;
 import sfiomn.legendarysurvivaloverhaul.api.thirst.IThirstCapability;
 import sfiomn.legendarysurvivaloverhaul.api.thirst.IThirstUtil;
+import sfiomn.legendarysurvivaloverhaul.api.thirst.ThirstUtil;
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.thirst.ThirstCapability;
 import sfiomn.legendarysurvivaloverhaul.common.integration.curios.CuriosUtil;
 import sfiomn.legendarysurvivaloverhaul.common.integration.origins.OriginsUtil;
@@ -123,9 +125,20 @@ public class ThirstUtilInternal implements IThirstUtil {
     }
 
     @Override
-    public void takeDrink(Player player, int hydration, float saturation, List<JsonMobEffect> effects)
-    {
-        if(!Config.Baked.thirstEnabled)
+    public void takeDrink(Player player, ItemStack itemStack) {
+        if(!Config.Baked.thirstEnabled || !ThirstUtil.isThirstActive(player))
+            return;
+
+        JsonThirstConsumable jsonThirstConsumable = ThirstDataManager.getConsumable(itemStack);
+
+        if (jsonThirstConsumable != null) {
+            ThirstUtil.takeDrink(player, jsonThirstConsumable.hydration, jsonThirstConsumable.saturation, jsonThirstConsumable.effects);
+        }
+    }
+
+    @Override
+    public void takeDrink(Player player, int hydration, float saturation, List<JsonMobEffect> effects) {
+        if(!Config.Baked.thirstEnabled || !ThirstUtil.isThirstActive(player))
             return;
 
         IThirstCapability capability = CapabilityUtil.getThirstCapability(player);

@@ -8,6 +8,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.MenuProvider;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -49,12 +50,14 @@ import sfiomn.legendarysurvivaloverhaul.api.data.manager.BodyDamageDataManager;
 import sfiomn.legendarysurvivaloverhaul.api.data.manager.TemperatureDataManager;
 import sfiomn.legendarysurvivaloverhaul.api.data.manager.ThirstDataManager;
 import sfiomn.legendarysurvivaloverhaul.api.health.HealthUtil;
+import sfiomn.legendarysurvivaloverhaul.api.temperature.AttributeModifierBase;
 import sfiomn.legendarysurvivaloverhaul.api.temperature.TemperatureUtil;
 import sfiomn.legendarysurvivaloverhaul.api.thirst.ThirstUtil;
 import sfiomn.legendarysurvivaloverhaul.client.ClientHooks;
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.health.HealthCapability;
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.thirst.ThirstCapability;
 import sfiomn.legendarysurvivaloverhaul.common.integration.curios.CuriosUtil;
+import sfiomn.legendarysurvivaloverhaul.common.integration.medsandherbs.MedsAndHerbsUtil;
 import sfiomn.legendarysurvivaloverhaul.common.integration.supplementaries.SupplementariesUtil;
 import sfiomn.legendarysurvivaloverhaul.common.items.drink.DrinkItem;
 import sfiomn.legendarysurvivaloverhaul.common.items.heal.BodyHealingItem;
@@ -64,12 +67,15 @@ import sfiomn.legendarysurvivaloverhaul.registry.ItemRegistry;
 import sfiomn.legendarysurvivaloverhaul.registry.MobEffectRegistry;
 import sfiomn.legendarysurvivaloverhaul.registry.SoundRegistry;
 import sfiomn.legendarysurvivaloverhaul.util.CapabilityUtil;
+import sfiomn.legendarysurvivaloverhaul.util.ItemUtil;
 import sfiomn.legendarysurvivaloverhaul.util.PlayerModelUtil;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
+
+import static sfiomn.legendarysurvivaloverhaul.registry.MobEffectRegistry.PAINKILLER;
+import static sfiomn.legendarysurvivaloverhaul.registry.MobEffectRegistry.PAINKILLER_ADDICTION;
+import static sfiomn.legendarysurvivaloverhaul.registry.TemperatureModifierRegistry.ITEM_ATTRIBUTE_MODIFIERS_REGISTRY;
+import static sfiomn.legendarysurvivaloverhaul.util.internal.TemperatureUtilInternal.*;
 
 
 @Mod.EventBusSubscriber(modid = LegendarySurvivalOverhaul.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
@@ -97,6 +103,28 @@ public class CommonForgeEvents {
         }
     }*/
 
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public static void onItemUse(PlayerInteractEvent.RightClickItem event) {
+        LivingEntity entity = event.getEntity();
+
+        if (!(entity instanceof Player player) || event.getHand() != event.getEntity().getUsedItemHand())
+            return;
+
+        ItemStack usedItemStack = event.getItemStack();
+        ResourceLocation itemRegistryName = ForgeRegistries.ITEMS.getKey(usedItemStack.getItem());
+
+        if (Config.Baked.localizedBodyDamageEnabled && LegendarySurvivalOverhaul.medsandherbsLoaded
+                && itemRegistryName != null && itemRegistryName.getNamespace().equals("meds_and_herbs")) {
+            if(itemRegistryName.equals(new ResourceLocation("meds_and_herbs", "syringe_morphine"))) {
+                if (!MedsAndHerbsUtil.triggerMorphineBehavior(player)) {
+                    event.setCanceled(true);
+                    event.setCancellationResult(InteractionResult.CONSUME);
+                }
+            }
+            BodyDamageUtil.applyConsumableHealing(player, itemRegistryName);
+        }
+    }
+
     @SubscribeEvent
     public static void onFinishUseItem(LivingEntityUseItemEvent.Finish event)
     {
@@ -113,81 +141,16 @@ public class CommonForgeEvents {
 
         ResourceLocation itemRegistryName = ForgeRegistries.ITEMS.getKey(usedItemStack.getItem());
 
-        if (Config.Baked.temperatureEnabled && !entity.level().isClientSide) {
-            List<JsonTemperatureConsumable> jsonConsumableTemperatures = TemperatureDataManager.getConsumable(itemRegistryName);
-
-            if (jsonConsumableTemperatures != null) {
-                for (JsonTemperatureConsumable jtc : jsonConsumableTemperatures) {
-                    if (jtc.getEffect() != null) {
-                        player.addEffect(new MobEffectInstance(jtc.getEffect(), jtc.duration, (Math.abs(jtc.temperatureLevel) - 1), false, false, true));
-                        player.removeEffect(jtc.getOppositeEffect());
-                    }
-                }
-            }
+        if (!entity.level().isClientSide) {
+            TemperatureUtil.applyConsumableTemperature(player, itemRegistryName);
         }
 
-        if (Config.Baked.thirstEnabled && ThirstUtil.isThirstActive(player) && !entity.level().isClientSide && !(usedItemStack.getItem() instanceof DrinkItem)) {
-            JsonThirstConsumable jsonThirstConsumable = ThirstDataManager.getConsumable(usedItemStack);
-
-            if (jsonThirstConsumable != null) {
-                ThirstUtil.takeDrink(player, jsonThirstConsumable.hydration, jsonThirstConsumable.saturation, jsonThirstConsumable.effects);
-            }
+        if (!entity.level().isClientSide) {
+            ThirstUtil.takeDrink(player, usedItemStack);
         }
 
         if (Config.Baked.localizedBodyDamageEnabled && !(usedItemStack.getItem() instanceof BodyHealingItem)) {
-            JsonHealingConsumable jsonConsumableHeal = BodyDamageDataManager.getHealingItem(itemRegistryName);
-
-            if (jsonConsumableHeal != null) {
-                if (jsonConsumableHeal.healingCharges > 0) {
-                    if (player.level().isClientSide && Minecraft.getInstance().screen == null)
-                        ClientHooks.openBodyHealthScreen(player, entity.getUsedItemHand(), true,
-                                jsonConsumableHeal.healingCharges, jsonConsumableHeal.healingValue, jsonConsumableHeal.healingTime);
-                } else if (jsonConsumableHeal.healingCharges == 0) {
-                    for (BodyPartEnum bodyPart : BodyPartEnum.values()) {
-                        BodyDamageUtil.applyHealingTimeBodyPart(player, bodyPart, jsonConsumableHeal.healingValue, jsonConsumableHeal.healingTime);
-                    }
-                    player.level().playSound(null, entity, SoundRegistry.HEAL_BODY_PART.get(), SoundSource.PLAYERS, 1.0f, 1.0f);
-                }
-            }
-        }
-    }
-
-    @SubscribeEvent
-    public static void onAttributeModifier(ItemAttributeModifierEvent event) {
-        if (!Config.Baked.temperatureEnabled)
-            return;
-
-        if (FMLEnvironment.dist == Dist.CLIENT)
-            if(Minecraft.getInstance().level == null) return;
-
-        TemperatureUtil.applyItemAttributeModifiers(event);
-    }
-
-    @SubscribeEvent
-    public static void onJump(LivingEvent.LivingJumpEvent event) {
-        LivingEntity entity = event.getEntity();
-        if (entity instanceof Player && shouldApplyThirst((Player) entity) && !entity.level().isClientSide) {
-            ThirstUtil.addExhaustion((Player) entity, (float) Config.Baked.onJumpThirstExhaustion);
-        }
-    }
-
-    @SubscribeEvent
-    public static void onBlockBreak(BlockEvent.BreakEvent event) {
-        Player player = event.getPlayer();
-        if (shouldApplyThirst(player) && !player.level().isClientSide && event.getState().getBlock().canHarvestBlock(event.getState(), event.getLevel(), event.getPos(), player) && event.getState().getDestroySpeed(event.getLevel(), event.getPos()) > 0.0f) {
-            ThirstUtil.addExhaustion(player, (float) Config.Baked.onBlockBreakThirstExhaustion);
-        }
-    }
-
-    @SubscribeEvent
-    public static void onAttackEntity(AttackEntityEvent event) {
-        Player player = event.getEntity();
-        if (shouldApplyThirst(player) && !player.level().isClientSide) {
-            Entity monster = event.getTarget();
-            if(monster.isAttackable()) {
-                ThirstUtil.addExhaustion(player, (float) Config.Baked.onAttackThirstExhaustion);
-                player.causeFoodExhaustion((float) Config.Baked.onAttackFoodExhaustion);
-            }
+            BodyDamageUtil.applyConsumableHealing(player, itemRegistryName);
         }
     }
 
@@ -201,17 +164,16 @@ public class CommonForgeEvents {
 
                 ThirstCapability thirstCapability = CapabilityUtil.getThirstCapability(player);
                 if (!thirstCapability.isHydrationLevelAtMax()) {
+
+                    boolean hasMenu = event.getLevel().getBlockEntity(event.getHitVec().getBlockPos()) instanceof MenuProvider;
+                    if (hasMenu)
+                        return;
+
                     JsonThirstBlock jsonBlockThirst = ThirstUtil.getBlockThirstLookedAt(player, player.getAttributeValue(ForgeMod.BLOCK_REACH.get()) / 2);
                     JsonThirstBlock jsonFluidThirst = ThirstUtil.getFluidThirstLookedAt(player, player.getAttributeValue(ForgeMod.BLOCK_REACH.get()) / 2);
 
-                    if (jsonFluidThirst != null && (jsonFluidThirst.hydration != 0 || jsonFluidThirst.saturation != 0)) {
-                        if (event.getLevel().isClientSide)
-                            playerDrinkEffect(event.getEntity());
-                        else {
-                            ThirstUtil.takeDrink(event.getEntity(), jsonFluidThirst.hydration, jsonFluidThirst.saturation, jsonFluidThirst.effects);
-                        }
-                        return;
-                    } else if (jsonBlockThirst != null && (jsonBlockThirst.hydration != 0 || jsonBlockThirst.saturation != 0) && !event.getEntity().isCrouching()) {
+                    //  If we can drink on a block, cancel its use except if crouching
+                    if (jsonBlockThirst != null && (jsonBlockThirst.hydration != 0 || jsonBlockThirst.saturation != 0) && !event.getEntity().isCrouching()) {
                         if (event.getLevel().isClientSide)
                             playerDrinkEffect(event.getEntity());
                         else {
@@ -219,6 +181,13 @@ public class CommonForgeEvents {
                         }
                         event.setCanceled(true);
                         event.setCancellationResult(InteractionResult.CONSUME);
+                        return;
+                    } else if (jsonFluidThirst != null && (jsonFluidThirst.hydration != 0 || jsonFluidThirst.saturation != 0)) {
+                        if (event.getLevel().isClientSide)
+                            playerDrinkEffect(event.getEntity());
+                        else {
+                            ThirstUtil.takeDrink(event.getEntity(), jsonFluidThirst.hydration, jsonFluidThirst.saturation, jsonFluidThirst.effects);
+                        }
                         return;
                     }
                 }
@@ -234,17 +203,68 @@ public class CommonForgeEvents {
                 BlockState usedBlock = event.getLevel().getBlockState(event.getHitVec().getBlockPos());
                 ResourceLocation blockRegistryName = ForgeRegistries.BLOCKS.getKey(usedBlock.getBlock());
                 if (player != null && blockRegistryName != null) {
-                    List<JsonTemperatureConsumable> jsonConsumableTemperatures = TemperatureDataManager.getConsumable(blockRegistryName);
-
-                    if (jsonConsumableTemperatures != null) {
-                        for (JsonTemperatureConsumable jtc : jsonConsumableTemperatures) {
-                            if (jtc.getEffect() != null) {
-                                player.addEffect(new MobEffectInstance(jtc.getEffect(), jtc.duration, (Math.abs(jtc.temperatureLevel) - 1), false, false, true));
-                                player.removeEffect(jtc.getOppositeEffect());
-                            }
-                        }
-                    }
+                    TemperatureUtil.applyConsumableTemperature(player, blockRegistryName);
                 }
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void onAttributeModifier(ItemAttributeModifierEvent event) {
+        if (!Config.Baked.temperatureEnabled)
+            return;
+
+        if (FMLEnvironment.dist == Dist.CLIENT)
+            if(Minecraft.getInstance().level == null) return;
+
+        if (ItemUtil.canBeEquippedInSlot(event.getItemStack(), event.getSlotType())) {
+            JsonTemperatureResistance config = new JsonTemperatureResistance();
+            for (AttributeModifierBase attributeModifier : ITEM_ATTRIBUTE_MODIFIERS_REGISTRY.get().getValues()) {
+                config.add(attributeModifier.getItemAttributes(event.getItemStack()));
+            }
+
+            UUID modifierUuid = equipmentSlotUuid.get(event.getSlotType());
+
+            if (config.temperature != 0) {
+                HEATING_TEMPERATURE.addModifier(event, modifierUuid, Math.max(config.temperature, 0));
+                COOLING_TEMPERATURE.addModifier(event, modifierUuid, Math.min(config.temperature, 0));
+            }
+
+            if (config.heatResistance != 0)
+                HEAT_RESISTANCE.addModifier(event, modifierUuid, config.heatResistance);
+
+            if (config.coldResistance != 0)
+                COLD_RESISTANCE.addModifier(event, modifierUuid, config.coldResistance);
+
+            if (config.thermalResistance != 0)
+                THERMAL_RESISTANCE.addModifier(event, modifierUuid, config.thermalResistance);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onJump(LivingEvent.LivingJumpEvent event) {
+        LivingEntity entity = event.getEntity();
+        if (entity instanceof Player && shouldApplyThirst((Player) entity) && !entity.level().isClientSide) {
+            ThirstUtil.addExhaustion((Player) entity, (float) Config.Baked.onJumpThirstExhaustion);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onBlockBreak(BlockEvent.BreakEvent event) {
+        Player player = event.getPlayer();
+        if (shouldApplyThirst(player) && !player.level().isClientSide && event.getState().getDestroySpeed(event.getLevel(), event.getPos()) > 0.0f) {
+            ThirstUtil.addExhaustion(player, (float) Config.Baked.onBlockBreakThirstExhaustion);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onAttackEntity(AttackEntityEvent event) {
+        Player player = event.getEntity();
+        if (shouldApplyThirst(player) && !player.level().isClientSide) {
+            Entity monster = event.getTarget();
+            if(monster.isAttackable()) {
+                ThirstUtil.addExhaustion(player, (float) Config.Baked.onAttackThirstExhaustion);
+                player.causeFoodExhaustion((float) Config.Baked.onAttackFoodExhaustion);
             }
         }
     }

@@ -1,10 +1,10 @@
 package sfiomn.legendarysurvivaloverhaul.api.temperature;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.event.ItemAttributeModifierEvent;
 
 import java.util.UUID;
 
@@ -87,11 +87,12 @@ public class TemperatureUtil
 	}
 
 	/**
-	 * Adds all registered temperature attribute modifiers on an item via the ItemAttributeModifier event
-	 * @param event ItemAttributeModifierEvent
+	 * Apply to the player the temperature associated to the provided item registry name
+	 * @param player Player to which apply the temperature effect
+	 * @param itemRegistryName Item registry name that adds the temperature effect
 	 */
-	public static void applyItemAttributeModifiers(ItemAttributeModifierEvent event) {
-		internal.applyItemAttributeModifiers(event);
+	public static void applyConsumableTemperature(Player player, ResourceLocation itemRegistryName) {
+		internal.applyConsumableTemperature(player, itemRegistryName);
 	}
 
 	/**

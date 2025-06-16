@@ -1,10 +1,10 @@
 package sfiomn.legendarysurvivaloverhaul.api.temperature;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.event.ItemAttributeModifierEvent;
 
 import java.util.UUID;
 
@@ -16,7 +16,7 @@ public interface ITemperatureUtil
 	
 	public float clampTemperature(float temperature);
 
-	public void applyItemAttributeModifiers(ItemAttributeModifierEvent event);
+	public void applyConsumableTemperature(Player player, ResourceLocation itemRegistryName);
 
 	public TemperatureEnum getTemperatureEnum(float temperature);
 

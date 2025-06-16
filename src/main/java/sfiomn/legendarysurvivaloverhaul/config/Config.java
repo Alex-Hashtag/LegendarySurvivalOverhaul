@@ -286,6 +286,8 @@ public class Config
 		public final ForgeConfigSpec.ConfigValue<List<? extends Integer>> bothFeetPartEffectAmplifiers;
 		public final ForgeConfigSpec.ConfigValue<List<? extends Double>> bothFeetPartEffectThresholds;
 
+		public final ForgeConfigSpec.BooleanValue morphineSyringeApplyPainkillerAddiction;
+
 		Common(ForgeConfigSpec.Builder builder)
 		{
 			builder.comment(new String [] {
@@ -1008,6 +1010,15 @@ public class Config
 			bothFeetPartEffectAmplifiers = builder.defineListAllowEmpty("Both Feet Part Effect Amplifiers", Collections.singletonList(1), Config::validatePositiveInt);
 			bothFeetPartEffectThresholds = builder.defineListAllowEmpty("Both Feet Part Effect Thresholds", Collections.singletonList(0.2), Config::validatePercentDouble);
 			builder.pop();
+			builder.pop();
+
+			builder.push("integration");
+			builder.push("meds_and_herbs");
+			morphineSyringeApplyPainkillerAddiction = builder
+					.comment(" Painkiller Addiction effect prevents the abusive usage of Painkiller effect that prevents all negative effects from limbs.",
+							" Syringe Morphine share the same configuration as Morphine item")
+					.define("Syringe Morphine Apply Painkiller Addiction", true);
+			builder.pop();
 
 			builder.pop();
 			builder.pop();
@@ -1440,6 +1451,8 @@ public class Config
 		public static List<? extends Integer> bothFeetPartEffectAmplifiers;
 		public static List<? extends Double> bothFeetPartEffectThresholds;
 
+		public static boolean morphineSyringeApplyPainkillerAddiction;
+
 		// Client Config
 		public static TemperatureDisplayEnum temperatureDisplayMode;
 		public static int temperatureDisplayOffsetX;
@@ -1707,6 +1720,8 @@ public class Config
 				bothFeetPartEffects = COMMON.bothFeetPartEffects.get();
 				bothFeetPartEffectAmplifiers = COMMON.bothFeetPartEffectAmplifiers.get();
 				bothFeetPartEffectThresholds = COMMON.bothFeetPartEffectThresholds.get();
+
+				morphineSyringeApplyPainkillerAddiction = COMMON.morphineSyringeApplyPainkillerAddiction.get();
 			}
 			catch (Exception e)
 			{

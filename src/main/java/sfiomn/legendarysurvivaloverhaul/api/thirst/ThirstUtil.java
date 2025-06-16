@@ -13,11 +13,21 @@ public class ThirstUtil
 	public static IThirstUtil internal;
 
 	/**
+	 * Player takes a drink from the provided item stack
+	 * @param player Player drinking the item
+	 * @param itemStack Item stack providing hydration values
+	 */
+	public static void takeDrink(Player player, ItemStack itemStack)
+	{
+		internal.takeDrink(player, itemStack);
+	}
+
+	/**
 	 * Player takes a drink with the specified values and a list of possible effects
-	 * @param player
-	 * @param hydration
-	 * @param saturation
-	 * @param effects
+	 * @param player Player drinking the item
+	 * @param hydration Hydration added to the player
+	 * @param saturation Saturation added to the player
+	 * @param effects List of effects applied to the player
 	 */
 	public static void takeDrink(Player player, int hydration, float saturation, List<JsonMobEffect> effects)
 	{
@@ -26,9 +36,9 @@ public class ThirstUtil
 
 	/**
 	 * Player takes a drink with the specified values and no chance to trigger side effects
-	 * @param player
-	 * @param hydration
-	 * @param saturation
+	 * @param player Player drinking the item
+	 * @param hydration Hydration added to the player
+	 * @param saturation Saturation added to the player
 	 */
 	public static void takeDrink(Player player, int hydration, float saturation)
 	{
@@ -37,8 +47,8 @@ public class ThirstUtil
 
 	/**
 	 * Add thirst exhaustion responsible for the thirst depletion
-	 * @param player
-	 * @param exhaustion
+	 * @param player Player exhausting hydration
+	 * @param exhaustion Hydration exhaustion value added to the player
 	 */
 	public static void addExhaustion(Player player, float exhaustion)
 	{
@@ -47,8 +57,8 @@ public class ThirstUtil
 
 	/**
 	 * Get fluid json config that the player is looking at, with the given maximum distance
-	 * @param player
-	 * @param finalDistance
+	 * @param player Player trying to drink for a fluid
+	 * @param finalDistance Player reach distance for drinking
 	 */
 	public static JsonThirstBlock getFluidThirstLookedAt(Player player, double finalDistance) {
 		return internal.getFluidThirstLookedAt(player, finalDistance);
@@ -56,8 +66,8 @@ public class ThirstUtil
 
 	/**
 	 * Get block json config that the player is looking at, with the given maximum distance
-	 * @param player
-	 * @param finalDistance
+	 * @param player Player trying to drink for a block
+	 * @param finalDistance Player reach distance for drinking
 	 */
 	public static JsonThirstBlock getBlockThirstLookedAt(Player player, double finalDistance) {
 		return internal.getBlockThirstLookedAt(player, finalDistance);

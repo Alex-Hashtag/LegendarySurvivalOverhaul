@@ -66,12 +66,6 @@ public class DrinkItem extends Item {
         if(level.isClientSide || !(entity instanceof Player player))
             return stack;
 
-        // Check if the JSON has overridden the drink's defaults, and if so, allow ThirstHandler to take over
-        JsonThirstConsumable jsonThirstConsumable = ThirstDataManager.getConsumable(stack);
-
-        if(jsonThirstConsumable != null)
-            ThirstUtil.takeDrink(player, jsonThirstConsumable.hydration, jsonThirstConsumable.saturation, jsonThirstConsumable.effects);
-
         runSecondaryEffect(player, stack);
 
         stack.shrink(1);

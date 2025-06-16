@@ -2,15 +2,17 @@ package sfiomn.legendarysurvivaloverhaul.util.internal;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.event.ItemAttributeModifierEvent;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
-import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonTemperatureResistance;
+import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonTemperatureConsumable;
+import sfiomn.legendarysurvivaloverhaul.api.data.manager.TemperatureDataManager;
 import sfiomn.legendarysurvivaloverhaul.api.temperature.*;
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.temperature.TemperatureCapability;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
@@ -18,6 +20,7 @@ import sfiomn.legendarysurvivaloverhaul.registry.AttributeRegistry;
 import sfiomn.legendarysurvivaloverhaul.util.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -34,7 +37,7 @@ public class TemperatureUtilInternal implements ITemperatureUtil
 	public static final AttributeBuilder COLD_RESISTANCE = new AttributeBuilder(AttributeRegistry.COLD_RESISTANCE.get(), "attribute." + LegendarySurvivalOverhaul.MOD_ID + ".cold_resistance");
 	public static final AttributeBuilder THERMAL_RESISTANCE = new AttributeBuilder(AttributeRegistry.THERMAL_RESISTANCE.get(), "attribute." + LegendarySurvivalOverhaul.MOD_ID + ".thermal_resistance");
 
-	private static final Map<EquipmentSlot, UUID> equipmentSlotUuid = new HashMap<>();
+	public static final Map<EquipmentSlot, UUID> equipmentSlotUuid = new HashMap<>();
 	static {
 		equipmentSlotUuid.put(EquipmentSlot.HEAD, UUID.fromString("06e30f27-2340-4bdb-9a91-a657f1e2880f"));
 		equipmentSlotUuid.put(EquipmentSlot.CHEST, UUID.fromString("1e7ef99e-2fe7-4edc-95b1-27fa056eae6d"));
@@ -139,28 +142,18 @@ public class TemperatureUtilInternal implements ITemperatureUtil
 	}
 
 	@Override
-	public void applyItemAttributeModifiers(ItemAttributeModifierEvent event) {
-		if (ItemUtil.canBeEquippedInSlot(event.getItemStack(), event.getSlotType())) {
-			JsonTemperatureResistance config = new JsonTemperatureResistance();
-			for (AttributeModifierBase attributeModifier : ITEM_ATTRIBUTE_MODIFIERS_REGISTRY.get().getValues()) {
-				config.add(attributeModifier.getItemAttributes(event.getItemStack()));
+	public void applyConsumableTemperature(Player player, ResourceLocation itemRegistryName) {
+		if (Config.Baked.temperatureEnabled) {
+			List<JsonTemperatureConsumable> jsonConsumableTemperatures = TemperatureDataManager.getConsumable(itemRegistryName);
+
+			if (jsonConsumableTemperatures != null) {
+				for (JsonTemperatureConsumable jtc : jsonConsumableTemperatures) {
+					if (jtc.getEffect() != null) {
+						player.addEffect(new MobEffectInstance(jtc.getEffect(), jtc.duration, (Math.abs(jtc.temperatureLevel) - 1), false, false, true));
+						player.removeEffect(jtc.getOppositeEffect());
+					}
+				}
 			}
-
-			UUID modifierUuid = equipmentSlotUuid.get(event.getSlotType());
-
-			if (config.temperature != 0) {
-				HEATING_TEMPERATURE.addModifier(event, modifierUuid, Math.max(config.temperature, 0));
-				COOLING_TEMPERATURE.addModifier(event, modifierUuid, Math.min(config.temperature, 0));
-			}
-
-			if (config.heatResistance != 0)
-				HEAT_RESISTANCE.addModifier(event, modifierUuid, config.heatResistance);
-
-			if (config.coldResistance != 0)
-				COLD_RESISTANCE.addModifier(event, modifierUuid, config.coldResistance);
-
-			if (config.thermalResistance != 0)
-				THERMAL_RESISTANCE.addModifier(event, modifierUuid, config.thermalResistance);
 		}
 	}
 

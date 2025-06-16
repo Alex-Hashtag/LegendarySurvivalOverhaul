@@ -1,5 +1,6 @@
 package sfiomn.legendarysurvivaloverhaul.api.bodydamage;
 
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.player.Player;
 import org.apache.commons.lang3.tuple.Pair;
@@ -9,6 +10,15 @@ import java.util.List;
 public class BodyDamageUtil
 {
 	public static IBodyDamageUtil internal;
+
+	/**
+	 * Apply to the player the limb healing behavior associated to the provided item registry name
+	 * @param player Player to which limbs will be healed
+	 * @param itemRegistryName Item registry name that has a limb healing behavior
+	 */
+	public static void applyConsumableHealing(Player player, ResourceLocation itemRegistryName) {
+		internal.applyConsumableHealing(player, itemRegistryName);
+	}
 
 	/**
 	 * Get effects applicable to the player. <br>

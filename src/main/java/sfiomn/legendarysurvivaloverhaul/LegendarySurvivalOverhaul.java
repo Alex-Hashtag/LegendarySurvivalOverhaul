@@ -161,8 +161,12 @@ public class LegendarySurvivalOverhaul
 		if (sereneSeasonsLoaded)
 			LOGGER.debug("Serene Seasons is loaded, enabling compatibility");
 
-		if (eclipticSeasonsLoaded)
-			LOGGER.debug("Ecliptic Seasons is loaded, enabling compatibility");
+		if (eclipticSeasonsLoaded) {
+			if (sereneSeasonsLoaded)
+				LOGGER.debug("Ecliptic Seasons and Serene Seasons are loaded, please choose one over the other");
+			else
+				LOGGER.debug("Ecliptic Seasons is loaded, enabling compatibility");
+		}
 
 		if (terraFirmaCraftLoaded)
 			LOGGER.debug("TerraFirmaCraft is loaded, enabling compatibility");

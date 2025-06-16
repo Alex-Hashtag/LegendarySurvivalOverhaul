@@ -9,6 +9,8 @@ import java.util.List;
 
 public interface IThirstUtil
 {
+	public void	takeDrink(Player player, ItemStack itemStack);
+
 	public void takeDrink(Player player, int thirst, float saturation, List<JsonMobEffect> effects);
 
 	public void takeDrink(Player player, int thirst, float saturation);
