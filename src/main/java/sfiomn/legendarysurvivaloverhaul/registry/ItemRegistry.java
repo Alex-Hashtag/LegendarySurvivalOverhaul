@@ -1,6 +1,7 @@
 package sfiomn.legendarysurvivaloverhaul.registry;
 
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -52,7 +53,12 @@ public class ItemRegistry {
 	public static final RegistryObject<Item> SNOW_HELMET = ITEMS.register("snow_helmet", () -> new ArmorItem(SNOW, ArmorItem.Type.HELMET, new Item.Properties()));
 	public static final RegistryObject<Item> SNOW_CHEST = ITEMS.register("snow_chestplate", () -> new ArmorItem(SNOW, ArmorItem.Type.CHESTPLATE, new Item.Properties()));
 	public static final RegistryObject<Item> SNOW_LEGGINGS = ITEMS.register("snow_leggings", () -> new ArmorItem(SNOW, ArmorItem.Type.LEGGINGS, new Item.Properties()));
-	public static final RegistryObject<Item> SNOW_BOOTS = ITEMS.register("snow_boots", () -> new ArmorItem(SNOW, ArmorItem.Type.BOOTS, new Item.Properties()));
+	public static final RegistryObject<Item> SNOW_BOOTS = ITEMS.register("snow_boots", () -> new ArmorItem(SNOW, ArmorItem.Type.BOOTS, new Item.Properties()) {
+		@Override
+		public boolean canWalkOnPowderedSnow(ItemStack stack, LivingEntity wearer) {
+			return true;
+		}
+	});
 
 	public static final RegistryObject<Item> DESERT_HELMET = ITEMS.register("desert_helmet", () -> new ArmorItem(DESERT, ArmorItem.Type.HELMET, new Item.Properties()));
 	public static final RegistryObject<Item> DESERT_CHEST = ITEMS.register("desert_chestplate", () -> new ArmorItem(DESERT, ArmorItem.Type.CHESTPLATE, new Item.Properties()));
