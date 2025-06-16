@@ -5,7 +5,6 @@ import net.minecraft.data.PackOutput;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import sfiomn.legendarysurvivaloverhaul.api.data.builder.ITemperatureBlockData;
 import sfiomn.legendarysurvivaloverhaul.api.data.builder.ITemperatureConsumableData;
-import sfiomn.legendarysurvivaloverhaul.api.data.builder.ITemperatureData;
 import sfiomn.legendarysurvivaloverhaul.api.data.providers.TemperatureDataProvider;
 
 import java.util.concurrent.CompletableFuture;

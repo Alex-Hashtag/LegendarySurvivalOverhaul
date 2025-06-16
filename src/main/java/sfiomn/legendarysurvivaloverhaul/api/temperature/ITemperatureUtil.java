@@ -10,33 +10,33 @@ import java.util.UUID;
 
 public interface ITemperatureUtil
 {
-	public float getPlayerTargetTemperature(Player player);
+	float getPlayerTargetTemperature(Player player);
 	
-	public float getWorldTemperature(Level world, BlockPos pos);
+	float getWorldTemperature(Level world, BlockPos pos);
 	
-	public float clampTemperature(float temperature);
+	float clampTemperature(float temperature);
 
-	public void applyConsumableTemperature(Player player, ResourceLocation itemRegistryName);
+	void applyConsumableTemperature(Player player, ResourceLocation itemRegistryName);
 
-	public TemperatureEnum getTemperatureEnum(float temperature);
+	TemperatureEnum getTemperatureEnum(float temperature);
 
-	public boolean hasImmunity(Player player, TemperatureImmunityEnum immunity);
+	boolean hasImmunity(Player player, TemperatureImmunityEnum immunity);
 
-	public void addImmunity(Player player, TemperatureImmunityEnum immunity);
+	void addImmunity(Player player, TemperatureImmunityEnum immunity);
 
-	public void removeImmunity(Player player, TemperatureImmunityEnum immunity);
+	void removeImmunity(Player player, TemperatureImmunityEnum immunity);
 
-	public void addTemperatureModifier(Player player, double temperature, UUID uuid);
+	void addTemperatureModifier(Player player, double temperature, UUID uuid);
 
-	public void addHeatResistanceModifier(Player player, double temperature, UUID uuid);
+	void addHeatResistanceModifier(Player player, double temperature, UUID uuid);
 
-	public void addColdResistanceModifier(Player player, double temperature, UUID uuid);
+	void addColdResistanceModifier(Player player, double temperature, UUID uuid);
 
-	public void addThermalResistanceModifier(Player player, double temperature, UUID uuid);
+	void addThermalResistanceModifier(Player player, double temperature, UUID uuid);
 
-	public void setArmorCoatTag(final ItemStack stack, String temperatureType);
+	void setArmorCoatTag(final ItemStack stack, String temperatureType);
 
-	public String getArmorCoatTag(final ItemStack stack);
+	String getArmorCoatTag(final ItemStack stack);
 
-	public void removeArmorCoatTag(final ItemStack stack);
+	void removeArmorCoatTag(final ItemStack stack);
 }

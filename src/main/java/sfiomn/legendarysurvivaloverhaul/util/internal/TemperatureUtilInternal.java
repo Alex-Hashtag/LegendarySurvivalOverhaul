@@ -17,14 +17,18 @@ import sfiomn.legendarysurvivaloverhaul.api.temperature.*;
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.temperature.TemperatureCapability;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
 import sfiomn.legendarysurvivaloverhaul.registry.AttributeRegistry;
-import sfiomn.legendarysurvivaloverhaul.util.*;
+import sfiomn.legendarysurvivaloverhaul.util.AttributeBuilder;
+import sfiomn.legendarysurvivaloverhaul.util.CapabilityUtil;
+import sfiomn.legendarysurvivaloverhaul.util.MathUtil;
+import sfiomn.legendarysurvivaloverhaul.util.WorldUtil;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import static sfiomn.legendarysurvivaloverhaul.registry.TemperatureModifierRegistry.*;
+import static sfiomn.legendarysurvivaloverhaul.registry.TemperatureModifierRegistry.DYNAMIC_MODIFIERS_REGISTRY;
+import static sfiomn.legendarysurvivaloverhaul.registry.TemperatureModifierRegistry.MODIFIERS_REGISTRY;
 
 
 public class TemperatureUtilInternal implements ITemperatureUtil

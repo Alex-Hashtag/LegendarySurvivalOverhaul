@@ -1,13 +1,12 @@
 package sfiomn.legendarysurvivaloverhaul.registry;
 
 import com.mojang.brigadier.CommandDispatcher;
-
 import net.minecraft.commands.CommandSourceStack;
+import net.minecraftforge.event.RegisterCommandsEvent;
 import sfiomn.legendarysurvivaloverhaul.common.commands.BodyDamageCommand;
 import sfiomn.legendarysurvivaloverhaul.common.commands.CommandBase;
 import sfiomn.legendarysurvivaloverhaul.common.commands.HealthCommand;
 import sfiomn.legendarysurvivaloverhaul.common.commands.TemperatureCommand;
-import net.minecraftforge.event.RegisterCommandsEvent;
 
 public class CommandRegistry {
 

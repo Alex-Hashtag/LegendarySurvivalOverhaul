@@ -9,33 +9,33 @@ import java.util.List;
 
 public interface IThirstUtil
 {
-	public void	takeDrink(Player player, ItemStack itemStack);
+	void takeDrink(Player player, ItemStack itemStack);
 
-	public void takeDrink(Player player, int thirst, float saturation, List<JsonMobEffect> effects);
+	void takeDrink(Player player, int thirst, float saturation, List<JsonMobEffect> effects);
 
-	public void takeDrink(Player player, int thirst, float saturation);
+	void takeDrink(Player player, int thirst, float saturation);
 
-	public void addExhaustion(Player player, float exhaustion);
+	void addExhaustion(Player player, float exhaustion);
 
-	public JsonThirstBlock getFluidThirstLookedAt(Player player, double finalDistance);
+	JsonThirstBlock getFluidThirstLookedAt(Player player, double finalDistance);
 
-	public JsonThirstBlock getBlockThirstLookedAt(Player player, double finalDistance);
+	JsonThirstBlock getBlockThirstLookedAt(Player player, double finalDistance);
 
-	public void setThirstEnumTag(final ItemStack stack, HydrationEnum hydrationEnum);
+	void setThirstEnumTag(final ItemStack stack, HydrationEnum hydrationEnum);
 
-	public HydrationEnum getHydrationEnumTag(final ItemStack stack);
+	HydrationEnum getHydrationEnumTag(final ItemStack stack);
 
-	public void removeHydrationEnumTag(final ItemStack stack);
+	void removeHydrationEnumTag(final ItemStack stack);
 
-	public void setCapacityTag(final ItemStack stack, int capacity);
+	void setCapacityTag(final ItemStack stack, int capacity);
 
-	public int getCapacityTag(final ItemStack stack);
+	int getCapacityTag(final ItemStack stack);
 
-	public void removeCapacityTag(final ItemStack stack);
+	void removeCapacityTag(final ItemStack stack);
 
-	public void deactivateThirst(Player player);
+	void deactivateThirst(Player player);
 
-	public void activateThirst(Player player);
+	void activateThirst(Player player);
 
-	public boolean isThirstActive(Player player);
+	boolean isThirstActive(Player player);
 }

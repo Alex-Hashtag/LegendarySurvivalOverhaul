@@ -2,6 +2,7 @@ package sfiomn.legendarysurvivaloverhaul.registry;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.RegistryBuilder;
 import net.minecraftforge.registries.RegistryObject;
@@ -18,8 +19,7 @@ import sfiomn.legendarysurvivaloverhaul.common.integration.terrafirmacraft.Terra
 import sfiomn.legendarysurvivaloverhaul.common.temperature.*;
 import sfiomn.legendarysurvivaloverhaul.common.temperature.attribute.CoatModifier;
 import sfiomn.legendarysurvivaloverhaul.common.temperature.attribute.ItemModifier;
-import sfiomn.legendarysurvivaloverhaul.common.temperature.dynamic.*;
-import net.minecraftforge.registries.DeferredRegister;
+import sfiomn.legendarysurvivaloverhaul.common.temperature.dynamic.ResistanceAttributeModifier;
 
 import java.util.function.Supplier;
 

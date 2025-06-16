@@ -5,12 +5,9 @@ import net.minecraft.data.PackOutput;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import sfiomn.legendarysurvivaloverhaul.api.data.builder.IThirstData;
 import sfiomn.legendarysurvivaloverhaul.api.data.providers.ThirstDataProvider;
-import sfiomn.legendarysurvivaloverhaul.data.builders.ThirstData;
 import sfiomn.legendarysurvivaloverhaul.registry.MobEffectRegistry;
 
 import java.util.concurrent.CompletableFuture;
-
-import static sfiomn.legendarysurvivaloverhaul.api.temperature.TemporaryModifierGroupEnum.DRINK;
 
 public class BreweryThirstProvider extends ThirstDataProvider {
 

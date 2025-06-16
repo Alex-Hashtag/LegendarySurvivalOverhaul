@@ -3,14 +3,6 @@ package sfiomn.legendarysurvivaloverhaul.data.providers;
  * Disabled because of Neoforge compatibility, ParticleDescriptionProvider doesn't exist in neoforge 1.20.1
  */
 
-import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.common.data.ExistingFileHelper;
-import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
-import sfiomn.legendarysurvivaloverhaul.registry.ParticleTypeRegistry;
-
-import java.util.ArrayList;
-import java.util.List;
 /*
 public class ModParticleProvider extends ParticleDescriptionProvider {
     public ModParticleProvider(PackOutput output, ExistingFileHelper fileHelper) {

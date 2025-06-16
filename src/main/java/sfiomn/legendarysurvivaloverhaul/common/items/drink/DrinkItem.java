@@ -8,10 +8,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.Level;
-import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonThirstConsumable;
-import sfiomn.legendarysurvivaloverhaul.api.data.manager.ThirstDataManager;
+import org.jetbrains.annotations.NotNull;
 import sfiomn.legendarysurvivaloverhaul.api.thirst.IThirstCapability;
-import sfiomn.legendarysurvivaloverhaul.api.thirst.ThirstUtil;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
 import sfiomn.legendarysurvivaloverhaul.util.CapabilityUtil;
 
@@ -27,19 +25,19 @@ public class DrinkItem extends Item {
     }
 
     @Override
-    public UseAnim getUseAnimation(ItemStack stack)
+    public @NotNull UseAnim getUseAnimation(@NotNull ItemStack stack)
     {
         return UseAnim.DRINK;
     }
 
     @Override
-    public int getUseDuration(ItemStack stack)
+    public int getUseDuration(@NotNull ItemStack stack)
     {
         return 16;
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand)
+    public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level level, Player player, @NotNull InteractionHand hand)
     {
         ItemStack stack = player.getItemInHand(hand);
 
@@ -61,7 +59,7 @@ public class DrinkItem extends Item {
     }
 
     @Override
-    public ItemStack finishUsingItem(ItemStack stack, Level level, LivingEntity entity)
+    public @NotNull ItemStack finishUsingItem(@NotNull ItemStack stack, Level level, @NotNull LivingEntity entity)
     {
         if(level.isClientSide || !(entity instanceof Player player))
             return stack;

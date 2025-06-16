@@ -5,6 +5,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
 
 public abstract class BottledDrinkItem extends DrinkItem {
@@ -14,13 +15,13 @@ public abstract class BottledDrinkItem extends DrinkItem {
     }
 
     @Override
-    public int getUseDuration(ItemStack stack)
+    public int getUseDuration(@NotNull ItemStack stack)
     {
         return 32;
     }
 
     @Override
-    public ItemStack finishUsingItem(ItemStack stack, Level level, LivingEntity entity)
+    public @NotNull ItemStack finishUsingItem(@NotNull ItemStack stack, Level level, @NotNull LivingEntity entity)
     {
         if(level.isClientSide || !(entity instanceof Player player))
             return stack;

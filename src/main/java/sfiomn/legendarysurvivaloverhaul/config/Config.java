@@ -954,12 +954,12 @@ public class Config
 
 			headPartHealth = builder.defineInRange("Head Part Health", 0.4d, 0.0d, 1000.0d);
 			armsPartHealth = builder.comment(" Both arms will have this health.")
-					.defineInRange("Arms Part Health", 0.4d, 0.0d, 1000.0d);;
-			chestPartHealth = builder.defineInRange("Chest Part Health", 0.6d, 0.0d, 1000.0d);;
+					.defineInRange("Arms Part Health", 0.4d, 0.0d, 1000.0d);
+			chestPartHealth = builder.defineInRange("Chest Part Health", 0.6d, 0.0d, 1000.0d);
 			legsPartHealth = builder.comment(" Both legs will have this health.")
-					.defineInRange("Legs Part Health", 0.6d, 0.0d, 1000.0d);;
+					.defineInRange("Legs Part Health", 0.6d, 0.0d, 1000.0d);
 			feetPartHealth = builder.comment(" Both feet will have this health.")
-					.defineInRange("Feet Part Health", 0.4d, 0.0d, 1000.0d);;
+					.defineInRange("Feet Part Health", 0.4d, 0.0d, 1000.0d);
 			builder.pop();
 
 			builder.push("body-parts-effects");
@@ -1726,7 +1726,7 @@ public class Config
 			catch (Exception e)
 			{
 				LegendarySurvivalOverhaul.LOGGER.warn("An exception was caused trying to load the common config for Legendary Survival Overhaul");
-				e.printStackTrace();
+				LegendarySurvivalOverhaul.LOGGER.warn(e.getStackTrace());
 			}
 		}
 
@@ -1777,7 +1777,7 @@ public class Config
 			catch (Exception e)
 			{
 				LegendarySurvivalOverhaul.LOGGER.warn("An exception was caused trying to load the client config for Legendary Survival Overhaul.");
-				e.printStackTrace();
+				LegendarySurvivalOverhaul.LOGGER.warn(e.getStackTrace());
 			}
 		}
 	}

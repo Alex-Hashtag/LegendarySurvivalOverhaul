@@ -1,9 +1,8 @@
 package sfiomn.legendarysurvivaloverhaul.common.effects;
 
-import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 
-public class PainkillerAddictionEffect extends MobEffect
+public class PainkillerAddictionEffect extends IncurableMobEffect
 {
 	public PainkillerAddictionEffect()
 	{

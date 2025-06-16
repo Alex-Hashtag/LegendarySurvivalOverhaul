@@ -9,27 +9,27 @@ import java.util.List;
 
 public interface IBodyDamageUtil
 {
-    public void applyConsumableHealing(Player player, ResourceLocation itemRegistryName);
+    void applyConsumableHealing(Player player, ResourceLocation itemRegistryName);
 
-    public List<Pair<MobEffect, Integer>> getEffects(MalusBodyPartEnum bodyPart, float headHealthRatio);
+    List<Pair<MobEffect, Integer>> getEffects(MalusBodyPartEnum bodyPart, float headHealthRatio);
 
-    public boolean hasPlayerFirstAidSuppliesBoostingEffect(Player player);
+    boolean hasPlayerFirstAidSuppliesBoostingEffect(Player player);
 
-    public void applyHealingTimeBodyPart(Player player, BodyPartEnum bodyPartEnum, float healingValue, int healingTime);
+    void applyHealingTimeBodyPart(Player player, BodyPartEnum bodyPartEnum, float healingValue, int healingTime);
 
-    public void healBodyPart(Player player, BodyPartEnum bodyPartEnum, float healingValue);
+    void healBodyPart(Player player, BodyPartEnum bodyPartEnum, float healingValue);
 
-    public void hurtBodyPart(Player player, BodyPartEnum bodyPartEnum, float damageValue);
+    void hurtBodyPart(Player player, BodyPartEnum bodyPartEnum, float damageValue);
 
-    public void balancedHurtBodyParts(Player player, List<BodyPartEnum> bodyParts, float damageValue);
+    void balancedHurtBodyParts(Player player, List<BodyPartEnum> bodyParts, float damageValue);
 
-    public void randomHurtBodyParts(Player player, List<BodyPartEnum> bodyParts, float damageValue);
+    void randomHurtBodyParts(Player player, List<BodyPartEnum> bodyParts, float damageValue);
 
-    public float getHealthRatio(Player player, BodyPartEnum bodyPartEnum);
+    float getHealthRatio(Player player, BodyPartEnum bodyPartEnum);
 
-    public float getTotalRemainingHealing(Player player, BodyPartEnum bodyPartEnum);
+    float getTotalRemainingHealing(Player player, BodyPartEnum bodyPartEnum);
 
-    public float getMaxHealth(Player player, BodyPartEnum bodyPartEnum);
+    float getMaxHealth(Player player, BodyPartEnum bodyPartEnum);
 
-    public void updatePlayerBrokenHeartAttribute(Player player);
+    void updatePlayerBrokenHeartAttribute(Player player);
 }

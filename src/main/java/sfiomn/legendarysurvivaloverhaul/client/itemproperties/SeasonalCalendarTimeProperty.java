@@ -1,6 +1,5 @@
 package sfiomn.legendarysurvivaloverhaul.client.itemproperties;
 
-import com.teamtea.eclipticseasons.api.util.EclipticUtil;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.item.ClampedItemPropertyFunction;
 import net.minecraft.util.Mth;
