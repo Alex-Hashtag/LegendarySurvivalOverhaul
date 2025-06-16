@@ -4,8 +4,10 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
+import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.temperature.ModifierBase;
 import sfiomn.legendarysurvivaloverhaul.common.integration.beachparty.BeachpartyUtil;
+import sfiomn.legendarysurvivaloverhaul.common.integration.eclipticseasons.EclipticSeasonsUtil;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
 import sfiomn.legendarysurvivaloverhaul.registry.TemperatureModifierRegistry;
 import sfiomn.legendarysurvivaloverhaul.util.WorldUtil;
@@ -20,9 +22,16 @@ public class WeatherModifier extends ModifierBase
 	@Override
 	public float getWorldInfluence(Player player, Level level, BlockPos pos)
 	{
-		// Apply weather / shade effect when it's hot if the player is either "hidden from sky" or time is raining
+		Biome.Precipitation precipitation = Biome.Precipitation.NONE;
+		if (LegendarySurvivalOverhaul.eclipticSeasonsLoaded)
+			precipitation = EclipticSeasonsUtil.getPrecipitation(level, pos.above());
+
+		// Don't apply shade nor weather if it doesn't rain, no block above player and player not under parasol
 		// Shade effect depends on Time, no shade effect at sunrise and sunset, max effect at noon
-		if (!level.isRaining() && level.canSeeSky(pos.above()) && !BeachpartyUtil.isUnderParasol(player, level, pos)) {
+		if (!level.isRaining() &&
+				precipitation == Biome.Precipitation.NONE &&
+				level.canSeeSky(pos.above()) &&
+				!BeachpartyUtil.isUnderParasol(player, level, pos)) {
 			return 0.0f;
 		}
 
@@ -30,23 +39,27 @@ public class WeatherModifier extends ModifierBase
 		float weatherTemperature = 0.0f;
 		long time = level.getLevelData().getDayTime();
 
+		// Apply shade effect either if it's raining or block above player or player under parasol
 		if (Config.Baked.shadeTimeModifier != 0 && time <= 12000)
 		{
 			if ((TemperatureModifierRegistry.BIOME.get().getWorldInfluence(player, level, pos) +
-					TemperatureModifierRegistry.SERENE_SEASONS.get().getWorldInfluence(player, level, pos)) >= Config.Baked.shadeTimeModifierThreshold) {
-				float shadeTemperature = (float) Config.Baked.shadeTimeModifier * (float) Math.sin((time * Math.PI) / 12000.0f);
+					TemperatureModifierRegistry.SERENE_SEASONS.get().getWorldInfluence(player, level, pos) +
+					TemperatureModifierRegistry.ECLIPTIC_SEASONS.get().getWorldInfluence(player, level, pos)) >= Config.Baked.shadeTimeModifierThreshold) {
+				// PI / 12000 = 0.00026179938
+				float shadeTemperature = (float) Config.Baked.shadeTimeModifier * (float) Math.sin(time * 0.00026179938);
 				weatherTemperature += shadeTemperature;
 			}
 		}
 
-		if (WorldUtil.isRainingOrSnowingAt(level, pos.above())) {
-
-			if (biome.getPrecipitationAt(pos.above()) == Biome.Precipitation.SNOW) {
-				weatherTemperature += (float) Config.Baked.snowTemperatureModifier;
-			} else if (biome.getPrecipitationAt(pos.above()) == Biome.Precipitation.RAIN) {
-				weatherTemperature += (float) Config.Baked.rainTemperatureModifier;
-			}
+		if (!LegendarySurvivalOverhaul.eclipticSeasonsLoaded && WorldUtil.isRainingOrSnowingAt(level, pos.above())) {
+			precipitation = biome.getPrecipitationAt(pos.above());
 		}
+
+		if (precipitation == Biome.Precipitation.RAIN)
+			weatherTemperature += (float) Config.Baked.rainTemperatureModifier;
+		else if (precipitation == Biome.Precipitation.SNOW)
+			weatherTemperature += (float) Config.Baked.snowTemperatureModifier;
+
 		return weatherTemperature;
 	}
 }

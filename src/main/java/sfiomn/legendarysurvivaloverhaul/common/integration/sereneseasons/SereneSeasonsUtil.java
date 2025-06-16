@@ -14,8 +14,9 @@ import sereneseasons.api.season.SeasonHelper;
 import sereneseasons.init.ModConfig;
 import sereneseasons.init.ModFertility;
 import sereneseasons.init.ModTags;
-import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
+import sereneseasons.season.SeasonTime;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
+import sfiomn.legendarysurvivaloverhaul.util.MathUtil;
 
 import static sereneseasons.init.ModTags.Biomes.BLACKLISTED_BIOMES;
 import static sereneseasons.init.ModTags.Biomes.TROPICAL_BIOMES;
@@ -25,10 +26,6 @@ public class SereneSeasonsUtil {
     public static double averageTropicalSeasonTemperature;
 
     public static Component seasonTooltip(BlockPos blockPos, Level level) {
-        if (!LegendarySurvivalOverhaul.sereneSeasonsLoaded)
-            return Component.translatable("message.legendarysurvivaloverhaul.sereneseasons.no_serene_season_loaded");
-
-
         if (!hasSeasons(level))
             return Component.translatable("message.legendarysurvivaloverhaul.sereneseasons.no_season_dimension");
 
@@ -61,9 +58,9 @@ public class SereneSeasonsUtil {
     }
 
     public static SeasonType getSeasonType(Holder<Biome> biome) {
-        if (Config.Baked.tropicalSeasonsEnabled && biome.is(TROPICAL_BIOMES))
+        if (Config.Baked.ssTropicalSeasonsEnabled && biome.is(TROPICAL_BIOMES))
             return SeasonType.TROPICAL_SEASON;
-        else if (!Config.Baked.defaultSeasonEnabled && biome.is(BLACKLISTED_BIOMES))
+        else if (!Config.Baked.ssDefaultSeasonEnabled && biome.is(BLACKLISTED_BIOMES))
             return SeasonType.NO_SEASON;
         return SeasonType.NORMAL_SEASON;
     }
@@ -89,30 +86,48 @@ public class SereneSeasonsUtil {
         return true;
     }
 
+    public static double getTimeInSeasonCycle(Level level) {
+        int seasonCycleTicks = SeasonHelper.getSeasonState(level).getSeasonCycleTicks();
+        return (double)((float)seasonCycleTicks / (float) SeasonTime.ZERO.getCycleDuration());
+    }
+
     public static boolean hasSeasons(Level level) {
         return ModConfig.seasons.isDimensionWhitelisted(level.dimension());
     }
 
+    public static float getSeasonModifier(double previousSeasonModifier, double currentSeasonModifier, double nextSeasonModifier, int time, int subSeasonDuration) {
+        return time < subSeasonDuration / 2 ?
+                calculateSinusoidalBetweenSeasons(previousSeasonModifier, currentSeasonModifier, time + (subSeasonDuration / 2), subSeasonDuration):
+                calculateSinusoidalBetweenSeasons(currentSeasonModifier, nextSeasonModifier, time - (subSeasonDuration / 2), subSeasonDuration);
+    }
+
+    public static float calculateSinusoidalBetweenSeasons(double previousSeasonModifier, double nextSeasonModifier, int time, int subSeasonDuration) {
+        double tempDiff = nextSeasonModifier - previousSeasonModifier;
+        // PI / 2 = 1.5707963267948966
+        double seasonModifier = (Math.sin(((time * Math.PI) / subSeasonDuration) - 1.5707963267948966) + 1) * (tempDiff / 2) + previousSeasonModifier;
+        return MathUtil.round((float) seasonModifier, 2);
+    }
+
     public static void initAverageTemperatures() {
-        averageSeasonTemperature += Config.Baked.earlyAutumnModifier;
-        averageSeasonTemperature += Config.Baked.earlySpringModifier;
-        averageSeasonTemperature += Config.Baked.earlySummerModifier;
-        averageSeasonTemperature += Config.Baked.earlyWinterModifier;
-        averageSeasonTemperature += Config.Baked.midAutumnModifier;
-        averageSeasonTemperature += Config.Baked.midSpringModifier;
-        averageSeasonTemperature += Config.Baked.midSummerModifier;
-        averageSeasonTemperature += Config.Baked.midWinterModifier;
-        averageSeasonTemperature += Config.Baked.lateAutumnModifier;
-        averageSeasonTemperature += Config.Baked.lateSpringModifier;
-        averageSeasonTemperature += Config.Baked.lateSummerModifier;
-        averageSeasonTemperature += Config.Baked.lateWinterModifier;
+        averageSeasonTemperature += Config.Baked.ssEarlyAutumnModifier;
+        averageSeasonTemperature += Config.Baked.ssEarlySpringModifier;
+        averageSeasonTemperature += Config.Baked.ssEarlySummerModifier;
+        averageSeasonTemperature += Config.Baked.ssEarlyWinterModifier;
+        averageSeasonTemperature += Config.Baked.ssMidAutumnModifier;
+        averageSeasonTemperature += Config.Baked.ssMidSpringModifier;
+        averageSeasonTemperature += Config.Baked.ssMidSummerModifier;
+        averageSeasonTemperature += Config.Baked.ssMidWinterModifier;
+        averageSeasonTemperature += Config.Baked.ssLateAutumnModifier;
+        averageSeasonTemperature += Config.Baked.ssLateSpringModifier;
+        averageSeasonTemperature += Config.Baked.ssLateSummerModifier;
+        averageSeasonTemperature += Config.Baked.ssLateWinterModifier;
         averageSeasonTemperature /= 12;
 
-        averageTropicalSeasonTemperature += Config.Baked.earlyWetSeasonModifier;
+        averageTropicalSeasonTemperature += Config.Baked.ssEarlyWetSeasonModifier;
         averageTropicalSeasonTemperature += Config.Baked.earlyDrySeasonModifier;
-        averageTropicalSeasonTemperature += Config.Baked.midWetSeasonModifier;
+        averageTropicalSeasonTemperature += Config.Baked.ssMidWetSeasonModifier;
         averageTropicalSeasonTemperature += Config.Baked.midDrySeasonModifier;
-        averageTropicalSeasonTemperature += Config.Baked.lateWetSeasonModifier;
+        averageTropicalSeasonTemperature += Config.Baked.ssLateWetSeasonModifier;
         averageTropicalSeasonTemperature += Config.Baked.lateDrySeasonModifier;
         averageTropicalSeasonTemperature /= 6;
     }
@@ -144,7 +159,7 @@ public class SereneSeasonsUtil {
     }
 
     public enum SeasonType {
-        NO_SEASON(0.2f),
+        NO_SEASON(0.9f),
         TROPICAL_SEASON(0.1f),
         NORMAL_SEASON(0.0f);
 

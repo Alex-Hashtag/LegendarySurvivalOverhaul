@@ -3,7 +3,9 @@ package sfiomn.legendarysurvivaloverhaul.common.temperature;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.temperature.ModifierBase;
+import sfiomn.legendarysurvivaloverhaul.common.integration.eclipticseasons.EclipticSeasonsUtil;
 import sfiomn.legendarysurvivaloverhaul.common.integration.terrafirmacraft.TerraFirmaCraftUtil;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
 
@@ -26,8 +28,23 @@ public class TimeModifier extends ModifierBase
 		
 		long time = level.getLevelData().getDayTime();
 
+		// 2 * PI / 24000 = 0.00026179938
+		double timeAngle = time * 0.00026179938;
+		if (LegendarySurvivalOverhaul.eclipticSeasonsLoaded) {
+			long sunRiseTime = EclipticSeasonsUtil.getSunRiseTime(level);
+			int dayDuration = EclipticSeasonsUtil.getDayDuration(level);
+			long sunSetTime = sunRiseTime + dayDuration;
+
+			// If during day time -> use sinusoidale starting at sunrise and reaching 1 at noon (= day duration / 2)
+			if (time > sunRiseTime && time < sunSetTime % 24000) {
+				timeAngle = (Math.PI / dayDuration) * ((time - sunRiseTime) % 24000);
+			} else {
+				timeAngle = -(Math.PI / (24000 - dayDuration)) * ((time - sunSetTime) % 24000);
+			}
+		}
+
 		// Add + - timeModifier temperature value based on time of the day
-		float timeTemperature = (float) Math.sin ((time * Math.PI) / 12000.0f) * (float) Config.Baked.timeModifier;
+		float timeTemperature = (float) Math.sin(timeAngle) * (float) Config.Baked.timeModifier;
 
 		// Biome Multiplier will increase the diff between noon and midnight based on extremity of biome temp
 		float biomeMultiplier = 1.0f + (Math.abs(normalizeToPositiveNegative(getNormalizedTempForBiome(level.getBiome(pos).get()))) * ((float)Config.Baked.biomeTimeMultiplier - 1.0f));

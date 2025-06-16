@@ -9,7 +9,8 @@ import sereneseasons.api.season.SeasonHelper;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.temperature.ModifierBase;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
-import sfiomn.legendarysurvivaloverhaul.util.MathUtil;
+
+import static sfiomn.legendarysurvivaloverhaul.common.integration.sereneseasons.SereneSeasonsUtil.getSeasonModifier;
 
 
 public class SereneSeasonsModifier extends ModifierBase
@@ -25,7 +26,7 @@ public class SereneSeasonsModifier extends ModifierBase
 		if (!LegendarySurvivalOverhaul.sereneSeasonsLoaded)
 			return 0.0f;
 		
-		if (!Config.Baked.seasonTemperatureEffects)
+		if (!Config.Baked.sereneSeasonsEnabled)
 			return 0.0f;
 		
 		try
@@ -53,7 +54,7 @@ public class SereneSeasonsModifier extends ModifierBase
 			return 0.0f;
 
 		Vec3i[] posOffsets;
-		if (Config.Baked.tropicalSeasonsEnabled)
+		if (Config.Baked.ssTropicalSeasonsEnabled)
 			posOffsets = new Vec3i[]{
 					new Vec3i(0, 0, 0),
                     new Vec3i(10, 0, 0),
@@ -81,40 +82,40 @@ public class SereneSeasonsModifier extends ModifierBase
 				targetUndergroundTemperature = SereneSeasonsUtil.averageSeasonTemperature;
 				switch(seasonState.getSubSeason()) {
 					case EARLY_SPRING:
-						value += getSeasonModifier(Config.Baked.lateWinterModifier, Config.Baked.earlySpringModifier, Config.Baked.midSpringModifier, timeInSubSeason, seasonState.getSubSeasonDuration());
+						value += getSeasonModifier(Config.Baked.ssLateWinterModifier, Config.Baked.ssEarlySpringModifier, Config.Baked.ssMidSpringModifier, timeInSubSeason, seasonState.getSubSeasonDuration());
 						break;
 					case MID_SPRING:
-						value += getSeasonModifier(Config.Baked.earlySpringModifier, Config.Baked.midSpringModifier, Config.Baked.lateSpringModifier, timeInSubSeason, seasonState.getSubSeasonDuration());
+						value += getSeasonModifier(Config.Baked.ssEarlySpringModifier, Config.Baked.ssMidSpringModifier, Config.Baked.ssLateSpringModifier, timeInSubSeason, seasonState.getSubSeasonDuration());
 						break;
 					case LATE_SPRING:
-						value += getSeasonModifier(Config.Baked.midSpringModifier, Config.Baked.lateSpringModifier, Config.Baked.earlySummerModifier, timeInSubSeason, seasonState.getSubSeasonDuration());
+						value += getSeasonModifier(Config.Baked.ssMidSpringModifier, Config.Baked.ssLateSpringModifier, Config.Baked.ssEarlySummerModifier, timeInSubSeason, seasonState.getSubSeasonDuration());
 						break;
 					case EARLY_SUMMER:
-						value += getSeasonModifier(Config.Baked.lateSpringModifier, Config.Baked.earlySummerModifier, Config.Baked.midSummerModifier, timeInSubSeason, seasonState.getSubSeasonDuration());
+						value += getSeasonModifier(Config.Baked.ssLateSpringModifier, Config.Baked.ssEarlySummerModifier, Config.Baked.ssMidSummerModifier, timeInSubSeason, seasonState.getSubSeasonDuration());
 						break;
 					case MID_SUMMER:
-						value += getSeasonModifier(Config.Baked.earlySummerModifier, Config.Baked.midSummerModifier, Config.Baked.lateSummerModifier, timeInSubSeason, seasonState.getSubSeasonDuration());
+						value += getSeasonModifier(Config.Baked.ssEarlySummerModifier, Config.Baked.ssMidSummerModifier, Config.Baked.ssLateSummerModifier, timeInSubSeason, seasonState.getSubSeasonDuration());
 						break;
 					case LATE_SUMMER:
-						value += getSeasonModifier(Config.Baked.midSummerModifier, Config.Baked.lateSummerModifier, Config.Baked.earlyAutumnModifier, timeInSubSeason, seasonState.getSubSeasonDuration());
+						value += getSeasonModifier(Config.Baked.ssMidSummerModifier, Config.Baked.ssLateSummerModifier, Config.Baked.ssEarlyAutumnModifier, timeInSubSeason, seasonState.getSubSeasonDuration());
 						break;
 					case EARLY_AUTUMN:
-						value += getSeasonModifier(Config.Baked.lateSummerModifier, Config.Baked.earlyAutumnModifier, Config.Baked.midAutumnModifier, timeInSubSeason, seasonState.getSubSeasonDuration());
+						value += getSeasonModifier(Config.Baked.ssLateSummerModifier, Config.Baked.ssEarlyAutumnModifier, Config.Baked.ssMidAutumnModifier, timeInSubSeason, seasonState.getSubSeasonDuration());
 						break;
 					case MID_AUTUMN:
-						value += getSeasonModifier(Config.Baked.earlyAutumnModifier, Config.Baked.midAutumnModifier, Config.Baked.lateAutumnModifier, timeInSubSeason, seasonState.getSubSeasonDuration());
+						value += getSeasonModifier(Config.Baked.ssEarlyAutumnModifier, Config.Baked.ssMidAutumnModifier, Config.Baked.ssLateAutumnModifier, timeInSubSeason, seasonState.getSubSeasonDuration());
 						break;
 					case LATE_AUTUMN:
-						value += getSeasonModifier(Config.Baked.midAutumnModifier, Config.Baked.lateAutumnModifier, Config.Baked.earlyWinterModifier, timeInSubSeason, seasonState.getSubSeasonDuration());
+						value += getSeasonModifier(Config.Baked.ssMidAutumnModifier, Config.Baked.ssLateAutumnModifier, Config.Baked.ssEarlyWinterModifier, timeInSubSeason, seasonState.getSubSeasonDuration());
 						break;
 					case EARLY_WINTER:
-						value += getSeasonModifier(Config.Baked.lateAutumnModifier, Config.Baked.earlyWinterModifier, Config.Baked.midWinterModifier, timeInSubSeason, seasonState.getSubSeasonDuration());
+						value += getSeasonModifier(Config.Baked.ssLateAutumnModifier, Config.Baked.ssEarlyWinterModifier, Config.Baked.ssMidWinterModifier, timeInSubSeason, seasonState.getSubSeasonDuration());
 						break;
 					case MID_WINTER:
-						value += getSeasonModifier(Config.Baked.earlyWinterModifier, Config.Baked.midWinterModifier, Config.Baked.lateWinterModifier, timeInSubSeason, seasonState.getSubSeasonDuration());
+						value += getSeasonModifier(Config.Baked.ssEarlyWinterModifier, Config.Baked.ssMidWinterModifier, Config.Baked.ssLateWinterModifier, timeInSubSeason, seasonState.getSubSeasonDuration());
 						break;
 					case LATE_WINTER:
-						value += getSeasonModifier(Config.Baked.midWinterModifier, Config.Baked.lateWinterModifier, Config.Baked.earlySpringModifier, timeInSubSeason, seasonState.getSubSeasonDuration());
+						value += getSeasonModifier(Config.Baked.ssMidWinterModifier, Config.Baked.ssLateWinterModifier, Config.Baked.ssEarlySpringModifier, timeInSubSeason, seasonState.getSubSeasonDuration());
 						break;
 				}
 			} else {
@@ -122,22 +123,22 @@ public class SereneSeasonsModifier extends ModifierBase
 				targetUndergroundTemperature = SereneSeasonsUtil.averageTropicalSeasonTemperature;
 				switch (seasonState.getTropicalSeason()) {
 					case EARLY_DRY:
-						value += getSeasonModifier(Config.Baked.lateWetSeasonModifier, Config.Baked.earlyDrySeasonModifier, Config.Baked.midDrySeasonModifier, timeInSubSeason, seasonState.getSubSeasonDuration() * 2);
+						value += getSeasonModifier(Config.Baked.ssLateWetSeasonModifier, Config.Baked.earlyDrySeasonModifier, Config.Baked.midDrySeasonModifier, timeInSubSeason, seasonState.getSubSeasonDuration() * 2);
 						break;
 					case MID_DRY:
 						value += getSeasonModifier(Config.Baked.earlyDrySeasonModifier, Config.Baked.midDrySeasonModifier, Config.Baked.lateDrySeasonModifier, timeInSubSeason, seasonState.getSubSeasonDuration() * 2);
 						break;
 					case LATE_DRY:
-						value += getSeasonModifier(Config.Baked.midDrySeasonModifier, Config.Baked.lateDrySeasonModifier, Config.Baked.earlyWetSeasonModifier, timeInSubSeason, seasonState.getSubSeasonDuration() * 2);
+						value += getSeasonModifier(Config.Baked.midDrySeasonModifier, Config.Baked.lateDrySeasonModifier, Config.Baked.ssEarlyWetSeasonModifier, timeInSubSeason, seasonState.getSubSeasonDuration() * 2);
 						break;
 					case EARLY_WET:
-						value += getSeasonModifier(Config.Baked.lateDrySeasonModifier, Config.Baked.earlyWetSeasonModifier, Config.Baked.midWetSeasonModifier, timeInSubSeason, seasonState.getSubSeasonDuration() * 2);
+						value += getSeasonModifier(Config.Baked.lateDrySeasonModifier, Config.Baked.ssEarlyWetSeasonModifier, Config.Baked.ssMidWetSeasonModifier, timeInSubSeason, seasonState.getSubSeasonDuration() * 2);
 						break;
 					case MID_WET:
-						value += getSeasonModifier(Config.Baked.earlyWetSeasonModifier, Config.Baked.midWetSeasonModifier, Config.Baked.lateWetSeasonModifier, timeInSubSeason, seasonState.getSubSeasonDuration() * 2);
+						value += getSeasonModifier(Config.Baked.ssEarlyWetSeasonModifier, Config.Baked.ssMidWetSeasonModifier, Config.Baked.ssLateWetSeasonModifier, timeInSubSeason, seasonState.getSubSeasonDuration() * 2);
 						break;
 					case LATE_WET:
-						value += getSeasonModifier(Config.Baked.midWetSeasonModifier, Config.Baked.lateWetSeasonModifier, Config.Baked.earlyDrySeasonModifier, timeInSubSeason, seasonState.getSubSeasonDuration() * 2);
+						value += getSeasonModifier(Config.Baked.ssMidWetSeasonModifier, Config.Baked.ssLateWetSeasonModifier, Config.Baked.earlyDrySeasonModifier, timeInSubSeason, seasonState.getSubSeasonDuration() * 2);
 						break;
 				}
 			}
@@ -146,17 +147,5 @@ public class SereneSeasonsModifier extends ModifierBase
 		value = validSpot == 0 ? 0 : value / validSpot;
 
 		return applyUndergroundEffect(value, level, pos, (float) targetUndergroundTemperature);
-	}
-
-	private float getSeasonModifier(double previousSeasonModifier, double currentSeasonModifier, double nextSeasonModifier, int time, int subSeasonDuration) {
-		return time < subSeasonDuration / 2 ?
-				calculateSinusoidalBetweenSeasons(previousSeasonModifier, currentSeasonModifier, time + (subSeasonDuration / 2), subSeasonDuration):
-				calculateSinusoidalBetweenSeasons(currentSeasonModifier, nextSeasonModifier, time - (subSeasonDuration / 2), subSeasonDuration);
-	}
-
-	private float calculateSinusoidalBetweenSeasons(double previousSeasonModifier, double nextSeasonModifier, int time, int subSeasonDuration) {
-		double tempDiff = nextSeasonModifier - previousSeasonModifier;
-		double seasonModifier = (Math.sin(((time * Math.PI) / subSeasonDuration) - (Math.PI / 2)) + 1) * (tempDiff / 2) + previousSeasonModifier;
-		return MathUtil.round((float) seasonModifier, 2);
 	}
 }

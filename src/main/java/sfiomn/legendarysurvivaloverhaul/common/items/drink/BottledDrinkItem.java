@@ -22,10 +22,8 @@ public abstract class BottledDrinkItem extends DrinkItem {
     @Override
     public ItemStack finishUsingItem(ItemStack stack, Level level, LivingEntity entity)
     {
-        if(level.isClientSide || !(entity instanceof Player))
+        if(level.isClientSide || !(entity instanceof Player player))
             return stack;
-
-        Player player = (Player)entity;
 
         stack = super.finishUsingItem(stack, level, player);
 

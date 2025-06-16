@@ -43,6 +43,7 @@ import sfiomn.legendarysurvivaloverhaul.common.capabilities.temperature.Temperat
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.thirst.ThirstCapability;
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.wetness.WetnessCapability;
 import sfiomn.legendarysurvivaloverhaul.common.integration.curios.CuriosEvents;
+import sfiomn.legendarysurvivaloverhaul.common.integration.eclipticseasons.EclipticSeasonsUtil;
 import sfiomn.legendarysurvivaloverhaul.common.integration.jsonConfig.JsonIntegrationConfigRegistration;
 import sfiomn.legendarysurvivaloverhaul.common.integration.origins.OriginsEvents;
 import sfiomn.legendarysurvivaloverhaul.common.integration.sereneseasons.SereneSeasonsUtil;
@@ -70,6 +71,7 @@ public class LegendarySurvivalOverhaul
 	 */
 	public static boolean betterWeatherLoaded = false;
 	public static boolean sereneSeasonsLoaded = false;
+	public static boolean eclipticSeasonsLoaded = false;
 
 	/**
 	 * TerraFirmaCraft temperature calculation already takes into account
@@ -96,6 +98,7 @@ public class LegendarySurvivalOverhaul
 	public static boolean meadowLoaded = false;
 	public static boolean overflowingbarsLoaded = false;
 	public static boolean weather2Loaded = false;
+	public static boolean medsandherbsLoaded = false;
 
 	public static Path configPath = FMLPaths.CONFIGDIR.get();
 	public static Path modConfigPath = Paths.get(configPath.toAbsolutePath().toString(), "legendarysurvivaloverhaul");
@@ -117,10 +120,10 @@ public class LegendarySurvivalOverhaul
 
 		AttributeRegistry.register(modBus);
 		ItemRegistry.register(modBus);
+		MobEffectRegistry.register(modBus);
 		LootModifierRegistry.register(modBus);
 		BlockRegistry.register(modBus);
 		ContainerRegistry.register(modBus);
-		MobEffectRegistry.register(modBus);
 		ParticleTypeRegistry.register(modBus);
 		RecipeRegistry.register(modBus);
 		SoundRegistry.register(modBus);
@@ -140,8 +143,8 @@ public class LegendarySurvivalOverhaul
 	private void modIntegration(IEventBus forgeBus)
 	{
 		sereneSeasonsLoaded = ModList.get().isLoaded("sereneseasons");
+		eclipticSeasonsLoaded = ModList.get().isLoaded("eclipticseasons");
 		curiosLoaded = ModList.get().isLoaded("curios");
-		surviveLoaded = ModList.get().isLoaded("survive");
 		terraFirmaCraftLoaded = ModList.get().isLoaded("tfc");
 		vampirismLoaded = ModList.get().isLoaded("vampirism");
 		originsLoaded = ModList.get().isLoaded("origins");
@@ -150,10 +153,16 @@ public class LegendarySurvivalOverhaul
 		beachpartyLoaded = ModList.get().isLoaded("beachparty");
 		meadowLoaded = ModList.get().isLoaded("meadow");
 		overflowingbarsLoaded = ModList.get().isLoaded("overflowingbars");
+		medsandherbsLoaded = ModList.get().isLoaded("meds_and_herbs");
+
 		weather2Loaded = ModList.get().isLoaded("weather2");
+		surviveLoaded = ModList.get().isLoaded("survive");
 
 		if (sereneSeasonsLoaded)
 			LOGGER.debug("Serene Seasons is loaded, enabling compatibility");
+
+		if (eclipticSeasonsLoaded)
+			LOGGER.debug("Ecliptic Seasons is loaded, enabling compatibility");
 
 		if (terraFirmaCraftLoaded)
 			LOGGER.debug("TerraFirmaCraft is loaded, enabling compatibility");
@@ -188,8 +197,11 @@ public class LegendarySurvivalOverhaul
 		if (overflowingbarsLoaded)
 			LOGGER.debug("Overflowing Bars is loaded, enabling compatibility");
 
+		if (medsandherbsLoaded)
+			LOGGER.debug("Meds And Herbs is loaded, enabling compatibility");
+
 		if (weather2Loaded)
-			LOGGER.debug("Weather2 is loaded, enabling compatibility");
+			LOGGER.debug("Weather2 is loaded, no compatibility for now");
 
 		if (surviveLoaded)
 			LOGGER.debug("Survive is loaded, I hope you know what you're doing");
@@ -227,6 +239,7 @@ public class LegendarySurvivalOverhaul
 
 	private void onLoadComplete(final FMLLoadCompleteEvent event)
 	{
+		IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
 		event.enqueueWork(() ->
 		{
 			BodyDamageUtilInternal.initMalusConfig();
@@ -234,6 +247,9 @@ public class LegendarySurvivalOverhaul
 
 			if (sereneSeasonsLoaded)
 				SereneSeasonsUtil.initAverageTemperatures();
+
+			if (eclipticSeasonsLoaded)
+				EclipticSeasonsUtil.initAverageTemperatures();
 
 			MobEffectRegistry.registerBrewingRecipes();
 		});
@@ -298,7 +314,7 @@ public class LegendarySurvivalOverhaul
 			ItemProperties.register(ItemRegistry.THERMOMETER.get(), new ResourceLocation(LegendarySurvivalOverhaul.MOD_ID, "temperature"), new ThermometerProperty());
 			ItemProperties.register(ItemRegistry.CANTEEN.get(), new ResourceLocation(LegendarySurvivalOverhaul.MOD_ID, "thirstenum"), new CanteenProperty());
 			ItemProperties.register(ItemRegistry.LARGE_CANTEEN.get(), new ResourceLocation(LegendarySurvivalOverhaul.MOD_ID, "thirstenum"), new CanteenProperty());
-			if (LegendarySurvivalOverhaul.sereneSeasonsLoaded) {
+			if (LegendarySurvivalOverhaul.sereneSeasonsLoaded || LegendarySurvivalOverhaul.eclipticSeasonsLoaded) {
 				ItemProperties.register(ItemRegistry.SEASONAL_CALENDAR.get(), new ResourceLocation(LegendarySurvivalOverhaul.MOD_ID, "time"), new SeasonalCalendarTimeProperty());
 				ItemProperties.register(ItemRegistry.SEASONAL_CALENDAR.get(), new ResourceLocation(LegendarySurvivalOverhaul.MOD_ID, "seasontype"), new SeasonalCalendarSeasonTypeProperty());
 			}

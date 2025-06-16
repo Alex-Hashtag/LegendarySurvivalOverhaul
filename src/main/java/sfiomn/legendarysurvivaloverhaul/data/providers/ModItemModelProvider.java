@@ -88,12 +88,21 @@ public class ModItemModelProvider extends ItemModelProvider {
                     "layer0", new ResourceLocation(LegendarySurvivalOverhaul.MOD_ID, "item/thermometer/thermometer_" + jsonName));
         }
 
-        String[] seasons = {"autumn", "dry", "spring", "summer", "wet", "winter"};
+        String[] serene_seasons = {"autumn", "dry", "spring", "summer", "wet", "winter"};
         for (int i=1; i<4; i++) {
-            for (String season: seasons) {
+            for (String season: serene_seasons) {
                 String jsonName = season + i;
-                singleTexture("item/seasonal_calendar/seasonal_calendar_" + jsonName, new ResourceLocation("item/generated"),
-                        "layer0", new ResourceLocation(LegendarySurvivalOverhaul.MOD_ID, "item/seasonal_calendar/" + jsonName));
+                singleTexture("item/seasonal_calendar/serene_seasons/seasonal_calendar_" + jsonName, new ResourceLocation("item/generated"),
+                        "layer0", new ResourceLocation(LegendarySurvivalOverhaul.MOD_ID, "item/seasonal_calendar/serene_seasons/" + jsonName));
+            }
+        }
+
+        String[] ecliptic_seasons = {"autumn", "spring", "summer", "winter"};
+        for (int i=1; i<7; i++) {
+            for (String season: ecliptic_seasons) {
+                String jsonName = season + i;
+                singleTexture("item/seasonal_calendar/ecliptic_seasons/seasonal_calendar_" + jsonName, new ResourceLocation("item/generated"),
+                        "layer0", new ResourceLocation(LegendarySurvivalOverhaul.MOD_ID, "item/seasonal_calendar/ecliptic_seasons/" + jsonName));
             }
         }
 

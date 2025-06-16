@@ -9,6 +9,7 @@ import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.temperature.AttributeModifierBase;
 import sfiomn.legendarysurvivaloverhaul.api.temperature.DynamicModifierBase;
 import sfiomn.legendarysurvivaloverhaul.api.temperature.ModifierBase;
+import sfiomn.legendarysurvivaloverhaul.common.integration.eclipticseasons.EclipticSeasonsModifier;
 import sfiomn.legendarysurvivaloverhaul.common.integration.origins.OriginsDynamicModifier;
 import sfiomn.legendarysurvivaloverhaul.common.integration.origins.OriginsModifier;
 import sfiomn.legendarysurvivaloverhaul.common.integration.sereneseasons.SereneSeasonsModifier;
@@ -58,6 +59,7 @@ public class TemperatureModifierRegistry
 
 	// Mod Compat
 	public static final RegistryObject<ModifierBase> SERENE_SEASONS = MODIFIERS.register("integration/serene_seasons", SereneSeasonsModifier::new);
+	public static final RegistryObject<ModifierBase> ECLIPTIC_SEASONS = MODIFIERS.register("integration/ecliptic_seasons", EclipticSeasonsModifier::new);
 
 	public static final RegistryObject<ModifierBase> WORLD_TEMPERATURE_TERRA_FIRMA_CRAFT = MODIFIERS.register("integration/world_temp_tfc", TerraFirmaCraftModifier::new);
 	public static final RegistryObject<AttributeModifierBase> ITEM_TEMPERATURE_TERRA_FIRMA_CRAFT = ITEM_ATTRIBUTE_MODIFIERS.register("integration/item_temp_tfc", TerraFirmaCraftHeatItemModifier::new);

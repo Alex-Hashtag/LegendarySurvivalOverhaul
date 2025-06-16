@@ -15,12 +15,13 @@ import net.minecraftforge.common.ForgeMod;
 import sereneseasons.api.SSItems;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.temperature.TemperatureItemCapability;
+import sfiomn.legendarysurvivaloverhaul.common.integration.sereneseasons.SereneSeasonsUtil;
+import sfiomn.legendarysurvivaloverhaul.common.integration.eclipticseasons.EclipticSeasonsUtil;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
 import sfiomn.legendarysurvivaloverhaul.registry.ItemRegistry;
 import sfiomn.legendarysurvivaloverhaul.util.CapabilityUtil;
 import sfiomn.legendarysurvivaloverhaul.util.WorldUtil;
 
-import static sfiomn.legendarysurvivaloverhaul.common.integration.sereneseasons.SereneSeasonsUtil.seasonTooltip;
 import static sfiomn.legendarysurvivaloverhaul.util.ItemUtil.compassLocation;
 import static sfiomn.legendarysurvivaloverhaul.util.WorldUtil.timeInGame;
 
@@ -51,7 +52,9 @@ public class RenderTooltipFrame {
             Item itemInFrame = ((ItemFrame) ENTITY_LOOKED_AT).getItem().getItem();
 
             if (LegendarySurvivalOverhaul.sereneSeasonsLoaded && (itemInFrame == SSItems.CALENDAR || itemInFrame == ItemRegistry.SEASONAL_CALENDAR.get())) {
-                render(forgeGui, guiGraphics, width, height, seasonTooltip(ENTITY_LOOKED_AT.blockPosition(), ENTITY_LOOKED_AT.level()));
+                render(forgeGui, guiGraphics, width, height, SereneSeasonsUtil.seasonTooltip(ENTITY_LOOKED_AT.blockPosition(), ENTITY_LOOKED_AT.level()));
+            } else if (LegendarySurvivalOverhaul.eclipticSeasonsLoaded && itemInFrame == ItemRegistry.SEASONAL_CALENDAR.get()) {
+                render(forgeGui, guiGraphics, width, height, EclipticSeasonsUtil.seasonTooltip(ENTITY_LOOKED_AT.level()));
             } else if (itemInFrame == ItemRegistry.THERMOMETER.get()) {
                 TemperatureItemCapability tempItemCap = CapabilityUtil.getTempItemCapability(((ItemFrame) ENTITY_LOOKED_AT).getItem());
                 float temperature = tempItemCap.getWorldTemperatureLevel();

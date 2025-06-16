@@ -10,6 +10,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.common.integration.sereneseasons.SereneSeasonsUtil;
 
 
@@ -29,22 +30,30 @@ public class SeasonalCalendarSeasonTypeProperty implements ClampedItemPropertyFu
 
         if (level == null || holder == null)
         {
-            return 0.2f;
+            return 0.9f;
         }
         else
         {
             try
             {
-                if (!SereneSeasonsUtil.hasSeasons(level))
-                    return 0.2f;
+                float d0 = 0;
 
-                SereneSeasonsUtil.SeasonType seasonType = SereneSeasonsUtil.getSeasonType(level.getBiome(holder.blockPosition()));
+                if (LegendarySurvivalOverhaul.sereneSeasonsLoaded) {
+                    if (!SereneSeasonsUtil.hasSeasons(level))
+                        return 0.9f;
 
-                return seasonType.propertyValue;
+                    SereneSeasonsUtil.SeasonType seasonType = SereneSeasonsUtil.getSeasonType(level.getBiome(holder.blockPosition()));
+                    d0 = seasonType.propertyValue;
+
+                } else if (LegendarySurvivalOverhaul.eclipticSeasonsLoaded) {
+                    d0 = 0.3f;
+                }
+
+                return d0;
             }
             catch (NullPointerException e)
             {
-                return 0.2f;
+                return 0.9f;
             }
 
         }

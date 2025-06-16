@@ -142,34 +142,40 @@ public class Config
 		public final ForgeConfigSpec.DoubleValue tfcItemHeatMultiplier;
 		public final ForgeConfigSpec.DoubleValue tfcTemperatureMultiplier;
 
-		public final ForgeConfigSpec.BooleanValue seasonTemperatureEffects;
-		public final ForgeConfigSpec.BooleanValue tropicalSeasonsEnabled;
-		public final ForgeConfigSpec.BooleanValue seasonCardsEnabled;
-		public final ForgeConfigSpec.BooleanValue defaultSeasonEnabled;
+		public final ForgeConfigSpec.BooleanValue sereneSeasonsEnabled;
+		public final ForgeConfigSpec.BooleanValue ssTropicalSeasonsEnabled;
+		public final ForgeConfigSpec.BooleanValue ssSeasonCardsEnabled;
+		public final ForgeConfigSpec.BooleanValue ssDefaultSeasonEnabled;
 
-		public final ForgeConfigSpec.DoubleValue earlySpringModifier;
-		public final ForgeConfigSpec.DoubleValue midSpringModifier;
-		public final ForgeConfigSpec.DoubleValue lateSpringModifier;
+		public final ForgeConfigSpec.DoubleValue ssEarlySpringModifier;
+		public final ForgeConfigSpec.DoubleValue ssMidSpringModifier;
+		public final ForgeConfigSpec.DoubleValue ssLateSpringModifier;
 
-		public final ForgeConfigSpec.DoubleValue earlySummerModifier;
-		public final ForgeConfigSpec.DoubleValue midSummerModifier;
-		public final ForgeConfigSpec.DoubleValue lateSummerModifier;
+		public final ForgeConfigSpec.DoubleValue ssEarlySummerModifier;
+		public final ForgeConfigSpec.DoubleValue ssMidSummerModifier;
+		public final ForgeConfigSpec.DoubleValue ssLateSummerModifier;
 
-		public final ForgeConfigSpec.DoubleValue earlyAutumnModifier;
-		public final ForgeConfigSpec.DoubleValue midAutumnModifier;
-		public final ForgeConfigSpec.DoubleValue lateAutumnModifier;
+		public final ForgeConfigSpec.DoubleValue ssEarlyAutumnModifier;
+		public final ForgeConfigSpec.DoubleValue ssMidAutumnModifier;
+		public final ForgeConfigSpec.DoubleValue ssLateAutumnModifier;
 
-		public final ForgeConfigSpec.DoubleValue earlyWinterModifier;
-		public final ForgeConfigSpec.DoubleValue midWinterModifier;
-		public final ForgeConfigSpec.DoubleValue lateWinterModifier;
+		public final ForgeConfigSpec.DoubleValue ssEarlyWinterModifier;
+		public final ForgeConfigSpec.DoubleValue ssMidWinterModifier;
+		public final ForgeConfigSpec.DoubleValue ssLateWinterModifier;
 
-		public final ForgeConfigSpec.DoubleValue earlyWetSeasonModifier;
-		public final ForgeConfigSpec.DoubleValue midWetSeasonModifier;
-		public final ForgeConfigSpec.DoubleValue lateWetSeasonModifier;
+		public final ForgeConfigSpec.DoubleValue ssEarlyWetSeasonModifier;
+		public final ForgeConfigSpec.DoubleValue ssMidWetSeasonModifier;
+		public final ForgeConfigSpec.DoubleValue ssLateWetSeasonModifier;
 
-		public final ForgeConfigSpec.DoubleValue earlyDrySeasonModifier;
-		public final ForgeConfigSpec.DoubleValue midDrySeasonModifier;
-		public final ForgeConfigSpec.DoubleValue lateDrySeasonModifier;
+		public final ForgeConfigSpec.DoubleValue ssEarlyDrySeasonModifier;
+		public final ForgeConfigSpec.DoubleValue ssMidDrySeasonModifier;
+		public final ForgeConfigSpec.DoubleValue ssLateDrySeasonModifier;
+
+		public final ForgeConfigSpec.BooleanValue eclipticSeasonsEnabled;
+		public final ForgeConfigSpec.ConfigValue<List<? extends Double>> esSpringModifier;
+		public final ForgeConfigSpec.ConfigValue<List<? extends Double>> esSummerModifier;
+		public final ForgeConfigSpec.ConfigValue<List<? extends Double>> esAutumnModifier;
+		public final ForgeConfigSpec.ConfigValue<List<? extends Double>> esWinterModifier;
 
 		// Thirst
 		public final ForgeConfigSpec.BooleanValue thirstEnabled;
@@ -574,18 +580,18 @@ public class Config
 					.defineInRange("TerraFirmaCraft Temperature Multiplier", 1.0d, 0, 1000);
 			builder.pop();
 
-			builder.push("seasons");
-			seasonTemperatureEffects = builder
-					.comment(" If Serene Seasons is installed, then seasons will have an effect on the player's temperature.")
-					.define("Seasons affect Temperature", true);
-			tropicalSeasonsEnabled = builder
+			builder.push("serene-seasons");
+			sereneSeasonsEnabled = builder
+					.comment(" If Serene Seasons is installed, whether the seasons have an effect on the player's temperature.")
+					.define("Serene Seasons Enabled", true);
+			ssTropicalSeasonsEnabled = builder
 					.comment(" If the tropical seasons are disabled, the normal summer-autumn-winter-spring seasons are applied.",
 							" If disabled, dry and wet seasons are applied for hot biomes.")
 					.define("Tropical Seasons Enabled", false);
-			seasonCardsEnabled = builder
+			ssSeasonCardsEnabled = builder
 					.comment(" If season cards are enabled, season cards will appear at every season changes.")
 					.define("Season Cards Enabled", false);
-			defaultSeasonEnabled = builder
+			ssDefaultSeasonEnabled = builder
 					.comment(" If default season is enabled, when serene season defines no season effect in a biome, the normal season temperature will be applied.",
 							" If disabled, when serene season defines no season effects, no season temperature will be applied.")
 					.define("Default Season Enabled", true);
@@ -594,45 +600,61 @@ public class Config
 							" The value is reached at the middle of the sub season, and smoothly transition from one to another.")
 					.push("temperate");
 			builder.push("spring");
-			earlySpringModifier = builder.defineInRange("Early Spring Modifier", -3.0, -1000, 1000);
-			midSpringModifier = builder.defineInRange("Mid Spring Modifier", 0.0, -1000, 1000);
-			lateSpringModifier = builder.defineInRange("Late Spring Modifier", 3.0, -1000, 1000);
+			ssEarlySpringModifier = builder.defineInRange("Early Spring Modifier", -3.0, -1000, 1000);
+			ssMidSpringModifier = builder.defineInRange("Mid Spring Modifier", 0.0, -1000, 1000);
+			ssLateSpringModifier = builder.defineInRange("Late Spring Modifier", 3.0, -1000, 1000);
 			builder.pop();
 
 			builder.push("summer");
-			earlySummerModifier = builder.defineInRange("Early Summer Modifier", 6.0, -1000, 1000);
-			midSummerModifier = builder.defineInRange("Mid Summer Modifier", 10.0, -1000, 1000);
-			lateSummerModifier = builder.defineInRange("Late Summer Modifier", 6.0, -1000, 1000);
+			ssEarlySummerModifier = builder.defineInRange("Early Summer Modifier", 6.0, -1000, 1000);
+			ssMidSummerModifier = builder.defineInRange("Mid Summer Modifier", 10.0, -1000, 1000);
+			ssLateSummerModifier = builder.defineInRange("Late Summer Modifier", 6.0, -1000, 1000);
 			builder.pop();
 
 			builder.push("autumn");
-			earlyAutumnModifier = builder.defineInRange("Early Autumn Modifier", 3.0, -1000, 1000);
-			midAutumnModifier = builder.defineInRange("Mid Autumn Modifier", 0.0, -1000, 1000);
-			lateAutumnModifier = builder.defineInRange("Late Autumn Modifier", -3.0, -1000, 1000);
+			ssEarlyAutumnModifier = builder.defineInRange("Early Autumn Modifier", 3.0, -1000, 1000);
+			ssMidAutumnModifier = builder.defineInRange("Mid Autumn Modifier", 0.0, -1000, 1000);
+			ssLateAutumnModifier = builder.defineInRange("Late Autumn Modifier", -3.0, -1000, 1000);
 			builder.pop();
 
 			builder.push("winter");
-			earlyWinterModifier = builder.defineInRange("Early Winter Modifier", -7.0, -1000, 1000);
-			midWinterModifier = builder.defineInRange("Mid Winter Modifier", -12.0, -1000, 1000);
-			lateWinterModifier = builder.defineInRange("Late Winter Modifier", -7.0, -1000, 1000);
+			ssEarlyWinterModifier = builder.defineInRange("Early Winter Modifier", -7.0, -1000, 1000);
+			ssMidWinterModifier = builder.defineInRange("Mid Winter Modifier", -12.0, -1000, 1000);
+			ssLateWinterModifier = builder.defineInRange("Late Winter Modifier", -7.0, -1000, 1000);
 			builder.pop();
 			builder.pop();
 
 			builder.comment(" Temperature modifiers per season in tropical biomes.").push("tropical");
 			builder.push("wet-season");
-			earlyWetSeasonModifier = builder.defineInRange("Early Wet Season Modifier", -1.0, -1000, 1000);
-			midWetSeasonModifier = builder.defineInRange("Mid Wet Season Modifier", -5.0, -1000, 1000);
-			lateWetSeasonModifier = builder.defineInRange("Late Wet Season Modifier", -1.0, -1000, 1000);
+			ssEarlyWetSeasonModifier = builder.defineInRange("Early Wet Season Modifier", -1.0, -1000, 1000);
+			ssMidWetSeasonModifier = builder.defineInRange("Mid Wet Season Modifier", -5.0, -1000, 1000);
+			ssLateWetSeasonModifier = builder.defineInRange("Late Wet Season Modifier", -1.0, -1000, 1000);
 			builder.pop();
 
 			builder.push("dry-season");
-			earlyDrySeasonModifier = builder.defineInRange("Early Dry Season Modifier", 3.0, -1000, 1000);
-			midDrySeasonModifier = builder.defineInRange("Mid Dry Season Modifier", 7.0, -1000, 1000);
-			lateDrySeasonModifier = builder.defineInRange("Late Dry Season Modifier", 3.0, -1000, 1000);
-			builder.pop();
+			ssEarlyDrySeasonModifier = builder.defineInRange("Early Dry Season Modifier", 3.0, -1000, 1000);
+			ssMidDrySeasonModifier = builder.defineInRange("Mid Dry Season Modifier", 7.0, -1000, 1000);
+			ssLateDrySeasonModifier = builder.defineInRange("Late Dry Season Modifier", 3.0, -1000, 1000);
 			builder.pop();
 
 			builder.pop();
+			builder.pop();
+
+			builder.push("ecliptic-seasons");
+			eclipticSeasonsEnabled = builder
+					.comment(" If Ecliptic Seasons is installed, whether the seasons have an effect on the player's temperature.")
+					.define("Ecliptic Seasons Enabled", true);
+
+			builder.comment(" Temperature modifiers per season. Each season is subdivided in 6 sub seasons." +
+							" The value is reached at the middle of the sub season, and smoothly transition from one to another.")
+					.push("temperature");
+			esSpringModifier = builder.define("Spring Modifier", List.of(-10.0, -7.0, -5.0, -3.0, -1.0, 0.0));
+			esSummerModifier = builder.define("Summer Modifier", List.of(1.0, 3.0, 5.0, 7.0, 9.0, 10.0));
+			esAutumnModifier = builder.define("Autumn Modifier", List.of(9.0, 7.0, 5.0, 3.0, 1.0, 0.0));
+			esWinterModifier = builder.define("Winter Modifier", List.of(-1.0, -3.0, -5.0, -7.0, -10.0, -12.0));
+			builder.pop();
+			builder.pop();
+
 			builder.pop();
 			builder.pop();
 
@@ -664,7 +686,7 @@ public class Config
 					.comment(" Scaling of the damages dealt when completely dehydrated. Each tick damage will be increased by this value.")
 					.defineInRange("Dehydration Damage Scaling", 0.3d, 0, 1000.0d);
 			thirstEffectModifier = builder
-					.comment(" How many thirst exhaustion will be added every 50 ticks when the player suffers from not amplified Thirst Effect.",
+					.comment(" How much thirst exhaustion will be added every 50 ticks when the player suffers from not amplified Thirst Effect.",
 							" The player will suffer Thirst Effect from dirty water for example.")
 					.defineInRange("Thirst Effect Modifier", 0.25d, 0, 1000);
 			builder.push("canteen");
@@ -832,14 +854,14 @@ public class Config
 							" Any other value will default to SIMPLE.")
 					.define("First Aid Supplies Limb Regeneration Mode", "LIMB_DYNAMIC");
 			firstAidSuppliesHealingOverflow = builder
-					.comment(" Whether or not the exceeded limb health regenerated will heal the next most damaged limb.",
+					.comment(" Whether the exceeded limb health regenerated will heal the next most damaged limb.",
 							" Only available for Regeneration Mode SIMPLE or PLAYER_DYNAMIC.")
 					.define("First Aid Supplies Healing Overflow", false);
 			firstAidSuppliesTickTimer = builder
 					.comment(" How fast in ticks the First Aid Supplies will heal limbs. 20 ticks = 1s")
 					.defineInRange("First Aid Supplies Tick Timer", 300, 0, 10000);
 			firstAidSuppliesExhaustsFood = builder
-					.comment(" Whether or not the First Aid Supplies exhaust food when healing limbs, such as the other healing items.")
+					.comment(" Whether the First Aid Supplies exhaust food when healing limbs, such as the other healing items.")
 					.define("First Aid Supplies Exhausts Food", true);
 			firstAidSuppliesBoostedOnEffects = builder
 					.comment(" The First Aid Supplies will heal limbs faster when the player is under one of the mentioned effect.")
@@ -1276,34 +1298,40 @@ public class Config
 		public static double tfcItemHeatMultiplier;
 		public static double tfcTemperatureMultiplier;
 
-		public static boolean seasonTemperatureEffects;
-		public static boolean tropicalSeasonsEnabled;
-		public static boolean seasonCardsEnabled;
-		public static boolean defaultSeasonEnabled;
+		public static boolean sereneSeasonsEnabled;
+		public static boolean ssTropicalSeasonsEnabled;
+		public static boolean ssSeasonCardsEnabled;
+		public static boolean ssDefaultSeasonEnabled;
 
-		public static double earlySpringModifier;
-		public static double midSpringModifier;
-		public static double lateSpringModifier;
+		public static double ssEarlySpringModifier;
+		public static double ssMidSpringModifier;
+		public static double ssLateSpringModifier;
 
-		public static double earlySummerModifier;
-		public static double midSummerModifier;
-		public static double lateSummerModifier;
+		public static double ssEarlySummerModifier;
+		public static double ssMidSummerModifier;
+		public static double ssLateSummerModifier;
 
-		public static double earlyAutumnModifier;
-		public static double midAutumnModifier;
-		public static double lateAutumnModifier;
+		public static double ssEarlyAutumnModifier;
+		public static double ssMidAutumnModifier;
+		public static double ssLateAutumnModifier;
 
-		public static double earlyWinterModifier;
-		public static double midWinterModifier;
-		public static double lateWinterModifier;
+		public static double ssEarlyWinterModifier;
+		public static double ssMidWinterModifier;
+		public static double ssLateWinterModifier;
 
-		public static double earlyWetSeasonModifier;
-		public static double midWetSeasonModifier;
-		public static double lateWetSeasonModifier;
+		public static double ssEarlyWetSeasonModifier;
+		public static double ssMidWetSeasonModifier;
+		public static double ssLateWetSeasonModifier;
 
 		public static double earlyDrySeasonModifier;
 		public static double midDrySeasonModifier;
 		public static double lateDrySeasonModifier;
+
+		public static boolean eclipticSeasonsEnabled;
+		public static List<? extends Double> esSpringModifier;
+		public static List<? extends Double> esSummerModifier;
+		public static List<? extends Double> esAutumnModifier;
+		public static List<? extends Double> esWinterModifier;
 
 		// Thirst
 		public static boolean thirstEnabled;
@@ -1540,34 +1568,40 @@ public class Config
 				tfcItemHeatMultiplier = COMMON.tfcItemHeatMultiplier.get();
 				tfcTemperatureMultiplier = COMMON.tfcTemperatureMultiplier.get();
 
-				seasonTemperatureEffects = COMMON.seasonTemperatureEffects.get();
-				tropicalSeasonsEnabled = COMMON.tropicalSeasonsEnabled.get();
-				seasonCardsEnabled = COMMON.seasonCardsEnabled.get();
-				defaultSeasonEnabled = COMMON.defaultSeasonEnabled.get();
+				sereneSeasonsEnabled = COMMON.sereneSeasonsEnabled.get();
+				ssTropicalSeasonsEnabled = COMMON.ssTropicalSeasonsEnabled.get();
+				ssSeasonCardsEnabled = COMMON.ssSeasonCardsEnabled.get();
+				ssDefaultSeasonEnabled = COMMON.ssDefaultSeasonEnabled.get();
 
-				earlySpringModifier = COMMON.earlySpringModifier.get();
-				midSpringModifier = COMMON.midSpringModifier.get();
-				lateSpringModifier = COMMON.lateSpringModifier.get();
+				ssEarlySpringModifier = COMMON.ssEarlySpringModifier.get();
+				ssMidSpringModifier = COMMON.ssMidSpringModifier.get();
+				ssLateSpringModifier = COMMON.ssLateSpringModifier.get();
 
-				earlySummerModifier = COMMON.earlySummerModifier.get();
-				midSummerModifier = COMMON.midSummerModifier.get();
-				lateSummerModifier = COMMON.lateSummerModifier.get();
+				ssEarlySummerModifier = COMMON.ssEarlySummerModifier.get();
+				ssMidSummerModifier = COMMON.ssMidSummerModifier.get();
+				ssLateSummerModifier = COMMON.ssLateSummerModifier.get();
 
-				earlyAutumnModifier = COMMON.earlyAutumnModifier.get();
-				midAutumnModifier = COMMON.midAutumnModifier.get();
-				lateAutumnModifier = COMMON.lateAutumnModifier.get();
+				ssEarlyAutumnModifier = COMMON.ssEarlyAutumnModifier.get();
+				ssMidAutumnModifier = COMMON.ssMidAutumnModifier.get();
+				ssLateAutumnModifier = COMMON.ssLateAutumnModifier.get();
 
-				earlyWinterModifier = COMMON.earlyWinterModifier.get();
-				midWinterModifier = COMMON.midWinterModifier.get();
-				lateWinterModifier = COMMON.lateWinterModifier.get();
+				ssEarlyWinterModifier = COMMON.ssEarlyWinterModifier.get();
+				ssMidWinterModifier = COMMON.ssMidWinterModifier.get();
+				ssLateWinterModifier = COMMON.ssLateWinterModifier.get();
 
-				earlyWetSeasonModifier = COMMON.earlyWetSeasonModifier.get();
-				midWetSeasonModifier = COMMON.midWetSeasonModifier.get();
-				lateWetSeasonModifier = COMMON.lateWetSeasonModifier.get();
+				ssEarlyWetSeasonModifier = COMMON.ssEarlyWetSeasonModifier.get();
+				ssMidWetSeasonModifier = COMMON.ssMidWetSeasonModifier.get();
+				ssLateWetSeasonModifier = COMMON.ssLateWetSeasonModifier.get();
 
-				earlyDrySeasonModifier = COMMON.earlyDrySeasonModifier.get();
-				midDrySeasonModifier = COMMON.midDrySeasonModifier.get();
-				lateDrySeasonModifier = COMMON.lateDrySeasonModifier.get();
+				earlyDrySeasonModifier = COMMON.ssEarlyDrySeasonModifier.get();
+				midDrySeasonModifier = COMMON.ssMidDrySeasonModifier.get();
+				lateDrySeasonModifier = COMMON.ssLateDrySeasonModifier.get();
+
+				eclipticSeasonsEnabled = COMMON.eclipticSeasonsEnabled.get();
+				esSpringModifier = COMMON.esSpringModifier.get();
+				esSummerModifier = COMMON.esSummerModifier.get();
+				esAutumnModifier = COMMON.esAutumnModifier.get();
+				esWinterModifier = COMMON.esWinterModifier.get();
 
 				thirstEnabled = COMMON.thirstEnabled.get();
 				dangerousDehydration = COMMON.dangerousDehydration.get();
