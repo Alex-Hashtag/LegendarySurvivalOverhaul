@@ -23,7 +23,7 @@ issueTrackerURL="https://github.com/sfiomn/LegendarySurvivalOverhaul/issues" #op
 modId="${mod_id}" #mandatory
 
 # The version number of the mod
-version="${minecraft_version}-${mod_version}" #mandatory
+version="${mod_version}" #mandatory
 
 # A display name for the mod
 displayName="${mod_name}" #mandatory
@@ -94,8 +94,15 @@ Making survival harder. Highly configurable so you can play the way you want.
     side="BOTH"
 
 [[dependencies.${mod_id}]]
-modId="meadoow"
-mandatory=false
-versionRange="[1.3.20,)"
-ordering="BEFORE"
-side="BOTH"
+    modId="meadow"
+    mandatory=false
+    versionRange="[1.3.20,)"
+    ordering="BEFORE"
+    side="BOTH"
+
+[[dependencies.${mod_id}]]
+    modId="eclipticseasons"
+    mandatory=false
+    versionRange="[0.11.0-pre8,)"
+    ordering="BEFORE"
+    side="BOTH"
