@@ -20,5 +20,11 @@ public class CallOfYucatanTemperatureProvider extends TemperatureDataProvider {
         item("jades_chestplate").coldResistance(1.5f);
         item("jades_leggings").coldResistance(1.5f);
         item("jades_boots").coldResistance(0.5f);
+
+        block("bone_torch_ground").addTemperature(temperatureBlock(1.5f));
+        item("bone_torch_ground").temperature(1.5f);
+
+        block("golden_torch_ground").addTemperature(temperatureBlock(1.5f));
+        item("golden_torch_ground").temperature(1.5f);
     }
 }

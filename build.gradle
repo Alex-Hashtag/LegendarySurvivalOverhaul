@@ -162,9 +162,10 @@ dependencies {
     // External libraries.
 
     // These are REQUIRED for the mod to compile correctly and should not be removed.
-    implementation(fg.deobf("curse.maven:serene-seasons-291874:5790653"))
-    implementation(fg.deobf("curse.maven:glitchcore-955399:5787839"))
+    compileOnly(fg.deobf("curse.maven:serene-seasons-291874:5790653"))
+    compileOnly(fg.deobf("curse.maven:glitchcore-955399:5787839"))
     implementation(fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}"))
+    implementation(fg.deobf("curse.maven:eclipticseasons-1118306:6645774"))
 
     // compile against the JEI API but do not include it at runtime
     compileOnly(fg.deobf("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}"))
@@ -174,15 +175,16 @@ dependencies {
     compileOnly(fg.deobf("curse.maven:mutantmonsters-852665:5107399"))
     compileOnly(fg.deobf("curse.maven:vampirism-233029:5990073"))
     compileOnly(fg.deobf("curse.maven:supplementaries-412082:6463022"))
+
     compileOnly(fg.deobf("curse.maven:beachparty-858691:6458692"))
     compileOnly(fg.deobf("curse.maven:meadow-821483:6467344"))
     compileOnly(fg.deobf("curse.maven:architectury-419699:5137938"))
     compileOnly(fg.deobf("curse.maven:overflowingbars-852662:5763974"))
     compileOnly(fg.deobf("curse.maven:puzzlelib-495476:6387081"))
-    implementation(fg.deobf("curse.maven:weather2-237746:5244118"))
-    implementation(fg.deobf("curse.maven:coroutil-237749:5096038"))
+    //implementation(fg.deobf("curse.maven:weather2-237746:5244118"))
+    //implementation(fg.deobf("curse.maven:coroutil-237749:5096038"))
     //implementation(fg.deobf("curse.maven:werewolves-417851:5406832"))
-    //implementation(fg.deobf("curse.maven:medsandherbs-418682:4840824"))
+    compileOnly(fg.deobf("curse.maven:medsandherbs-418682:4840824"))
 
     // at runtime, use the full JEI jar for Forge
     runtimeOnly(fg.deobf("mezz.jei:jei-${minecraft_version}-forge:${jei_version}"))
@@ -203,7 +205,7 @@ dependencies {
     //runtimeOnly(fg.deobf("curse.maven:applewood-1037047:6164430"))
     //runtimeOnly(fg.deobf("curse.maven:cornexpansion-1038740:6216092"))
 
-    runtimeOnly(fg.deobf("curse.maven:moonlight-499980:6428221"))
+    //runtimeOnly(fg.deobf("curse.maven:moonlight-499980:6428221"))
     //runtimeOnly(fg.deobf("curse.maven:artifacts-312353:5693342"))
     //runtimeOnly(fg.deobf("curse.maven:expandability-465066:5301414"))
     //runtimeOnly(fg.deobf("curse.maven:clothconfig-348521:5729105"))
@@ -224,7 +226,7 @@ dependencies {
     //runtimeOnly fg.deobf("curse.maven:alekis-nifty-ships-1068445:5669604")
 
     //runtimeOnly fg.deobf("curse.maven:fruitsdelight-943774:6500940")
-    runtimeOnly fg.deobf("curse.maven:farmersdelight-398521:6154802")
+    //runtimeOnly fg.deobf("curse.maven:farmersdelight-398521:6154802")
 }
 
 // This block of code expands all declared replace properties in the specified resource targets.

@@ -22,10 +22,10 @@ public class HerbalBrewsTemperatureProvider extends TemperatureDataProvider {
                 .addTemperature(temperatureBlock(0.0f).addProperty("lit", "false"));
         block("cauldron").addTemperature(temperatureBlock(6.0f));
         block("tea_kettle")
-                .addTemperature(temperatureBlock(6.0f).addProperty("lit", "true"))
+                .addTemperature(temperatureBlock(4.0f).addProperty("lit", "true"))
                 .addTemperature(temperatureBlock(0.0f).addProperty("lit", "false"));
         block("copper_tea_kettle")
-                .addTemperature(temperatureBlock(6.0f).addProperty("lit", "true"))
+                .addTemperature(temperatureBlock(4.0f).addProperty("lit", "true"))
                 .addTemperature(temperatureBlock(0.0f).addProperty("lit", "false"));
 
         consumable("green_tea")

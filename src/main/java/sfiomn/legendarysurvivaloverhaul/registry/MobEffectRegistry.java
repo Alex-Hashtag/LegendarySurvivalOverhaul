@@ -1,8 +1,8 @@
 package sfiomn.legendarysurvivaloverhaul.registry;
 
+import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -13,23 +13,24 @@ import net.minecraft.world.item.alchemy.Potions;
 import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
 import net.minecraftforge.common.crafting.StrictNBTIngredient;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.registries.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.common.effects.*;
 
 public class MobEffectRegistry {
 
 	public static final DeferredRegister<MobEffect> EFFECTS = DeferredRegister.create(ForgeRegistries.MOB_EFFECTS, LegendarySurvivalOverhaul.MOD_ID);
-	public static final DeferredRegister<Potion> POTIONS = DeferredRegister.create(ForgeRegistries.POTIONS, LegendarySurvivalOverhaul.MOD_ID);
+	public static final DeferredRegister<Potion> TEMPERATURE_POTIONS = DeferredRegister.create(ForgeRegistries.POTIONS, LegendarySurvivalOverhaul.MOD_ID);
+	public static final DeferredRegister<Potion> THIRST_POTIONS = DeferredRegister.create(ForgeRegistries.POTIONS, LegendarySurvivalOverhaul.MOD_ID);
 
 	public static final RegistryObject<MobEffect> THIRST = EFFECTS.register("thirst", ThirstEffect::new);
-	public static final RegistryObject<Potion> THIRST_POTION = POTIONS.register("thirst", () -> new Potion("thirst", new MobEffectInstance(THIRST.get(), 3600, 0, false, true, true)));
-	public static final RegistryObject<Potion> THIRST_POTION_LONG = POTIONS.register("thirst_long", () -> new Potion("thirst_long", new MobEffectInstance(THIRST.get(), 9600, 0, false, true, true)));
+	public static final RegistryObject<Potion> THIRST_POTION = THIRST_POTIONS.register("thirst", () -> new Potion("thirst", new MobEffectInstance(THIRST.get(), 3600, 0, false, true, true)));
+	public static final RegistryObject<Potion> THIRST_POTION_LONG = THIRST_POTIONS.register("thirst_long", () -> new Potion("thirst_long", new MobEffectInstance(THIRST.get(), 9600, 0, false, true, true)));
 	public static final RegistryObject<MobEffect> HYDRATION_FILL = EFFECTS.register("hydration_fill", HydrationFillEffect::new);
-	public static final RegistryObject<Potion> HYDRATION_FILL_POTION = POTIONS.register("hydration_fill", () -> new Potion("hydration_fill", new MobEffectInstance(HYDRATION_FILL.get(), 3600, 0, false, true, true)));
-	public static final RegistryObject<Potion> HYDRATION_FILL_POTION_LONG = POTIONS.register("hydration_fill_long", () -> new Potion("hydration_fill_long", new MobEffectInstance(HYDRATION_FILL.get(), 9600, 0, false, true, true)));
+	public static final RegistryObject<Potion> HYDRATION_FILL_POTION = THIRST_POTIONS.register("hydration_fill", () -> new Potion("hydration_fill", new MobEffectInstance(HYDRATION_FILL.get(), 3600, 0, false, true, true)));
+	public static final RegistryObject<Potion> HYDRATION_FILL_POTION_LONG = THIRST_POTIONS.register("hydration_fill_long", () -> new Potion("hydration_fill_long", new MobEffectInstance(HYDRATION_FILL.get(), 9600, 0, false, true, true)));
 
 	public static final RegistryObject<MobEffect> HOT_FOOD = EFFECTS.register("hot_food", () -> new SimpleAttributeEffect(MobEffectCategory.BENEFICIAL, 16714764, 1).addAttributeModifier(AttributeRegistry.HEATING_TEMPERATURE.get(), SimpleAttributeEffect.HOT_FOOD_ATTRIBUTE_UUID, 1.0, AttributeModifier.Operation.ADDITION));
 	public static final RegistryObject<MobEffect> HOT_DRINk = EFFECTS.register("hot_drink", () -> new SimpleAttributeEffect(MobEffectCategory.BENEFICIAL, 16714764, 1).addAttributeModifier(AttributeRegistry.HEATING_TEMPERATURE.get(), SimpleAttributeEffect.HOT_DRINK_ATTRIBUTE_UUID, 1.0, AttributeModifier.Operation.ADDITION));
@@ -46,16 +47,16 @@ public class MobEffectRegistry {
 	public static final RegistryObject<MobEffect> HEAT_IMMUNITY = EFFECTS.register("heat_immunity", HeatImmunityEffect::new);
 	public static final RegistryObject<MobEffect> TEMPERATURE_IMMUNITY = EFFECTS.register("temperature_immunity", TemperatureImmunityEffect::new);
 
-	public static final RegistryObject<Potion> HEAT_IMMUNITY_POTION = POTIONS.register("heat_immunity", () -> new Potion("heat_immunity", new MobEffectInstance(HEAT_IMMUNITY.get(), 1800, 0, false, true, true)));
-	public static final RegistryObject<Potion> HEAT_IMMUNITY_POTION_LONG = POTIONS.register("heat_immunity_long", () -> new Potion("heat_immunity_long", new MobEffectInstance(HEAT_IMMUNITY.get(), 2400, 0, false, true, true)));
-	public static final RegistryObject<Potion> COLD_IMMUNITY_POTION = POTIONS.register("cold_immunity", () -> new Potion("cold_immunity", new MobEffectInstance(COLD_IMMUNITY.get(), 1800, 0, false, true, true)));
-	public static final RegistryObject<Potion> COLD_IMMUNITY_POTION_LONG = POTIONS.register("cold_immunity_long", () -> new Potion("cold_immunity_long", new MobEffectInstance(COLD_IMMUNITY.get(), 2400, 0, false, true, true)));
-	public static final RegistryObject<Potion> HEAT_RESISTANCE_POTION = POTIONS.register("heat_resistance", () -> new Potion("heat_resistance", new MobEffectInstance(HEAT_RESISTANCE.get(), 1800, 1, false, true, true)));
-	public static final RegistryObject<Potion> HEAT_RESISTANCE_POTION_LONG = POTIONS.register("heat_resistance_long", () -> new Potion("heat_resistance_long", new MobEffectInstance(HEAT_RESISTANCE.get(), 2400, 1, false, true, true)));
-	public static final RegistryObject<Potion> COLD_RESISTANCE_POTION = POTIONS.register("cold_resistance", () -> new Potion("cold_resistance", new MobEffectInstance(COLD_RESISTANCE.get(), 1800, 1, false, true, true)));
-	public static final RegistryObject<Potion> COLD_RESISTANCE_POTION_LONG = POTIONS.register("cold_resistance_long", () -> new Potion("cold_resistance_long", new MobEffectInstance(COLD_RESISTANCE.get(), 2400, 1, false, true, true)));
-	public static final RegistryObject<Potion> TEMPERATURE_IMMUNITY_POTION = POTIONS.register("temperature_immunity", () -> new Potion("temperature_immunity", new MobEffectInstance(TEMPERATURE_IMMUNITY.get(), 1800, 0, false, true, true)));
-	public static final RegistryObject<Potion> TEMPERATURE_IMMUNITY_POTION_LONG = POTIONS.register("temperature_immunity_long", () -> new Potion("temperature_immunity_long", new MobEffectInstance(TEMPERATURE_IMMUNITY.get(), 2400, 0, false, true, true)));
+	public static final RegistryObject<Potion> HEAT_IMMUNITY_POTION = TEMPERATURE_POTIONS.register("heat_immunity", () -> new Potion("heat_immunity", new MobEffectInstance(HEAT_IMMUNITY.get(), 1800, 0, false, true, true)));
+	public static final RegistryObject<Potion> HEAT_IMMUNITY_POTION_LONG = TEMPERATURE_POTIONS.register("heat_immunity_long", () -> new Potion("heat_immunity_long", new MobEffectInstance(HEAT_IMMUNITY.get(), 2400, 0, false, true, true)));
+	public static final RegistryObject<Potion> COLD_IMMUNITY_POTION = TEMPERATURE_POTIONS.register("cold_immunity", () -> new Potion("cold_immunity", new MobEffectInstance(COLD_IMMUNITY.get(), 1800, 0, false, true, true)));
+	public static final RegistryObject<Potion> COLD_IMMUNITY_POTION_LONG = TEMPERATURE_POTIONS.register("cold_immunity_long", () -> new Potion("cold_immunity_long", new MobEffectInstance(COLD_IMMUNITY.get(), 2400, 0, false, true, true)));
+	public static final RegistryObject<Potion> HEAT_RESISTANCE_POTION = TEMPERATURE_POTIONS.register("heat_resistance", () -> new Potion("heat_resistance", new MobEffectInstance(HEAT_RESISTANCE.get(), 1800, 1, false, true, true)));
+	public static final RegistryObject<Potion> HEAT_RESISTANCE_POTION_LONG = TEMPERATURE_POTIONS.register("heat_resistance_long", () -> new Potion("heat_resistance_long", new MobEffectInstance(HEAT_RESISTANCE.get(), 2400, 1, false, true, true)));
+	public static final RegistryObject<Potion> COLD_RESISTANCE_POTION = TEMPERATURE_POTIONS.register("cold_resistance", () -> new Potion("cold_resistance", new MobEffectInstance(COLD_RESISTANCE.get(), 1800, 1, false, true, true)));
+	public static final RegistryObject<Potion> COLD_RESISTANCE_POTION_LONG = TEMPERATURE_POTIONS.register("cold_resistance_long", () -> new Potion("cold_resistance_long", new MobEffectInstance(COLD_RESISTANCE.get(), 2400, 1, false, true, true)));
+	public static final RegistryObject<Potion> TEMPERATURE_IMMUNITY_POTION = TEMPERATURE_POTIONS.register("temperature_immunity", () -> new Potion("temperature_immunity", new MobEffectInstance(TEMPERATURE_IMMUNITY.get(), 1800, 0, false, true, true)));
+	public static final RegistryObject<Potion> TEMPERATURE_IMMUNITY_POTION_LONG = TEMPERATURE_POTIONS.register("temperature_immunity_long", () -> new Potion("temperature_immunity_long", new MobEffectInstance(TEMPERATURE_IMMUNITY.get(), 2400, 0, false, true, true)));
 
 	public static final RegistryObject<MobEffect> PAINKILLER = EFFECTS.register("painkiller", PainKillerEffect::new);
 	public static final RegistryObject<MobEffect> PAINKILLER_ADDICTION = EFFECTS.register("painkiller_addiction", PainkillerAddictionEffect::new);
@@ -96,8 +97,9 @@ public class MobEffectRegistry {
 		BrewingRecipeRegistry.addRecipe(StrictNBTIngredient.of(PotionUtils.setPotion(new ItemStack(Items.POTION), potionInput)), StrictNBTIngredient.of(new ItemStack(ingredient)), new ItemStack(itemResult));
 	}
 	
-	public static void register (IEventBus eventBus){
+	public static void register(IEventBus eventBus){
 		EFFECTS.register(eventBus);
-		POTIONS.register(eventBus);
+		TEMPERATURE_POTIONS.register(eventBus);
+		THIRST_POTIONS.register(eventBus);
 	}
 }

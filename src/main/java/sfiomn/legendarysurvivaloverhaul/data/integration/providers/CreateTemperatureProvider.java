@@ -4,6 +4,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import sfiomn.legendarysurvivaloverhaul.api.data.providers.TemperatureDataProvider;
+import sfiomn.legendarysurvivaloverhaul.api.temperature.TemporaryModifierGroupEnum;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -21,5 +22,6 @@ public class CreateTemperatureProvider extends TemperatureDataProvider {
                 .addTemperature(temperatureBlock(5.0f).addProperty("blaze", "kindled"))
                 .addTemperature(temperatureBlock(7.5f).addProperty("blaze", "seething"));
 
+        consumable("builders_tea").addTemperature(temperatureConsumable(TemporaryModifierGroupEnum.DRINK).temperatureLevel(2).duration(3600));
     }
 }

@@ -3,7 +3,7 @@
     "effects": [
       {
         "amplifier": 0,
-        "chance": 0.3,
+        "chance": 0.4,
         "duration": 800,
         "effect": "legendarysurvivaloverhaul:thirst"
       }

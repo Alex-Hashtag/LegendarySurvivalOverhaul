@@ -20,6 +20,43 @@ public class IceAndFireTemperatureProvider extends TemperatureDataProvider {
 
         mount("hippocampus").temperature(3.0f);
 
+        block("chared_cobblestone").addTemperature(temperatureBlock(6.0f));
+        block("chared_dirt").addTemperature(temperatureBlock(6.0f));
+        block("chared_dirt_path").addTemperature(temperatureBlock(6.0f));
+        block("chared_grass").addTemperature(temperatureBlock(6.0f));
+        block("chared_gravel").addTemperature(temperatureBlock(6.0f));
+        block("chared_stone").addTemperature(temperatureBlock(6.0f));
+
+        block("dragonforge_fire_brick").addTemperature(temperatureBlock(12.0f));
+        block("dragonforge_fire_core").addTemperature(temperatureBlock(16.0f));
+        block("dragonforge_fire_core_disabled").addTemperature(temperatureBlock(12.0f));
+        block("dragonforge_fire_input").addTemperature(temperatureBlock(12.0f));
+
+        block("dragonforge_ice_brick").addTemperature(temperatureBlock(-12.0f));
+        block("dragonforge_ice_core").addTemperature(temperatureBlock(-16.0f));
+        block("dragonforge_ice_core_disabled").addTemperature(temperatureBlock(-12.0f));
+        block("dragonforge_ice_input").addTemperature(temperatureBlock(-12.0f));
+
+        block("dragonscale_blue").addTemperature(temperatureBlock(-8.0f));
+        block("dragonscale_bronze").addTemperature(temperatureBlock(8.0f));
+        block("dragonscale_gray").addTemperature(temperatureBlock(8.0f));
+        block("dragonscale_green").addTemperature(temperatureBlock(8.0f));
+        block("dragonscale_red").addTemperature(temperatureBlock(8.0f));
+        block("dragonscale_sapphire").addTemperature(temperatureBlock(-8.0f));
+        block("dragonscale_silver").addTemperature(temperatureBlock(-8.0f));
+        block("dragonscale_white").addTemperature(temperatureBlock(-8.0f));
+
+        block("frozen_cobblestone").addTemperature(temperatureBlock(-6.0f));
+        block("frozen_dirt").addTemperature(temperatureBlock(-6.0f));
+        block("frozen_dirt_path").addTemperature(temperatureBlock(-6.0f));
+        block("frozen_grass").addTemperature(temperatureBlock(-6.0f));
+        block("frozen_gravel").addTemperature(temperatureBlock(-6.0f));
+        block("frozen_splinters").addTemperature(temperatureBlock(-6.0f));
+        block("frozen_stone").addTemperature(temperatureBlock(-6.0f));
+
+        block("dragon_ice").addTemperature(temperatureBlock(-6.0f));
+        item("dragon_ice").temperature(-4.0f);
+
         block("dread_torch").addTemperature(temperatureBlock(-1.0f));
         item("dread_torch").temperature(-1.0f);
 

@@ -1,0 +1,15 @@
+[
+  {
+    "effects": [
+      {
+        "amplifier": 0,
+        "chance": 0.2,
+        "duration": 600,
+        "effect": "legendarysurvivaloverhaul:thirst"
+      }
+    ],
+    "hydration": 5,
+    "properties": {},
+    "saturation": 3.5
+  }
+]

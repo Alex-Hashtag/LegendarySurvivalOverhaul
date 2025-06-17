@@ -24,8 +24,8 @@ public class ThirstData implements IThirstData {
     public ThirstData(ThirstData copy) {
         hydration = copy.hydration;
         saturation = copy.saturation;
-        effects = List.copyOf(copy.effects);
-        properties = Map.copyOf(copy.properties);
+        effects = new ArrayList<>(copy.effects);
+        properties = new HashMap<>(copy.properties);
     }
 
     @Override

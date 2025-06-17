@@ -43,8 +43,8 @@ public class VineryThirstProvider extends ThirstDataProvider {
         consumable("white_jungle_grapejuice").addThirst(juice_hydration2);
         consumable("apple_juice").addThirst(grape_hydration2);
 
-        IThirstData vinery_hydration1 = thirstData(7, 3.0f).addEffect(MobEffectRegistry.THIRST.get(), 400, 0.1f);
-        IThirstData vinery_hydration2 = thirstData(9, 5.0f).addEffect(MobEffectRegistry.THIRST.get(), 400, 0.1f);
+        IThirstData vinery_hydration1 = thirstData(7, 5.0f).addEffect(MobEffectRegistry.THIRST.get(), 400, 0.3f);
+        IThirstData vinery_hydration2 = thirstData(9, 6.5f).addEffect(MobEffectRegistry.THIRST.get(), 500, 0.3f);
         consumable("apple_cider").addThirst(vinery_hydration1);
         consumable("apple_wine").addThirst(vinery_hydration1);
         consumable("noir_wine").addThirst(vinery_hydration1);
@@ -69,9 +69,9 @@ public class VineryThirstProvider extends ThirstDataProvider {
         consumable("stal_wine").addThirst(vinery_hydration2);
         consumable("chenet_wine").addThirst(vinery_hydration2);
 
-        consumable("bottle_mojang_noir").addThirst(thirstData(8, 5.0f).addEffect(MobEffectRegistry.THIRST.get(), 600, 0.2f));
+        consumable("bottle_mojang_noir").addThirst(thirstData(8, 5.0f).addEffect(MobEffectRegistry.THIRST.get(), 600, 0.3f));
 
-        IThirstData vinery_hydration3 = thirstData(9, 8.0f).addEffect(MobEffectRegistry.THIRST.get(), 800, 0.3f);
+        IThirstData vinery_hydration3 = thirstData(9, 8.0f).addEffect(MobEffectRegistry.THIRST.get(), 800, 0.4f);
         // Nether / End
         consumable("mellohi_wine").addThirst(vinery_hydration3);
         consumable("cristel_wine").addThirst(vinery_hydration3);

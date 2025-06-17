@@ -25,6 +25,10 @@ public final class IntegrationDataGenerators {
         gen.addProvider(event.includeServer(), new BornInChaosTemperatureProvider(packOutput, lookupProvider, existingFileHelper));
         gen.addProvider(event.includeServer(), new BreweryTemperatureProvider(packOutput, lookupProvider, existingFileHelper));
         gen.addProvider(event.includeServer(), new BreweryThirstProvider(packOutput, lookupProvider, existingFileHelper));
+        gen.addProvider(event.includeServer(), new BrewinAndChewinTemperatureProvider(packOutput, lookupProvider, existingFileHelper));
+        gen.addProvider(event.includeServer(), new BrewinAndChewinThirstProvider(packOutput, lookupProvider, existingFileHelper));
+        gen.addProvider(event.includeServer(), new BrewinCompatDelightTemperatureProvider(packOutput, lookupProvider, existingFileHelper));
+        gen.addProvider(event.includeServer(), new BrewinCompatDelightThirstProvider(packOutput, lookupProvider, existingFileHelper));
         gen.addProvider(event.includeServer(), new BygTemperatureProvider(packOutput, lookupProvider, existingFileHelper));
         gen.addProvider(event.includeServer(), new CallOfYucatanTemperatureProvider(packOutput, lookupProvider, existingFileHelper));
         gen.addProvider(event.includeServer(), new CampingTemperatureProvider(packOutput, lookupProvider, existingFileHelper));
@@ -33,7 +37,10 @@ public final class IntegrationDataGenerators {
         gen.addProvider(event.includeServer(), new CataclysmTemperatureProvider(packOutput, lookupProvider, existingFileHelper));
         gen.addProvider(event.includeServer(), new ConfectioneryThirstProvider(packOutput, lookupProvider, existingFileHelper));
         gen.addProvider(event.includeServer(), new CornExpansionThirstProvider(packOutput, lookupProvider, existingFileHelper));
+        gen.addProvider(event.includeServer(), new CrabbersDelightTemperatureProvider(packOutput, lookupProvider, existingFileHelper));
+        gen.addProvider(event.includeServer(), new CrabbersDelightThirstProvider(packOutput, lookupProvider, existingFileHelper));
         gen.addProvider(event.includeServer(), new CreateTemperatureProvider(packOutput, lookupProvider, existingFileHelper));
+        gen.addProvider(event.includeServer(), new CreateThirstProvider(packOutput, lookupProvider, existingFileHelper));
         gen.addProvider(event.includeServer(), new CrockpotTemperatureProvider(packOutput, lookupProvider, existingFileHelper));
         gen.addProvider(event.includeServer(), new CrockpotThirstProvider(packOutput, lookupProvider, existingFileHelper));
 
@@ -43,13 +50,20 @@ public final class IntegrationDataGenerators {
             gen.addProvider(event.includeServer(), new CuriosItemTagProvider(packOutput, lookupProvider, blockTagProvider.contentsGetter(), existingFileHelper));
         }
 
+        gen.addProvider(event.includeServer(), new DecorativeBlocksTemperatureProvider(packOutput, lookupProvider, existingFileHelper));
+        gen.addProvider(event.includeServer(), new EcologicsThirstProvider(packOutput, lookupProvider, existingFileHelper));
         gen.addProvider(event.includeServer(), new EndergeticTemperatureProvider(packOutput, lookupProvider, existingFileHelper));
         gen.addProvider(event.includeServer(), new EndermanOverhaulTemperatureProvider(packOutput, lookupProvider, existingFileHelper));
         gen.addProvider(event.includeServer(), new FarmAndCharmTemperatureProvider(packOutput, lookupProvider, existingFileHelper));
         gen.addProvider(event.includeServer(), new FarmAndCharmThirstProvider(packOutput, lookupProvider, existingFileHelper));
-        gen.addProvider(event.includeServer(), new FarmersdelightTemperatureProvider(packOutput, lookupProvider, existingFileHelper));
-        gen.addProvider(event.includeServer(), new FarmersdelightThirstProvider(packOutput, lookupProvider, existingFileHelper));
+        gen.addProvider(event.includeServer(), new FarmersDelightTemperatureProvider(packOutput, lookupProvider, existingFileHelper));
+        gen.addProvider(event.includeServer(), new FarmersDelightThirstProvider(packOutput, lookupProvider, existingFileHelper));
+        gen.addProvider(event.includeServer(), new FarmersRespiteTemperatureProvider(packOutput, lookupProvider, existingFileHelper));
+        gen.addProvider(event.includeServer(), new FarmersRespiteThirstProvider(packOutput, lookupProvider, existingFileHelper));
+        gen.addProvider(event.includeServer(), new GraveyardTemperatureProvider(packOutput, lookupProvider, existingFileHelper));
         gen.addProvider(event.includeServer(), new HardcoreTorchesTemperatureProvider(packOutput, lookupProvider, existingFileHelper));
+        gen.addProvider(event.includeServer(), new HearthAndHarvestTemperatureProvider(packOutput, lookupProvider, existingFileHelper));
+        gen.addProvider(event.includeServer(), new HearthAndHarvestThirstProvider(packOutput, lookupProvider, existingFileHelper));
         gen.addProvider(event.includeServer(), new HerbalBrewsTemperatureProvider(packOutput, lookupProvider, existingFileHelper));
         gen.addProvider(event.includeServer(), new HerbalBrewsThirstProvider(packOutput, lookupProvider, existingFileHelper));
         gen.addProvider(event.includeServer(), new IceAndFireTemperatureProvider(packOutput, lookupProvider, existingFileHelper));
@@ -60,6 +74,7 @@ public final class IntegrationDataGenerators {
         gen.addProvider(event.includeServer(), new LegendaryCreaturesTemperatureProvider(packOutput, lookupProvider, existingFileHelper));
         gen.addProvider(event.includeServer(), new MeadowTemperatureProvider(packOutput, lookupProvider, existingFileHelper));
         gen.addProvider(event.includeServer(), new MeadowThirstProvider(packOutput, lookupProvider, existingFileHelper));
+        gen.addProvider(event.includeServer(), new MedsAndHerbsBodyDamageProvider(packOutput, lookupProvider, existingFileHelper));
         gen.addProvider(event.includeServer(), new NeapolitanTemperatureProvider(packOutput, lookupProvider, existingFileHelper));
         gen.addProvider(event.includeServer(), new NeapolitanThirstProvider(packOutput, lookupProvider, existingFileHelper));
         gen.addProvider(event.includeServer(), new NetherVineryTemperatureProvider(packOutput, lookupProvider, existingFileHelper));

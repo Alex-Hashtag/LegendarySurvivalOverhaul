@@ -18,7 +18,7 @@ public class BreweryThirstProvider extends ThirstDataProvider {
     @Override
     public void generate(HolderLookup.Provider provider, ExistingFileHelper existingFileHelper) {
 
-        IThirstData whiskey_hydration = thirstData(4, 4.0f).addEffect(MobEffectRegistry.THIRST.get(), 800, 0.4f);
+        IThirstData whiskey_hydration = thirstData(5, 5.0f).addEffect(MobEffectRegistry.THIRST.get(), 800, 0.4f);
         consumable("whiskey_jojannik").addThirst(whiskey_hydration);
         consumable("whiskey_lilitusinglemalt").addThirst(whiskey_hydration);
         consumable("whiskey_cristelwalker").addThirst(whiskey_hydration);
