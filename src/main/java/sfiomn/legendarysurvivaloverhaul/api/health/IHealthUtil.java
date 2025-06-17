@@ -8,7 +8,9 @@ public interface IHealthUtil
 {
     void updatePlayerHealthAttributes(Player player);
 
-    double calculatePlayerMaxHealth(Player player);
+    double getPlayerMaxHealth(Player player);
+
+    double getPlayerStableMaxHealth(Player player);
 
     void initializeHealthAttributes(Player player);
 

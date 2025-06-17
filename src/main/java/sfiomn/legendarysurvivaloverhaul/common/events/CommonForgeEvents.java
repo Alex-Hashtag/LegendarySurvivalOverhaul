@@ -346,7 +346,7 @@ public class CommonForgeEvents {
                         double healthRecovered = BodyDamageUtil.getMaxHealth(player, bodyPart) * Config.Baked.bodyHealthRatioRecoveredFromSleep;
                         BodyDamageUtil.healBodyPart(player, bodyPart, (float) healthRecovered);
                     }
-                    CapabilityUtil.getBodyDamageCapability(player).updateBrokenHearts();
+                    CapabilityUtil.getBodyDamageCapability(player).updateBrokenHearts(player);
                     BodyDamageUtil.updatePlayerBrokenHeartAttribute(player);
                 }
 

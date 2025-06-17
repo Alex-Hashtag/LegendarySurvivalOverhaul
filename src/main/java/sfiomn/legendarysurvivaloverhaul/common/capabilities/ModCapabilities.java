@@ -149,7 +149,6 @@ public class ModCapabilities
 				{
 					bodyDamageCapability.setClean();
 					sendBodyDamageUpdate(player);
-					BodyDamageUtil.updatePlayerBrokenHeartAttribute(player);
 				}
 			}
 

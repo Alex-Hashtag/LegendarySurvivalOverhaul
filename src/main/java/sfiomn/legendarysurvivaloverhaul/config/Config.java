@@ -212,7 +212,8 @@ public class Config
 		public final ForgeConfigSpec.IntValue heartsLostOnDeath;
 		public final ForgeConfigSpec.IntValue permanentHearts;
 		public final ForgeConfigSpec.IntValue resilientHeartsWithBrokenHearts;
-		public final ForgeConfigSpec.IntValue brokenHeartsPerInjuredLimb;
+		public final ForgeConfigSpec.DoubleValue brokenHeartsPerInjuredLimb;
+		public final ForgeConfigSpec.ConfigValue<String> brokenHeartsPerInjuredLimbMode;
 
 		// Localized Body Damage
 		public final ForgeConfigSpec.BooleanValue localizedBodyDamageEnabled;
@@ -808,7 +809,16 @@ public class Config
 					.defineInRange("Minimum Amount Of Player's Heart With Broken Hearts (Broken Heart Resilience)", 2, 1, 10000);
 			brokenHeartsPerInjuredLimb = builder
 					.comment(" Amount of Broken Hearts added per limbs fully injured.")
-					.defineInRange("Added Broken Hearts Per Injured Limb", 1, 0, 10000);
+					.defineInRange("Added Broken Hearts Per Injured Limb", 0.1, 0, 10000);
+			brokenHeartsPerInjuredLimbMode = builder
+					.comment(" How broken hearts inflicted per injured limbs are calculated. The total amount will be round down to have an integer amount of broken hearts.",
+							" For example, if the amount per injured limb is 0.1 with mode Player Dynamic and the player has 3 limbs injured, the total amount is 3 * (0.1 * 20), 20 being the default player max health, so 6 broken hearts will be inflicted.",
+							" Accepted values are as follows:",
+							"   SIMPLE - The broken heart amount is a fixed value defined in Broken Hearts Per Injured Limb.",
+							"   PLAYER_DYNAMIC - The broken heart amount is a percentage value of the player max health using the percentage value defined in Broken Hearts Per Injured Limb.",
+							"   LIMB_DYNAMIC - The broken heart amount is a percentage value of the injured limb max health using the percentage value defined in Broken Hearts Per Injured Limb.",
+							" Any other value will default to SIMPLE.")
+					.define("Broken Hearts Per Injured Limb Mode", "PLAYER_DYNAMIC");
 			builder.pop();
 			builder.pop();
 
@@ -1377,7 +1387,8 @@ public class Config
 		public static int heartsLostOnDeath;
 		public static int permanentHearts;
 		public static int resilientHeartsWithBrokenHearts;
-		public static int brokenHeartsPerInjuredLimb;
+		public static double brokenHeartsPerInjuredLimb;
+		public static String brokenHeartsPerInjuredLimbMode;
 
 		// Body members damage
 		public static boolean localizedBodyDamageEnabled;
@@ -1653,6 +1664,7 @@ public class Config
 				permanentHearts = COMMON.permanentHearts.get();
 				resilientHeartsWithBrokenHearts = COMMON.resilientHeartsWithBrokenHearts.get();
 				brokenHeartsPerInjuredLimb = COMMON.brokenHeartsPerInjuredLimb.get();
+				brokenHeartsPerInjuredLimbMode = COMMON.brokenHeartsPerInjuredLimbMode.get();
 
 				localizedBodyDamageEnabled = COMMON.localizedBodyDamageEnabled.get();
 				headCriticalShotMultiplier = COMMON.headCriticalShotMultiplier.get();

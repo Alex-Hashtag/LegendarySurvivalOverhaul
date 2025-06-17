@@ -61,7 +61,7 @@ public class RenderHealthGui
 		if (HEALTH_CAP == null || player.tickCount % 20 == 0)
 			HEALTH_CAP = CapabilityUtil.getHealthCapability(player);
 
-		int brokenHearts = Mth.clamp(Mth.ceil(Config.Baked.initialHealth + HEALTH_CAP.getAdditionalHealth() - player.getMaxHealth() / 2.0), 0, (int) player.getAttributeValue(AttributeRegistry.BROKEN_HEART.get()));
+		int brokenHearts = Mth.clamp((int) player.getAttributeValue(AttributeRegistry.BROKEN_HEART.get()), 0, Mth.ceil((Config.Baked.initialHealth + HEALTH_CAP.getAdditionalHealth() - player.getMaxHealth()) / 2.0));
 		float shieldHealth = HEALTH_CAP.getShieldHealth();
 
 		if (brokenHearts + shieldHealth == 0)

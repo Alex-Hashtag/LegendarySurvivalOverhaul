@@ -27,21 +27,33 @@ public class HealthUtilInternal implements IHealthUtil {
     @Override
     public void updatePlayerHealthAttributes(Player player)
     {
-        double maxHealth = calculatePlayerMaxHealth(player);
+        double maxHealth = getPlayerMaxHealth(player);
 
         HEALTH_ATTRIBUTE.addModifier(player, HEALTH_ATTRIBUTE_UUID, maxHealth - 20);
         player.setHealth(Math.min(player.getMaxHealth(), player.getHealth()));
     }
 
     @Override
-    public double calculatePlayerMaxHealth(Player player) {
+    public double getPlayerMaxHealth(Player player) {
         double maxHealth = Config.Baked.initialHealth;
 
         if (Config.Baked.healthOverhaulEnabled) {
             HealthCapability healthCapability = CapabilityUtil.getHealthCapability(player);
+            float additionalHearts = healthCapability.getAdditionalHealth();
             int minhHearthLimitWithBrokenHearth = (int) player.getAttributeValue(AttributeRegistry.BROKEN_HEART_RESILIENCE.get());
 
-            maxHealth += healthCapability.getAdditionalHealth() - Mth.clamp(maxHealth - minhHearthLimitWithBrokenHearth * 2, 0, ((int) player.getAttributeValue(AttributeRegistry.BROKEN_HEART.get())) * 2);
+            maxHealth += additionalHearts - Mth.clamp(((int) player.getAttributeValue(AttributeRegistry.BROKEN_HEART.get())) * 2, 0, maxHealth + additionalHearts - minhHearthLimitWithBrokenHearth * 2);
+        }
+        return maxHealth;
+    }
+
+    @Override
+    public double getPlayerStableMaxHealth(Player player) {
+        double maxHealth = Config.Baked.initialHealth;
+
+        if (Config.Baked.healthOverhaulEnabled) {
+            HealthCapability healthCapability = CapabilityUtil.getHealthCapability(player);
+            maxHealth += healthCapability.getAdditionalHealth();
         }
         return maxHealth;
     }

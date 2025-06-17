@@ -14,13 +14,12 @@ import sfiomn.legendarysurvivaloverhaul.api.bodydamage.BodyDamageUtil;
 import sfiomn.legendarysurvivaloverhaul.api.bodydamage.BodyPartEnum;
 import sfiomn.legendarysurvivaloverhaul.api.bodydamage.IBodyDamageCapability;
 import sfiomn.legendarysurvivaloverhaul.api.bodydamage.MalusBodyPartEnum;
+import sfiomn.legendarysurvivaloverhaul.api.health.HealthUtil;
 import sfiomn.legendarysurvivaloverhaul.common.integration.curios.CuriosUtil;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
-import sfiomn.legendarysurvivaloverhaul.registry.AttributeRegistry;
 import sfiomn.legendarysurvivaloverhaul.registry.ItemRegistry;
 import sfiomn.legendarysurvivaloverhaul.registry.MobEffectRegistry;
 import sfiomn.legendarysurvivaloverhaul.registry.SoundRegistry;
-import sfiomn.legendarysurvivaloverhaul.util.CapabilityUtil;
 import sfiomn.legendarysurvivaloverhaul.util.MathUtil;
 
 import java.util.*;
@@ -113,16 +112,10 @@ public class BodyDamageCapability implements IBodyDamageCapability
 
 		if (updateTickTimer++ >= 20) {
 			updateTickTimer = 0;
-			float playerMaxHealthCheckUpdate = player.getMaxHealth();
-			if (Config.Baked.healthOverhaulEnabled) {
-				int brokenHearts = (int) (player.getAttributeValue(AttributeRegistry.BROKEN_HEART.get()));
-				int minhHearthLimitWithBrokenHearth = (int) player.getAttributeValue(AttributeRegistry.BROKEN_HEART_RESILIENCE.get());
-				float additionalHealth = CapabilityUtil.getHealthCapability(player).getAdditionalHealth();
-				playerMaxHealthCheckUpdate += Math.min(brokenHearts * 2, 20 + additionalHealth - minhHearthLimitWithBrokenHearth * 2);
-			}
+			double playerMaxHealthCheckUpdate = HealthUtil.getPlayerStableMaxHealth(player);
 
 			if (Config.Baked.bodyPartHealthMode.equals("DYNAMIC") && playerMaxHealth != playerMaxHealthCheckUpdate) {
-				playerMaxHealth = playerMaxHealthCheckUpdate;
+				playerMaxHealth = (float) playerMaxHealthCheckUpdate;
 				updateDynamicMaxHealth(playerMaxHealth);
 			}
 
@@ -167,9 +160,9 @@ public class BodyDamageCapability implements IBodyDamageCapability
 						bodyPart.reduceRemainingHealingTicks(healingTick);
 				}
 			}
-		}
 
-		updateBrokenHearts();
+			updateBrokenHearts(player);
+		}
 
 		if (player.hasEffect(MobEffectRegistry.HEADACHE.get())) {
 			if (this.headacheTimer-- < 0) {
@@ -235,16 +228,27 @@ public class BodyDamageCapability implements IBodyDamageCapability
 	}
 
 	@Override
-	public void updateBrokenHearts() {
-		int expectedBrokenHearts = 0;
+	public void updateBrokenHearts(Player player) {
+		if (Config.Baked.brokenHeartsPerInjuredLimb == 0)
+			return;
+
+		double expectedBrokenHearts = 0;
 		for (Map.Entry<BodyPartEnum, BodyPart> bodyPartPair: this.bodyParts.entrySet()) {
 			BodyPart bodyPart = bodyPartPair.getValue();
 			if (Config.Baked.healthOverhaulEnabled && bodyPart.getDamage() == bodyPart.getMaxHealth()) {
-				expectedBrokenHearts += Config.Baked.brokenHeartsPerInjuredLimb;
+				expectedBrokenHearts += switch (Config.Baked.brokenHeartsPerInjuredLimbMode) {
+					case "PLAYER_DYNAMIC":
+						yield Config.Baked.brokenHeartsPerInjuredLimb * this.playerMaxHealth;
+					case "LIMB_DYNAMIC":
+						yield Config.Baked.brokenHeartsPerInjuredLimb * bodyPart.getMaxHealth();
+                    default:
+						yield Config.Baked.brokenHeartsPerInjuredLimb;
+                };
 			}
 		}
 
-		this.expectedBrokenHearts = expectedBrokenHearts;
+		this.expectedBrokenHearts = (int) expectedBrokenHearts;
+		BodyDamageUtil.updatePlayerBrokenHeartAttribute(player);
 	}
 
 	@Override

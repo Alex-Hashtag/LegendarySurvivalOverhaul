@@ -18,12 +18,21 @@ public class HealthUtil
 	}
 
 	/**
-	 * Calculate the player max health based on broken hearts & additional health
+	 * Get the player max health based on broken hearts, additional health and initial health
 	 *
 	 * @param player The player for which the max health is calculated
 	 */
-	public static double calculatePlayerMaxHealth(Player player) {
-		return internal.calculatePlayerMaxHealth(player);
+	public static double getPlayerMaxHealth(Player player) {
+		return internal.getPlayerMaxHealth(player);
+	}
+
+	/**
+	 * Get the player max health based only on additional health and initial health; without the impact of the broken hearts
+	 *
+	 * @param player The player for which the stable max health is calculated
+	 */
+	public static double getPlayerStableMaxHealth(Player player) {
+		return internal.getPlayerStableMaxHealth(player);
 	}
 
 	/**
