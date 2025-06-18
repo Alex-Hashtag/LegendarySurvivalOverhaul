@@ -163,7 +163,7 @@ dependencies {
 
     // These are REQUIRED for the mod to compile correctly and should not be removed.
     implementation(fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}"))
-    implementation(fg.deobf("curse.maven:eclipticseasons-1118306:6660655"))
+    implementation(fg.deobf("curse.maven:eclipticseasons-1118306:6664686"))
 
     // compile against the JEI API but do not include it at runtime
     compileOnly(fg.deobf("curse.maven:serene-seasons-291874:5790653"))
@@ -181,10 +181,10 @@ dependencies {
     compileOnly(fg.deobf("curse.maven:architectury-419699:5137938"))
     compileOnly(fg.deobf("curse.maven:overflowingbars-852662:5763974"))
     compileOnly(fg.deobf("curse.maven:puzzlelib-495476:6387081"))
+    compileOnly(fg.deobf("curse.maven:medsandherbs-418682:4840824"))
     //implementation(fg.deobf("curse.maven:weather2-237746:5244118"))
     //implementation(fg.deobf("curse.maven:coroutil-237749:5096038"))
     //implementation(fg.deobf("curse.maven:werewolves-417851:5406832"))
-    compileOnly(fg.deobf("curse.maven:medsandherbs-418682:4840824"))
 
     // at runtime, use the full JEI jar for Forge
     runtimeOnly(fg.deobf("mezz.jei:jei-${minecraft_version}-forge:${jei_version}"))

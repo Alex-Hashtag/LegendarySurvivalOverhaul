@@ -103,6 +103,6 @@ Making survival harder. Highly configurable so you can play the way you want.
 [[dependencies.${mod_id}]]
     modId="eclipticseasons"
     mandatory=false
-    versionRange="[0.11.0-pre8,)"
+    versionRange="[0.11.0-z,)"
     ordering="BEFORE"
     side="BOTH"
