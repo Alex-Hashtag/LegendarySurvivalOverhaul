@@ -91,9 +91,11 @@ public class BlockModifier extends ModifierBase
 		visitedSpreadPoints.add(spreadPointFeetPlayer);
 		visitedSpreadPoints.add(spreadPointHeadPlayer);
 
+		boolean hasCeiling = level.dimensionType().hasCeiling();
+
 		while (!spreadPointsToProcess.isEmpty()) {
 			SpreadPoint spreadPoint = spreadPointsToProcess.remove(0);
-			spreadPoint.setCanSeeSky(canSeeSky(level, spreadPoint.position(), cachedCanSeeSky));
+			spreadPoint.setCanSeeSky(!hasCeiling || level.canSeeSky(pos));
 			Direction oppositeDirection = spreadPoint.originalDirection().getOpposite();
 
 			for (Direction direction : Direction.values()) {
@@ -136,30 +138,6 @@ public class BlockModifier extends ModifierBase
 		for (SpreadPoint spreadPoint : visitedSpreadPoints) {
 			processTemp(getTemperatureFromSpreadPoint(level, spreadPoint, cachedTemperatureBlocks));
 		}
-	}
-
-	private boolean canSeeSky(Level level, BlockPos pos, Map<Pair<Integer, Integer>, Map<Boolean, Integer>> cachedCanSeeSky) {
-		if (level.dimensionType().hasCeiling())
-			return false;
-
-		Pair<Integer, Integer> hPos = Pair.of(pos.getX(), pos.getZ());
-
-		Map<Boolean, Integer> yPosCanSeeSky = cachedCanSeeSky.get(hPos);
-
-		if (yPosCanSeeSky != null) {
-			Integer canSeeSkyAtHeight = yPosCanSeeSky.get(true);
-			Integer cantSeeSkyAtHeight = yPosCanSeeSky.get(false);
-			if (canSeeSkyAtHeight != null && pos.getY() >= canSeeSkyAtHeight) {
-				return true;
-			} else if (cantSeeSkyAtHeight != null && pos.getY() <= cantSeeSkyAtHeight) {
-				return false;
-			}
-		}
-		boolean canSeeSky = level.canSeeSky(pos);
-		yPosCanSeeSky = new HashMap<>();
-		yPosCanSeeSky.put(canSeeSky, pos.getY());
-		cachedCanSeeSky.put(hPos, yPosCanSeeSky);
-		return canSeeSky;
 	}
 
 	private SpreadPoint processDirectionTo(ArrayList<SpreadPoint> spreadPointsToProcess, HashSet<BlockPos> visitedBlockPos, ArrayList<SpreadPoint> visitedSpreadPoints, SpreadPoint parentSpreadPoint, BlockPos newBlockPos, Direction originDirection, float distance) {
