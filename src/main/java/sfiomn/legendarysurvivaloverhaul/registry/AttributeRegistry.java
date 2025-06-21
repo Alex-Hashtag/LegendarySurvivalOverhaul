@@ -20,7 +20,7 @@ public class AttributeRegistry {
 
     public static final RegistryObject<Attribute> BROKEN_HEART = ATTRIBUTES.register("broken_heart", () -> new RangedAttribute("attribute." + LegendarySurvivalOverhaul.MOD_ID + ".broken_heart", 0.0f, 0.0f, 10000.0f).setSyncable(true));
     public static final RegistryObject<Attribute> PERMANENT_HEART = ATTRIBUTES.register("permanent_heart", () -> new RangedAttribute("attribute." + LegendarySurvivalOverhaul.MOD_ID + ".permanent_heart", 1.0f, 1.0f, 10000.0f).setSyncable(true));
-    public static final RegistryObject<Attribute> BROKEN_HEART_RESILIENCE = ATTRIBUTES.register("broken_heart_resilience", () -> new RangedAttribute("attribute." + LegendarySurvivalOverhaul.MOD_ID + ".broken_heart_resilience", 1.0f, 1.0f, 10000.0f).setSyncable(true));
+    public static final RegistryObject<Attribute> BROKEN_HEART_RESILIENCE = ATTRIBUTES.register("broken_heart_resilience", () -> new RangedAttribute("attribute." + LegendarySurvivalOverhaul.MOD_ID + ".broken_heart_resilience", 1.0f, 0.0f, 10000.0f).setSyncable(true));
 
     public static void register(IEventBus eventBus) {
         ATTRIBUTES.register(eventBus);

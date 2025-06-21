@@ -14,13 +14,14 @@ public class HealthUtil
 	 * @param player The player for which update the max health based on the additional health
 	 */
 	public static void updatePlayerMaxHealthAttribute(Player player) {
-		internal.updatePlayerHealthAttributes(player);
+		internal.updatePlayerMaxHealthAttribute(player);
 	}
 
 	/**
 	 * Get the player max health based on broken hearts, additional health and initial health
 	 *
 	 * @param player The player for which the max health is calculated
+	 * @return player max health
 	 */
 	public static double getPlayerMaxHealth(Player player) {
 		return internal.getPlayerMaxHealth(player);
@@ -30,15 +31,27 @@ public class HealthUtil
 	 * Get the player max health based only on additional health and initial health; without the impact of the broken hearts
 	 *
 	 * @param player The player for which the stable max health is calculated
+	 * @return player stable max health, meaning without the impact of broken hearts
 	 */
 	public static double getPlayerStableMaxHealth(Player player) {
 		return internal.getPlayerStableMaxHealth(player);
 	}
 
 	/**
+	 * Get the player effective broken hearts, taking into account the broken hearts resiliency
+	 *
+	 * @param player The player that is inflicted by broken hearts
+	 * @return number of broken hearts actually impacting the player
+	 */
+	public static int getEffectiveBrokenHearts(Player player) {
+		return internal.getEffectiveBrokenHearts(player);
+	}
+
+	/**
 	 * Initialize the player broken heart resilience & permanent hearts attributes with the config values
 	 *
 	 * @param player The player for which we initialize the health attributes
+	 * @return remaining damage to propagate to normal health
 	 */
 	public static void initializeHealthAttributes(Player player) {
 		internal.initializeHealthAttributes(player);

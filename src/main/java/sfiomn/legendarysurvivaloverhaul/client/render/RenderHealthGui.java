@@ -11,6 +11,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.gui.overlay.ForgeGui;
 import net.minecraftforge.client.gui.overlay.IGuiOverlay;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
+import sfiomn.legendarysurvivaloverhaul.api.health.HealthUtil;
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.health.HealthCapability;
 import sfiomn.legendarysurvivaloverhaul.common.integration.overflowingbars.OverflowingBarsUtil;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
@@ -61,7 +62,7 @@ public class RenderHealthGui
 		if (HEALTH_CAP == null || player.tickCount % 20 == 0)
 			HEALTH_CAP = CapabilityUtil.getHealthCapability(player);
 
-		int brokenHearts = Mth.clamp((int) player.getAttributeValue(AttributeRegistry.BROKEN_HEART.get()), 0, Mth.ceil((Config.Baked.initialHealth + HEALTH_CAP.getAdditionalHealth() - player.getMaxHealth()) / 2.0));
+		int brokenHearts = HealthUtil.getEffectiveBrokenHearts(player);
 		float shieldHealth = HEALTH_CAP.getShieldHealth();
 
 		if (brokenHearts + shieldHealth == 0)

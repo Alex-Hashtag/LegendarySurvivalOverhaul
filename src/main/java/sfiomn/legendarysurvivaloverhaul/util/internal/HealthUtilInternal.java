@@ -1,6 +1,7 @@
 package sfiomn.legendarysurvivaloverhaul.util.internal;
 
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
@@ -11,6 +12,7 @@ import sfiomn.legendarysurvivaloverhaul.registry.AttributeRegistry;
 import sfiomn.legendarysurvivaloverhaul.util.AttributeBuilder;
 import sfiomn.legendarysurvivaloverhaul.util.CapabilityUtil;
 
+import java.util.Objects;
 import java.util.UUID;
 
 public class HealthUtilInternal implements IHealthUtil {
@@ -25,24 +27,29 @@ public class HealthUtilInternal implements IHealthUtil {
     public static final AttributeBuilder BROKEN_HEART_RESILIENCE_ATTRIBUTE = new AttributeBuilder(AttributeRegistry.BROKEN_HEART_RESILIENCE.get(), "attribute." + LegendarySurvivalOverhaul.MOD_ID + ".broken_heart_resilience");
 
     @Override
-    public void updatePlayerHealthAttributes(Player player)
+    public void updatePlayerMaxHealthAttribute(Player player)
     {
         double maxHealth = getPlayerMaxHealth(player);
 
-        HEALTH_ATTRIBUTE.addModifier(player, HEALTH_ATTRIBUTE_UUID, maxHealth - 20);
+        double baseHealth = 20;
+        if (player.getAttribute(Attributes.MAX_HEALTH) != null)
+            baseHealth = Objects.requireNonNull(player.getAttribute(Attributes.MAX_HEALTH)).getBaseValue();
+
+        HEALTH_ATTRIBUTE.addModifier(player, HEALTH_ATTRIBUTE_UUID, maxHealth - baseHealth);
         player.setHealth(Math.min(player.getMaxHealth(), player.getHealth()));
     }
 
     @Override
     public double getPlayerMaxHealth(Player player) {
         double maxHealth = Config.Baked.initialHealth;
+        maxHealth += getMaxHealthFromModifiers(player);
 
         if (Config.Baked.healthOverhaulEnabled) {
             HealthCapability healthCapability = CapabilityUtil.getHealthCapability(player);
-            float additionalHearts = healthCapability.getAdditionalHealth();
+            float additionalHealth = healthCapability.getAdditionalHealth();
             int minhHearthLimitWithBrokenHearth = (int) player.getAttributeValue(AttributeRegistry.BROKEN_HEART_RESILIENCE.get());
 
-            maxHealth += additionalHearts - Mth.clamp(((int) player.getAttributeValue(AttributeRegistry.BROKEN_HEART.get())) * 2, 0, maxHealth + additionalHearts - minhHearthLimitWithBrokenHearth * 2);
+            maxHealth += additionalHealth - Mth.clamp(((int) player.getAttributeValue(AttributeRegistry.BROKEN_HEART.get())) * 2, 0, maxHealth + additionalHealth - minhHearthLimitWithBrokenHearth * 2);
         }
         return maxHealth;
     }
@@ -50,12 +57,24 @@ public class HealthUtilInternal implements IHealthUtil {
     @Override
     public double getPlayerStableMaxHealth(Player player) {
         double maxHealth = Config.Baked.initialHealth;
+        maxHealth += getMaxHealthFromModifiers(player);
 
         if (Config.Baked.healthOverhaulEnabled) {
             HealthCapability healthCapability = CapabilityUtil.getHealthCapability(player);
             maxHealth += healthCapability.getAdditionalHealth();
         }
         return maxHealth;
+    }
+
+    @Override
+    public int getEffectiveBrokenHearts(Player player) {
+        if (!Config.Baked.healthOverhaulEnabled)
+            return 0;
+
+        double maxHealth = getPlayerStableMaxHealth(player);
+        int brokenHearts = (int) player.getAttributeValue(AttributeRegistry.BROKEN_HEART.get());
+        int resilientHearts = (int) player.getAttributeValue(AttributeRegistry.BROKEN_HEART_RESILIENCE.get());
+        return Mth.clamp(brokenHearts, 0, (int) Math.ceil(maxHealth / 2.0) - resilientHearts);
     }
 
     @Override
@@ -81,12 +100,25 @@ public class HealthUtilInternal implements IHealthUtil {
         int minhHearthLimit = (int) player.getAttributeValue(AttributeRegistry.PERMANENT_HEART.get());
 
         healthCapability.setAdditionalHealth(Math.max(minhHearthLimit * 2 - Mth.ceil(Config.Baked.initialHealth), healthCapability.getAdditionalHealth() - amountLost * 2));
-        updatePlayerHealthAttributes(player);
+        updatePlayerMaxHealthAttribute(player);
     }
 
     @Override
     public void updateBrokenHearts(Player player, UUID attributeUuid, int brokenHearts) {
         BROKEN_HEART_ATTRIBUTE.addModifier(player, attributeUuid, brokenHearts);
-        updatePlayerHealthAttributes(player);
+        updatePlayerMaxHealthAttribute(player);
+    }
+
+    private double getMaxHealthFromModifiers(Player player) {
+        double maxHealthModified = 0;
+
+        if (player.getAttribute(Attributes.MAX_HEALTH) == null)
+            return maxHealthModified;
+
+        for (AttributeModifier attributeModifier: Objects.requireNonNull(player.getAttribute(Attributes.MAX_HEALTH)).getModifiers()) {
+            if (!attributeModifier.getId().equals(HEALTH_ATTRIBUTE_UUID))
+                maxHealthModified += attributeModifier.getAmount();
+        }
+        return maxHealthModified;
     }
 }

@@ -402,9 +402,10 @@ public class Config
 					.comment(" How much of an effect sprinting has on a player's temperature.")
 					.defineInRange("Player Sprint Modifier", 1.5, -1000, 1000);
 			altitudeModifier = builder
-					.comment(" How much the effects of the player's altitude on temperature are multiplied starting at Y 64.",
-							" Each 64 blocks further from Y 64 will reduce player's temperature by this value.",
-							" It means that for a value of -5, the body temperature of the player is reduced by 5 for each 64 blocks (the calculus is done linearly).")
+					.comment(" How much of an effect altitude has on player's temperature.",
+							" Each 64 blocks further from sea level will impact player's temperature by this value.",
+							" The sea level can be defined via datapack under the dimension's temperature.",
+							" As an example, a value of -5 will reduce the player's temperature by 5 for each 64 blocks (the calculus is done linearly).")
 					.defineInRange("Altitude Modifier", -5.0, -1000, 1000);
 
 			builder.push("wetness");

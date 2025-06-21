@@ -6,11 +6,13 @@ import java.util.UUID;
 
 public interface IHealthUtil
 {
-    void updatePlayerHealthAttributes(Player player);
+    void updatePlayerMaxHealthAttribute(Player player);
 
     double getPlayerMaxHealth(Player player);
 
     double getPlayerStableMaxHealth(Player player);
+
+    int getEffectiveBrokenHearts(Player player);
 
     void initializeHealthAttributes(Player player);
 
