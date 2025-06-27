@@ -103,6 +103,7 @@ public class Config
 		public final ForgeConfigSpec.DoubleValue onFireModifier;
 
 		public final ForgeConfigSpec.BooleanValue wetnessEnabled;
+		public final ForgeConfigSpec.ConfigValue<List<? extends String>> wetnessImmunityMounts;
 		public final ForgeConfigSpec.DoubleValue wetMultiplier;
 		public final ForgeConfigSpec.IntValue wetnessTickTimer;
 		public final ForgeConfigSpec.IntValue wetnessDecrease;
@@ -405,13 +406,17 @@ public class Config
 					.comment(" How much of an effect altitude has on player's temperature.",
 							" Each 64 blocks further from sea level will impact player's temperature by this value.",
 							" The sea level can be defined via datapack under the dimension's temperature.",
-							" As an example, a value of -5 will reduce the player's temperature by 5 for each 64 blocks (the calculus is done linearly).")
-					.defineInRange("Altitude Modifier", -5.0, -1000, 1000);
+							" As an example, a value of -6 will reduce the player's temperature by 6 for each 64 blocks (the calculus is done linearly).")
+					.defineInRange("Altitude Modifier", -6.0, -1000, 1000);
 
 			builder.push("wetness");
 			wetnessEnabled = builder
 					.comment(" Enable the wetness mechanic.")
 					.define("Wetness Enabled", true);
+
+			wetnessImmunityMounts = builder
+					.comment(" List of mounts that provide a wetness immunity.")
+					.define("Wetness Immunity Mounts", List.of("alexscaves:submarine", "immersive_machinery:bamboo_bee", "immersive_machinery:tunnel_digger", "immersive_machinery:redstone_sheep", "immersive_machinery:copperfin"));
 
 			wetMultiplier = builder
 					.comment(" How much being wet influences the player's temperature.",
@@ -425,14 +430,14 @@ public class Config
 
 			wetnessDecrease = builder
 					.comment(" How much the wetness decrease when out of water.")
-					.defineInRange("Wetness Decrease", -2, -1000, 0);
+					.defineInRange("Wetness Decrease", -3, -1000, 0);
 			wetnessRainIncrease = builder
 					.comment(" How much the wetness increase when under rain.")
-					.defineInRange("Wetness Under Rain Increase", 8, 0, 1000);
+					.defineInRange("Wetness Under Rain Increase", 7, 0, 1000);
 			wetnessFluidIncrease = builder
 					.comment(" How much the wetness increase when the player is in a fluid, scale by the amount of fluid in the block.",
 							" The defined value is for a full block of fluid, and goes up to 2 times this value when fully immerge.")
-					.defineInRange("Wetness In Fluid Increase", 12, 0, 1000);
+					.defineInRange("Wetness In Fluid Increase", 10, 0, 1000);
 			builder.pop();
 
 			builder.push("huddling");
@@ -1299,6 +1304,7 @@ public class Config
 		public static int playerHuddlingRadius;
 
 		public static boolean wetnessEnabled;
+		public static List<? extends String> wetnessImmunityMounts;
 		public static double wetMultiplier;
 		public static int wetnessTickTimer;
 		public static int wetnessDecrease;
@@ -1569,6 +1575,7 @@ public class Config
 				sprintModifier = COMMON.sprintModifier.get();
 
 				wetnessEnabled = COMMON.wetnessEnabled.get();
+				wetnessImmunityMounts = COMMON.wetnessImmunityMounts.get();
 				wetMultiplier = COMMON.wetMultiplier.get();
 				wetnessTickTimer = COMMON.wetnessTickTimer.get();
 				wetnessDecrease = COMMON.wetnessDecrease.get();

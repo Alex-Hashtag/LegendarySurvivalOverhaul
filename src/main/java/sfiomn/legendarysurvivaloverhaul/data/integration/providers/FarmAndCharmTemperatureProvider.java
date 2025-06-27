@@ -24,9 +24,9 @@ public class FarmAndCharmTemperatureProvider extends TemperatureDataProvider {
 
         consumable("goulash").addTemperature(temperatureConsumable(FOOD).temperatureLevel(3).duration(4800));
         consumable("chicken_wrapped_in_bacon").addTemperature(temperatureConsumable(FOOD).temperatureLevel(1).duration(4800));
-        consumable("stuffed_rabbit").addTemperature(temperatureConsumable(FOOD).temperatureLevel(1).duration(2400));
-        consumable("stuffed_chicken").addTemperature(temperatureConsumable(FOOD).temperatureLevel(1).duration(2400));
-        consumable("farmers_breakfast").addTemperature(temperatureConsumable(FOOD).temperatureLevel(1).duration(7200));
+        consumableAndConsumableBlock("stuffed_rabbit", temperatureConsumable(FOOD).temperatureLevel(1).duration(2400));
+        consumableAndConsumableBlock("stuffed_chicken", temperatureConsumable(FOOD).temperatureLevel(1).duration(2400));
+        consumableAndConsumableBlock("farmers_breakfast", temperatureConsumable(FOOD).temperatureLevel(1).duration(7200));
         consumable("sausage_with_oat_patty").addTemperature(temperatureConsumable(FOOD).temperatureLevel(2).duration(4800));
 
         ITemperatureConsumableData soupTemperatureData = temperatureConsumable(DRINK).temperatureLevel(2).duration(3600);

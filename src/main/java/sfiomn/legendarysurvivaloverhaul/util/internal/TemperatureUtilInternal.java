@@ -10,8 +10,11 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.registries.ForgeRegistries;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonTemperatureConsumable;
+import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonTemperatureConsumableBlock;
 import sfiomn.legendarysurvivaloverhaul.api.data.manager.TemperatureDataManager;
 import sfiomn.legendarysurvivaloverhaul.api.temperature.*;
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.temperature.TemperatureCapability;
@@ -63,7 +66,7 @@ public class TemperatureUtilInternal implements ITemperatureUtil
 			float worldInfluence = modifier.getWorldInfluence(player, world, pos);
 			float playerInfluence = modifier.getPlayerInfluence(player);
 			if (player.getMainHandItem().is(Items.DEBUG_STICK)) {
-				LegendarySurvivalOverhaul.LOGGER.info(MODIFIERS_REGISTRY.get().getKey(modifier) + " : world influence=" + worldInfluence + ", player influence=" + playerInfluence);
+                LegendarySurvivalOverhaul.LOGGER.info("{} : world influence={}, player influence={}", MODIFIERS_REGISTRY.get().getKey(modifier), worldInfluence, playerInfluence);
 			}
 
 			sum += worldInfluence + playerInfluence;
@@ -75,7 +78,7 @@ public class TemperatureUtilInternal implements ITemperatureUtil
 			float worldInfluence = dynamicModifier.applyDynamicWorldInfluence(player, world, pos, sum, dynamicModification);
 			float playerInfluence = dynamicModifier.applyDynamicPlayerInfluence(player, sum, dynamicModification);
 			if (player.getMainHandItem().is(Items.DEBUG_STICK)) {
-				LegendarySurvivalOverhaul.LOGGER.info(DYNAMIC_MODIFIERS_REGISTRY.get().getKey(dynamicModifier) + " : world influence=" + worldInfluence + ", player influence=" + playerInfluence);
+                LegendarySurvivalOverhaul.LOGGER.info("{} : dynamic world influence={}, dynamic player influence={}", DYNAMIC_MODIFIERS_REGISTRY.get().getKey(dynamicModifier), worldInfluence, playerInfluence);
 			}
 
 			dynamicModification += worldInfluence + playerInfluence;
@@ -155,6 +158,23 @@ public class TemperatureUtilInternal implements ITemperatureUtil
 					if (jtc.getEffect() != null) {
 						player.addEffect(new MobEffectInstance(jtc.getEffect(), jtc.duration, (Math.abs(jtc.temperatureLevel) - 1), false, false, true));
 						player.removeEffect(jtc.getOppositeEffect());
+					}
+				}
+			}
+		}
+	}
+
+	@Override
+	public void applyConsumableBlockTemperature(Player player, BlockState blockState) {
+		if (Config.Baked.temperatureEnabled) {
+			ResourceLocation blockRegistryName = ForgeRegistries.BLOCKS.getKey(blockState.getBlock());
+			List<JsonTemperatureConsumableBlock> jsonConsumableBlockTemperatures = TemperatureDataManager.getConsumableBlock(blockRegistryName);
+
+			if (jsonConsumableBlockTemperatures != null) {
+				for (JsonTemperatureConsumableBlock jtcb : jsonConsumableBlockTemperatures) {
+					if (jtcb.getEffect() != null && jtcb.matchesState(blockState)) {
+						player.addEffect(new MobEffectInstance(jtcb.getEffect(), jtcb.duration, (Math.abs(jtcb.temperatureLevel) - 1), false, false, true));
+						player.removeEffect(jtcb.getOppositeEffect());
 					}
 				}
 			}

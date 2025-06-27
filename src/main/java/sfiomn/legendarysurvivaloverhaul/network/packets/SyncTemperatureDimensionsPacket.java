@@ -19,7 +19,7 @@ import java.util.function.Supplier;
 public class SyncTemperatureDimensionsPacket
 {
 	private final Map<ResourceLocation, JsonTemperatureDimension> temperatureDimensions;
-	private int size;
+	private final int size;
 
 	public SyncTemperatureDimensionsPacket(Map<ResourceLocation, JsonTemperatureDimension> temperatureDimensions)
 	{

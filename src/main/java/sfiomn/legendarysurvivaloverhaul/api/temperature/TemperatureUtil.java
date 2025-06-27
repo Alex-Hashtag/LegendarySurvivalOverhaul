@@ -5,6 +5,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.UUID;
 
@@ -87,12 +88,21 @@ public class TemperatureUtil
 	}
 
 	/**
-	 * Apply to the player the temperature associated to the provided item registry name
+	 * Apply to the player the temporary temperature associated to the provided item registry name
 	 * @param player Player to which apply the temperature effect
 	 * @param itemRegistryName Item registry name that adds the temperature effect
 	 */
 	public static void applyConsumableTemperature(Player player, ResourceLocation itemRegistryName) {
 		internal.applyConsumableTemperature(player, itemRegistryName);
+	}
+
+	/**
+	 * Apply to the player the temporary temperature associated to the provided blockstate based on blockstate properties
+	 * @param player Player to which apply the temperature effect
+	 * @param blockState Blockstate of the block that adds the temperature effect
+	 */
+	public static void applyConsumableBlockTemperature(Player player, BlockState blockState) {
+		internal.applyConsumableBlockTemperature(player, blockState);
 	}
 
 	/**

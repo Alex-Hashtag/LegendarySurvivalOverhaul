@@ -10,6 +10,7 @@ public class TemperatureDataManager {
 
     public static ITemperatureBlockManager internalBlock;
     public static ITemperatureConsumableManager internalConsumable;
+    public static ITemperatureConsumableBlockManager internalConsumableBlock;
     public static ITemperatureItemManager internalItem;
     public static ITemperatureBiomeManager internalBiome;
     public static ITemperatureFuelItemManager internalFuelItem;
@@ -36,6 +37,17 @@ public class TemperatureDataManager {
     public static List<JsonTemperatureConsumable> getConsumable(ResourceLocation itemRegistryName)
     {
         return internalConsumable.get(itemRegistryName);
+    }
+
+    /**
+     * Retrieves the list of Temporary Temperature Effect related to the provided consumable block registry name
+     *
+     * @param itemRegistryName resource location of the consumable block
+     * @return list of Temporary Temperature Effect
+     */
+    public static List<JsonTemperatureConsumableBlock> getConsumableBlock(ResourceLocation itemRegistryName)
+    {
+        return internalConsumableBlock.get(itemRegistryName);
     }
 
     /**

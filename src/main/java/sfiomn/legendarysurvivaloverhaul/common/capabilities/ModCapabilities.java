@@ -50,7 +50,7 @@ public class ModCapabilities
 	{
 		if (event.getObject() instanceof LivingEntity)
 		{
-			if (event.getObject() instanceof Player)
+			if (event.getObject() instanceof Player player)
 			{
 				event.addCapability(TEMPERATURE_RES, new TemperatureProvider());
 				event.addCapability(WETNESS_RES, new WetnessProvider());

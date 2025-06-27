@@ -22,7 +22,7 @@ import java.util.function.Supplier;
 public class SyncThirstConsumablesPacket
 {
 	private final Map<ResourceLocation, List<JsonThirstConsumable>> thirstConsumables;
-	private int size;
+	private final int size;
 
 	public SyncThirstConsumablesPacket(Map<ResourceLocation, List<JsonThirstConsumable>> thirstConsumables)
 	{

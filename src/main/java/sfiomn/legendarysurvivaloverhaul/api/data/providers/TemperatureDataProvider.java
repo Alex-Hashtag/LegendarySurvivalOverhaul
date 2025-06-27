@@ -26,6 +26,7 @@ public abstract class TemperatureDataProvider implements DataProvider {
     private final String modId;
     private final CompletableFuture<HolderLookup.Provider> lookupProvider;
     private final PackOutput.PathProvider consumablesPathProvider;
+    private final PackOutput.PathProvider consumableBlocksPathProvider;
     private final PackOutput.PathProvider blocksPathProvider;
     private final PackOutput.PathProvider itemsPathProvider;
     private final PackOutput.PathProvider biomesPathProvider;
@@ -34,6 +35,7 @@ public abstract class TemperatureDataProvider implements DataProvider {
     private final PackOutput.PathProvider mountPathProvider;
     private final PackOutput.PathProvider originPathProvider;
     private final Map<String, ITemperatureConsumableDataHolder> consumableBuilders = new HashMap<>();
+    private final Map<String, ITemperatureConsumableBlockDataHolder> consumableBlockBuilders = new HashMap<>();
     private final Map<String, ITemperatureBlockDataHolder> blockBuilders = new HashMap<>();
     private final Map<String, ITemperatureResistanceData> itemBuilders = new HashMap<>();
     private final Map<String, ITemperatureBiomeOverrideData> biomeBuilders = new HashMap<>();
@@ -47,6 +49,7 @@ public abstract class TemperatureDataProvider implements DataProvider {
         this.modId = modId;
         this.fileHelper = fileHelper;
         this.consumablesPathProvider = output.createPathProvider(PackOutput.Target.DATA_PACK, LegendarySurvivalOverhaul.MOD_ID + "/temperature/consumables");
+        this.consumableBlocksPathProvider = output.createPathProvider(PackOutput.Target.DATA_PACK, LegendarySurvivalOverhaul.MOD_ID + "/temperature/consumable_blocks");
         this.blocksPathProvider = output.createPathProvider(PackOutput.Target.DATA_PACK, LegendarySurvivalOverhaul.MOD_ID + "/temperature/blocks");
         this.itemsPathProvider = output.createPathProvider(PackOutput.Target.DATA_PACK, LegendarySurvivalOverhaul.MOD_ID + "/temperature/items");
         this.biomesPathProvider = output.createPathProvider(PackOutput.Target.DATA_PACK, LegendarySurvivalOverhaul.MOD_ID + "/temperature/biomes");
@@ -68,6 +71,11 @@ public abstract class TemperatureDataProvider implements DataProvider {
                 ResourceLocation jsonKey = consumable.split(":").length == 1 ?
                         new ResourceLocation(this.modId, consumable.toLowerCase()) : new ResourceLocation(consumable);
                 list.add(DataProvider.saveStable(pOutput, builder.build(), this.consumablesPathProvider.json(jsonKey)));
+            });
+            this.consumableBlockBuilders.forEach((consumableBlock, builder) -> {
+                ResourceLocation jsonKey = consumableBlock.split(":").length == 1 ?
+                        new ResourceLocation(this.modId, consumableBlock.toLowerCase()) : new ResourceLocation(consumableBlock);
+                list.add(DataProvider.saveStable(pOutput, builder.build(), this.consumableBlocksPathProvider.json(jsonKey)));
             });
             this.blockBuilders.forEach((block, builder) -> {
                 ResourceLocation jsonKey = block.split(":").length == 1 ?
@@ -116,6 +124,19 @@ public abstract class TemperatureDataProvider implements DataProvider {
 
     public final ITemperatureConsumableData temperatureConsumable(TemporaryModifierGroupEnum group) {
         return new TemperatureConsumableData().group(group);
+    }
+
+    public final ITemperatureConsumableBlockDataHolder consumableBlock(String id) {
+        return this.consumableBlockBuilders.computeIfAbsent(id, (k) -> new TemperatureConsumableBlockDataHolder());
+    }
+
+    public final ITemperatureConsumableBlockDataHolder consumableAndConsumableBlock(String id, ITemperatureConsumableData data) {
+        this.consumableBuilders.computeIfAbsent(id, (k) -> new TemperatureConsumableDataHolder().addTemperature(data));
+        return this.consumableBlockBuilders.computeIfAbsent(id, (k) -> new TemperatureConsumableBlockDataHolder().addTemperature(data.asBlock()));
+    }
+
+    public final ITemperatureConsumableBlockData temperatureConsumableBlock(TemporaryModifierGroupEnum group) {
+        return new TemperatureConsumableBlockData().group(group);
     }
 
     public final ITemperatureBlockDataHolder block(String id) {

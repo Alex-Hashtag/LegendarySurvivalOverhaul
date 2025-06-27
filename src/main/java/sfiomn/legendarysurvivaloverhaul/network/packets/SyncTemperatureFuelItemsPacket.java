@@ -19,7 +19,7 @@ import java.util.function.Supplier;
 public class SyncTemperatureFuelItemsPacket
 {
 	private final Map<ResourceLocation, JsonTemperatureFuelItem> temperatureFuelItems;
-	private int size;
+	private final int size;
 
 	public SyncTemperatureFuelItemsPacket(Map<ResourceLocation, JsonTemperatureFuelItem> temperatureFuelItems)
 	{

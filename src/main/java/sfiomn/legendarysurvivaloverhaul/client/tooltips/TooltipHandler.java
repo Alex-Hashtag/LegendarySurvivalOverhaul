@@ -31,6 +31,7 @@ import sfiomn.legendarysurvivaloverhaul.api.data.manager.TemperatureDataManager;
 import sfiomn.legendarysurvivaloverhaul.api.data.manager.ThirstDataManager;
 import sfiomn.legendarysurvivaloverhaul.api.item.CoatEnum;
 import sfiomn.legendarysurvivaloverhaul.api.temperature.TemperatureUtil;
+import sfiomn.legendarysurvivaloverhaul.common.integration.artifacts.ArtifactsUtil;
 import sfiomn.legendarysurvivaloverhaul.common.integration.beachparty.BeachpartyUtil;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
 import sfiomn.legendarysurvivaloverhaul.registry.AttributeRegistry;
@@ -188,9 +189,9 @@ public class TooltipHandler
 
 		ResourceLocation itemRegistryName = ForgeRegistries.ITEMS.getKey(stack.getItem());
 
-		if (itemRegistryName != null && BeachpartyUtil.canProvideShade(itemRegistryName)) {
+		if (itemRegistryName != null && (BeachpartyUtil.canProvideShade(itemRegistryName) || ArtifactsUtil.canProvideShade(itemRegistryName))) {
 			tooltips.add(
-					Component.translatable("tooltip.legendarysurvivaloverhaul.beachparty.provide_shade")
+					Component.translatable("tooltip.legendarysurvivaloverhaul.provides_shade")
 							.withStyle(ChatFormatting.WHITE));
 		}
 	}

@@ -80,6 +80,11 @@ public abstract class ThirstDataProvider implements DataProvider {
         return this.blocksBuilders.computeIfAbsent(blockRegistryName.toString(), (k) -> new ThirstDataHolder());
     }
 
+    public final IThirstDataHolder consumableAndBlock(String id, IThirstData data) {
+        this.consumablesBuilders.computeIfAbsent(id, (k) -> new ThirstDataHolder().addThirst(data));
+        return this.blocksBuilders.computeIfAbsent(id, (k) -> new ThirstDataHolder().addThirst(data));
+    }
+
     public final IThirstData thirstData(int hydration, float saturation) {
         return new ThirstData().hydration(hydration).saturation(saturation);
     }

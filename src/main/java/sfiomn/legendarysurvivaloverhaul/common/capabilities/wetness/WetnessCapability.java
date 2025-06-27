@@ -3,11 +3,13 @@ package sfiomn.legendarysurvivaloverhaul.common.capabilities.wetness;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LayeredCauldronBlock;
 import net.minecraft.world.level.block.state.BlockState;
@@ -20,12 +22,14 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
+import net.minecraftforge.registries.ForgeRegistries;
 import sfiomn.legendarysurvivaloverhaul.api.wetness.IWetnessCapability;
 import sfiomn.legendarysurvivaloverhaul.common.integration.curios.CuriosUtil;
 import sfiomn.legendarysurvivaloverhaul.common.integration.meadow.MeadowUtil;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
 import sfiomn.legendarysurvivaloverhaul.registry.ItemRegistry;
 import sfiomn.legendarysurvivaloverhaul.util.MathUtil;
+import sfiomn.legendarysurvivaloverhaul.util.WorldUtil;
 
 public class WetnessCapability implements IWetnessCapability
 {
@@ -115,6 +119,15 @@ public class WetnessCapability implements IWetnessCapability
 			this.addWetness(-10);
 		
 		BlockPos pos = player.blockPosition();
+
+		if (player.getVehicle() != null) {
+			ResourceLocation entityRegistryName = ForgeRegistries.ENTITY_TYPES.getKey(player.getVehicle().getType());
+			if (entityRegistryName != null && Config.Baked.wetnessImmunityMounts.contains(entityRegistryName.toString())) {
+				if (this.wetness > 0)
+					this.addWetness(Config.Baked.wetnessDecrease);
+				return;
+			}
+		}
 		
 		// If the player is not riding a living entity, shift the position used for calculations up by one block
 		// This way, sitting in a boat that's floating on the water won't increase a player's wetness
@@ -134,10 +147,11 @@ public class WetnessCapability implements IWetnessCapability
 
 		// If no fluid on the pos of the player (or above if in a boat)
 		// only check for raining on pos above player (to avoid issue with half blocks)
-		if (fluidState.isEmpty() && !blockState.is(Blocks.WATER_CAULDRON) && !MeadowUtil.isInWoodenCauldron(blockState)) {
-			if (wetness < WETNESS_LIMIT && level.isRainingAt(player.blockPosition().above()))
+		if (fluidState.isEmpty() && !blockState.is(Blocks.WATER_CAULDRON) && !MeadowUtil.isInWoodenWaterCauldron(blockState)) {
+			Biome.Precipitation precipitation = WorldUtil.getPrecipitationAt(level, player, pos);
+			if (wetness < WETNESS_LIMIT && precipitation == Biome.Precipitation.RAIN)
 				this.addWetness(Config.Baked.wetnessRainIncrease);
-			else if (this.wetness > 0)
+			else if (this.wetness > 0 && precipitation == Biome.Precipitation.NONE)
 				this.addWetness(Config.Baked.wetnessDecrease);
 		}
 		else {
@@ -147,7 +161,7 @@ public class WetnessCapability implements IWetnessCapability
 			if (!fluidState.isEmpty()) {
 				fluid = fluidState.getType();
 				fractionalLevel = MathUtil.invLerp(1, 8, fluidState.getAmount());
-			} else if (blockState.is(Blocks.WATER_CAULDRON) || MeadowUtil.isInWoodenCauldron(blockState)) {
+			} else if (blockState.is(Blocks.WATER_CAULDRON) || MeadowUtil.isInWoodenWaterCauldron(blockState)) {
 				fluid = Fluids.WATER;
 				if (blockState.hasProperty(LayeredCauldronBlock.LEVEL))
 					fractionalLevel = MathUtil.invLerp(1, 3, blockState.getValue(LayeredCauldronBlock.LEVEL));

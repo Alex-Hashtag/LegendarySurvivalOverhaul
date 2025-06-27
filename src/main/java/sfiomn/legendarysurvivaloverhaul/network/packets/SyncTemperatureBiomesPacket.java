@@ -19,7 +19,7 @@ import java.util.function.Supplier;
 public class SyncTemperatureBiomesPacket
 {
 	private final Map<ResourceLocation, JsonTemperatureBiomeOverride> temperatureBiomes;
-	private int size;
+	private final int size;
 
 	public SyncTemperatureBiomesPacket(Map<ResourceLocation, JsonTemperatureBiomeOverride> temperatureBiomes)
 	{

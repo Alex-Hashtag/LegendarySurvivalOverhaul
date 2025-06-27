@@ -235,7 +235,7 @@ public class BodyDamageCapability implements IBodyDamageCapability
 		double expectedBrokenHearts = 0;
 		for (Map.Entry<BodyPartEnum, BodyPart> bodyPartPair: this.bodyParts.entrySet()) {
 			BodyPart bodyPart = bodyPartPair.getValue();
-			if (Config.Baked.healthOverhaulEnabled && bodyPart.getDamage() == bodyPart.getMaxHealth()) {
+			if (Config.Baked.healthOverhaulEnabled && bodyPart.getDamage() >= bodyPart.getMaxHealth()) {
 				expectedBrokenHearts += switch (Config.Baked.brokenHeartsPerInjuredLimbMode) {
 					case "PLAYER_DYNAMIC":
 						yield Config.Baked.brokenHeartsPerInjuredLimb * this.playerMaxHealth;
@@ -347,7 +347,10 @@ public class BodyDamageCapability implements IBodyDamageCapability
 
 	private void updateDynamicMaxHealth(float maxHealth) {
 		for (BodyPart bodyPart: this.bodyParts.values()) {
-			bodyPart.setMaxHealth(Math.round(bodyPart.getHealthMultiplier() * maxHealth * 100) / 100.0f);
+			float newMaxHealth = Math.round(bodyPart.getHealthMultiplier() * maxHealth * 100) / 100.0f;
+			float oldMaxHealth = bodyPart.getMaxHealth();
+			bodyPart.setMaxHealth(newMaxHealth);
+			bodyPart.setDamage(bodyPart.getDamage() + Math.max(newMaxHealth - oldMaxHealth, 0));
 		}
 	}
 

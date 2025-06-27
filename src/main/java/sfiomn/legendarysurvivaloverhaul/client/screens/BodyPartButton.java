@@ -61,7 +61,7 @@ public class BodyPartButton extends Button {
         }
 
         public static BodyPartCondition get(float healthRatio) {
-            if (healthRatio == 0) {
+            if (healthRatio <= 0) {
                 return DEAD;
             } else if (healthRatio < 0.66) {
                 return WOUNDED;

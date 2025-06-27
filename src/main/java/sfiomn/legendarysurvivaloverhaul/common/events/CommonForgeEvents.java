@@ -195,9 +195,8 @@ public class CommonForgeEvents {
             {
                 Player player = event.getEntity();
                 BlockState usedBlock = event.getLevel().getBlockState(event.getHitVec().getBlockPos());
-                ResourceLocation blockRegistryName = ForgeRegistries.BLOCKS.getKey(usedBlock.getBlock());
-                if (player != null && blockRegistryName != null) {
-                    TemperatureUtil.applyConsumableTemperature(player, blockRegistryName);
+                if (player != null) {
+                    TemperatureUtil.applyConsumableBlockTemperature(player, usedBlock);
                 }
             }
         }

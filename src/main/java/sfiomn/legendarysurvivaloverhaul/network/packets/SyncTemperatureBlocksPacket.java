@@ -22,7 +22,7 @@ import java.util.function.Supplier;
 public class SyncTemperatureBlocksPacket
 {
 	private final Map<ResourceLocation, List<JsonTemperatureBlock>> temperatureBlocks;
-	private int size;
+	private final int size;
 
 	public SyncTemperatureBlocksPacket(Map<ResourceLocation, List<JsonTemperatureBlock>> temperatureBlocks)
 	{

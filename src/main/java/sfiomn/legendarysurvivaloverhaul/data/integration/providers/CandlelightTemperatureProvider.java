@@ -24,15 +24,14 @@ public class CandlelightTemperatureProvider extends TemperatureDataProvider {
         consumable("beetroot_salad").addTemperature(temperatureConsumable(FOOD).temperatureLevel(-1).duration(2400));
         consumable("salad").addTemperature(temperatureConsumable(FOOD).temperatureLevel(-1).duration(2400));
         consumable("fresh_garden_salad").addTemperature(temperatureConsumable(FOOD).temperatureLevel(-1).duration(2400));
-        consumable("tomato_mozzarella_salad").addTemperature(temperatureConsumable(FOOD).temperatureLevel(-1).duration(2400));
+        consumableAndConsumableBlock("tomato_mozzarella_salad", temperatureConsumable(FOOD).temperatureLevel(-1).duration(2400));
         consumable("harvest_plate").addTemperature(temperatureConsumable(FOOD).temperatureLevel(-1).duration(2400));
 
-        consumable("chicken_alfredo").addTemperature(temperatureConsumable(FOOD).temperatureLevel(1).duration(2400));
-        consumable("chicken_alfredo").addTemperature(temperatureConsumable(FOOD).temperatureLevel(1).duration(2400));
-        consumable("roastbeef_with_glazed_carrots").addTemperature(temperatureConsumable(FOOD).temperatureLevel(1).duration(2400));
+        consumable("fricasse").addTemperature(temperatureConsumable(FOOD).temperatureLevel(1).duration(2400));
+        consumable("roastbeef_carrots").addTemperature(temperatureConsumable(FOOD).temperatureLevel(1).duration(2400));
         consumable("bolognese").addTemperature(temperatureConsumable(FOOD).temperatureLevel(1).duration(2400));
-        consumable("beef_wellington").addTemperature(temperatureConsumable(FOOD).temperatureLevel(2).duration(2400));
-        consumable("lasagne").addTemperature(temperatureConsumable(FOOD).temperatureLevel(2).duration(2400));
+        consumableAndConsumableBlock("beef_wellington", temperatureConsumable(FOOD).temperatureLevel(2).duration(2400));
+        consumableAndConsumableBlock("lasagne", temperatureConsumable(FOOD).temperatureLevel(2).duration(2400));
         consumable("pasta_with_bolognese").addTemperature(temperatureConsumable(FOOD).temperatureLevel(2).duration(2400));
         consumable("beef_with_mushroom_in_wine_and_potatoes").addTemperature(temperatureConsumable(FOOD).temperatureLevel(3).duration(4800));
 
@@ -61,8 +60,8 @@ public class CandlelightTemperatureProvider extends TemperatureDataProvider {
 
         item("cooking_hat").heatResistance(1.0f);
         item("chefs_jacket").heatResistance(1.5f);
-        item("chefs_pant").heatResistance(1.0f);
-        item("chef_boots").heatResistance(0.5f);
+        item("chefs_pants").heatResistance(1.0f);
+        item("chefs_boots").heatResistance(0.5f);
 
         item("trousers_and_vest").heatResistance(1.0f);
     }

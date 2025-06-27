@@ -29,6 +29,7 @@ public class NetworkHandler
 		INSTANCE.registerMessage(id++, BodyPartHealingTimeMessage.class, BodyPartHealingTimeMessage::encode, BodyPartHealingTimeMessage::decode, BodyPartHealingTimeMessage::handle);
 
 		INSTANCE.registerMessage(id++, SyncTemperatureConsumablesPacket.class, SyncTemperatureConsumablesPacket::encode, SyncTemperatureConsumablesPacket::decode, SyncTemperatureConsumablesPacket::handle);
+		INSTANCE.registerMessage(id++, SyncTemperatureConsumableBlocksPacket.class, SyncTemperatureConsumableBlocksPacket::encode, SyncTemperatureConsumableBlocksPacket::decode, SyncTemperatureConsumableBlocksPacket::handle);
 		INSTANCE.registerMessage(id++, SyncTemperatureBlocksPacket.class, SyncTemperatureBlocksPacket::encode, SyncTemperatureBlocksPacket::decode, SyncTemperatureBlocksPacket::handle);
 		INSTANCE.registerMessage(id++, SyncTemperatureItemsPacket.class, SyncTemperatureItemsPacket::encode, SyncTemperatureItemsPacket::decode, SyncTemperatureItemsPacket::handle);
 		INSTANCE.registerMessage(id++, SyncTemperatureBiomesPacket.class, SyncTemperatureBiomesPacket::encode, SyncTemperatureBiomesPacket::decode, SyncTemperatureBiomesPacket::handle);

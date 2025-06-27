@@ -3,11 +3,12 @@ package sfiomn.legendarysurvivaloverhaul.common.temperature;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.temperature.ModifierBase;
 import sfiomn.legendarysurvivaloverhaul.common.integration.eclipticseasons.EclipticSeasonsUtil;
 import sfiomn.legendarysurvivaloverhaul.common.integration.terrafirmacraft.TerraFirmaCraftUtil;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
+
+import static sfiomn.legendarysurvivaloverhaul.common.integration.eclipticseasons.EclipticSeasonsUtil.hasDimensionSeason;
 
 public class TimeModifier extends ModifierBase
 {
@@ -30,7 +31,7 @@ public class TimeModifier extends ModifierBase
 
 		// 2 * PI / 24000 = 0.00026179938
 		double timeAngle = time * 0.00026179938;
-		if (LegendarySurvivalOverhaul.eclipticSeasonsLoaded) {
+		if (hasDimensionSeason(level)) {
 			long sunRiseTime = EclipticSeasonsUtil.getSunRiseTime(level);
 			int dayDuration = EclipticSeasonsUtil.getDayDuration(level);
 			long sunSetTime = sunRiseTime + dayDuration;

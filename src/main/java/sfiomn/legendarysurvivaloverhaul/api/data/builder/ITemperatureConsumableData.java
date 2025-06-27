@@ -11,6 +11,8 @@ public interface ITemperatureConsumableData {
 
     ITemperatureConsumableData duration(int durationInTick);
 
+    ITemperatureConsumableBlockData asBlock();
+
     ITemperatureConsumableData copy();
 
     JsonObject build();

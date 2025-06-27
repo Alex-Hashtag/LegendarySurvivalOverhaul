@@ -1,8 +1,8 @@
 package sfiomn.legendarysurvivaloverhaul.common.integration.eclipticseasons;
 
+import com.teamtea.eclipticseasons.api.EclipticSeasonsApi;
 import com.teamtea.eclipticseasons.api.constant.solar.SolarTerm;
 import com.teamtea.eclipticseasons.api.util.EclipticUtil;
-import com.teamtea.eclipticseasons.common.core.map.MapChecker;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -10,8 +10,7 @@ import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.temperature.ModifierBase;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
 
-import static sfiomn.legendarysurvivaloverhaul.common.integration.eclipticseasons.EclipticSeasonsUtil.getBlendedSeasonModifier;
-import static sfiomn.legendarysurvivaloverhaul.common.integration.eclipticseasons.EclipticSeasonsUtil.getSeasonModifier;
+import static sfiomn.legendarysurvivaloverhaul.common.integration.eclipticseasons.EclipticSeasonsUtil.*;
 
 
 public class EclipticSeasonsModifier extends ModifierBase
@@ -24,10 +23,7 @@ public class EclipticSeasonsModifier extends ModifierBase
 	@Override
 	public float getWorldInfluence(Player player, Level level, BlockPos pos)
 	{
-		if (!LegendarySurvivalOverhaul.eclipticSeasonsLoaded)
-			return 0.0f;
-		
-		if (!Config.Baked.eclipticSeasonsEnabled)
+		if (!LegendarySurvivalOverhaul.eclipticSeasonsLoaded || !Config.Baked.eclipticSeasonsEnabled)
 			return 0.0f;
 		
 		try
@@ -42,16 +38,19 @@ public class EclipticSeasonsModifier extends ModifierBase
 			// If an error somehow occurs, disable compatibility 
 			LegendarySurvivalOverhaul.LOGGER.error("An error has occurred with Ecliptic Seasons compatibility, disabling modifier", e);
 			LegendarySurvivalOverhaul.eclipticSeasonsLoaded = false;
-			
+
 			return 0.0f;
 		}
 	}
 	
 	public float getUncaughtWorldInfluence(Level level, BlockPos pos)
 	{
-		SolarTerm solarTerm = EclipticUtil.getNowSolarTerm(level);
+		if (!hasDimensionSeason(level))
+			return 0.0f;
+
+		SolarTerm solarTerm = EclipticSeasonsApi.getInstance().getSolarTerm(level);
 		
-		if (solarTerm == SolarTerm.NONE || !MapChecker.isValidDimension(level))
+		if (solarTerm == SolarTerm.NONE)
 			return 0.0f;
 
 		int timeInSubSeason = (int) (EclipticUtil.getTimeInSolarTerm(level) * 24000 + level.getLevelData().getDayTime());

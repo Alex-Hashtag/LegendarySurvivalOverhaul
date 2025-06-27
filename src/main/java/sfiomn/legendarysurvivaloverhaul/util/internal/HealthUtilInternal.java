@@ -35,6 +35,8 @@ public class HealthUtilInternal implements IHealthUtil {
         if (player.getAttribute(Attributes.MAX_HEALTH) != null)
             baseHealth = Objects.requireNonNull(player.getAttribute(Attributes.MAX_HEALTH)).getBaseValue();
 
+        baseHealth += getMaxHealthFromModifiers(player);
+
         HEALTH_ATTRIBUTE.addModifier(player, HEALTH_ATTRIBUTE_UUID, maxHealth - baseHealth);
         player.setHealth(Math.min(player.getMaxHealth(), player.getHealth()));
     }
@@ -98,9 +100,13 @@ public class HealthUtilInternal implements IHealthUtil {
         HealthCapability healthCapability = CapabilityUtil.getHealthCapability(player);
 
         int minhHearthLimit = (int) player.getAttributeValue(AttributeRegistry.PERMANENT_HEART.get());
+        // max losable heart amount = max player health - minhHearthLimit
+        int actuallyLostHearts = Math.min((int) Math.ceil(player.getMaxHealth() / 2.0) - minhHearthLimit, amountLost);
 
-        healthCapability.setAdditionalHealth(Math.max(minhHearthLimit * 2 - Mth.ceil(Config.Baked.initialHealth), healthCapability.getAdditionalHealth() - amountLost * 2));
-        updatePlayerMaxHealthAttribute(player);
+        if (actuallyLostHearts > 0) {
+            healthCapability.setAdditionalHealth(healthCapability.getAdditionalHealth() - actuallyLostHearts * 2);
+            updatePlayerMaxHealthAttribute(player);
+        }
     }
 
     @Override

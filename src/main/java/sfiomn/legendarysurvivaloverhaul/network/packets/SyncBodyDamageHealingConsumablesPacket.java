@@ -19,7 +19,7 @@ import java.util.function.Supplier;
 public class SyncBodyDamageHealingConsumablesPacket
 {
 	private final Map<ResourceLocation, JsonHealingConsumable> healingConsumables;
-	private int size;
+	private final int size;
 
 	public SyncBodyDamageHealingConsumablesPacket(Map<ResourceLocation, JsonHealingConsumable> healingConsumables)
 	{

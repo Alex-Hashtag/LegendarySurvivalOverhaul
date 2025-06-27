@@ -96,6 +96,7 @@ public class LegendarySurvivalOverhaul
 	public static boolean originsLoaded = false;
 	public static boolean mutantMonstersLoaded = false;
 	public static boolean supplementariesLoaded = false;
+	public static boolean artifactsLoaded = false;
 	public static boolean beachpartyLoaded = false;
 	public static boolean meadowLoaded = false;
 	public static boolean overflowingbarsLoaded = false;
@@ -152,6 +153,7 @@ public class LegendarySurvivalOverhaul
 		originsLoaded = ModList.get().isLoaded("origins");
 		mutantMonstersLoaded = ModList.get().isLoaded("mutantmonsters");
 		supplementariesLoaded = ModList.get().isLoaded("supplementaries");
+		artifactsLoaded = ModList.get().isLoaded("artifacts");
 		beachpartyLoaded = ModList.get().isLoaded("beachparty");
 		meadowLoaded = ModList.get().isLoaded("meadow");
 		overflowingbarsLoaded = ModList.get().isLoaded("overflowingbars");
@@ -194,6 +196,9 @@ public class LegendarySurvivalOverhaul
 		if (supplementariesLoaded)
 			LOGGER.debug("Supplementarie is loaded, enabling compatibility");
 
+		if (artifactsLoaded)
+			LOGGER.debug("Artifacts is loaded, enabling compatibility");
+
 		if (beachpartyLoaded)
 			LOGGER.debug("Let's do Beachparty is loaded, enabling compatibility");
 
@@ -227,6 +232,7 @@ public class LegendarySurvivalOverhaul
 			HealthUtil.internal = new HealthUtilInternal();
 
 			TemperatureDataManager.internalConsumable = new TemperatureConsumableListener();
+			TemperatureDataManager.internalConsumableBlock = new TemperatureConsumableBlockListener();
 			TemperatureDataManager.internalBlock = new TemperatureBlockListener();
 			TemperatureDataManager.internalItem = new TemperatureItemListener();
 			TemperatureDataManager.internalBiome = new TemperatureBiomeListener();
@@ -295,6 +301,7 @@ public class LegendarySurvivalOverhaul
 	private void addReloadListenerEvent(final AddReloadListenerEvent event)
 	{
 		event.addListener((PreparableReloadListener) TemperatureDataManager.internalConsumable);
+		event.addListener((PreparableReloadListener) TemperatureDataManager.internalConsumableBlock);
 		event.addListener((PreparableReloadListener) TemperatureDataManager.internalBlock);
 		event.addListener((PreparableReloadListener) TemperatureDataManager.internalItem);
 		event.addListener((PreparableReloadListener) TemperatureDataManager.internalBiome);

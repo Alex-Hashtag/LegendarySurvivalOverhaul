@@ -9,6 +9,7 @@ import sfiomn.legendarysurvivaloverhaul.api.data.providers.TemperatureDataProvid
 import java.util.concurrent.CompletableFuture;
 
 import static sfiomn.legendarysurvivaloverhaul.api.temperature.TemporaryModifierGroupEnum.DRINK;
+import static sfiomn.legendarysurvivaloverhaul.api.temperature.TemporaryModifierGroupEnum.FOOD;
 
 public class BrewinAndChewinTemperatureProvider extends TemperatureDataProvider {
 
@@ -36,5 +37,13 @@ public class BrewinAndChewinTemperatureProvider extends TemperatureDataProvider 
         consumable("dread_nog").addTemperature(temperatureConsumable(DRINK).temperatureLevel(2).duration(2400));
         consumable("red_rum").addTemperature(temperatureConsumable(DRINK).temperatureLevel(3).duration(2400));
         consumable("saccharine_rum").addTemperature(temperatureConsumable(DRINK).temperatureLevel(3).duration(2400));
+
+        consumable("fiery_fondue").addTemperature(temperatureConsumable(FOOD).temperatureLevel(3).duration(3600));
+
+        block("fiery_fondue_pot")
+                .addTemperature(temperatureBlock(5).addProperty("level", "3"))
+                .addTemperature(temperatureBlock(4).addProperty("level", "2"))
+                .addTemperature(temperatureBlock(2).addProperty("level", "1"))
+                .addTemperature(temperatureBlock(0).addProperty("level", "0"));
     }
 }

@@ -19,7 +19,7 @@ import java.util.function.Supplier;
 public class SyncBodyPartsDamageSourcesPacket
 {
 	private final Map<ResourceLocation, JsonBodyPartsDamageSource> damageSources;
-	private int size;
+	private final int size;
 
 	public SyncBodyPartsDamageSourcesPacket(Map<ResourceLocation, JsonBodyPartsDamageSource> damageSources)
 	{

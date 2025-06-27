@@ -8,6 +8,7 @@ import net.minecraft.world.entity.decoration.ItemFrame;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.EntityHitResult;
@@ -15,7 +16,11 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
+import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.temperature.TemperatureUtil;
+import sfiomn.legendarysurvivaloverhaul.common.integration.artifacts.ArtifactsUtil;
+import sfiomn.legendarysurvivaloverhaul.common.integration.beachparty.BeachpartyUtil;
+import sfiomn.legendarysurvivaloverhaul.common.integration.eclipticseasons.EclipticSeasonsUtil;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
 
 public final class WorldUtil
@@ -57,7 +62,35 @@ public final class WorldUtil
 		}
 	}
 
+	public static boolean isPlayerOrPosUndercover(Level level, Player player, BlockPos pos) {
+		if (LegendarySurvivalOverhaul.beachpartyLoaded)
+			if (BeachpartyUtil.isUnderParasol(level, player, pos))
+				return true;
+
+		if (LegendarySurvivalOverhaul.artifactsLoaded)
+			if (ArtifactsUtil.isHoldingUmbrella(player))
+				return true;
+
+		return !level.canSeeSky(pos) || level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING, pos).getY() > pos.getY();
+	}
+
+	public static Biome.Precipitation getPrecipitationAt(Level level, Player player, BlockPos pos) {
+		if (isPlayerOrPosUndercover(level, player, pos))
+			return Biome.Precipitation.NONE;
+
+		if (LegendarySurvivalOverhaul.eclipticSeasonsLoaded)
+			return EclipticSeasonsUtil.getPrecipitation(level, pos);
+
+		if (!level.isRaining())
+			return Biome.Precipitation.NONE;
+
+		return level.getBiome(pos).get().getPrecipitationAt(pos);
+	}
+
 	public static boolean isRainingOrSnowingAt(Level level, BlockPos pos) {
+		if (LegendarySurvivalOverhaul.eclipticSeasonsLoaded)
+			return EclipticSeasonsUtil.getPrecipitation(level, pos) != Biome.Precipitation.NONE;
+
 		if (!level.isRaining()) {
 			return false;
 		} else if (!level.canSeeSky(pos)) {

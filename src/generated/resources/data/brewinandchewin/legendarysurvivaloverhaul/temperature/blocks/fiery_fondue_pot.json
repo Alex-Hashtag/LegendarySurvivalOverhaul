@@ -1,0 +1,26 @@
+[
+  {
+    "properties": {
+      "level": "3"
+    },
+    "temperature": 5.0
+  },
+  {
+    "properties": {
+      "level": "2"
+    },
+    "temperature": 4.0
+  },
+  {
+    "properties": {
+      "level": "1"
+    },
+    "temperature": 2.0
+  },
+  {
+    "properties": {
+      "level": "0"
+    },
+    "temperature": 0.0
+  }
+]

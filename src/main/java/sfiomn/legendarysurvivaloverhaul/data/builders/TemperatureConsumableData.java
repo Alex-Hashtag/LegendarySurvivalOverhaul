@@ -1,6 +1,7 @@
 package sfiomn.legendarysurvivaloverhaul.data.builders;
 
 import com.google.gson.JsonObject;
+import sfiomn.legendarysurvivaloverhaul.api.data.builder.ITemperatureConsumableBlockData;
 import sfiomn.legendarysurvivaloverhaul.api.data.builder.ITemperatureConsumableData;
 import sfiomn.legendarysurvivaloverhaul.api.temperature.TemporaryModifierGroupEnum;
 
@@ -31,8 +32,13 @@ public class TemperatureConsumableData implements ITemperatureConsumableData {
 
     @Override
     public ITemperatureConsumableData duration(int durationInTick) {
-        this.durationInTick = durationInTick    ;
+        this.durationInTick = durationInTick;
         return this;
+    }
+
+    @Override
+    public ITemperatureConsumableBlockData asBlock() {
+        return new TemperatureConsumableBlockData().duration(this.durationInTick).temperatureLevel(this.temperatureLevel).group(this.group);
     }
 
     @Override

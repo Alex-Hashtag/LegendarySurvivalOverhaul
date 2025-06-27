@@ -5,6 +5,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.UUID;
 
@@ -17,6 +18,8 @@ public interface ITemperatureUtil
 	float clampTemperature(float temperature);
 
 	void applyConsumableTemperature(Player player, ResourceLocation itemRegistryName);
+
+	void applyConsumableBlockTemperature(Player player, BlockState blockState);
 
 	TemperatureEnum getTemperatureEnum(float temperature);
 

@@ -6,8 +6,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.temperature.ModifierBase;
-import sfiomn.legendarysurvivaloverhaul.common.integration.beachparty.BeachpartyUtil;
-import sfiomn.legendarysurvivaloverhaul.common.integration.eclipticseasons.EclipticSeasonsUtil;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
 import sfiomn.legendarysurvivaloverhaul.registry.TemperatureModifierRegistry;
 import sfiomn.legendarysurvivaloverhaul.util.WorldUtil;
@@ -23,15 +21,15 @@ public class WeatherModifier extends ModifierBase
 	public float getWorldInfluence(Player player, Level level, BlockPos pos)
 	{
 		Biome.Precipitation precipitation = Biome.Precipitation.NONE;
-		if (LegendarySurvivalOverhaul.eclipticSeasonsLoaded)
-			precipitation = EclipticSeasonsUtil.getPrecipitation(level, pos.above());
+		boolean isUndercover = WorldUtil.isPlayerOrPosUndercover(level, player, pos.above());
 
-		// Don't apply shade nor weather if it doesn't rain, no block above player and player not under parasol
+		if (isUndercover)
+			precipitation = WorldUtil.getPrecipitationAt(level, player, pos.above());
+
+		// Don't apply shade nor weather if there are no precipitation and player not undercover
 		// Shade effect depends on Time, no shade effect at sunrise and sunset, max effect at noon
-		if (!level.isRaining() &&
-				precipitation == Biome.Precipitation.NONE &&
-				level.canSeeSky(pos.above()) &&
-				!BeachpartyUtil.isUnderParasol(player, level, pos)) {
+		if (precipitation == Biome.Precipitation.NONE &&
+				!isUndercover) {
 			return 0.0f;
 		}
 

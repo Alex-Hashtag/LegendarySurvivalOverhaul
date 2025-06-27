@@ -61,12 +61,19 @@
 	"item.legendarysurvivaloverhaul.thermal_resistance_ring": "Thermal Resistance Ring",
 
 	"attribute.legendarysurvivaloverhaul.heating_temperature": "Temperature",
+	"attribute.legendarysurvivaloverhaul.heating_temperature.desc": "Temperature",
 	"attribute.legendarysurvivaloverhaul.cooling_temperature": "Temperature",
+	"attribute.legendarysurvivaloverhaul.cooling_temperature.desc": "Temperature",
 	"attribute.legendarysurvivaloverhaul.heat_resistance": "Heat Resistance",
+	"attribute.legendarysurvivaloverhaul.heat_resistance.desc": "Heat Resistance",
 	"attribute.legendarysurvivaloverhaul.cold_resistance": "Cold Resistance",
+	"attribute.legendarysurvivaloverhaul.cold_resistance.desc": "Cold Resistance",
 	"attribute.legendarysurvivaloverhaul.thermal_resistance": "Thermal Resistance",
+	"attribute.legendarysurvivaloverhaul.thermal_resistance.desc": "Thermal Resistance",
 	"attribute.legendarysurvivaloverhaul.permanent_heart": "Permanent Heart",
+	"attribute.legendarysurvivaloverhaul.permanent_heart.desc": "Permanent Heart",
 	"attribute.legendarysurvivaloverhaul.broken_heart_resilience": "Broken Heart Resilience",
+	"attribute.legendarysurvivaloverhaul.broken_heart_resilience.desc": "Broken Heart Resilience",
 
 	"item.legendarysurvivaloverhaul.heart_container": "Crystal Heart",
 	"item.legendarysurvivaloverhaul.heart_fragment": "Crystal Heart Fragment",
@@ -260,7 +267,7 @@
 	"tooltip.legendarysurvivaloverhaul.block_temperature": "When {}:\n{} Temperature",
 	"tooltip.legendarysurvivaloverhaul.block_thirst": "When {}:\n{}",
 
-	"tooltip.legendarysurvivaloverhaul.beachparty.provide_shade": "Provides shade when the sun is burning",
+	"tooltip.legendarysurvivaloverhaul.provides_shade": "Provides shade when the sun is burning",
 
 	"sounds.legendarysurvivaloverhaul.heat_stroke_early": "Heat starts stroking",
 	"sounds.legendarysurvivaloverhaul.heat_stroke": "Heat is stroking",

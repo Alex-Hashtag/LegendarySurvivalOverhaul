@@ -14,7 +14,7 @@ import javax.annotation.Nonnull;
 
 public class BeachpartyUtil {
 
-    public static boolean isUnderParasol(Player player, Level level, BlockPos pos) {
+    public static boolean isUnderParasol(Level level, Player player, BlockPos pos) {
         if (LegendarySurvivalOverhaul.beachpartyLoaded) {
 
             if (player != null && player.getVehicle() != null && player.getVehicle() instanceof ChairEntity) {

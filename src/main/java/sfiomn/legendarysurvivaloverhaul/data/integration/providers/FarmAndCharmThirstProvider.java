@@ -18,6 +18,7 @@ public class FarmAndCharmThirstProvider extends ThirstDataProvider {
     public void generate(HolderLookup.Provider provider, ExistingFileHelper existingFileHelper) {
 
         consumable("tomato").addThirst(thirstData(4, 0.0f));
+        consumable("strawberry").addThirst(thirstData(2, 0.0f));
 
         IThirstData teaThirstData = thirstData(7, 5.0f);
         consumable("strawberry_tea").addThirst(teaThirstData);

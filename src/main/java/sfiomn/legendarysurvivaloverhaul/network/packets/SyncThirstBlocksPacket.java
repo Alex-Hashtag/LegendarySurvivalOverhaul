@@ -22,7 +22,7 @@ import java.util.function.Supplier;
 public class SyncThirstBlocksPacket
 {
 	private final Map<ResourceLocation, List<JsonThirstBlock>> thirstBlocks;
-	private int size;
+	private final int size;
 
 	public SyncThirstBlocksPacket(Map<ResourceLocation, List<JsonThirstBlock>> thirstBlocks)
 	{

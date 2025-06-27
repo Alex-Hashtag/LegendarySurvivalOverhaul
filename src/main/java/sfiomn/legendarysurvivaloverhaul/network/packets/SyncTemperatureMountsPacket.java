@@ -19,7 +19,7 @@ import java.util.function.Supplier;
 public class SyncTemperatureMountsPacket
 {
 	private final Map<ResourceLocation, JsonTemperature> temperatureMounts;
-	private int size;
+	private final int size;
 
 	public SyncTemperatureMountsPacket(Map<ResourceLocation, JsonTemperature> temperatureMounts)
 	{

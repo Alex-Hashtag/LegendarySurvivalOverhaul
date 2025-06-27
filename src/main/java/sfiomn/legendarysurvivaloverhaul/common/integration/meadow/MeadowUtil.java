@@ -7,7 +7,7 @@ import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 
 public class MeadowUtil {
 
-    public static boolean isInWoodenCauldron(BlockState blockState) {
+    public static boolean isInWoodenWaterCauldron(BlockState blockState) {
         return LegendarySurvivalOverhaul.meadowLoaded && blockState.is(ObjectRegistry.WOODEN_WATER_CAULDRON.get());
     }
 }

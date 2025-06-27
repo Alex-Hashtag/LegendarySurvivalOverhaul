@@ -19,22 +19,22 @@ public class BreweryThirstProvider extends ThirstDataProvider {
     public void generate(HolderLookup.Provider provider, ExistingFileHelper existingFileHelper) {
 
         IThirstData whiskey_hydration = thirstData(5, 5.0f).addEffect(MobEffectRegistry.THIRST.get(), 800, 0.4f);
-        consumable("whiskey_jojannik").addThirst(whiskey_hydration);
-        consumable("whiskey_lilitusinglemalt").addThirst(whiskey_hydration);
-        consumable("whiskey_cristelwalker").addThirst(whiskey_hydration);
-        consumable("whiskey_maggoallan").addThirst(whiskey_hydration);
-        consumable("whiskey_carrasconlabel").addThirst(whiskey_hydration);
-        consumable("whiskey_ak").addThirst(whiskey_hydration);
-        consumable("whiskey_highland_hearth").addThirst(whiskey_hydration);
-        consumable("whiskey_smokey_reverie").addThirst(whiskey_hydration);
-        consumable("whiskey_jamesons_malt").addThirst(whiskey_hydration);
+        consumableAndBlock("whiskey_jojannik", whiskey_hydration);
+        consumableAndBlock("whiskey_lilitusinglemalt", whiskey_hydration);
+        consumableAndBlock("whiskey_cristelwalker", whiskey_hydration);
+        consumableAndBlock("whiskey_maggoallan", whiskey_hydration);
+        consumableAndBlock("whiskey_carrasconlabel", whiskey_hydration);
+        consumableAndBlock("whiskey_ak", whiskey_hydration);
+        consumableAndBlock("whiskey_highland_hearth", whiskey_hydration);
+        consumableAndBlock("whiskey_smokey_reverie", whiskey_hydration);
+        consumableAndBlock("whiskey_jamesons_malt", whiskey_hydration);
 
         IThirstData beer_hydration = thirstData(8, 6.0f).addEffect(MobEffectRegistry.THIRST.get(), 600, 0.2f);
-        consumable("beer_wheat").addThirst(beer_hydration);
-        consumable("beer_barley").addThirst(beer_hydration);
-        consumable("beer_hops").addThirst(beer_hydration);
-        consumable("beer_nettle").addThirst(beer_hydration);
-        consumable("beer_oat").addThirst(beer_hydration);
-        consumable("beer_haley").addThirst(beer_hydration);
+        consumableAndBlock("beer_wheat", beer_hydration);
+        consumableAndBlock("beer_barley", beer_hydration);
+        consumableAndBlock("beer_hops", beer_hydration);
+        consumableAndBlock("beer_nettle", beer_hydration);
+        consumableAndBlock("beer_oat", beer_hydration);
+        consumableAndBlock("beer_haley", beer_hydration);
     }
 }

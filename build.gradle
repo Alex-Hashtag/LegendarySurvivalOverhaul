@@ -166,21 +166,25 @@ dependencies {
     implementation(fg.deobf("curse.maven:eclipticseasons-1118306:6664686"))
 
     // compile against the JEI API but do not include it at runtime
-    compileOnly(fg.deobf("curse.maven:serene-seasons-291874:5790653"))
-    compileOnly(fg.deobf("curse.maven:glitchcore-955399:5787839"))
+    implementation(fg.deobf("curse.maven:alexscaves-924854:5848216"))
+    implementation(fg.deobf("curse.maven:citadel-331936:6002521"))
+
     compileOnly(fg.deobf("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}"))
     compileOnly(fg.deobf("mezz.jei:jei-${minecraft_version}-forge-api:${jei_version}"))
+    compileOnly(fg.deobf("curse.maven:serene-seasons-291874:5790653"))
+    compileOnly(fg.deobf("curse.maven:glitchcore-955399:5787839"))
     compileOnly(fg.deobf("curse.maven:terrafirmacraft-302973:6187491"))
     compileOnly(fg.deobf("curse.maven:origins-474438:5314209"))
     compileOnly(fg.deobf("curse.maven:mutantmonsters-852665:5107399"))
     compileOnly(fg.deobf("curse.maven:vampirism-233029:5990073"))
     compileOnly(fg.deobf("curse.maven:supplementaries-412082:6463022"))
-
     compileOnly(fg.deobf("curse.maven:beachparty-858691:6458692"))
     compileOnly(fg.deobf("curse.maven:meadow-821483:6467344"))
-    compileOnly(fg.deobf("curse.maven:architectury-419699:5137938"))
+    implementation(fg.deobf("curse.maven:architectury-419699:5137938"))
+    compileOnly(fg.deobf("curse.maven:artifacts-312353:6399828"))
     compileOnly(fg.deobf("curse.maven:overflowingbars-852662:5763974"))
     compileOnly(fg.deobf("curse.maven:puzzlelib-495476:6387081"))
+
     //implementation(fg.deobf("curse.maven:weather2-237746:5244118"))
     //implementation(fg.deobf("curse.maven:coroutil-237749:5096038"))
     //implementation(fg.deobf("curse.maven:werewolves-417851:5406832"))
@@ -193,19 +197,21 @@ dependencies {
     //runtimeOnly(fg.deobf("curse.maven:letsdoapi-864599:5468182"))
     //runtimeOnly(fg.deobf("curse.maven:vinery-704465:6264246"))
     //runtimeOnly(fg.deobf("curse.maven:herbalbrew-951221:6458889"))
-    //runtimeOnly(fg.deobf("curse.maven:farmandcharm-1038103:6195373"))
+    runtimeOnly(fg.deobf("curse.maven:farmandcharm-1038103:6195373"))
     //runtimeOnly(fg.deobf("curse.maven:nethervinery-930072:6164515"))
     //runtimeOnly(fg.deobf("curse.maven:furniture-1062363:5988125"))
     //runtimeOnly(fg.deobf("curse.maven:bakery-1038130:6195381"))
-    //runtimeOnly(fg.deobf("curse.maven:brewery-1038106:6195389"))
+    runtimeOnly(fg.deobf("curse.maven:brewery-1038106:6195389"))
     //runtimeOnly(fg.deobf("curse.maven:wildernature-1071657:6164482"))
     //runtimeOnly(fg.deobf("curse.maven:candlelight-1038117:6195385"))
     //runtimeOnly(fg.deobf("curse.maven:camping-1072398:5823939"))
     //runtimeOnly(fg.deobf("curse.maven:applewood-1037047:6164430"))
     //runtimeOnly(fg.deobf("curse.maven:cornexpansion-1038740:6216092"))
+    //runtimeOnly fg.deobf("curse.maven:fruitsdelight-943774:6500940")
+    //runtimeOnly fg.deobf("curse.maven:farmersdelight-398521:6154802")
+    //runtimeOnly fg.deobf("curse.maven:farmersrespite-551453:5543547")
 
     //runtimeOnly(fg.deobf("curse.maven:moonlight-499980:6428221"))
-    //runtimeOnly(fg.deobf("curse.maven:artifacts-312353:5693342"))
     //runtimeOnly(fg.deobf("curse.maven:expandability-465066:5301414"))
     //runtimeOnly(fg.deobf("curse.maven:clothconfig-348521:5729105"))
 
@@ -214,7 +220,6 @@ dependencies {
     //implementation fg.deobf("curse.maven:zeta-968868:5597406") //  don't work on server
 
     //runtimeOnly(fg.deobf("curse.maven:iceandfire-264231:5633453"))
-    //runtimeOnly(fg.deobf("curse.maven:citadel-331936:6002521"))
 
     //runtimeOnly(fg.deobf("curse.maven:ftblibrary-404465:5925398"))
     //runtimeOnly(fg.deobf("curse.maven:ftbteams-404468:5267190"))
@@ -223,9 +228,6 @@ dependencies {
     //runtimeOnly(fg.deobf("curse.maven:patchouli-306770:4966125"))
     //runtimeOnly fg.deobf("curse.maven:firma-civilization-714158:5737719")
     //runtimeOnly fg.deobf("curse.maven:alekis-nifty-ships-1068445:5669604")
-
-    //runtimeOnly fg.deobf("curse.maven:fruitsdelight-943774:6500940")
-    //runtimeOnly fg.deobf("curse.maven:farmersdelight-398521:6154802")
 }
 
 // This block of code expands all declared replace properties in the specified resource targets.
