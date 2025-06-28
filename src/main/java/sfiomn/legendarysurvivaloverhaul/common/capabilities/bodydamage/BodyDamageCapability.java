@@ -350,7 +350,8 @@ public class BodyDamageCapability implements IBodyDamageCapability
 			float newMaxHealth = Math.round(bodyPart.getHealthMultiplier() * maxHealth * 100) / 100.0f;
 			float oldMaxHealth = bodyPart.getMaxHealth();
 			bodyPart.setMaxHealth(newMaxHealth);
-			bodyPart.setDamage(bodyPart.getDamage() + Math.max(newMaxHealth - oldMaxHealth, 0));
+			if (oldMaxHealth != 0)
+				bodyPart.setDamage(bodyPart.getDamage() + Math.max(newMaxHealth - oldMaxHealth, 0));
 		}
 	}
 
