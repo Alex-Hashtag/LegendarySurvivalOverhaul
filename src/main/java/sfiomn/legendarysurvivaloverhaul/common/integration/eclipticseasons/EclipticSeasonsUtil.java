@@ -79,7 +79,7 @@ public class EclipticSeasonsUtil {
         if (!LegendarySurvivalOverhaul.eclipticSeasonsLoaded)
             return Biome.Precipitation.NONE;
 
-        return EclipticSeasonsApi.getInstance().getPrecipitationAt(level, pos);
+        return EclipticSeasonsApi.getInstance().getCurrentPrecipitationAt(level, pos);
     }
 
     public static int getDayDuration(Level level) {
