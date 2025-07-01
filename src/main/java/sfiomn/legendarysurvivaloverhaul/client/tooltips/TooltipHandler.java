@@ -106,7 +106,8 @@ public class TooltipHandler
 	}
 
 	private static boolean componentHasOneOfKeys(Component component, String... keys) {
-		if (component.getContents() instanceof TranslatableContents translatableContents) {
+		if (component != null && component.getContents() instanceof TranslatableContents translatableContents &&
+				translatableContents.getArgs() != null) {
             return Arrays.stream(translatableContents.getArgs()).anyMatch(s -> {
 				if (s instanceof MutableComponent mutableComponent &&
 						mutableComponent.getContents() instanceof TranslatableContents translatableContents1) {

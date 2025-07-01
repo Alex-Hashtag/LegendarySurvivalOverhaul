@@ -416,7 +416,7 @@ public class Config
 
 			wetnessImmunityMounts = builder
 					.comment(" List of mounts that provide a wetness immunity.")
-					.define("Wetness Immunity Mounts", List.of("alexscaves:submarine", "immersive_machinery:bamboo_bee", "immersive_machinery:tunnel_digger", "immersive_machinery:redstone_sheep", "immersive_machinery:copperfin"));
+					.defineListAllowEmpty("Wetness Immunity Mounts", List.of("alexscaves:submarine", "immersive_machinery:bamboo_bee", "immersive_machinery:tunnel_digger", "immersive_machinery:redstone_sheep", "immersive_machinery:copperfin"), Config::validateEntityType);
 
 			wetMultiplier = builder
 					.comment(" How much being wet influences the player's temperature.",
@@ -657,10 +657,10 @@ public class Config
 			builder.comment(" Temperature modifiers per season. Each season is subdivided in 6 sub seasons." +
 							" The value is reached at the middle of the sub season, and smoothly transition from one to another.")
 					.push("temperature");
-			esSpringModifier = builder.define("Spring Modifier", List.of(-10.0, -7.0, -5.0, -3.0, -1.0, 0.0));
-			esSummerModifier = builder.define("Summer Modifier", List.of(1.0, 3.0, 5.0, 7.0, 9.0, 10.0));
-			esAutumnModifier = builder.define("Autumn Modifier", List.of(9.0, 7.0, 5.0, 3.0, 1.0, 0.0));
-			esWinterModifier = builder.define("Winter Modifier", List.of(-1.0, -3.0, -5.0, -7.0, -10.0, -12.0));
+			esSpringModifier = builder.defineList("Spring Modifier", List.of(-10.0, -7.0, -5.0, -3.0, -1.0, 0.0), Config::validateDouble);
+			esSummerModifier = builder.defineList("Summer Modifier", List.of(1.0, 3.0, 5.0, 7.0, 9.0, 10.0), Config::validateDouble);
+			esAutumnModifier = builder.defineList("Autumn Modifier", List.of(9.0, 7.0, 5.0, 3.0, 1.0, 0.0), Config::validateDouble);
+			esWinterModifier = builder.defineList("Winter Modifier", List.of(-1.0, -3.0, -5.0, -7.0, -10.0, -12.0), Config::validateDouble);
 			builder.pop();
 			builder.pop();
 
@@ -883,7 +883,7 @@ public class Config
 					.define("First Aid Supplies Exhausts Food", true);
 			firstAidSuppliesBoostedOnEffects = builder
 					.comment(" The First Aid Supplies will heal limbs faster when the player is under one of the mentioned effect.")
-					.define("First Aid Supplies Boosted On Effects", List.of("minecraft:regeneration", "farmersdelight:comfort"));
+					.defineListAllowEmpty("First Aid Supplies Boosted On Effects", List.of("minecraft:regeneration", "farmersdelight:comfort"), Config::validateEffectName);
 			firstAidSuppliesBoostedTickTimerMultiplier = builder
 					.comment(" How much the First Aid Supplies tick timer is multiplied when boosted. ",
 							" A value of 1 would deactivate the speed boost. 0.5 makes the heal twice faster.")
@@ -1041,6 +1041,11 @@ public class Config
 		}
 	}
 
+	private static boolean validateDouble(final Object obj)
+	{
+		return obj instanceof Double;
+	}
+
 	private static boolean validatePositiveInt(final Object obj)
 	{
 		return obj instanceof final Integer intValue && intValue >= 0;
@@ -1054,6 +1059,11 @@ public class Config
 	private static boolean validateEffectName(final Object obj)
 	{
 		return obj instanceof final String effectName && ForgeRegistries.MOB_EFFECTS.containsKey(new ResourceLocation(effectName));
+	}
+
+	private static boolean validateEntityType(final Object obj)
+	{
+		return obj instanceof final String entityName && ForgeRegistries.ENTITY_TYPES.containsKey(new ResourceLocation(entityName));
 	}
 
 	public static class Client

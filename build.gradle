@@ -166,9 +166,6 @@ dependencies {
     implementation(fg.deobf("curse.maven:eclipticseasons-1118306:6664686"))
 
     // compile against the JEI API but do not include it at runtime
-    implementation(fg.deobf("curse.maven:alexscaves-924854:5848216"))
-    implementation(fg.deobf("curse.maven:citadel-331936:6002521"))
-
     compileOnly(fg.deobf("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}"))
     compileOnly(fg.deobf("mezz.jei:jei-${minecraft_version}-forge-api:${jei_version}"))
     compileOnly(fg.deobf("curse.maven:serene-seasons-291874:5790653"))
