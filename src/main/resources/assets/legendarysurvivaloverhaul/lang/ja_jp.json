@@ -7,8 +7,8 @@
 	"advancement.legendarysurvivaloverhaul.get_a_calendar.description": "季節カレンダーをクラフトする",
 	"advancement.legendarysurvivaloverhaul.get_a_sewing_table": "裁縫台を手に入れる",
 	"advancement.legendarysurvivaloverhaul.get_a_sewing_table.description": "裁縫台をクラフトする",
-	"advancement.legendarysurvivaloverhaul.sew_a_coat": "コートを縫う",
-	"advancement.legendarysurvivaloverhaul.sew_a_coat.description": "裁縫台で防具にコートを縫い付ける",
+	"advancement.legendarysurvivaloverhaul.sew_a_coat": "裏地を縫う",
+	"advancement.legendarysurvivaloverhaul.sew_a_coat.description": "裁縫台で防具に裏地を縫い付ける",
 
 	"key.legendarysurvivaloverhaul.title": "Legendary Survival Overhaul",
 	"key.legendarysurvivaloverhaul.added_desc": "説明を表示",
@@ -92,8 +92,8 @@
 	"item.legendarysurvivaloverhaul.sweet_berries_juice": "スイートベリージュース",
 	"item.legendarysurvivaloverhaul.glow_berries_juice": "グロウベリージュース",
 
-	"item.legendarysurvivaloverhaul.water_plant_bag": "水草の袋",
-	"item.legendarysurvivaloverhaul.water_plant_seeds": "水草の種",
+	"item.legendarysurvivaloverhaul.water_plant_bag": "ウォータープラントの水袋",
+	"item.legendarysurvivaloverhaul.water_plant_seeds": "ウォータープラントの種",
 	"item.legendarysurvivaloverhaul.sun_fern_leaf": "太陽シダの葉",
 	"item.legendarysurvivaloverhaul.sun_fern_gold_leaf": "金の太陽シダの葉",
 	"item.legendarysurvivaloverhaul.sun_fern_seeds": "太陽シダの種",
@@ -116,7 +116,7 @@
 	"block.legendarysurvivaloverhaul.ice_fern_crop": "氷シダの作物",
 	"block.legendarysurvivaloverhaul.sun_fern_gold": "金の太陽シダの作物",
 	"block.legendarysurvivaloverhaul.ice_fern_gold": "金の氷シダの作物",
-	"block.legendarysurvivaloverhaul.water_plant_crop": "水草の作物",
+	"block.legendarysurvivaloverhaul.water_plant_crop": "ウォータープラントの作物",
 
 	"screen.legendarysurvivaloverhaul.body_health_screen": "体調",
 
