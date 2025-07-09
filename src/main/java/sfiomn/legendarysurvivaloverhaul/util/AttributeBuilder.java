@@ -29,4 +29,8 @@ public class AttributeBuilder {
             instance.addPermanentModifier(new AttributeModifier(uuid, descriptionId, value, AttributeModifier.Operation.ADDITION));
         }
     }
+
+    public AttributeInstance getAttribute(Player player) {
+        return player.getAttribute(attribute);
+    }
 }

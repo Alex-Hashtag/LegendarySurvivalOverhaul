@@ -66,6 +66,7 @@ public final class IntegrationDataGenerators {
         gen.addProvider(event.includeServer(), new HearthAndHarvestThirstProvider(packOutput, lookupProvider, existingFileHelper));
         gen.addProvider(event.includeServer(), new HerbalBrewsTemperatureProvider(packOutput, lookupProvider, existingFileHelper));
         gen.addProvider(event.includeServer(), new HerbalBrewsThirstProvider(packOutput, lookupProvider, existingFileHelper));
+        gen.addProvider(event.includeServer(), new IceAndFireBodyDamageProvider(packOutput, lookupProvider, existingFileHelper));
         gen.addProvider(event.includeServer(), new IceAndFireTemperatureProvider(packOutput, lookupProvider, existingFileHelper));
         gen.addProvider(event.includeServer(), new InfernalExpansionTemperatureProvider(packOutput, lookupProvider, existingFileHelper));
         gen.addProvider(event.includeServer(), new IronsSpellbooksTemperatureProvider(packOutput, lookupProvider, existingFileHelper));

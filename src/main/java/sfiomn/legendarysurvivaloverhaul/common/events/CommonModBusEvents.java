@@ -38,6 +38,43 @@ public class CommonModBusEvents {
                     AttributeRegistry.THERMAL_RESISTANCE.get()
             );
         }
+
+        if (!event.has(EntityType.PLAYER, AttributeRegistry.BODY_RESISTANCE.get())) {
+            event.add(EntityType.PLAYER,
+                    AttributeRegistry.BODY_RESISTANCE.get()
+            );
+        }
+        if (!event.has(EntityType.PLAYER, AttributeRegistry.HEAD_RESISTANCE.get())) {
+            event.add(EntityType.PLAYER,
+                    AttributeRegistry.HEAD_RESISTANCE.get()
+            );
+        }
+        if (!event.has(EntityType.PLAYER, AttributeRegistry.CHEST_RESISTANCE.get())) {
+            event.add(EntityType.PLAYER,
+                    AttributeRegistry.CHEST_RESISTANCE.get()
+            );
+        }
+        if (!event.has(EntityType.PLAYER, AttributeRegistry.RIGHT_ARM_RESISTANCE.get())) {
+            event.add(EntityType.PLAYER,
+                    AttributeRegistry.RIGHT_ARM_RESISTANCE.get()
+            );
+        }
+        if (!event.has(EntityType.PLAYER, AttributeRegistry.LEFT_ARM_RESISTANCE.get())) {
+            event.add(EntityType.PLAYER,
+                    AttributeRegistry.LEFT_ARM_RESISTANCE.get()
+            );
+        }
+        if (!event.has(EntityType.PLAYER, AttributeRegistry.LEGS_RESISTANCE.get())) {
+            event.add(EntityType.PLAYER,
+                    AttributeRegistry.LEGS_RESISTANCE.get()
+            );
+        }
+        if (!event.has(EntityType.PLAYER, AttributeRegistry.FEET_RESISTANCE.get())) {
+            event.add(EntityType.PLAYER,
+                    AttributeRegistry.FEET_RESISTANCE.get()
+            );
+        }
+
         if (!event.has(EntityType.PLAYER, AttributeRegistry.BROKEN_HEART.get())) {
             event.add(EntityType.PLAYER,
                     AttributeRegistry.BROKEN_HEART.get()

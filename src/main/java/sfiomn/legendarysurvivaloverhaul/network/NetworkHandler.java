@@ -43,5 +43,6 @@ public class NetworkHandler
 
 		INSTANCE.registerMessage(id++, SyncBodyDamageHealingConsumablesPacket.class, SyncBodyDamageHealingConsumablesPacket::encode, SyncBodyDamageHealingConsumablesPacket::decode, SyncBodyDamageHealingConsumablesPacket::handle);
 		INSTANCE.registerMessage(id++, SyncBodyPartsDamageSourcesPacket.class, SyncBodyPartsDamageSourcesPacket::encode, SyncBodyPartsDamageSourcesPacket::decode, SyncBodyPartsDamageSourcesPacket::handle);
+		INSTANCE.registerMessage(id++, SyncBodyPartResistanceItemsPacket.class, SyncBodyPartResistanceItemsPacket::encode, SyncBodyPartResistanceItemsPacket::decode, SyncBodyPartResistanceItemsPacket::handle);
 	}
 }

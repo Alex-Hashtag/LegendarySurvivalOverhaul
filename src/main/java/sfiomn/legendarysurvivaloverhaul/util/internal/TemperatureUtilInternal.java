@@ -44,14 +44,14 @@ public class TemperatureUtilInternal implements ITemperatureUtil
 	public static final AttributeBuilder COLD_RESISTANCE = new AttributeBuilder(AttributeRegistry.COLD_RESISTANCE.get(), "attribute." + LegendarySurvivalOverhaul.MOD_ID + ".cold_resistance");
 	public static final AttributeBuilder THERMAL_RESISTANCE = new AttributeBuilder(AttributeRegistry.THERMAL_RESISTANCE.get(), "attribute." + LegendarySurvivalOverhaul.MOD_ID + ".thermal_resistance");
 
-	public static final Map<EquipmentSlot, UUID> equipmentSlotUuid = new HashMap<>();
+	public static final Map<EquipmentSlot, UUID> equipmentSlotTemperatureUuid = new HashMap<>();
 	static {
-		equipmentSlotUuid.put(EquipmentSlot.HEAD, UUID.fromString("06e30f27-2340-4bdb-9a91-a657f1e2880f"));
-		equipmentSlotUuid.put(EquipmentSlot.CHEST, UUID.fromString("1e7ef99e-2fe7-4edc-95b1-27fa056eae6d"));
-		equipmentSlotUuid.put(EquipmentSlot.LEGS, UUID.fromString("f46c0aff-7381-4f99-890e-75eb3781af21"));
-		equipmentSlotUuid.put(EquipmentSlot.FEET, UUID.fromString("34f98220-a7d9-4cc1-8930-b3dc4115ad07"));
-		equipmentSlotUuid.put(EquipmentSlot.MAINHAND, UUID.fromString("7b1e1c2c-746c-4631-8037-f76c82529909"));
-		equipmentSlotUuid.put(EquipmentSlot.OFFHAND, UUID.fromString("389caa2f-2c18-49da-b521-b53cc5713e14"));
+		equipmentSlotTemperatureUuid.put(EquipmentSlot.HEAD, UUID.fromString("06e30f27-2340-4bdb-9a91-a657f1e2880f"));
+		equipmentSlotTemperatureUuid.put(EquipmentSlot.CHEST, UUID.fromString("1e7ef99e-2fe7-4edc-95b1-27fa056eae6d"));
+		equipmentSlotTemperatureUuid.put(EquipmentSlot.LEGS, UUID.fromString("f46c0aff-7381-4f99-890e-75eb3781af21"));
+		equipmentSlotTemperatureUuid.put(EquipmentSlot.FEET, UUID.fromString("34f98220-a7d9-4cc1-8930-b3dc4115ad07"));
+		equipmentSlotTemperatureUuid.put(EquipmentSlot.MAINHAND, UUID.fromString("7b1e1c2c-746c-4631-8037-f76c82529909"));
+		equipmentSlotTemperatureUuid.put(EquipmentSlot.OFFHAND, UUID.fromString("389caa2f-2c18-49da-b521-b53cc5713e14"));
 	}
 
 	@Override

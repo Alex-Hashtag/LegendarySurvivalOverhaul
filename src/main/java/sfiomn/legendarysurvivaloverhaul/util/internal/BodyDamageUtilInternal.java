@@ -5,6 +5,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.tuple.Pair;
@@ -15,7 +16,9 @@ import sfiomn.legendarysurvivaloverhaul.api.data.manager.BodyDamageDataManager;
 import sfiomn.legendarysurvivaloverhaul.api.health.HealthUtil;
 import sfiomn.legendarysurvivaloverhaul.client.ClientHooks;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
+import sfiomn.legendarysurvivaloverhaul.registry.AttributeRegistry;
 import sfiomn.legendarysurvivaloverhaul.registry.SoundRegistry;
+import sfiomn.legendarysurvivaloverhaul.util.AttributeBuilder;
 import sfiomn.legendarysurvivaloverhaul.util.CapabilityUtil;
 
 import java.util.*;
@@ -26,6 +29,35 @@ public class BodyDamageUtilInternal implements IBodyDamageUtil {
 
     private static final List<MobEffect> firstAidSuppliesBoostingEffects = new ArrayList<>();
     private static final Map<MalusBodyPartEnum, Map<Float, Pair<MobEffect, Integer>>> bodyPartMalusEffects = new HashMap<>();
+
+    public static final AttributeBuilder BODY_RESISTANCE = new AttributeBuilder(AttributeRegistry.BODY_RESISTANCE.get(), "attribute." + LegendarySurvivalOverhaul.MOD_ID + ".body_resistance");
+    public static final AttributeBuilder HEAD_RESISTANCE = new AttributeBuilder(AttributeRegistry.HEAD_RESISTANCE.get(), "attribute." + LegendarySurvivalOverhaul.MOD_ID + ".head_temperature");
+    public static final AttributeBuilder CHEST_RESISTANCE = new AttributeBuilder(AttributeRegistry.CHEST_RESISTANCE.get(), "attribute." + LegendarySurvivalOverhaul.MOD_ID + ".chest_temperature");
+    public static final AttributeBuilder RIGHT_ARM_RESISTANCE = new AttributeBuilder(AttributeRegistry.RIGHT_ARM_RESISTANCE.get(), "attribute." + LegendarySurvivalOverhaul.MOD_ID + ".right_arm_resistance");
+    public static final AttributeBuilder LEFT_ARM_RESISTANCE = new AttributeBuilder(AttributeRegistry.LEFT_ARM_RESISTANCE.get(), "attribute." + LegendarySurvivalOverhaul.MOD_ID + ".left_arm_resistance");
+    public static final AttributeBuilder LEGS_RESISTANCE = new AttributeBuilder(AttributeRegistry.LEGS_RESISTANCE.get(), "attribute." + LegendarySurvivalOverhaul.MOD_ID + ".legs_resistance");
+    public static final AttributeBuilder FEET_RESISTANCE = new AttributeBuilder(AttributeRegistry.FEET_RESISTANCE.get(), "attribute." + LegendarySurvivalOverhaul.MOD_ID + ".feet_resistance");
+
+    public static final Map<BodyPartEnum, AttributeBuilder> bodyPartResistanceAttribute = new HashMap<>();
+    public static final Map<EquipmentSlot, UUID> equipmentSlotBodyResistanceUuid = new HashMap<>();
+
+    static {
+        bodyPartResistanceAttribute.put(BodyPartEnum.HEAD, HEAD_RESISTANCE);
+        bodyPartResistanceAttribute.put(BodyPartEnum.CHEST, CHEST_RESISTANCE);
+        bodyPartResistanceAttribute.put(BodyPartEnum.RIGHT_ARM, RIGHT_ARM_RESISTANCE);
+        bodyPartResistanceAttribute.put(BodyPartEnum.LEFT_ARM, LEFT_ARM_RESISTANCE);
+        bodyPartResistanceAttribute.put(BodyPartEnum.RIGHT_LEG, LEGS_RESISTANCE);
+        bodyPartResistanceAttribute.put(BodyPartEnum.LEFT_LEG, LEGS_RESISTANCE);
+        bodyPartResistanceAttribute.put(BodyPartEnum.RIGHT_FOOT, FEET_RESISTANCE);
+        bodyPartResistanceAttribute.put(BodyPartEnum.LEFT_FOOT, FEET_RESISTANCE);
+
+        equipmentSlotBodyResistanceUuid.put(EquipmentSlot.HEAD, UUID.fromString("e1d9eda1-f904-4ddd-8a9f-720fa592117e"));
+        equipmentSlotBodyResistanceUuid.put(EquipmentSlot.CHEST, UUID.fromString("0b743835-b4aa-4c08-aa13-f3646730a749"));
+        equipmentSlotBodyResistanceUuid.put(EquipmentSlot.MAINHAND, UUID.fromString("c18151f4-cb03-4df9-994d-e4decbb60b6e"));
+        equipmentSlotBodyResistanceUuid.put(EquipmentSlot.OFFHAND, UUID.fromString("0fba64c7-8863-4a17-9458-7bbce1518bf0"));
+        equipmentSlotBodyResistanceUuid.put(EquipmentSlot.LEGS, UUID.fromString("e024cc3d-cd24-4bcf-b7a8-f2272e44ac2d"));
+        equipmentSlotBodyResistanceUuid.put(EquipmentSlot.FEET, UUID.fromString("53523212-2ebc-4f6b-9044-7f9a1fa96852"));
+    }
 
     public BodyDamageUtilInternal() {}
 
@@ -150,8 +182,16 @@ public class BodyDamageUtilInternal implements IBodyDamageUtil {
         if(!Config.Baked.localizedBodyDamageEnabled || bodyPartEnum == null)
             return;
 
-        IBodyDamageCapability capability = CapabilityUtil.getBodyDamageCapability(player);
+        LegendarySurvivalOverhaul.LOGGER.debug("damage inflicted on " + bodyPartEnum.name() + " : " + damageValue);
 
+        IBodyDamageCapability capability = CapabilityUtil.getBodyDamageCapability(player);
+        double damageMultiplier = bodyPartResistanceAttribute.get(bodyPartEnum).getAttribute(player).getValue();
+        damageMultiplier += BODY_RESISTANCE.getAttribute(player).getValue();
+
+        damageValue = damageValue * (float) (1 - damageMultiplier);
+
+        LegendarySurvivalOverhaul.LOGGER.debug("resistance of " + bodyPartEnum.name() + " : " + damageMultiplier);
+        LegendarySurvivalOverhaul.LOGGER.debug("damage inflicted on " + bodyPartEnum.name() + " after resistance : " + damageValue);
         float remainingDamage = Math.max(0, damageValue - (capability.getBodyPartMaxHealth(bodyPartEnum) - capability.getBodyPartDamage(bodyPartEnum)));
 
         capability.hurt(bodyPartEnum, damageValue - remainingDamage);

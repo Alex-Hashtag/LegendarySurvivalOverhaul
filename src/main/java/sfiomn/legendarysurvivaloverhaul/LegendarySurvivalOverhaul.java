@@ -4,7 +4,6 @@ import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
-import net.minecraft.world.item.alchemy.Potion;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
@@ -20,7 +19,6 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLPaths;
-import net.minecraftforge.registries.RegistryObject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import sfiomn.legendarysurvivaloverhaul.api.bodydamage.BodyDamageUtil;
@@ -246,7 +244,7 @@ public class LegendarySurvivalOverhaul
 
 			BodyDamageDataManager.internalBodyPartsDamageSource = new BodyPartsDamageSourceListener();
 			BodyDamageDataManager.internalHealingConsumable = new BodyDamageHealingConsumableListener();
-
+			BodyDamageDataManager.internalBodyResistanceItem = new BodyPartResistanceItemListener();
 		});
 	}
 
@@ -313,6 +311,7 @@ public class LegendarySurvivalOverhaul
 		event.addListener((PreparableReloadListener) ThirstDataManager.internalBlock);
 		event.addListener((PreparableReloadListener) BodyDamageDataManager.internalBodyPartsDamageSource);
 		event.addListener((PreparableReloadListener) BodyDamageDataManager.internalHealingConsumable);
+		event.addListener((PreparableReloadListener) BodyDamageDataManager.internalBodyResistanceItem);
 	}
 
 	@Mod.EventBusSubscriber(modid = MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)

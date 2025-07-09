@@ -9,8 +9,10 @@ import net.minecraft.world.item.Item;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.registries.ForgeRegistries;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
+import sfiomn.legendarysurvivaloverhaul.api.data.builder.IBodyPartResistanceData;
 import sfiomn.legendarysurvivaloverhaul.api.data.builder.IBodyPartsDamageSourceData;
 import sfiomn.legendarysurvivaloverhaul.api.data.builder.IHealingConsumableData;
+import sfiomn.legendarysurvivaloverhaul.data.builders.BodyPartResistanceData;
 import sfiomn.legendarysurvivaloverhaul.data.builders.BodyPartsDamageSourceData;
 import sfiomn.legendarysurvivaloverhaul.data.builders.HealingConsumableData;
 
@@ -27,8 +29,10 @@ public abstract class BodyDamageDataProvider implements DataProvider {
     private final CompletableFuture<HolderLookup.Provider> lookupProvider;
     private final PackOutput.PathProvider consumablesPathProvider;
     private final PackOutput.PathProvider bodyPartsDamageSourcePathProvider;
+    private final PackOutput.PathProvider bodyPartResistancePathProvider;
     private final Map<String, IHealingConsumableData> consumablesBuilders = new HashMap<>();
     private final Map<String, IBodyPartsDamageSourceData> bodyPartsDamageSourceBuilders = new HashMap<>();
+    private final Map<String, IBodyPartResistanceData> bodyPartResistanceBuilders = new HashMap<>();
     private final ExistingFileHelper fileHelper;
 
     public BodyDamageDataProvider(String modId, PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper fileHelper) {
@@ -36,6 +40,7 @@ public abstract class BodyDamageDataProvider implements DataProvider {
         this.fileHelper = fileHelper;
         this.consumablesPathProvider = output.createPathProvider(PackOutput.Target.DATA_PACK, LegendarySurvivalOverhaul.MOD_ID + "/body_damage/consumables");
         this.bodyPartsDamageSourcePathProvider = output.createPathProvider(PackOutput.Target.DATA_PACK, LegendarySurvivalOverhaul.MOD_ID + "/body_damage/damage_sources");
+        this.bodyPartResistancePathProvider = output.createPathProvider(PackOutput.Target.DATA_PACK, LegendarySurvivalOverhaul.MOD_ID + "/body_damage/items");
         this.lookupProvider = lookupProvider;
     }
 
@@ -55,6 +60,11 @@ public abstract class BodyDamageDataProvider implements DataProvider {
                 Path path = this.bodyPartsDamageSourcePathProvider.json(new ResourceLocation(this.modId, damageSource.toLowerCase()));
                 list.add(DataProvider.saveStable(pOutput, builder.build(), path));
             });
+            this.bodyPartResistanceBuilders.forEach((bodyResistance, builder) -> {
+                ResourceLocation jsonKey = bodyResistance.split(":").length == 1 ?
+                        new ResourceLocation(this.modId, bodyResistance.toLowerCase()) : new ResourceLocation(bodyResistance);
+                list.add(DataProvider.saveStable(pOutput, builder.build(), this.bodyPartResistancePathProvider.json(jsonKey)));
+            });
             return CompletableFuture.allOf(list.toArray(CompletableFuture[]::new));
         });
     }
@@ -71,6 +81,16 @@ public abstract class BodyDamageDataProvider implements DataProvider {
 
     public final IBodyPartsDamageSourceData damageSource(String id) {
         return this.bodyPartsDamageSourceBuilders.computeIfAbsent(id, (k) -> new BodyPartsDamageSourceData());
+    }
+
+    public final IBodyPartResistanceData item(String id) {
+        return this.bodyPartResistanceBuilders.computeIfAbsent(id, (k) -> new BodyPartResistanceData());
+    }
+
+    public final IBodyPartResistanceData item(Item item) {
+        ResourceLocation itemRegistryName = ForgeRegistries.ITEMS.getKey(item);
+        assert itemRegistryName != null;
+        return this.bodyPartResistanceBuilders.computeIfAbsent(itemRegistryName.toString(), (k) -> new BodyPartResistanceData());
     }
 
     @Nonnull
