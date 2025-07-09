@@ -43,6 +43,7 @@ import sfiomn.legendarysurvivaloverhaul.api.ModDamageTypes;
 import sfiomn.legendarysurvivaloverhaul.api.bodydamage.BodyDamageUtil;
 import sfiomn.legendarysurvivaloverhaul.api.bodydamage.BodyPartEnum;
 import sfiomn.legendarysurvivaloverhaul.api.bodydamage.DamageDistributionEnum;
+import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonBodyPartResistance;
 import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonBodyPartsDamageSource;
 import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonTemperatureResistance;
 import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonThirstBlock;
@@ -69,7 +70,9 @@ import sfiomn.legendarysurvivaloverhaul.util.PlayerModelUtil;
 import java.util.*;
 
 import static sfiomn.legendarysurvivaloverhaul.registry.TemperatureModifierRegistry.ITEM_ATTRIBUTE_MODIFIERS_REGISTRY;
+import static sfiomn.legendarysurvivaloverhaul.util.internal.BodyDamageUtilInternal.*;
 import static sfiomn.legendarysurvivaloverhaul.util.internal.TemperatureUtilInternal.*;
+import static sfiomn.legendarysurvivaloverhaul.util.internal.TemperatureUtilInternal.equipmentSlotTemperatureUuid;
 
 
 @Mod.EventBusSubscriber(modid = LegendarySurvivalOverhaul.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
@@ -211,26 +214,60 @@ public class CommonForgeEvents {
             if(Minecraft.getInstance().level == null) return;
 
         if (ItemUtil.canBeEquippedInSlot(event.getItemStack(), event.getSlotType())) {
-            JsonTemperatureResistance config = new JsonTemperatureResistance();
-            for (AttributeModifierBase attributeModifier : ITEM_ATTRIBUTE_MODIFIERS_REGISTRY.get().getValues()) {
-                config.add(attributeModifier.getItemAttributes(event.getItemStack()));
+
+            if (Config.Baked.temperatureEnabled) {
+                JsonTemperatureResistance config = new JsonTemperatureResistance();
+                for (AttributeModifierBase attributeModifier : ITEM_ATTRIBUTE_MODIFIERS_REGISTRY.get().getValues()) {
+                    config.add(attributeModifier.getItemAttributes(event.getItemStack()));
+                }
+
+                UUID modifierUuid = equipmentSlotTemperatureUuid.get(event.getSlotType());
+
+                if (config.temperature != 0) {
+                    HEATING_TEMPERATURE.addModifier(event, modifierUuid, Math.max(config.temperature, 0));
+                    COOLING_TEMPERATURE.addModifier(event, modifierUuid, Math.min(config.temperature, 0));
+                }
+
+                if (config.heatResistance != 0)
+                    HEAT_RESISTANCE.addModifier(event, modifierUuid, config.heatResistance);
+
+                if (config.coldResistance != 0)
+                    COLD_RESISTANCE.addModifier(event, modifierUuid, config.coldResistance);
+
+                if (config.thermalResistance != 0)
+                    THERMAL_RESISTANCE.addModifier(event, modifierUuid, config.thermalResistance);
             }
 
-            UUID modifierUuid = equipmentSlotUuid.get(event.getSlotType());
+            if ((Config.Baked.localizedBodyDamageEnabled)) {
+                ResourceLocation itemRegistryName = ForgeRegistries.ITEMS.getKey(event.getItemStack().getItem());
+                JsonBodyPartResistance config = BodyDamageDataManager.getBodyResistanceItem(itemRegistryName);
 
-            if (config.temperature != 0) {
-                HEATING_TEMPERATURE.addModifier(event, modifierUuid, Math.max(config.temperature, 0));
-                COOLING_TEMPERATURE.addModifier(event, modifierUuid, Math.min(config.temperature, 0));
+                if (itemRegistryName == null || config == null)
+                    return;
+
+                UUID modifierUuid = equipmentSlotBodyResistanceUuid.get(event.getSlotType());
+
+                if (config.bodyResistance != 0)
+                    BODY_RESISTANCE.addModifier(event, modifierUuid, config.bodyResistance);
+
+                if (config.headResistance != 0)
+                    HEAD_RESISTANCE.addModifier(event, modifierUuid, config.headResistance);
+
+                if (config.chestResistance != 0)
+                    CHEST_RESISTANCE.addModifier(event, modifierUuid, config.chestResistance);
+
+                if (config.rightArmResistance != 0)
+                    RIGHT_ARM_RESISTANCE.addModifier(event, modifierUuid, config.rightArmResistance);
+
+                if (config.leftArmResistance != 0)
+                    LEFT_ARM_RESISTANCE.addModifier(event, modifierUuid, config.leftArmResistance);
+
+                if (config.legsResistance != 0)
+                    LEGS_RESISTANCE.addModifier(event, modifierUuid, config.legsResistance);
+
+                if (config.feetResistance != 0)
+                    FEET_RESISTANCE.addModifier(event, modifierUuid, config.feetResistance);
             }
-
-            if (config.heatResistance != 0)
-                HEAT_RESISTANCE.addModifier(event, modifierUuid, config.heatResistance);
-
-            if (config.coldResistance != 0)
-                COLD_RESISTANCE.addModifier(event, modifierUuid, config.coldResistance);
-
-            if (config.thermalResistance != 0)
-                THERMAL_RESISTANCE.addModifier(event, modifierUuid, config.thermalResistance);
         }
     }
 
@@ -431,6 +468,7 @@ public class CommonForgeEvents {
 
         BodyDamageHealingConsumableListener.sendDataToClient(target);
         BodyPartsDamageSourceListener.sendDataToClient(target);
+        BodyPartResistanceItemListener.sendDataToClient(target);
     }
 
     private static boolean shouldApplyThirst(Player player)

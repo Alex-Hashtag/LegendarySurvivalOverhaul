@@ -23,7 +23,7 @@ public class WeatherModifier extends ModifierBase
 		Biome.Precipitation precipitation = Biome.Precipitation.NONE;
 		boolean isUndercover = WorldUtil.isPlayerOrPosUndercover(level, player, pos.above());
 
-		if (isUndercover)
+		if (!isUndercover)
 			precipitation = WorldUtil.getPrecipitationAt(level, player, pos.above());
 
 		// Don't apply shade nor weather if there are no precipitation and player not undercover
@@ -33,7 +33,6 @@ public class WeatherModifier extends ModifierBase
 			return 0.0f;
 		}
 
-		Biome biome = level.getBiome(pos).get();
 		float weatherTemperature = 0.0f;
 		long time = level.getLevelData().getDayTime();
 
@@ -47,10 +46,6 @@ public class WeatherModifier extends ModifierBase
 				float shadeTemperature = (float) Config.Baked.shadeTimeModifier * (float) Math.sin(time * 0.00026179938);
 				weatherTemperature += shadeTemperature;
 			}
-		}
-
-		if (!LegendarySurvivalOverhaul.eclipticSeasonsLoaded && WorldUtil.isRainingOrSnowingAt(level, pos.above())) {
-			precipitation = biome.getPrecipitationAt(pos.above());
 		}
 
 		if (precipitation == Biome.Precipitation.RAIN)

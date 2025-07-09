@@ -52,7 +52,7 @@ public class BiomeModifier extends ModifierBase
 		{
 			Biome biome = level.getBiome(pos.offset(offset)).get();
 			float humidity = getHumidityForBiome(biome);
-			float biomeTemperature = getNormalizedTempForBiome(biome);
+			float biomeTemperature = getNormalizedTempForBiome(level, biome);
 
 			// Deserts are cold at night since heat isn't kept by moisture in the air
 			if (drynessTimeMultiplier < 1 && humidity < 0.2f && biomeTemperature > 0.80f)
