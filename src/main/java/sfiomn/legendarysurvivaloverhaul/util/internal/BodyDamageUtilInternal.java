@@ -182,25 +182,23 @@ public class BodyDamageUtilInternal implements IBodyDamageUtil {
         if(!Config.Baked.localizedBodyDamageEnabled || bodyPartEnum == null)
             return;
 
-        LegendarySurvivalOverhaul.LOGGER.debug("damage inflicted on " + bodyPartEnum.name() + " : " + damageValue);
-
         IBodyDamageCapability capability = CapabilityUtil.getBodyDamageCapability(player);
-        double damageMultiplier = bodyPartResistanceAttribute.get(bodyPartEnum).getAttribute(player).getValue();
-        damageMultiplier += BODY_RESISTANCE.getAttribute(player).getValue();
+        double bodyResistance = BODY_RESISTANCE.getAttribute(player).getValue();
+        double limbResistance = bodyPartResistanceAttribute.get(bodyPartEnum).getAttribute(player).getValue();
 
-        damageValue = damageValue * (float) (1 - damageMultiplier);
+        damageValue = damageValue * (float) (1 - bodyResistance - limbResistance);
 
-        LegendarySurvivalOverhaul.LOGGER.debug("resistance of " + bodyPartEnum.name() + " : " + damageMultiplier);
-        LegendarySurvivalOverhaul.LOGGER.debug("damage inflicted on " + bodyPartEnum.name() + " after resistance : " + damageValue);
         float remainingDamage = Math.max(0, damageValue - (capability.getBodyPartMaxHealth(bodyPartEnum) - capability.getBodyPartDamage(bodyPartEnum)));
 
         capability.hurt(bodyPartEnum, damageValue - remainingDamage);
 
         if (remainingDamage > 0 && !bodyPartEnum.getNeighbours().isEmpty()) {
+            remainingDamage /= (float) (1 - bodyResistance - limbResistance);
             List<BodyPartEnum> damageableBodyParts = bodyPartEnum.getNeighbours().stream().filter(bodyPart -> capability.getBodyPartHealthRatio(bodyPart) > 0).collect(Collectors.toList());
             if (!damageableBodyParts.isEmpty()){
                 BodyPartEnum bodyPart = DamageDistributionEnum.ONE_OF.getBodyParts(player, damageableBodyParts).get(0);
-                capability.hurt(bodyPart, remainingDamage);
+                limbResistance = bodyPartResistanceAttribute.get(bodyPart).getAttribute(player).getValue();
+                capability.hurt(bodyPart, remainingDamage * (float) (1 - bodyResistance - limbResistance));
             }
         }
     }
