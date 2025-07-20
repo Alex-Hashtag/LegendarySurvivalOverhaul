@@ -18,8 +18,8 @@ public class MinecraftTemperatureProvider extends TemperatureDataProvider {
     @Override
     public void generate(HolderLookup.Provider provider, ExistingFileHelper existingFileHelper) {
         dimension("overworld").temperature(20).hasAltitude().seaLevelHeight(64);
-        dimension("the_end").temperature(-15);
-        dimension("the_nether").temperature(28);
+        dimension("the_end").temperature(-13);
+        dimension("the_nether").temperature(27);
 
         block("campfire")
                 .addTemperature(temperatureBlock(10.0f).addProperty("lit", "true"))
