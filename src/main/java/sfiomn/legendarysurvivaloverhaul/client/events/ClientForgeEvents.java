@@ -139,10 +139,16 @@ public class ClientForgeEvents {
             }
         }
 
-        event.getLeft().removeIf(textLine -> textLine.startsWith("XYZ:") ||
-                textLine.startsWith("Chunk:") ||
-                textLine.startsWith("Block:") ||
-                textLine.startsWith("Facing:"));
+        for (ListIterator<String> it = event.getLeft().listIterator(); it.hasNext(); ) {
+            String line = it.next();
+            if (line.contains("XYZ:")) {
+                line = Component.translatable("message." + LegendarySurvivalOverhaul.MOD_ID + ".warning_use_compass").getString();
+                it.remove();
+                it.add(line);
+            }
+            if (line.startsWith("Chunk:") || line.startsWith("Block:") || line.startsWith("Facing:"))
+                it.remove();
+        }
     }
 
     @SubscribeEvent

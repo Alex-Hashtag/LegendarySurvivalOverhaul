@@ -113,6 +113,7 @@ public class LegendarySurvivalOverhaul
 		
 		modBus.addListener(this::commonSetup);
 		modBus.addListener(this::onModConfigLoadEvent);
+		modBus.addListener(this::onModConfigReloadEvent);
 		modBus.addListener(this::onLoadComplete);
 
 		forgeBus.addListener(this::addReloadListenerEvent);

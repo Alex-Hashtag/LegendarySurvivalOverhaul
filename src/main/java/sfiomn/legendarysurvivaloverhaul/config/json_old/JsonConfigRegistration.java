@@ -8,6 +8,8 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.levelgen.WorldDimensions;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.io.FileUtils;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
@@ -341,10 +343,13 @@ public class JsonConfigRegistration
 					}
 
 					File jsonFile = new File(endPath.toFile(), rl.getPath() + ".json");
-					TemperatureData td = new TemperatureData();
-					td.temperature(JsonConfig.dimensionTemperatures.get(e).temperature);
+					TemperatureDimensionData tdd = new TemperatureDimensionData();
+					tdd.temperature(JsonConfig.dimensionTemperatures.get(e).temperature);
+					if (!rl.equals(new ResourceLocation("the_nether")) && !rl.equals(new ResourceLocation("the_end"))) {
+						tdd.hasAltitude().seaLevelHeight(64);
+					}
 
-					writeInFile(jsonFile, td.build());
+					writeInFile(jsonFile, tdd.build());
 				}
 			}
 		}
