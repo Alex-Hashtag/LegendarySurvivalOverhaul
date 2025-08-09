@@ -191,7 +191,7 @@ public class ModCapabilities
 
 				HealthUtil.initializeHealthAttributes(player);
 
-				if (Config.Baked.heartsLostOnDeath >= 0)
+				if (Config.Baked.heartsLostOnDeath > 0)
 					HealthUtil.loseHearth(player, Config.Baked.heartsLostOnDeath);
 				else
 					HealthUtil.updatePlayerMaxHealthAttribute(player);

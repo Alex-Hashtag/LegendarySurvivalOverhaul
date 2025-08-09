@@ -51,7 +51,6 @@ public class HealthUtil
 	 * Initialize the player broken heart resilience & permanent hearts attributes with the config values
 	 *
 	 * @param player The player for which we initialize the health attributes
-	 * @return remaining damage to propagate to normal health
 	 */
 	public static void initializeHealthAttributes(Player player) {
 		internal.initializeHealthAttributes(player);
