@@ -78,28 +78,6 @@ import static sfiomn.legendarysurvivaloverhaul.util.internal.TemperatureUtilInte
 @Mod.EventBusSubscriber(modid = LegendarySurvivalOverhaul.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class CommonForgeEvents {
 
-    /*
-    @SubscribeEvent
-    public static void onFoodTick(LivingEntityUseItemEvent.Tick event) {
-        LegendarySurvivalOverhaul.LOGGER.debug("use tick for " + event.getItem() + ", tick : " + event.getDuration());
-        if (event.getDuration() > 1)
-            return;
-
-        ResourceLocation itemRegistryName = ForgeRegistries.ITEMS.getKey(event.getItem().getItem());
-
-        if (Config.Baked.localizedBodyDamageEnabled && !(event.getItem().getItem() instanceof BodyHealingItem)) {
-            JsonConsumableHeal jsonConsumableHeal = null;
-            if (itemRegistryName != null)
-                jsonConsumableHeal = JsonConfig.consumableHeal.get(itemRegistryName.toString());
-
-            if (jsonConsumableHeal != null) {
-                if (jsonConsumableHeal.healingCharges > 0) {
-                    LegendarySurvivalOverhaul.LOGGER.debug("cancel tick");
-                }
-            }
-        }
-    }*/
-
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onItemUse(PlayerInteractEvent.RightClickItem event) {
         LivingEntity entity = event.getEntity();
