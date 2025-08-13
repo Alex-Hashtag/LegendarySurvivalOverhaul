@@ -101,12 +101,12 @@ public class HealthUtilInternal implements IHealthUtil {
 
         int minhHearthLimit = (int) player.getAttributeValue(AttributeRegistry.PERMANENT_HEART.get());
         // max losable heart amount = max player health - minhHearthLimit
-        int actuallyLostHearts = Math.min((int) Math.ceil(player.getMaxHealth() / 2.0) - minhHearthLimit, amountLost);
+        int actuallyLostHearts = Math.min((int) Math.ceil(getPlayerStableMaxHealth(player) / 2.0) - minhHearthLimit, amountLost);
 
         if (actuallyLostHearts > 0) {
             healthCapability.setAdditionalHealth(healthCapability.getAdditionalHealth() - actuallyLostHearts * 2);
-            updatePlayerMaxHealthAttribute(player);
         }
+        updatePlayerMaxHealthAttribute(player);
     }
 
     @Override
