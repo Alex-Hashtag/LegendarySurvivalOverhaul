@@ -5,6 +5,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -17,6 +18,7 @@ import sfiomn.legendarysurvivaloverhaul.api.health.HealthUtil;
 import sfiomn.legendarysurvivaloverhaul.client.ClientHooks;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
 import sfiomn.legendarysurvivaloverhaul.registry.AttributeRegistry;
+import sfiomn.legendarysurvivaloverhaul.registry.MobEffectRegistry;
 import sfiomn.legendarysurvivaloverhaul.registry.SoundRegistry;
 import sfiomn.legendarysurvivaloverhaul.util.AttributeBuilder;
 import sfiomn.legendarysurvivaloverhaul.util.CapabilityUtil;
@@ -147,6 +149,16 @@ public class BodyDamageUtilInternal implements IBodyDamageUtil {
             }
         }
         return effects;
+    }
+
+    @Override
+    public void applyHealingTimeBodyPart(Player player, BodyPartEnum bodyPartEnum, float healingValue, int healingTime, float playerHealingValue) {
+
+        if(!Config.Baked.localizedBodyDamageEnabled || bodyPartEnum == null)
+            return;
+
+        applyHealingTimeBodyPart(player, bodyPartEnum, healingValue, healingTime);
+        player.addEffect(new MobEffectInstance(MobEffectRegistry.RECOVERY.get(), ));
     }
 
     @Override

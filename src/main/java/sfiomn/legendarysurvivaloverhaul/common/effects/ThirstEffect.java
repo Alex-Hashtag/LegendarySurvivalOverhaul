@@ -13,7 +13,6 @@ public class ThirstEffect extends MobEffect
 	public ThirstEffect()
 	{
 		super(MobEffectCategory.HARMFUL, 10870382);
-		// TODO Auto-generated constructor stub
 	}
 	
 	@Override

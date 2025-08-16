@@ -14,7 +14,6 @@ public class FrostbiteEffect extends IncurableMobEffect
 	public FrostbiteEffect()
 	{
 		super(MobEffectCategory.HARMFUL, 9164281);
-		// TODO Auto-generated constructor stub
 	}
 	
 	@Override

@@ -248,6 +248,8 @@
 	"effect.legendarysurvivaloverhaul.vulnerability.description": "All damage taken from any source except falling, is increased by 20% per level.",
 	"effect.legendarysurvivaloverhaul.headache": "Headache",
 	"effect.legendarysurvivaloverhaul.headache.description": "Inflicts Blindness from time to time randomly. Occurs when head is heavily wounded.",
+	"effect.legendarysurvivaloverhaul.recovery": "Recovery",
+	"effect.legendarysurvivaloverhaul.recovery.description": "Regeneration of the player's health. Triggered when applying a healing item on a wounded limb.",
 
 	"death.attack.legendarysurvivaloverhaul.hypothermia": "%1$s froze to death",
 	"death.attack.legendarysurvivaloverhaul.hypothermia.player": "%1$s froze to death",

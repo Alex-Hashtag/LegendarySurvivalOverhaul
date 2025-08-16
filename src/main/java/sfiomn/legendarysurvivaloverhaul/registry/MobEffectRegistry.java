@@ -64,6 +64,7 @@ public class MobEffectRegistry {
 	public static final RegistryObject<MobEffect> HARD_FALLING = EFFECTS.register("hard_falling", HardFallingEffect::new);
 	public static final RegistryObject<MobEffect> VULNERABILITY = EFFECTS.register("vulnerability", VulnerabilityEffect::new);
 	public static final RegistryObject<MobEffect> HEADACHE = EFFECTS.register("headache", HeadacheEffect::new);
+	public static final RegistryObject<MobEffect> RECOVERY = EFFECTS.register("recovery", RecoveryEffect::new);
 
 	public static void registerBrewingRecipes()
 	{
