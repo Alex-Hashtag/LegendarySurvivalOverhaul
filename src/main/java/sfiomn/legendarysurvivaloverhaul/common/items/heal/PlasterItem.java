@@ -18,19 +18,7 @@ public class PlasterItem extends BodyHealingItem {
     }
 
     @Override
-    public void runSecondaryEffect(Player player, ItemStack stack) {
-        player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, Config.Baked.plasterRegenerationTickDuration, Config.Baked.plasterRegenerationAmplifier));
-        super.runSecondaryEffect(player, stack);
-    }
-
-    @Override
     public int getUseDuration(ItemStack stack) {
         return Config.Baked.plasterUseTime;
-    }
-
-    @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltips, TooltipFlag isAdvanced) {
-        super.appendHoverText(stack, level, tooltips, isAdvanced);
-        addSecondaryEffectTooltip(tooltips, new MobEffectInstance(MobEffects.REGENERATION, Config.Baked.plasterRegenerationTickDuration, Config.Baked.plasterRegenerationAmplifier));
     }
 }

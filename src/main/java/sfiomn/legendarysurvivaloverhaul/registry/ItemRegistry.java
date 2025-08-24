@@ -125,7 +125,7 @@ public class ItemRegistry {
 	public static final RegistryObject<Item> PLASTER = ITEMS.register("plaster", () -> new PlasterItem(new Item.Properties()));
 	public static final RegistryObject<Item> BANDAGE = ITEMS.register("bandage", () -> new BandageItem(new Item.Properties()));
 	public static final RegistryObject<Item> TONIC = ITEMS.register("tonic", () -> new TonicItem(new Item.Properties().rarity(Rarity.RARE)));
-	public static final RegistryObject<Item> MEDIKIT = ITEMS.register("medikit", () -> new MedikitItem(new Item.Properties().rarity(Rarity.EPIC)));
+	public static final RegistryObject<Item> MEDKIT = ITEMS.register("medkit", () -> new Medkit(new Item.Properties().rarity(Rarity.EPIC)));
 	public static final RegistryObject<Item> MORPHINE = ITEMS.register("morphine", () -> new MorphineItem(new Item.Properties()));
 
 	public static void register(IEventBus eventBus){

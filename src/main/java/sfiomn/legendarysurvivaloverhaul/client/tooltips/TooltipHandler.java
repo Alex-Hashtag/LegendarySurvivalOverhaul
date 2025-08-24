@@ -183,6 +183,19 @@ public class TooltipHandler
 					Component.translatable("tooltip.legendarysurvivaloverhaul.body_heal_item.healing_value",
 									jsonConsumableHeal.healingValue, MathUtil.round(jsonConsumableHeal.healingTime / 20.0f, 1))
 							.withStyle(ChatFormatting.BLUE));
+
+			MutableComponent mutableComponent = Component.translatable(MobEffectRegistry.RECOVERY.get().getDescriptionId());
+
+			if (jsonConsumableHeal.recoveryEffectDuration > 0) {
+				if (jsonConsumableHeal.recoveryEffectAmplifier > 0) {
+					mutableComponent = Component.translatable("potion.withAmplifier", mutableComponent, Component.translatable("potion.potency." + jsonConsumableHeal.recoveryEffectAmplifier));
+				}
+
+				MobEffectInstance mei = new MobEffectInstance(MobEffectRegistry.RECOVERY.get(), jsonConsumableHeal.recoveryEffectDuration, jsonConsumableHeal.recoveryEffectAmplifier);
+				mutableComponent = Component.translatable("potion.withDuration", mutableComponent, MobEffectUtil.formatDuration(mei, 1.0f));
+
+				tooltips.add(mutableComponent.withStyle(Style.EMPTY.withColor(ChatFormatting.BLUE)));
+			}
 		}
 	}
 

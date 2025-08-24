@@ -8,18 +8,21 @@ public class JsonHealingConsumable {
             Codec.INT.fieldOf("healing_charges").forGetter(d -> d.healingCharges),
             Codec.FLOAT.fieldOf("healing_value").forGetter(d -> d.healingValue),
             Codec.INT.fieldOf("healing_time").forGetter(d -> d.healingTime),
-            Codec.FLOAT.optionalFieldOf("player_healing_value", 0.0f).forGetter(d -> d.playerHealingValue)
+            Codec.INT.optionalFieldOf("recovery_effect_duration", 0).forGetter(d -> d.recoveryEffectDuration),
+            Codec.INT.optionalFieldOf("recovery_effect_amplifier", 0).forGetter(d -> d.recoveryEffectAmplifier)
     ).apply(inst, JsonHealingConsumable::new));
 
     public int healingCharges;
     public float healingValue;
     public int healingTime;
-    public float playerHealingValue;
+    public int recoveryEffectDuration;
+    public int recoveryEffectAmplifier;
 
-    public JsonHealingConsumable(int healingCharges, float healingValue, int healingTime, float playerHealingValue) {
+    public JsonHealingConsumable(int healingCharges, float healingValue, int healingTime, int recoveryEffectDuration, int recoveryEffectAmplifier) {
         this.healingCharges = healingCharges;
         this.healingValue = healingValue;
         this.healingTime = healingTime;
-        this.playerHealingValue = playerHealingValue;
+        this.recoveryEffectDuration = recoveryEffectDuration;
+        this.recoveryEffectAmplifier = recoveryEffectAmplifier;
     }
 }

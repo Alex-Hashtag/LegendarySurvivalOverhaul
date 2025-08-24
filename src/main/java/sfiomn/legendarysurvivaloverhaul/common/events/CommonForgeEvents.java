@@ -86,9 +86,14 @@ public class CommonForgeEvents {
             return;
 
         ItemStack usedItemStack = event.getItemStack();
+        if (LegendarySurvivalOverhaul.supplementariesLoaded) {
+            ItemStack itemStackInBasket = SupplementariesUtil.getSelectedItemInLunchBasket(event.getItemStack());
+            if (itemStackInBasket != ItemStack.EMPTY)
+                usedItemStack = itemStackInBasket;
+        }
         ResourceLocation itemRegistryName = ForgeRegistries.ITEMS.getKey(usedItemStack.getItem());
 
-        if (Config.Baked.localizedBodyDamageEnabled && LegendarySurvivalOverhaul.medsandherbsLoaded
+        if (LegendarySurvivalOverhaul.medsandherbsLoaded
                 && itemRegistryName != null && itemRegistryName.getNamespace().equals("meds_and_herbs")) {
             if(itemRegistryName.equals(new ResourceLocation("meds_and_herbs", "syringe_morphine"))) {
                 if (!MedsAndHerbsUtil.triggerMorphineBehavior(player)) {
@@ -96,7 +101,7 @@ public class CommonForgeEvents {
                     event.setCancellationResult(InteractionResult.CONSUME);
                 }
             }
-            BodyDamageUtil.applyConsumableHealing(player, itemRegistryName);
+            BodyDamageUtil.applyConsumableHealing(player, usedItemStack, true);
         }
     }
 
@@ -114,9 +119,8 @@ public class CommonForgeEvents {
                 usedItemStack = itemStackInBasket;
         }
 
-        ResourceLocation itemRegistryName = ForgeRegistries.ITEMS.getKey(usedItemStack.getItem());
-
         if (!entity.level().isClientSide) {
+            ResourceLocation itemRegistryName = ForgeRegistries.ITEMS.getKey(usedItemStack.getItem());
             TemperatureUtil.applyConsumableTemperature(player, itemRegistryName);
         }
 
@@ -124,8 +128,8 @@ public class CommonForgeEvents {
             ThirstUtil.takeDrink(player, usedItemStack);
         }
 
-        if (Config.Baked.localizedBodyDamageEnabled && !(usedItemStack.getItem() instanceof BodyHealingItem)) {
-            BodyDamageUtil.applyConsumableHealing(player, itemRegistryName);
+        if (!(usedItemStack.getItem() instanceof BodyHealingItem)) {
+            BodyDamageUtil.applyConsumableHealing(player, usedItemStack, true);
         }
     }
 

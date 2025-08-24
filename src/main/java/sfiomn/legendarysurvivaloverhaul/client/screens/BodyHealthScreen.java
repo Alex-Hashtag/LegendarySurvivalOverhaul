@@ -14,11 +14,14 @@ import org.jetbrains.annotations.NotNull;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.bodydamage.BodyDamageUtil;
 import sfiomn.legendarysurvivaloverhaul.api.bodydamage.BodyPartEnum;
+import sfiomn.legendarysurvivaloverhaul.common.capabilities.bodydamage.BodyDamageCapability;
 import sfiomn.legendarysurvivaloverhaul.network.packets.BodyPartHealingTimeMessage;
 import sfiomn.legendarysurvivaloverhaul.registry.KeyMappingRegistry;
+import sfiomn.legendarysurvivaloverhaul.util.CapabilityUtil;
 import sfiomn.legendarysurvivaloverhaul.util.MathUtil;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 public class BodyHealthScreen extends Screen {
@@ -31,6 +34,9 @@ public class BodyHealthScreen extends Screen {
     public static final int TEX_HEALTH_BAR_Y = 0;
 
     private final Map<BodyPartEnum, BodyPartButton> bodyPartButtons = new HashMap<>();
+
+    private final Map<BodyPartEnum, Integer> flashCounters = new HashMap<>();
+    private final Map<BodyPartEnum, Float> bodyPartHealth = new HashMap<>();
     private int leftPos;
     private int topPos;
 
@@ -40,6 +46,7 @@ public class BodyHealthScreen extends Screen {
     private final float healingValue;
     private final int healingTime;
     private boolean consumeItem;
+    private boolean applyEffect;
 
     public BodyHealthScreen(Player player, InteractionHand hand, boolean alreadyConsumed, int healingCharges, float healingValue, int healingTime) {
         super(Component.translatable("screen." + LegendarySurvivalOverhaul.MOD_ID + ".body_health_screen"));
@@ -50,6 +57,7 @@ public class BodyHealthScreen extends Screen {
         this.healingValue = healingValue;
         this.healingTime = healingTime;
         this.consumeItem = !alreadyConsumed;
+        this.applyEffect = true;
     }
 
     @Override
@@ -78,16 +86,47 @@ public class BodyHealthScreen extends Screen {
                 bodyPartButtons.put(bodyPartButton.bodyPart, bodyPartButton);
             }
         }
+
+        flashCounters.clear();
+
+        BodyDamageCapability cap = CapabilityUtil.getBodyDamageCapability(player);
+        bodyPartHealth.clear();
+        for (BodyPartEnum bodyPart: BodyPartEnum.values()) {
+            bodyPartHealth.put(bodyPart, cap.getBodyPartDamage(bodyPart));
+        }
     }
 
     public void sendBodyPartHeal(BodyPartEnum bodyPart) {
         if (healingCharges > 0) {
-            BodyPartHealingTimeMessage.sendToServer(bodyPart, this.hand, this.consumeItem, this.healingValue, this.healingTime);
+            BodyPartHealingTimeMessage.sendToServer(bodyPart, this.hand, this.consumeItem, this.applyEffect);
             BodyDamageUtil.applyHealingTimeBodyPart(player, bodyPart, this.healingValue, this.healingTime);
             if (this.consumeItem)
                 this.consumeItem = false;
+            if (this.applyEffect)
+                this.applyEffect = false;
             this.healingCharges--;
         }
+    }
+
+    @Override
+    public void tick() {
+        Iterator<Map.Entry<BodyPartEnum, Integer>> iter = flashCounters.entrySet().iterator();
+        while (iter.hasNext()) {
+            Map.Entry<BodyPartEnum, Integer> flashBodyPart = iter.next();
+            if (flashBodyPart.getValue() > 0)
+                flashBodyPart.setValue(flashBodyPart.getValue() - 1);
+            else
+                iter.remove();
+        }
+
+        BodyDamageCapability cap = CapabilityUtil.getBodyDamageCapability(player);
+        for (BodyPartEnum bodyPart: BodyPartEnum.values()) {
+            if (bodyPartHealth.get(bodyPart) != cap.getBodyPartDamage(bodyPart)) {
+                flashCounters.put(bodyPart, 4);
+                bodyPartHealth.put(bodyPart, cap.getBodyPartDamage(bodyPart));
+            }
+        }
+        super.tick();
     }
 
     @Override
@@ -192,6 +231,8 @@ public class BodyHealthScreen extends Screen {
         if (healthBarIcon == null)
             return;
 
+        boolean shouldFlash = flashCounters.containsKey(bodyPart);
+
         // Draw empty health bar
         gui.blit(BODY_HEALTH_SCREEN, this.leftPos + healthBarIcon.x, this.topPos + healthBarIcon.y,
                 TEX_HEALTH_BAR_X + HEALTH_BAR_WIDTH * HealthBarCondition.DEAD.iconIndexX,
@@ -215,6 +256,11 @@ public class BodyHealthScreen extends Screen {
                     TEX_HEALTH_BAR_Y + HEALTH_BAR_HEIGHT * healthBarCondition.getPreviewVariant().iconIndexY,
                     healthBarPreviewWidth, HEALTH_BAR_HEIGHT);
 
+        if (shouldFlash)
+            gui.blit(BODY_HEALTH_SCREEN, this.leftPos + healthBarIcon.x, this.topPos + healthBarIcon.y,
+                    TEX_HEALTH_BAR_X + HEALTH_BAR_WIDTH * HealthBarCondition.FLASH.iconIndexX,
+                    TEX_HEALTH_BAR_Y + HEALTH_BAR_HEIGHT * HealthBarCondition.FLASH.iconIndexY,
+                    HEALTH_BAR_WIDTH, HEALTH_BAR_HEIGHT);
     }
 
     private enum HealthBarIcon {
@@ -258,7 +304,8 @@ public class BodyHealthScreen extends Screen {
         HEALTHY_PREVIEW(0, 4),
         WOUNDED_PREVIEW(0, 5),
         HEAVILY_WOUNDED_PREVIEW(0, 6),
-        DEAD_PREVIEW(0, 7);
+        DEAD_PREVIEW(0, 7),
+        FLASH(1, 8);
 
         public final int iconIndexX;
         public final int iconIndexY;

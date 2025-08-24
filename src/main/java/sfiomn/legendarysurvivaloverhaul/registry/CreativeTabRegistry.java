@@ -53,7 +53,7 @@ public class CreativeTabRegistry {
 
                         ItemRegistry.BANDAGE.get().getDefaultInstance(),
                         ItemRegistry.HEALING_HERBS.get().getDefaultInstance(),
-                        ItemRegistry.MEDIKIT.get().getDefaultInstance(),
+                        ItemRegistry.MEDKIT.get().getDefaultInstance(),
                         ItemRegistry.MORPHINE.get().getDefaultInstance(),
                         ItemRegistry.PLASTER.get().getDefaultInstance(),
                         ItemRegistry.TONIC.get().getDefaultInstance(),

@@ -125,6 +125,8 @@ public class HealthUtilInternal implements IHealthUtil {
             if (!attributeModifier.getId().equals(HEALTH_ATTRIBUTE_UUID))
                 maxHealthModified += attributeModifier.getAmount();
         }
+        // Tackle a modified max health base value
+        maxHealthModified += Objects.requireNonNull(player.getAttribute(Attributes.MAX_HEALTH)).getBaseValue() - 20;
         return maxHealthModified;
     }
 }

@@ -18,11 +18,16 @@ public class ModBodyDamageProvider extends BodyDamageDataProvider {
 
     @Override
     public void generate(HolderLookup.Provider provider, ExistingFileHelper existingFileHelper) {
-        consumable(ItemRegistry.HEALING_HERBS.get()).healingCharges(1).healingValue(2).duration(600);
-        consumable(ItemRegistry.PLASTER.get()).healingCharges(1).healingValue(3).duration(400);
-        consumable(ItemRegistry.BANDAGE.get()).healingCharges(3).healingValue(3).duration(300);
-        consumable(ItemRegistry.TONIC.get()).healingCharges(0).healingValue(5).duration(600);
-        consumable(ItemRegistry.MEDIKIT.get()).healingCharges(0).healingValue(8).duration(400);
+        consumable(ItemRegistry.HEALING_HERBS.get()).healingCharges(1).healingValue(2).duration(600)
+                .recoveryEffectDuration(600);
+        consumable(ItemRegistry.PLASTER.get()).healingCharges(1).healingValue(3).duration(400)
+                .recoveryEffectDuration(1200);
+        consumable(ItemRegistry.BANDAGE.get()).healingCharges(3).healingValue(3).duration(300)
+                .recoveryEffectDuration(1200).recoveryEffectAmplifier(1);
+        consumable(ItemRegistry.TONIC.get()).healingCharges(0).healingValue(5).duration(600)
+                .recoveryEffectDuration(1400).recoveryEffectAmplifier(1);
+        consumable(ItemRegistry.MEDKIT.get()).healingCharges(0).healingValue(8).duration(400)
+                .recoveryEffectDuration(1400).recoveryEffectAmplifier(2);
 
         damageSource(LegendarySurvivalOverhaul.MOD_ID + ".hypothermia")
                 .damageDistribution(DamageDistributionEnum.NONE);

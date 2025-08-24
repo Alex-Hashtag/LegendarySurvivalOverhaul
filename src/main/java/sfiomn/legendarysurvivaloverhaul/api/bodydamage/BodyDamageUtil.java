@@ -1,8 +1,9 @@
 package sfiomn.legendarysurvivaloverhaul.api.bodydamage;
 
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.List;
@@ -14,10 +15,11 @@ public class BodyDamageUtil
 	/**
 	 * Apply to the player the limb healing behavior associated to the provided item registry name
 	 * @param player Player to which limbs will be healed
-	 * @param itemRegistryName Item registry name that has a limb healing behavior
+	 * @param itemStack Item stack that has a limb healing behavior
+	 * @param itemAlreadyConsumed Whether the item has been already consumed or not
 	 */
-	public static void applyConsumableHealing(Player player, ResourceLocation itemRegistryName) {
-		internal.applyConsumableHealing(player, itemRegistryName);
+	public static void applyConsumableHealing(Player player, ItemStack itemStack, boolean itemAlreadyConsumed) {
+		internal.applyConsumableHealing(player, itemStack, itemAlreadyConsumed);
 	}
 
 	/**
@@ -30,6 +32,14 @@ public class BodyDamageUtil
 	public static List<Pair<MobEffect, Integer>> getEffects(MalusBodyPartEnum bodyPart, float headHealthRatio)
 	{
 		return internal.getEffects(bodyPart, headHealthRatio);
+	}
+
+	/**
+	 * Get the effect on the player with the highest amplification that make the limbs regenerate passively
+	 * @param player player to get the effects
+	 */
+	public static MobEffectInstance getPlayerPassiveLimbRegenerationEffect(Player player) {
+		return internal.getPlayerPassiveLimbRegenerationEffect(player);
 	}
 
 	/**

@@ -254,7 +254,7 @@ public class LegendarySurvivalOverhaul
 		event.enqueueWork(() ->
 		{
 			BodyDamageUtilInternal.initMalusConfig();
-			BodyDamageUtilInternal.initFirstAidSuppliesBoostingEffects();
+			BodyDamageUtilInternal.initLimbEffects();
 
 			if (sereneSeasonsLoaded)
 				SereneSeasonsUtil.initAverageTemperatures();

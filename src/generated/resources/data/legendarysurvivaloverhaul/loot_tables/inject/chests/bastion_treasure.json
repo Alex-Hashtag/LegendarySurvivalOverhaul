@@ -38,11 +38,11 @@
         {
           "type": "minecraft:item",
           "name": "legendarysurvivaloverhaul:cold_resistance_ring",
-          "weight": 5
+          "weight": 15
         },
         {
           "type": "minecraft:empty",
-          "weight": 95
+          "weight": 85
         }
       ],
       "rolls": {

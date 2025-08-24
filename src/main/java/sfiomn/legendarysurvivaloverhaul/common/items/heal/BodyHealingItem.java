@@ -23,9 +23,8 @@ import sfiomn.legendarysurvivaloverhaul.api.bodydamage.BodyPartEnum;
 import sfiomn.legendarysurvivaloverhaul.api.bodydamage.IBodyDamageCapability;
 import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonHealingConsumable;
 import sfiomn.legendarysurvivaloverhaul.api.data.manager.BodyDamageDataManager;
-import sfiomn.legendarysurvivaloverhaul.client.ClientHooks;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
-import sfiomn.legendarysurvivaloverhaul.registry.SoundRegistry;
+import sfiomn.legendarysurvivaloverhaul.registry.MobEffectRegistry;
 import sfiomn.legendarysurvivaloverhaul.util.CapabilityUtil;
 
 import java.util.List;
@@ -34,11 +33,6 @@ public class BodyHealingItem extends Item {
 
     public BodyHealingItem(Properties properties) {
         super(properties);
-    }
-
-    public void runSecondaryEffect(Player player, ItemStack stack)
-    {
-        //Can be overridden to run a special task
     }
 
     @Override
@@ -93,30 +87,23 @@ public class BodyHealingItem extends Item {
         if(!(entity instanceof Player player))
             return stack;
 
+        ResourceLocation registryName = ForgeRegistries.ITEMS.getKey(this);
+        JsonHealingConsumable  jsonConsumableHeal = BodyDamageDataManager.getHealingItem(registryName);
+
+        if (jsonConsumableHeal == null)
+            return stack;
+
         if (!Config.Baked.localizedBodyDamageEnabled) {
-            runSecondaryEffect(player, stack);
+            if (jsonConsumableHeal.recoveryEffectDuration > 0)
+                player.addEffect(new MobEffectInstance(
+                        MobEffectRegistry.RECOVERY.get(),
+                        jsonConsumableHeal.recoveryEffectDuration,
+                        jsonConsumableHeal.recoveryEffectAmplifier, false, true, true));
             stack.shrink(1);
             return stack;
         }
 
-        ResourceLocation registryName = ForgeRegistries.ITEMS.getKey(this);
-        JsonHealingConsumable  jsonConsumableHeal = BodyDamageDataManager.getHealingItem(registryName);
-
-        if (jsonConsumableHeal != null) {
-            if (jsonConsumableHeal.healingCharges > 0) {
-                if (level.isClientSide && Minecraft.getInstance().screen == null)
-                    ClientHooks.openBodyHealthScreen(player, entity.getUsedItemHand(), false,
-                            jsonConsumableHeal.healingCharges, jsonConsumableHeal.healingValue, jsonConsumableHeal.healingTime);
-            } else if (jsonConsumableHeal.healingCharges == 0) {
-                for (BodyPartEnum bodyPart : BodyPartEnum.values()) {
-                    BodyDamageUtil.applyHealingTimeBodyPart(player, bodyPart, jsonConsumableHeal.healingValue, jsonConsumableHeal.healingTime);
-                }
-                runSecondaryEffect(player, stack);
-                level.playSound(null, entity, SoundRegistry.HEAL_BODY_PART.get(), SoundSource.PLAYERS, 1.0f, 1.0f);
-                if (!player.isCreative())
-                    stack.shrink(1);
-            }
-        }
+        BodyDamageUtil.applyConsumableHealing(player, stack, false);
 
         return stack;
     }
@@ -125,19 +112,5 @@ public class BodyHealingItem extends Item {
     public boolean isEnchantable(ItemStack stack)
     {
         return false;
-    }
-
-    public static void addSecondaryEffectTooltip(List<Component> tooltips, MobEffectInstance mobEffect) {
-        MutableComponent mutableComponent = Component.translatable(mobEffect.getDescriptionId());
-
-        if (mobEffect.getAmplifier() > 0) {
-            mutableComponent = Component.translatable("potion.withAmplifier", mutableComponent, Component.translatable("potion.potency." + mobEffect.getAmplifier()));
-        }
-
-        if (mobEffect.getDuration() > 20) {
-            mutableComponent = Component.translatable("potion.withDuration", mutableComponent, MobEffectUtil.formatDuration(mobEffect, 1.0f));
-        }
-
-        tooltips.add(mutableComponent.withStyle(Style.EMPTY.withColor(ChatFormatting.BLUE)));
     }
 }

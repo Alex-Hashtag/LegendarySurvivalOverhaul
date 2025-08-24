@@ -1,5 +1,7 @@
 {
   "healing_charges": 0,
   "healing_time": 800,
-  "healing_value": 5.0
+  "healing_value": 5.0,
+  "recovery_effect_amplifier": 0,
+  "recovery_effect_duration": 0
 }

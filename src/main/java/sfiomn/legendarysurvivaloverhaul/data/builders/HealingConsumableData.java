@@ -7,6 +7,8 @@ public class HealingConsumableData implements IHealingConsumableData {
     private int healingCharges;
     private float healingValue;
     private int healingTime;
+    private int recoveryDuration;
+    private int recoveryAmplifier;
 
     public HealingConsumableData() {
     }
@@ -30,11 +32,25 @@ public class HealingConsumableData implements IHealingConsumableData {
     }
 
     @Override
+    public IHealingConsumableData recoveryEffectDuration(int durationInTick) {
+        this.recoveryDuration = durationInTick;
+        return this;
+    }
+
+    @Override
+    public IHealingConsumableData recoveryEffectAmplifier(int amplifier) {
+        this.recoveryAmplifier = amplifier;
+        return this;
+    }
+
+    @Override
     public JsonObject build() {
         JsonObject json = new JsonObject();
         json.addProperty("healing_charges", this.healingCharges);
         json.addProperty("healing_value", this.healingValue);
         json.addProperty("healing_time", this.healingTime);
+        json.addProperty("recovery_effect_duration", this.recoveryDuration);
+        json.addProperty("recovery_effect_amplifier", this.recoveryAmplifier);
         return json;
     }
 }

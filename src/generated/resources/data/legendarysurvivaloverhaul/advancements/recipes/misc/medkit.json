@@ -15,7 +15,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "legendarysurvivaloverhaul:medikit"
+        "recipe": "legendarysurvivaloverhaul:medkit"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -28,7 +28,7 @@
   ],
   "rewards": {
     "recipes": [
-      "legendarysurvivaloverhaul:medikit"
+      "legendarysurvivaloverhaul:medkit"
     ]
   },
   "sends_telemetry_event": false

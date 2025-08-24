@@ -8,6 +8,7 @@ import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.tuple.Pair;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
@@ -30,6 +31,7 @@ public class BodyDamageUtilInternal implements IBodyDamageUtil {
     public static final UUID BROKEN_HEART_ATTRIBUTE_UUID = UUID.fromString("2e3cede5-3c18-45c2-8a46-31b89fb9c027");
 
     private static final List<MobEffect> firstAidSuppliesBoostingEffects = new ArrayList<>();
+    private static final List<MobEffect> passiveLimbRegenerationEffects = new ArrayList<>();
     private static final Map<MalusBodyPartEnum, Map<Float, Pair<MobEffect, Integer>>> bodyPartMalusEffects = new HashMap<>();
 
     public static final AttributeBuilder BODY_RESISTANCE = new AttributeBuilder(AttributeRegistry.BODY_RESISTANCE.get(), "attribute." + LegendarySurvivalOverhaul.MOD_ID + ".body_resistance");
@@ -96,10 +98,10 @@ public class BodyDamageUtilInternal implements IBodyDamageUtil {
         }
     }
 
-    public static void initFirstAidSuppliesBoostingEffects() {
+    public static void initLimbEffects() {
         for (String effectRegistryName: Config.Baked.firstAidSuppliesBoostedOnEffects) {
             if (!ResourceLocation.isValidResourceLocation(effectRegistryName))
-                LegendarySurvivalOverhaul.LOGGER.info("Not valid effect registry name : {}", effectRegistryName);
+                LegendarySurvivalOverhaul.LOGGER.info("First Aid Supplies boosting effect : not valid effect registry name : {}", effectRegistryName);
 
             MobEffect boostingEffect = ForgeRegistries.MOB_EFFECTS.getValue(new ResourceLocation(effectRegistryName));
             if (boostingEffect == null) {
@@ -108,24 +110,62 @@ public class BodyDamageUtilInternal implements IBodyDamageUtil {
             }
             firstAidSuppliesBoostingEffects.add(boostingEffect);
         }
+
+        for (String effectRegistryName: Config.Baked.passiveLimbRegenerationEffects) {
+            if (!ResourceLocation.isValidResourceLocation(effectRegistryName))
+                LegendarySurvivalOverhaul.LOGGER.info("Limb Regeneration Effect : not valid effect registry name : {}", effectRegistryName);
+
+            MobEffect regenerationEffect = ForgeRegistries.MOB_EFFECTS.getValue(new ResourceLocation(effectRegistryName));
+            if (regenerationEffect == null) {
+                LegendarySurvivalOverhaul.LOGGER.info("Unknown effect {}", effectRegistryName);
+                continue;
+            }
+            passiveLimbRegenerationEffects.add(regenerationEffect);
+        }
     }
 
     @Override
-    public void applyConsumableHealing(Player player, ResourceLocation itemRegistryName) {
+    public void applyConsumableHealing(Player player, ItemStack itemStack, boolean itemAlreadyConsumed) {
+        ResourceLocation itemRegistryName = ForgeRegistries.ITEMS.getKey(itemStack.getItem());
         JsonHealingConsumable jsonConsumableHeal = BodyDamageDataManager.getHealingItem(itemRegistryName);
 
-        if (jsonConsumableHeal != null) {
-            if (jsonConsumableHeal.healingCharges > 0) {
-                if (player.level().isClientSide && Minecraft.getInstance().screen == null)
-                    ClientHooks.openBodyHealthScreen(player, player.getUsedItemHand(), true,
-                            jsonConsumableHeal.healingCharges, jsonConsumableHeal.healingValue, jsonConsumableHeal.healingTime);
-            } else if (jsonConsumableHeal.healingCharges == 0) {
+        if (jsonConsumableHeal == null)
+            return;
+
+        if (Config.Baked.localizedBodyDamageEnabled && jsonConsumableHeal.healingCharges > 0) {
+            if (player.level().isClientSide && Minecraft.getInstance().screen == null)
+                ClientHooks.openBodyHealthScreen(player, player.getUsedItemHand(), itemAlreadyConsumed,
+                        jsonConsumableHeal.healingCharges, jsonConsumableHeal.healingValue, jsonConsumableHeal.healingTime);
+        } else {
+            if (Config.Baked.localizedBodyDamageEnabled) {
                 for (BodyPartEnum bodyPart : BodyPartEnum.values()) {
                     BodyDamageUtil.applyHealingTimeBodyPart(player, bodyPart, jsonConsumableHeal.healingValue, jsonConsumableHeal.healingTime);
                 }
-                player.level().playSound(null, player, SoundRegistry.HEAL_BODY_PART.get(), SoundSource.PLAYERS, 1.0f, 1.0f);
+            }
+
+            if (jsonConsumableHeal.recoveryEffectDuration > 0) {
+                player.addEffect(new MobEffectInstance(MobEffectRegistry.RECOVERY.get(), jsonConsumableHeal.recoveryEffectDuration, jsonConsumableHeal.recoveryEffectAmplifier, false, true, true));
+            }
+
+            player.level().playSound(null, player, SoundRegistry.HEAL_BODY_PART.get(), SoundSource.PLAYERS, 1.0f, 1.0f);
+            if (!itemAlreadyConsumed)
+                itemStack.shrink(1);
+        }
+    }
+
+    @Override
+    public MobEffectInstance getPlayerPassiveLimbRegenerationEffect(Player player) {
+        MobEffectInstance passiveLimbRegenerationEffect = null;
+        for (MobEffect effect: passiveLimbRegenerationEffects) {
+            MobEffectInstance regenerationEffect = player.getEffect(effect);
+            if (regenerationEffect != null) {
+                if (passiveLimbRegenerationEffect == null ||
+                        regenerationEffect.getAmplifier() > passiveLimbRegenerationEffect.getAmplifier()) {
+                    passiveLimbRegenerationEffect = regenerationEffect;
+                }
             }
         }
+        return passiveLimbRegenerationEffect;
     }
 
     @Override
@@ -149,16 +189,6 @@ public class BodyDamageUtilInternal implements IBodyDamageUtil {
             }
         }
         return effects;
-    }
-
-    @Override
-    public void applyHealingTimeBodyPart(Player player, BodyPartEnum bodyPartEnum, float healingValue, int healingTime, float playerHealingValue) {
-
-        if(!Config.Baked.localizedBodyDamageEnabled || bodyPartEnum == null)
-            return;
-
-        applyHealingTimeBodyPart(player, bodyPartEnum, healingValue, healingTime);
-        player.addEffect(new MobEffectInstance(MobEffectRegistry.RECOVERY.get(), ));
     }
 
     @Override

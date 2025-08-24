@@ -10,5 +10,9 @@ public interface IHealingConsumableData {
 
     IHealingConsumableData duration(int durationInTick);
 
+    IHealingConsumableData recoveryEffectDuration(int durationInTick);
+
+    IHealingConsumableData recoveryEffectAmplifier(int amplifier);
+
     JsonObject build();
 }

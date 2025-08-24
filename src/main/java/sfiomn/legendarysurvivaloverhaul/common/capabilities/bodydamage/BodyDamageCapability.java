@@ -23,6 +23,7 @@ import sfiomn.legendarysurvivaloverhaul.registry.SoundRegistry;
 import sfiomn.legendarysurvivaloverhaul.util.MathUtil;
 
 import java.util.*;
+import java.util.function.BiConsumer;
 
 
 public class BodyDamageCapability implements IBodyDamageCapability
@@ -34,6 +35,10 @@ public class BodyDamageCapability implements IBodyDamageCapability
 	private float healingTickTimer;
 
 	// Unsaved data
+	private boolean hasHeadache;
+	private boolean hasFirstAidSupplies;
+	private boolean hasFirstAidSuppliesBoosted;
+	private MobEffectInstance passiveLimbRegenerationEffect;
 	private int oldExpectedBrokenHearts;
 	private int updateTickTimer; // Update immediately first time around
 	private float playerMaxHealth;
@@ -48,6 +53,10 @@ public class BodyDamageCapability implements IBodyDamageCapability
 
 	public void init()
 	{
+		this.hasHeadache = false;
+		this.hasFirstAidSupplies = false;
+		this.hasFirstAidSuppliesBoosted = false;
+		this.passiveLimbRegenerationEffect = null;
 		this.updateTickTimer = 20;
 		this.headacheTimer = 0;
 		this.expectedBrokenHearts = 0;
@@ -110,7 +119,7 @@ public class BodyDamageCapability implements IBodyDamageCapability
 			return;
 		};
 
-		if (updateTickTimer++ >= 20) {
+		if (updateTickTimer++ >= 19) {
 			updateTickTimer = 0;
 			double playerMaxHealthCheckUpdate = HealthUtil.getPlayerStableMaxHealth(player);
 
@@ -164,7 +173,17 @@ public class BodyDamageCapability implements IBodyDamageCapability
 			updateBrokenHearts(player);
 		}
 
-		if (player.hasEffect(MobEffectRegistry.HEADACHE.get())) {
+		if (updateTickTimer % 10 == 0) {
+			this.hasHeadache = player.hasEffect(MobEffectRegistry.HEADACHE.get());
+			this.hasFirstAidSupplies = CuriosUtil.isCurioItemEquipped(player, ItemRegistry.FIRST_AID_SUPPLIES.get());
+			if (hasFirstAidSupplies) {
+				this.hasFirstAidSuppliesBoosted = BodyDamageUtil.hasPlayerFirstAidSuppliesBoostingEffect(player);
+			} else {
+				this.passiveLimbRegenerationEffect = BodyDamageUtil.getPlayerPassiveLimbRegenerationEffect(player);
+			}
+		}
+
+		if (this.hasHeadache) {
 			if (this.headacheTimer-- < 0) {
 				applyHeadache(player, Objects.requireNonNull(player.getEffect(MobEffectRegistry.HEADACHE.get())).getAmplifier());
 			}
@@ -172,39 +191,31 @@ public class BodyDamageCapability implements IBodyDamageCapability
 			this.headacheTimer = 0;
 		}
 
-		if (CuriosUtil.isCurioItemEquipped(player, ItemRegistry.FIRST_AID_SUPPLIES.get())) {
+		if (this.hasFirstAidSupplies) {
 			boolean boostedHealingTickTimer = false;
 			if (Config.Baked.firstAidSuppliesBoostedTickTimerMultiplier < 1) {
-				boostedHealingTickTimer = BodyDamageUtil.hasPlayerFirstAidSuppliesBoostingEffect(player);
+				boostedHealingTickTimer = this.hasFirstAidSuppliesBoosted;
 			}
 			healingTickTimer += boostedHealingTickTimer ? MathUtil.round((float) (1 / Config.Baked.firstAidSuppliesBoostedTickTimerMultiplier), 2) : 1;
 			if (healingTickTimer >= Config.Baked.firstAidSuppliesTickTimer) {
 				healingTickTimer = 0;
-				BodyPart mostDamaged = getLowestHealthBodyPart();
-				float damage = mostDamaged.getDamage();
 
-				float healingValue;
-				if (Config.Baked.firstAidSuppliesLimbRegenerationMode.equals("PLAYER_DYNAMIC")) {
-					healingValue = MathUtil.ceil((float) Config.Baked.firstAidSuppliesLimbHealthRegenerated * player.getMaxHealth(), 2);
-				} else if (Config.Baked.firstAidSuppliesLimbRegenerationMode.equals("LIMB_DYNAMIC")) {
-					healingValue = MathUtil.ceil((float) Config.Baked.firstAidSuppliesLimbHealthRegenerated * mostDamaged.getMaxHealth(), 2);
-				} else {
-					healingValue = (float) Config.Baked.firstAidSuppliesLimbHealthRegenerated;
-				}
+				healMostDamaged(player,
+						Config.Baked.firstAidSuppliesLimbRegenerationMode,
+						(float) Config.Baked.firstAidSuppliesLimbHealthRegenerated,
+						Config.Baked.firstAidSuppliesHealingOverflow,
+						Config.Baked.firstAidSuppliesExhaustsFood);
+			}
+		} else if (this.passiveLimbRegenerationEffect != null) {
+			int passiveTickTimer = Config.Baked.passiveLimbRegenerationAmplificationEnabled ? Config.Baked.passiveLimbRegenerationTickTimer >> this.passiveLimbRegenerationEffect.getAmplifier() : Config.Baked.passiveLimbRegenerationTickTimer;
+			if (healingTickTimer++ >= passiveTickTimer) {
+				healingTickTimer = 0;
 
-				if (Config.Baked.firstAidSuppliesExhaustsFood)
-					healWithFoodExhaustion(player, mostDamaged.getBodyPartEnum(), healingValue);
-				else
-					heal(mostDamaged.getBodyPartEnum(), healingValue);
-
-				if (Config.Baked.firstAidSuppliesHealingOverflow && (healingValue - damage) > 0.0f && !Config.Baked.firstAidSuppliesLimbRegenerationMode.equals("LIMB_DYNAMIC")) {
-					mostDamaged = getLowestHealthBodyPart();
-
-					if (Config.Baked.firstAidSuppliesExhaustsFood)
-						healWithFoodExhaustion(player, mostDamaged.getBodyPartEnum(), healingValue - damage);
-					else
-						heal(mostDamaged.getBodyPartEnum(), healingValue - damage);
-				}
+				healMostDamaged(player,
+						"SIMPLE",
+						(float) Config.Baked.passiveLimbHealthRegenerated,
+						true,
+						true);
 			}
 		} else {
 			healingTickTimer = 0;
@@ -217,6 +228,36 @@ public class BodyDamageCapability implements IBodyDamageCapability
 		int blindnessTime = (40 + player.getRandom().nextInt(100)) * Math.min(amplifier + 1, 4);
 		this.headacheTimer = blindnessTime + Math.round((float) (200 + player.getRandom().nextInt(400)) / (float) Math.min(amplifier + 1, 4));
 		player.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, blindnessTime, 0, false, false, true));
+	}
+
+	private void healMostDamaged(Player player, String healingMode, float healingValue, boolean overflow, boolean exhaustFood) {
+		BodyPart mostDamaged = getLowestHealthBodyPart();
+		float damage = mostDamaged.getDamage();
+
+		float actualHealingValue;
+		if (healingMode.equals("PLAYER_DYNAMIC")) {
+			actualHealingValue = MathUtil.ceil(healingValue * player.getMaxHealth(), 2);
+		} else if (healingMode.equals("LIMB_DYNAMIC")) {
+			actualHealingValue = MathUtil.ceil(healingValue * mostDamaged.getMaxHealth(), 2);
+		} else {
+			actualHealingValue = healingValue;
+		}
+
+		BiConsumer<BodyPartEnum, Float> healingFunction = (part, amount) -> {
+			if (exhaustFood) {
+				healWithFoodExhaustion(player, part, amount);
+			} else {
+				heal(part, amount);
+			}
+		};
+
+		healingFunction.accept(mostDamaged.getBodyPartEnum(), actualHealingValue);
+		float overflowHealing = actualHealingValue - damage;
+
+		if (overflow && overflowHealing > 0.0f && !healingMode.equals("LIMB_DYNAMIC")) {
+			mostDamaged = getLowestHealthBodyPart();
+			healingFunction.accept(mostDamaged.getBodyPartEnum(), overflowHealing);
+		}
 	}
 
 	private BodyPart getLowestHealthBodyPart() {

@@ -33,7 +33,7 @@ public class ModItemModelProvider extends ItemModelProvider {
 
         simpleHealingItem(ItemRegistry.BANDAGE);
         simpleHealingItem(ItemRegistry.HEALING_HERBS);
-        simpleHealingItem(ItemRegistry.MEDIKIT);
+        simpleHealingItem(ItemRegistry.MEDKIT);
         simpleHealingItem(ItemRegistry.MORPHINE);
         simpleHealingItem(ItemRegistry.PLASTER);
         simpleHealingItem(ItemRegistry.TONIC);

@@ -340,7 +340,7 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .unlockedBy("has_wool", has(ItemTags.WOOL))
                 .save(consumer);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ItemRegistry.MEDIKIT.get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ItemRegistry.MEDKIT.get())
                 .pattern("sis")
                 .pattern("gbg")
                 .pattern("www")
