@@ -7,10 +7,10 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 public class JsonTemperatureResistance
 {
 	public static final Codec<JsonTemperatureResistance> CODEC = RecordCodecBuilder.<JsonTemperatureResistance>create((inst) -> inst.group(
-			Codec.FLOAT.fieldOf("temperature").forGetter(c -> c.temperature),
-			Codec.FLOAT.fieldOf("heat_resistance").forGetter(c -> c.heatResistance),
-			Codec.FLOAT.fieldOf("cold_resistance").forGetter(c -> c.coldResistance),
-			Codec.FLOAT.fieldOf("thermal_resistance").forGetter(c -> c.thermalResistance)
+			Codec.FLOAT.optionalFieldOf("temperature", 0.0f).forGetter(c -> c.temperature),
+			Codec.FLOAT.optionalFieldOf("heat_resistance", 0.0f).forGetter(c -> c.heatResistance),
+			Codec.FLOAT.optionalFieldOf("cold_resistance", 0.0f).forGetter(c -> c.coldResistance),
+			Codec.FLOAT.optionalFieldOf("thermal_resistance", 0.0f).forGetter(c -> c.thermalResistance)
 	).apply(inst, JsonTemperatureResistance::new));
 
 	public float temperature;

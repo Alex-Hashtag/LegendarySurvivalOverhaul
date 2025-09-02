@@ -82,7 +82,7 @@ public class MinecraftTemperatureProvider extends TemperatureDataProvider {
         item("netherite_chestplate").coldResistance(2.0f);
         item("netherite_helmet").coldResistance(1.0f);
 
-        mount("strider").temperature(-3.0f);
+        mount("strider").heatResistance(7.0f);
 
         consumable("mushroom_stew")
                 .addTemperature(temperatureConsumable(TemporaryModifierGroupEnum.FOOD).temperatureLevel(1).duration(1200));

@@ -3,10 +3,6 @@ package sfiomn.legendarysurvivaloverhaul.common.integration.eclipticseasons;
 import com.teamtea.eclipticseasons.api.EclipticSeasonsApi;
 import com.teamtea.eclipticseasons.api.constant.solar.Season;
 import com.teamtea.eclipticseasons.api.constant.solar.SolarTerm;
-import com.teamtea.eclipticseasons.api.util.EclipticUtil;
-import com.teamtea.eclipticseasons.common.core.biome.WeatherManager;
-import com.teamtea.eclipticseasons.common.core.map.MapChecker;
-import com.teamtea.eclipticseasons.config.CommonConfig;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.Level;
@@ -52,9 +48,10 @@ public class EclipticSeasonsUtil {
     }
 
     public static float getBlendedSeasonModifier(double previousSeasonModifier, double currentSeasonModifier, double nextSeasonModifier, int time, int subSeasonDuration) {
-        return time < subSeasonDuration / 2 ?
-                calculateSinusoidalBetweenSeasons(previousSeasonModifier, currentSeasonModifier, time + (subSeasonDuration / 2), subSeasonDuration):
-                calculateSinusoidalBetweenSeasons(currentSeasonModifier, nextSeasonModifier, time - (subSeasonDuration / 2), subSeasonDuration);
+        if (time < subSeasonDuration / 2)
+            return calculateSinusoidalBetweenSeasons(previousSeasonModifier, currentSeasonModifier, time + (subSeasonDuration / 2), subSeasonDuration);
+
+        return calculateSinusoidalBetweenSeasons(currentSeasonModifier, nextSeasonModifier, time - (subSeasonDuration / 2), subSeasonDuration);
     }
 
     public static float calculateSinusoidalBetweenSeasons(double previousSeasonModifier, double nextSeasonModifier, int time, int subSeasonDuration) {
@@ -84,24 +81,24 @@ public class EclipticSeasonsUtil {
 
     public static int getDayDuration(Level level) {
         if (!LegendarySurvivalOverhaul.eclipticSeasonsLoaded)
-            return 24000;
+            return 12000;
 
         return EclipticSeasonsApi.getInstance().getSolarTerm(level).getDayTime();
     }
 
-    public static int getDaysInSolarTerm() {
+    public static int getDaysInSolarTerm(Level level) {
         if (!LegendarySurvivalOverhaul.eclipticSeasonsLoaded)
             return 0;
 
-        return CommonConfig.Season.lastingDaysOfEachTerm.get();
+        return EclipticSeasonsApi.getInstance().getLastingDaysOfEachTerm(level);
     }
 
-    public static double getTimeInSeasonCycle(Level level) {
+    public static double getDayInSeasonCycle(Level level) {
         if (!LegendarySurvivalOverhaul.eclipticSeasonsLoaded)
             return 0;
 
-        int seasonCycleTicks = EclipticUtil.getNowSolarDay(level);
-        return (double) seasonCycleTicks / (24.0f * getDaysInSolarTerm());
+        //  current day in the full season cycle / the total of days to make a full season cycle
+        return (double) EclipticSeasonsApi.getInstance().getSolarDays(level) / (24.0f * getDaysInSolarTerm(level));
     }
 
     public static Component seasonTooltip(Level level) {
@@ -118,7 +115,7 @@ public class EclipticSeasonsUtil {
         return Component.translatable("message.legendarysurvivaloverhaul.eclipticseasons.season_info",
                 solarTerm.getTranslation(),
                 season.getTranslation(),
-                EclipticUtil.getTimeInSolarTerm(level),
-                getDaysInSolarTerm());
+                eclipticApi.getTimeInTerm(level),
+                getDaysInSolarTerm(level));
     }
 }

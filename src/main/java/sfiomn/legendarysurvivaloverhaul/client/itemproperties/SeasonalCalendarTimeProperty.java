@@ -44,7 +44,7 @@ public class SeasonalCalendarTimeProperty implements ClampedItemPropertyFunction
                 if (LegendarySurvivalOverhaul.sereneSeasonsLoaded) {
                     d0 = SereneSeasonsUtil.getTimeInSeasonCycle(level);
                 } else if (LegendarySurvivalOverhaul.eclipticSeasonsLoaded)
-                    d0 = EclipticSeasonsUtil.getTimeInSeasonCycle(level);
+                    d0 = EclipticSeasonsUtil.getDayInSeasonCycle(level);
 
                 return Mth.positiveModulo((float) d0, 1.0F);
             }

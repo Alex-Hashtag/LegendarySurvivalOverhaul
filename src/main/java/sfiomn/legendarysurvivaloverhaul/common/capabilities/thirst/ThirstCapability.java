@@ -103,20 +103,20 @@ public class ThirstCapability implements IThirstCapability
 			// Exhausted, do a thirst tick
 			this.addThirstExhaustion(-4.0f);
 
-			if(this.getSaturationLevel() > 0.0f)
+			if (this.getSaturationLevel() > 0.0f)
 			{
 				// Exhaust from saturation
 				this.addSaturationLevel(-1.0f);
 			}
-			else if(DifficultyUtil.isModDangerous(level))
+			else if (DifficultyUtil.isModDangerous())
 			{
-				// Exhaust from thirst
+				// Exhaust from hydration
 				this.addHydrationLevel(-1);
 			}
 		}
 
 		// Hurt ticking
-		if(this.getHydrationLevel() <= 0 )
+		if (this.getHydrationLevel() <= 0 )
 		{
 			this.addThirstDamageTickTimer(1);
 
@@ -125,8 +125,8 @@ public class ThirstCapability implements IThirstCapability
 			{
 				this.setThirstDamageTickTimer(0);
 
-				if(DifficultyUtil.isModDangerous(level) &&
-						DifficultyUtil.healthAboveDifficulty(level, player) &&
+				if(DifficultyUtil.isModDangerous() &&
+						DifficultyUtil.healthAboveDifficulty(player) &&
 						!player.isSpectator() && !player.isCreative() &&
 						Config.Baked.dangerousDehydration)
 				{

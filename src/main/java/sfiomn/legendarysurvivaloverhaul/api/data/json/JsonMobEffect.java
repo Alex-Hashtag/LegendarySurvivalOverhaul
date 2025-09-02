@@ -9,9 +9,9 @@ public class JsonMobEffect {
     public static final Codec<JsonMobEffect> CODEC = RecordCodecBuilder.create(
             (inst) -> inst.group(
                 Codec.STRING.fieldOf("effect").forGetter(m -> m.name),
-                Codec.FLOAT.fieldOf("chance").forGetter(m -> m.chance),
+                Codec.FLOAT.optionalFieldOf("chance", 1.0f).forGetter(m -> m.chance),
                 Codec.INT.fieldOf("duration").forGetter(m -> m.duration),
-                Codec.INT.fieldOf("amplifier").forGetter(m -> m.amplifier)
+                Codec.INT.optionalFieldOf("amplifier", 0).forGetter(m -> m.amplifier)
             ).apply(inst, JsonMobEffect::new));
 
     public static final Codec<List<JsonMobEffect>> LIST_CODEC = CODEC.listOf();

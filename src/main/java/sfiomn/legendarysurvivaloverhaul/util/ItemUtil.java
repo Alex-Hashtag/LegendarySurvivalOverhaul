@@ -8,6 +8,8 @@ import net.minecraft.world.item.ShieldItem;
 import sfiomn.legendarysurvivaloverhaul.common.integration.curios.CuriosUtil;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
 
+import static sfiomn.legendarysurvivaloverhaul.util.EnumUtil.CompassInfo;
+
 public class ItemUtil {
 
     private ItemUtil() {}
@@ -46,11 +48,5 @@ public class ItemUtil {
             case HORIZONTAL -> "XZ: " + entity.blockPosition().getX() + " / " + entity.blockPosition().getZ();
             case NONE -> "";
         };
-    }
-
-    public enum CompassInfo {
-        FULL,
-        HORIZONTAL,
-        NONE
     }
 }

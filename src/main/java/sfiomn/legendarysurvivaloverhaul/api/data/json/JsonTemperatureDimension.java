@@ -6,8 +6,8 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 public class JsonTemperatureDimension {
     public static final Codec<JsonTemperatureDimension> CODEC = RecordCodecBuilder.<JsonTemperatureDimension>create((inst) -> inst.group(
             Codec.FLOAT.fieldOf("temperature").forGetter(d -> d.temperature),
-            Codec.INT.fieldOf("sea_level_height").forGetter(d -> d.seaLevelHeight),
-            Codec.BOOL.fieldOf("has_altitude").forGetter(d -> d.hasAltitude)
+            Codec.INT.optionalFieldOf("sea_level_height", 64).forGetter(d -> d.seaLevelHeight),
+            Codec.BOOL.optionalFieldOf("has_altitude", true).forGetter(d -> d.hasAltitude)
     ).apply(inst, JsonTemperatureDimension::new));
 
     public float temperature;

@@ -17,9 +17,10 @@ import sfiomn.legendarysurvivaloverhaul.common.integration.sereneseasons.SereneS
 import sfiomn.legendarysurvivaloverhaul.common.integration.terrafirmacraft.TerraFirmaCraftHeatItemModifier;
 import sfiomn.legendarysurvivaloverhaul.common.integration.terrafirmacraft.TerraFirmaCraftModifier;
 import sfiomn.legendarysurvivaloverhaul.common.temperature.*;
-import sfiomn.legendarysurvivaloverhaul.common.temperature.attribute.CoatModifier;
-import sfiomn.legendarysurvivaloverhaul.common.temperature.attribute.ItemModifier;
-import sfiomn.legendarysurvivaloverhaul.common.temperature.dynamic.ResistanceAttributeModifier;
+import sfiomn.legendarysurvivaloverhaul.common.temperature.attribute.CoatAttributeModifier;
+import sfiomn.legendarysurvivaloverhaul.common.temperature.attribute.ItemAttributeModifier;
+import sfiomn.legendarysurvivaloverhaul.common.temperature.dynamic.MountDynamicModifier;
+import sfiomn.legendarysurvivaloverhaul.common.temperature.dynamic.TemperatureResistanceModifier;
 
 import java.util.function.Supplier;
 
@@ -43,7 +44,7 @@ public class TemperatureModifierRegistry
 	public static final RegistryObject<ModifierBase> BIOME = MODIFIERS.register("biome", BiomeModifier::new);
 	public static final RegistryObject<ModifierBase> BLOCKS = MODIFIERS.register("blocks", BlockModifier::new);
 	public static final RegistryObject<ModifierBase> DIMENSION = MODIFIERS.register("dimension", DimensionModifier::new);
-	public static final RegistryObject<ModifierBase> ENTITY = MODIFIERS.register("entity", MountModifier::new);
+	public static final RegistryObject<ModifierBase> MOUNT = MODIFIERS.register("mount", MountModifier::new);
 	public static final RegistryObject<ModifierBase> FREEZE = MODIFIERS.register("freeze", FreezeModifier::new);
 	public static final RegistryObject<ModifierBase> ON_FIRE = MODIFIERS.register("on_fire", OnFireModifier::new);
 	public static final RegistryObject<ModifierBase> PLAYER_HUDDLING = MODIFIERS.register("player_huddling", PlayerHuddlingModifier::new);
@@ -52,10 +53,11 @@ public class TemperatureModifierRegistry
 	public static final RegistryObject<ModifierBase> WEATHER = MODIFIERS.register("weather", WeatherModifier::new);
 	public static final RegistryObject<ModifierBase> WETNESS = MODIFIERS.register("wetness", WetModifier::new);
 
-	public static final RegistryObject<AttributeModifierBase> ITEM = ITEM_ATTRIBUTE_MODIFIERS.register("item", ItemModifier::new);
-	public static final RegistryObject<AttributeModifierBase> COAT = ITEM_ATTRIBUTE_MODIFIERS.register("coat", CoatModifier::new);
+	public static final RegistryObject<AttributeModifierBase> ITEM_ATTRIBUTE = ITEM_ATTRIBUTE_MODIFIERS.register("item_attribute", ItemAttributeModifier::new);
+	public static final RegistryObject<AttributeModifierBase> COAT_ATTRIBUTE = ITEM_ATTRIBUTE_MODIFIERS.register("coat_attribute", CoatAttributeModifier::new);
 
-	public static final RegistryObject<DynamicModifierBase> RESISTANCE_ATTRIBUTE = DYNAMIC_MODIFIERS.register("resistance_attribute", ResistanceAttributeModifier::new);
+	public static final RegistryObject<DynamicModifierBase> TEMPERATURE_RESISTANCE = DYNAMIC_MODIFIERS.register("temperature_resistance", TemperatureResistanceModifier::new);
+	public static final RegistryObject<DynamicModifierBase> MOUNT_DYNAMIC = DYNAMIC_MODIFIERS.register("mount_dynamic", MountDynamicModifier::new);
 
 	// Mod Compat
 	public static final RegistryObject<ModifierBase> SERENE_SEASONS = MODIFIERS.register("integration/serene_seasons", SereneSeasonsModifier::new);

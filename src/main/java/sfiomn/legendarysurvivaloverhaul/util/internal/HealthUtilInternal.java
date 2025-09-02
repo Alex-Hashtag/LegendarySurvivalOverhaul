@@ -31,20 +31,16 @@ public class HealthUtilInternal implements IHealthUtil {
     {
         double maxHealth = getPlayerMaxHealth(player);
 
-        double baseHealth = 20;
-        if (player.getAttribute(Attributes.MAX_HEALTH) != null)
-            baseHealth = Objects.requireNonNull(player.getAttribute(Attributes.MAX_HEALTH)).getBaseValue();
+        double defaultMaxHealth = getDefaultMaxHealth(player);
 
-        baseHealth += getMaxHealthFromModifiers(player);
-
-        HEALTH_ATTRIBUTE.addModifier(player, HEALTH_ATTRIBUTE_UUID, maxHealth - baseHealth);
+        HEALTH_ATTRIBUTE.addModifier(player, HEALTH_ATTRIBUTE_UUID, maxHealth - defaultMaxHealth);
         player.setHealth(Math.min(player.getMaxHealth(), player.getHealth()));
     }
 
     @Override
     public double getPlayerMaxHealth(Player player) {
-        double maxHealth = Config.Baked.initialHealth;
-        maxHealth += getMaxHealthFromModifiers(player);
+        double maxHealth = getDefaultMaxHealth(player);
+        maxHealth += Config.Baked.initialHealth - 20;
 
         if (Config.Baked.healthOverhaulEnabled) {
             HealthCapability healthCapability = CapabilityUtil.getHealthCapability(player);
@@ -58,8 +54,8 @@ public class HealthUtilInternal implements IHealthUtil {
 
     @Override
     public double getPlayerStableMaxHealth(Player player) {
-        double maxHealth = Config.Baked.initialHealth;
-        maxHealth += getMaxHealthFromModifiers(player);
+        double maxHealth = getDefaultMaxHealth(player);
+        maxHealth += Config.Baked.initialHealth - 20;
 
         if (Config.Baked.healthOverhaulEnabled) {
             HealthCapability healthCapability = CapabilityUtil.getHealthCapability(player);
@@ -115,18 +111,17 @@ public class HealthUtilInternal implements IHealthUtil {
         updatePlayerMaxHealthAttribute(player);
     }
 
-    private double getMaxHealthFromModifiers(Player player) {
-        double maxHealthModified = 0;
-
+    private double getDefaultMaxHealth(Player player) {
         if (player.getAttribute(Attributes.MAX_HEALTH) == null)
-            return maxHealthModified;
+            return 20;
+
+        double defaultMaxHealth = Objects.requireNonNull(player.getAttribute(Attributes.MAX_HEALTH)).getBaseValue();
 
         for (AttributeModifier attributeModifier: Objects.requireNonNull(player.getAttribute(Attributes.MAX_HEALTH)).getModifiers()) {
             if (!attributeModifier.getId().equals(HEALTH_ATTRIBUTE_UUID))
-                maxHealthModified += attributeModifier.getAmount();
+                defaultMaxHealth += attributeModifier.getAmount();
         }
-        // Tackle a modified max health base value
-        maxHealthModified += Objects.requireNonNull(player.getAttribute(Attributes.MAX_HEALTH)).getBaseValue() - 20;
-        return maxHealthModified;
+
+        return defaultMaxHealth;
     }
 }

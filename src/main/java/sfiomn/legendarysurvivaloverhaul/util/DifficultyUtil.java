@@ -3,27 +3,25 @@ package sfiomn.legendarysurvivaloverhaul.util;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import sfiomn.legendarysurvivaloverhaul.config.Config;
 
 public final class DifficultyUtil
 {
-	// Utility class for dealing with damaging players based on their
-	// difficulty/mod settings
+	// Utility class for dealing with damaging players
 	
 	private DifficultyUtil() {}
 	
-	public static boolean isModDangerous(Level level)
+	public static boolean isModDangerous()
 	{
 		// can the mod do damage?
-        return level.getDifficulty() != Difficulty.PEACEFUL;
+        return Config.Baked.difficultyMode != EnumUtil.DifficultyMode.PEACEFUL;
     }
 	
-	public static boolean healthAboveDifficulty(Level level, Player player)
+	public static boolean healthAboveDifficulty(Player player)
 	{
-		// Kill the player in HARD mode, let him have 2 health in NORMAL mode
-		
-		Difficulty difficulty = level.getDifficulty();
-        return difficulty == Difficulty.HARD ||
-                (difficulty == Difficulty.NORMAL && player.getHealth() > 2f) ||
-                ((difficulty == Difficulty.EASY || difficulty == Difficulty.PEACEFUL) && player.getHealth() > 10f);
+		EnumUtil.DifficultyMode difficulty = Config.Baked.difficultyMode;
+        return difficulty == EnumUtil.DifficultyMode.HARD ||
+                (difficulty == EnumUtil.DifficultyMode.NORMAL && player.getHealth() > 2f) ||
+                ((difficulty == EnumUtil.DifficultyMode.EASY || difficulty == EnumUtil.DifficultyMode.PEACEFUL) && player.getHealth() > 10f);
 	}
 }

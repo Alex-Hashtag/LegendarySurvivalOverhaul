@@ -101,7 +101,7 @@ public class TemperatureDataManager {
      * @return Entity Temperature
      */
     @Nullable
-    public static JsonTemperature getMount(ResourceLocation mountRegistryName) {
+    public static JsonTemperatureResistance getMount(ResourceLocation mountRegistryName) {
         return internalMount.get(mountRegistryName);
     }
 

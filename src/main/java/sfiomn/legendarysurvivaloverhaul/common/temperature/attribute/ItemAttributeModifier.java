@@ -7,9 +7,9 @@ import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonTemperatureResistance;
 import sfiomn.legendarysurvivaloverhaul.api.data.manager.TemperatureDataManager;
 import sfiomn.legendarysurvivaloverhaul.api.temperature.AttributeModifierBase;
 
-public class ItemModifier extends AttributeModifierBase
+public class ItemAttributeModifier extends AttributeModifierBase
 {
-	public ItemModifier() {}
+	public ItemAttributeModifier() {}
 
 	@Override
 	public JsonTemperatureResistance getItemAttributes(ItemStack stack)

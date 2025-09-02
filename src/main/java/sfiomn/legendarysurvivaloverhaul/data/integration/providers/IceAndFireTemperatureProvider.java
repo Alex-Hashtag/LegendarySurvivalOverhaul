@@ -18,7 +18,10 @@ public class IceAndFireTemperatureProvider extends TemperatureDataProvider {
     @Override
     public void generate(HolderLookup.Provider provider, ExistingFileHelper existingFileHelper) {
 
-        mount("hippocampus").temperature(3.0f);
+        mount("hippocampus").coldResistance(4.0f);
+        mount("ice_dragon").temperature(-7.0f);
+        mount("fire_dragon").temperature(10.0f);
+        mount("lightning_dragon").temperature(10.0f);
 
         block("chared_cobblestone").addTemperature(temperatureBlock(6.0f));
         block("chared_dirt").addTemperature(temperatureBlock(6.0f));

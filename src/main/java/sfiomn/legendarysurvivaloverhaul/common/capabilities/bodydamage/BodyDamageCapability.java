@@ -20,6 +20,7 @@ import sfiomn.legendarysurvivaloverhaul.config.Config;
 import sfiomn.legendarysurvivaloverhaul.registry.ItemRegistry;
 import sfiomn.legendarysurvivaloverhaul.registry.MobEffectRegistry;
 import sfiomn.legendarysurvivaloverhaul.registry.SoundRegistry;
+import sfiomn.legendarysurvivaloverhaul.util.EnumUtil;
 import sfiomn.legendarysurvivaloverhaul.util.MathUtil;
 
 import java.util.*;
@@ -38,7 +39,8 @@ public class BodyDamageCapability implements IBodyDamageCapability
 	private boolean hasHeadache;
 	private boolean hasFirstAidSupplies;
 	private boolean hasFirstAidSuppliesBoosted;
-	private MobEffectInstance passiveLimbRegenerationEffect;
+	private MobEffectInstance passiveLimbRegenerationEffects;
+	private boolean passiveLimbRegenerationEnabled;
 	private int oldExpectedBrokenHearts;
 	private int updateTickTimer; // Update immediately first time around
 	private float playerMaxHealth;
@@ -56,7 +58,7 @@ public class BodyDamageCapability implements IBodyDamageCapability
 		this.hasHeadache = false;
 		this.hasFirstAidSupplies = false;
 		this.hasFirstAidSuppliesBoosted = false;
-		this.passiveLimbRegenerationEffect = null;
+		this.passiveLimbRegenerationEffects = null;
 		this.updateTickTimer = 20;
 		this.headacheTimer = 0;
 		this.expectedBrokenHearts = 0;
@@ -76,7 +78,7 @@ public class BodyDamageCapability implements IBodyDamageCapability
 		this.bodyParts.put(BodyPartEnum.LEFT_LEG, new BodyPart(BodyPartEnum.LEFT_LEG, (float) Config.Baked.legsPartHealth));
 		this.bodyParts.put(BodyPartEnum.LEFT_FOOT, new BodyPart(BodyPartEnum.LEFT_FOOT, (float) Config.Baked.feetPartHealth));
 
-		if (!Config.Baked.bodyPartHealthMode.equals("DYNAMIC")) {
+		if (Config.Baked.bodyPartHealthMode != EnumUtil.bodyPartHealthMode.DYNAMIC) {
 			for (BodyPart part: this.bodyParts.values()) {
 				part.setMaxHealth(part.getHealthMultiplier());
 			}
@@ -123,7 +125,7 @@ public class BodyDamageCapability implements IBodyDamageCapability
 			updateTickTimer = 0;
 			double playerMaxHealthCheckUpdate = HealthUtil.getPlayerStableMaxHealth(player);
 
-			if (Config.Baked.bodyPartHealthMode.equals("DYNAMIC") && playerMaxHealth != playerMaxHealthCheckUpdate) {
+			if (Config.Baked.bodyPartHealthMode == EnumUtil.bodyPartHealthMode.DYNAMIC && playerMaxHealth != playerMaxHealthCheckUpdate) {
 				playerMaxHealth = (float) playerMaxHealthCheckUpdate;
 				updateDynamicMaxHealth(playerMaxHealth);
 			}
@@ -179,7 +181,9 @@ public class BodyDamageCapability implements IBodyDamageCapability
 			if (hasFirstAidSupplies) {
 				this.hasFirstAidSuppliesBoosted = BodyDamageUtil.hasPlayerFirstAidSuppliesBoostingEffect(player);
 			} else {
-				this.passiveLimbRegenerationEffect = BodyDamageUtil.getPlayerPassiveLimbRegenerationEffect(player);
+				this.passiveLimbRegenerationEffects = BodyDamageUtil.getPlayerPassiveLimbRegenerationEffect(player);
+				this.passiveLimbRegenerationEnabled = this.passiveLimbRegenerationEffects != null ||
+						(Config.Baked.passiveLimbRegenerationOnFullHealth && HealthUtil.getPlayerStableMaxHealth(player) == player.getHealth());
 			}
 		}
 
@@ -201,18 +205,21 @@ public class BodyDamageCapability implements IBodyDamageCapability
 				healingTickTimer = 0;
 
 				healMostDamaged(player,
-						Config.Baked.firstAidSuppliesLimbRegenerationMode,
+						Config.Baked.limbRegenerationMode,
 						(float) Config.Baked.firstAidSuppliesLimbHealthRegenerated,
 						Config.Baked.firstAidSuppliesHealingOverflow,
 						Config.Baked.firstAidSuppliesExhaustsFood);
 			}
-		} else if (this.passiveLimbRegenerationEffect != null) {
-			int passiveTickTimer = Config.Baked.passiveLimbRegenerationAmplificationEnabled ? Config.Baked.passiveLimbRegenerationTickTimer >> this.passiveLimbRegenerationEffect.getAmplifier() : Config.Baked.passiveLimbRegenerationTickTimer;
+		} else if (this.passiveLimbRegenerationEnabled) {
+			int passiveTickTimer = Config.Baked.passiveLimbRegenerationTickTimer;
+			if (this.passiveLimbRegenerationEffects != null && Config.Baked.passiveLimbRegenerationAmplificationEnabled)
+				passiveTickTimer = Config.Baked.passiveLimbRegenerationTickTimer >> this.passiveLimbRegenerationEffects.getAmplifier();
+
 			if (healingTickTimer++ >= passiveTickTimer) {
 				healingTickTimer = 0;
 
 				healMostDamaged(player,
-						"SIMPLE",
+						EnumUtil.limbRegenerationMode.SIMPLE,
 						(float) Config.Baked.passiveLimbHealthRegenerated,
 						true,
 						true);
@@ -230,14 +237,14 @@ public class BodyDamageCapability implements IBodyDamageCapability
 		player.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, blindnessTime, 0, false, false, true));
 	}
 
-	private void healMostDamaged(Player player, String healingMode, float healingValue, boolean overflow, boolean exhaustFood) {
+	private void healMostDamaged(Player player, EnumUtil.limbRegenerationMode healingMode, float healingValue, boolean overflow, boolean exhaustFood) {
 		BodyPart mostDamaged = getLowestHealthBodyPart();
 		float damage = mostDamaged.getDamage();
 
 		float actualHealingValue;
-		if (healingMode.equals("PLAYER_DYNAMIC")) {
+		if (healingMode == EnumUtil.limbRegenerationMode.PLAYER_DYNAMIC) {
 			actualHealingValue = MathUtil.ceil(healingValue * player.getMaxHealth(), 2);
-		} else if (healingMode.equals("LIMB_DYNAMIC")) {
+		} else if (healingMode == EnumUtil.limbRegenerationMode.LIMB_DYNAMIC) {
 			actualHealingValue = MathUtil.ceil(healingValue * mostDamaged.getMaxHealth(), 2);
 		} else {
 			actualHealingValue = healingValue;
@@ -254,7 +261,7 @@ public class BodyDamageCapability implements IBodyDamageCapability
 		healingFunction.accept(mostDamaged.getBodyPartEnum(), actualHealingValue);
 		float overflowHealing = actualHealingValue - damage;
 
-		if (overflow && overflowHealing > 0.0f && !healingMode.equals("LIMB_DYNAMIC")) {
+		if (overflow && overflowHealing > 0.0f && healingMode != EnumUtil.limbRegenerationMode.LIMB_DYNAMIC) {
 			mostDamaged = getLowestHealthBodyPart();
 			healingFunction.accept(mostDamaged.getBodyPartEnum(), overflowHealing);
 		}
@@ -278,9 +285,9 @@ public class BodyDamageCapability implements IBodyDamageCapability
 			BodyPart bodyPart = bodyPartPair.getValue();
 			if (Config.Baked.healthOverhaulEnabled && bodyPart.getDamage() >= bodyPart.getMaxHealth()) {
 				expectedBrokenHearts += switch (Config.Baked.brokenHeartsPerInjuredLimbMode) {
-					case "PLAYER_DYNAMIC":
+					case PLAYER_DYNAMIC:
 						yield Config.Baked.brokenHeartsPerInjuredLimb * this.playerMaxHealth;
-					case "LIMB_DYNAMIC":
+					case LIMB_DYNAMIC:
 						yield Config.Baked.brokenHeartsPerInjuredLimb * bodyPart.getMaxHealth();
                     default:
 						yield Config.Baked.brokenHeartsPerInjuredLimb;

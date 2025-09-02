@@ -6,9 +6,9 @@ import sfiomn.legendarysurvivaloverhaul.api.item.CoatEnum;
 import sfiomn.legendarysurvivaloverhaul.api.temperature.AttributeModifierBase;
 import sfiomn.legendarysurvivaloverhaul.api.temperature.TemperatureUtil;
 
-public class CoatModifier extends AttributeModifierBase
+public class CoatAttributeModifier extends AttributeModifierBase
 {
-	public CoatModifier() {}
+	public CoatAttributeModifier() {}
 
 	@Override
 	public JsonTemperatureResistance getItemAttributes(ItemStack stack)

@@ -13,7 +13,7 @@ import net.minecraftforge.fml.ModList;
 import net.minecraftforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
-import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonTemperature;
+import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonTemperatureResistance;
 import sfiomn.legendarysurvivaloverhaul.api.data.manager.ITemperatureMountManager;
 import sfiomn.legendarysurvivaloverhaul.network.packets.SyncTemperatureMountsPacket;
 
@@ -23,7 +23,7 @@ import java.util.Map;
 public class TemperatureMountListener extends SimpleJsonResourceReloadListener implements ITemperatureMountManager {
 
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
-    private static final Map<ResourceLocation, JsonTemperature> TEMPERATURE_MOUNTS = new HashMap<>();
+    private static final Map<ResourceLocation, JsonTemperatureResistance> TEMPERATURE_MOUNTS = new HashMap<>();
 
     public TemperatureMountListener() {
         super(GSON, LegendarySurvivalOverhaul.MOD_ID + "/temperature/mounts");
@@ -35,8 +35,8 @@ public class TemperatureMountListener extends SimpleJsonResourceReloadListener i
 
         resourceLocationJsonElementMap.forEach((key, json) -> {
             try {
-                var parsedJson = JsonTemperature.CODEC.parse(JsonOps.INSTANCE, json);
-                JsonTemperature temperature = parsedJson.getOrThrow(false, error -> LegendarySurvivalOverhaul.LOGGER.error("Failed parsing temperature mount : {}", error));
+                var parsedJson = JsonTemperatureResistance.CODEC.parse(JsonOps.INSTANCE, json);
+                JsonTemperatureResistance temperature = parsedJson.getOrThrow(false, error -> LegendarySurvivalOverhaul.LOGGER.error("Failed parsing temperature mount : {}", error));
                 if (ModList.get().isLoaded(key.getNamespace()))
                     TEMPERATURE_MOUNTS.put(key, temperature);
             } catch (JsonParseException error) {
@@ -51,13 +51,13 @@ public class TemperatureMountListener extends SimpleJsonResourceReloadListener i
         SyncTemperatureMountsPacket.sendTo(packetTarget, TEMPERATURE_MOUNTS);
     }
 
-    public static void acceptServerTemperatureMounts(Map<ResourceLocation, JsonTemperature> temperatureMounts) {
+    public static void acceptServerTemperatureMounts(Map<ResourceLocation, JsonTemperatureResistance> temperatureMounts) {
         TEMPERATURE_MOUNTS.clear();
         TEMPERATURE_MOUNTS.putAll(temperatureMounts);
     }
 
     @Override
-    public JsonTemperature get(ResourceLocation mountRegistryName) {
+    public JsonTemperatureResistance get(ResourceLocation mountRegistryName) {
         return TEMPERATURE_MOUNTS.get(mountRegistryName);
     }
 }

@@ -7,9 +7,8 @@ import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.tuple.Pair;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
-import sfiomn.legendarysurvivaloverhaul.api.temperature.TemperatureDisplayEnum;
 import sfiomn.legendarysurvivaloverhaul.config.json_old.JsonConfigRegistration;
-import sfiomn.legendarysurvivaloverhaul.util.ItemUtil;
+import sfiomn.legendarysurvivaloverhaul.util.EnumUtil;
 
 import java.io.IOException;
 import java.nio.file.FileAlreadyExistsException;
@@ -62,7 +61,7 @@ public class Config
 		public final ForgeConfigSpec.BooleanValue hideInfoFromDebug;
 		public final ForgeConfigSpec.BooleanValue naturalRegenerationEnabled;
 		public final ForgeConfigSpec.BooleanValue vanillaFreezeEnabled;
-		public final ForgeConfigSpec.EnumValue<ItemUtil.CompassInfo> compassInfoMode;
+		public final ForgeConfigSpec.EnumValue<EnumUtil.CompassInfo> compassInfoMode;
 		public final ForgeConfigSpec.BooleanValue showCoordinateOnMap;
 		public final ForgeConfigSpec.DoubleValue initialHealth;
 
@@ -73,6 +72,7 @@ public class Config
 
 		// Temperature
 		public final ForgeConfigSpec.BooleanValue temperatureEnabled;
+		public final ForgeConfigSpec.EnumValue<EnumUtil.DifficultyMode> difficultyMode;
 		public final ForgeConfigSpec.IntValue tempTickTime;
 		public final ForgeConfigSpec.DoubleValue minTemperatureModification;
 		public final ForgeConfigSpec.DoubleValue maxTemperatureModification;
@@ -214,7 +214,7 @@ public class Config
 		public final ForgeConfigSpec.IntValue permanentHearts;
 		public final ForgeConfigSpec.IntValue resilientHeartsWithBrokenHearts;
 		public final ForgeConfigSpec.DoubleValue brokenHeartsPerInjuredLimb;
-		public final ForgeConfigSpec.ConfigValue<String> brokenHeartsPerInjuredLimbMode;
+		public final ForgeConfigSpec.EnumValue<EnumUtil.brokenHeartsPerInjuredLimbMode> brokenHeartsPerInjuredLimbMode;
 
 		// Localized Body Damage
 		public final ForgeConfigSpec.BooleanValue localizedBodyDamageEnabled;
@@ -225,14 +225,15 @@ public class Config
 		public final ForgeConfigSpec.DoubleValue bodyHealingFoodExhaustion;
 		public final ForgeConfigSpec.IntValue minFoodOnBodyHealing;
 		public final ForgeConfigSpec.IntValue painkillerAddictionDuration;
-		
+
+		public final ForgeConfigSpec.BooleanValue passiveLimbRegenerationOnFullHealth;
 		public final ForgeConfigSpec.ConfigValue<List<? extends String>> passiveLimbRegenerationEffects;
 		public final ForgeConfigSpec.BooleanValue passiveLimbRegenerationAmplificationEnabled;
 		public final ForgeConfigSpec.DoubleValue passiveLimbHealthRegenerated;
 		public final ForgeConfigSpec.IntValue passiveLimbRegenerationTickTimer;
 
 		public final ForgeConfigSpec.DoubleValue firstAidSuppliesLimbHealthRegenerated;
-		public final ForgeConfigSpec.ConfigValue<String> firstAidSuppliesLimbRegenerationMode;
+		public final ForgeConfigSpec.EnumValue<EnumUtil.limbRegenerationMode> firstAidSuppliesLimbRegenerationMode;
 		public final ForgeConfigSpec.BooleanValue firstAidSuppliesHealingOverflow;
 		public final ForgeConfigSpec.IntValue firstAidSuppliesTickTimer;
 		public final ForgeConfigSpec.BooleanValue firstAidSuppliesExhaustsFood;
@@ -248,7 +249,7 @@ public class Config
 		public final ForgeConfigSpec.IntValue morphineUseTime;
 		public final ForgeConfigSpec.IntValue morphinePainkillerTickDuration;
 
-		public final ForgeConfigSpec.ConfigValue<String> bodyPartHealthMode;
+		public final ForgeConfigSpec.EnumValue<EnumUtil.bodyPartHealthMode> bodyPartHealthMode;
 		public final ForgeConfigSpec.DoubleValue headPartHealth;
 		public final ForgeConfigSpec.DoubleValue armsPartHealth;
 		public final ForgeConfigSpec.DoubleValue chestPartHealth;
@@ -290,7 +291,7 @@ public class Config
 		{
 			builder.comment(new String [] {
 					" Options related to enabling/disabling specific features",
-					" See the jsons folder to customize the temperature of specific blocks, liquids, armors, etc."
+					" See the data packs to customize the temperature of specific blocks, liquids, armors, etc."
 			}).push("core");
 			temperatureEnabled = builder
 					.comment(" Whether the temperature system is enabled.")
@@ -304,6 +305,15 @@ public class Config
 			localizedBodyDamageEnabled = builder
 					.comment(" Whether body members receive localized damages.")
 					.define("Localized Body Damage Enabled", true);
+			difficultyMode = builder
+					.comment(" How the mod represents a challenge for the player.",
+							" Accepted values are as follows:",
+							"   PEACEFUL - Temperature doesn't harm the player and the hydration doesn't decrease.",
+							"   EASY - Temperature and Thirst won't hurt the player health below 10 hearts.",
+							"   NORMAL - Temperature and Thirst hurts the player down to 1 heart.",
+							"   HARD - Temperature and Thirst can kill the player.",
+							" Any other value will default to HARD.")
+					.defineEnum("Temperature Difficulty Mode", EnumUtil.DifficultyMode.HARD);
 
 			builder.push("advanced");
 			routinePacketSync = builder
@@ -316,7 +326,7 @@ public class Config
 			builder.push("misc");
 			compassInfoMode = builder
 					.comment(" What information the compass returns when player is using it or in an item frame.")
-					.defineEnum("Compass Info Mode", ItemUtil.CompassInfo.FULL);
+					.defineEnum("Compass Info Mode", EnumUtil.CompassInfo.FULL);
 			showCoordinateOnMap = builder
 					.comment(" If enabled, use on a filled map will show destination coordinates.")
 					.define("Show Coordinate On Filled Map", true);
@@ -820,7 +830,7 @@ public class Config
 							"   PLAYER_DYNAMIC - The broken heart amount is a percentage value of the player max health using the percentage value defined in Broken Hearts Per Injured Limb.",
 							"   LIMB_DYNAMIC - The broken heart amount is a percentage value of the injured limb max health using the percentage value defined in Broken Hearts Per Injured Limb.",
 							" Any other value will default to SIMPLE.")
-					.define("Broken Hearts Per Injured Limb Mode", "PLAYER_DYNAMIC");
+					.defineEnum("Broken Hearts Per Injured Limb Mode", EnumUtil.brokenHeartsPerInjuredLimbMode.PLAYER_DYNAMIC);
 			builder.pop();
 			builder.pop();
 
@@ -857,6 +867,9 @@ public class Config
 
 			builder.push("healing-limbs");
 			builder.push("passive-regeneration");
+			passiveLimbRegenerationOnFullHealth = builder
+					.comment(" The limbs will be healed when the player is at max health.")
+					.define(" Passive Limb Regeneration On Full Health", true);
 			passiveLimbRegenerationEffects = builder
 					.comment(" The limbs will be healed when the player is under one of the mentioned effect, the most damaged limb first.")
 					.defineListAllowEmpty("Passive Limb Regeneration On Effects", List.of("minecraft:regeneration", "farmersdelight:comfort"), Config::validateEffectName);
@@ -882,7 +895,7 @@ public class Config
 							"   PLAYER_DYNAMIC - The limb health regenerated is a percentage value of the player max health using the percentage value defined in First Aid Supplies Limb Health Regenerated.",
 							"   LIMB_DYNAMIC - The limb health regenerated is a percentage value of the limb max health using the percentage value defined in First Aid Supplies Limb Health Regenerated.",
 							" Any other value will default to SIMPLE.")
-					.define("First Aid Supplies Limb Regeneration Mode", "LIMB_DYNAMIC");
+					.defineEnum("First Aid Supplies Limb Regeneration Mode", EnumUtil.limbRegenerationMode.LIMB_DYNAMIC);
 			firstAidSuppliesHealingOverflow = builder
 					.comment(" Whether the exceeded limb health regenerated will heal the next most damaged limb.",
 							" Only available for Regeneration Mode SIMPLE or PLAYER_DYNAMIC.")
@@ -946,7 +959,7 @@ public class Config
 							"   DYNAMIC - Body parts will have dynamic values based on the player's max health. In this case, the body parts health is a multiplier of the player's max health.",
 							"       In this case, if the 'headPartHeath = 0.3', the head will have '0.3' * 'player max health' health.",
 							" Any other value will default to SIMPLE.")
-					.define("Body Part Health Mode", "DYNAMIC");
+					.defineEnum("Body Part Health Mode", EnumUtil.bodyPartHealthMode.DYNAMIC);
 
 			headPartHealth = builder.defineInRange("Head Part Health", 0.4d, 0.0d, 1000.0d);
 			armsPartHealth = builder.comment(" Both arms will have this health.")
@@ -1051,7 +1064,7 @@ public class Config
 		public final ForgeConfigSpec.BooleanValue foodSaturationDisplayed;
 		public final ForgeConfigSpec.BooleanValue showVanillaBarAnimationOverlay;
 
-		public final ForgeConfigSpec.EnumValue<TemperatureDisplayEnum> temperatureDisplayMode;
+		public final ForgeConfigSpec.EnumValue<EnumUtil.temperatureDisplayMode> temperatureDisplayMode;
 		public final ForgeConfigSpec.IntValue temperatureDisplayOffsetX;
 		public final ForgeConfigSpec.IntValue temperatureDisplayOffsetY;
 		public final ForgeConfigSpec.IntValue bodyTemperatureDisplayOffsetX;
@@ -1111,7 +1124,7 @@ public class Config
 					.comment(" How temperature is displayed. Accepted values are as follows:",
 							"    SYMBOL - Display the player's current temperature as a symbol above the hotbar.",
 							"    NONE - Disable the temperature indicator.")
-					.defineEnum("Temperature Display Mode", TemperatureDisplayEnum.SYMBOL);
+					.defineEnum("Temperature Display Mode", EnumUtil.temperatureDisplayMode.SYMBOL);
 			temperatureDisplayOffsetX = builder
 					.comment(" The X and Y offset of the temperature indicator. Set both to 0 for no offset.")
 					.defineInRange("Temperature Display X Offset", 0, -10000, 10000);
@@ -1234,9 +1247,10 @@ public class Config
 		public static boolean hideInfoFromDebug;
 		public static boolean naturalRegenerationEnabled;
 		public static boolean vanillaFreezeEnabled;
-		public static ItemUtil.CompassInfo compassInfoMode;
+		public static EnumUtil.CompassInfo compassInfoMode;
 		public static boolean showCoordinateOnMap;
 		public static double initialHealth;
+		public static EnumUtil.DifficultyMode difficultyMode;
 
 		// Food
 		public static double baseFoodExhaustion;
@@ -1385,7 +1399,7 @@ public class Config
 		public static int permanentHearts;
 		public static int resilientHeartsWithBrokenHearts;
 		public static double brokenHeartsPerInjuredLimb;
-		public static String brokenHeartsPerInjuredLimbMode;
+		public static EnumUtil.brokenHeartsPerInjuredLimbMode brokenHeartsPerInjuredLimbMode;
 
 		// Body members damage
 		public static boolean localizedBodyDamageEnabled;
@@ -1397,20 +1411,21 @@ public class Config
 		public static int minFoodOnBodyHealing;
 		public static int painkillerAddictionDuration;
 
+		public static boolean passiveLimbRegenerationOnFullHealth;
 		public static List<? extends String> passiveLimbRegenerationEffects;
 		public static boolean passiveLimbRegenerationAmplificationEnabled;
 		public static double passiveLimbHealthRegenerated;
 		public static int passiveLimbRegenerationTickTimer;
 
 		public static double firstAidSuppliesLimbHealthRegenerated;
-		public static String firstAidSuppliesLimbRegenerationMode;
+		public static EnumUtil.limbRegenerationMode limbRegenerationMode;
 		public static boolean firstAidSuppliesHealingOverflow;
 		public static int firstAidSuppliesTickTimer;
 		public static boolean firstAidSuppliesExhaustsFood;
 		public static List<? extends String> firstAidSuppliesBoostedOnEffects;
 		public static double firstAidSuppliesBoostedTickTimerMultiplier;
 
-		public static String bodyPartHealthMode;
+		public static EnumUtil.bodyPartHealthMode bodyPartHealthMode;
 		public static double headPartHealth;
 		public static double armsPartHealth;
 		public static double chestPartHealth;
@@ -1458,7 +1473,7 @@ public class Config
 		public static boolean morphineSyringeApplyPainkillerAddiction;
 
 		// Client Config
-		public static TemperatureDisplayEnum temperatureDisplayMode;
+		public static EnumUtil.temperatureDisplayMode temperatureDisplayMode;
 		public static int temperatureDisplayOffsetX;
 		public static int temperatureDisplayOffsetY;
 		public static int bodyTemperatureDisplayOffsetX;
@@ -1509,6 +1524,7 @@ public class Config
 				compassInfoMode = COMMON.compassInfoMode.get();
 				showCoordinateOnMap = COMMON.showCoordinateOnMap.get();
 				initialHealth = COMMON.initialHealth.get();
+				difficultyMode = COMMON.difficultyMode.get();
 
 				baseFoodExhaustion = COMMON.baseFoodExhaustion.get();
 				sprintingFoodExhaustion = COMMON.sprintingFoodExhaustion.get();
@@ -1669,13 +1685,14 @@ public class Config
 				minFoodOnBodyHealing = COMMON.minFoodOnBodyHealing.get();
 				painkillerAddictionDuration = COMMON.painkillerAddictionDuration.get();
 
+				passiveLimbRegenerationOnFullHealth = COMMON.passiveLimbRegenerationOnFullHealth.get();
 				passiveLimbRegenerationEffects = COMMON.passiveLimbRegenerationEffects.get();
 				passiveLimbRegenerationAmplificationEnabled = COMMON.passiveLimbRegenerationAmplificationEnabled.get();
 				passiveLimbHealthRegenerated = COMMON.passiveLimbHealthRegenerated.get();
 				passiveLimbRegenerationTickTimer = COMMON.passiveLimbRegenerationTickTimer.get();
 
 				firstAidSuppliesLimbHealthRegenerated = COMMON.firstAidSuppliesLimbHealthRegenerated.get();
-				firstAidSuppliesLimbRegenerationMode = COMMON.firstAidSuppliesLimbRegenerationMode.get();
+				limbRegenerationMode = COMMON.firstAidSuppliesLimbRegenerationMode.get();
 				firstAidSuppliesHealingOverflow = COMMON.firstAidSuppliesHealingOverflow.get();
 				firstAidSuppliesTickTimer = COMMON.firstAidSuppliesTickTimer.get();
 				firstAidSuppliesExhaustsFood = COMMON.firstAidSuppliesExhaustsFood.get();

@@ -2,7 +2,6 @@ package sfiomn.legendarysurvivaloverhaul.common.integration.eclipticseasons;
 
 import com.teamtea.eclipticseasons.api.EclipticSeasonsApi;
 import com.teamtea.eclipticseasons.api.constant.solar.SolarTerm;
-import com.teamtea.eclipticseasons.api.util.EclipticUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -49,13 +48,13 @@ public class EclipticSeasonsModifier extends ModifierBase
 			return 0.0f;
 
 		SolarTerm solarTerm = EclipticSeasonsApi.getInstance().getSolarTerm(level);
-		
 		if (solarTerm == SolarTerm.NONE)
 			return 0.0f;
 
-		int timeInSubSeason = (int) (EclipticUtil.getTimeInSolarTerm(level) * 24000 + level.getLevelData().getDayTime());
+		int timeInSubSeason = (int) (EclipticSeasonsApi.getInstance().getTimeInTerm(level) * 24000 + level.getLevelData().getDayTime() % 24000);
+		int subSeasonDuration = EclipticSeasonsUtil.getDaysInSolarTerm(level) * 24000;
 		int ordinal = solarTerm.ordinal();
-		float value = getBlendedSeasonModifier(getSeasonModifier(ordinal - 1), getSeasonModifier(ordinal), getSeasonModifier(ordinal + 1), timeInSubSeason, EclipticSeasonsUtil.getDaysInSolarTerm());
+		float value = getBlendedSeasonModifier(getSeasonModifier(ordinal - 1), getSeasonModifier(ordinal), getSeasonModifier(ordinal + 1), timeInSubSeason, subSeasonDuration);
 		double targetUndergroundTemperature = 0;
 
 		return applyUndergroundEffect(value, level, pos, (float) targetUndergroundTemperature);

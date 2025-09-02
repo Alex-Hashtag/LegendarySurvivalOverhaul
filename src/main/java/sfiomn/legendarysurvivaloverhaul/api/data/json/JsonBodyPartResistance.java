@@ -6,26 +6,26 @@ import sfiomn.legendarysurvivaloverhaul.api.bodydamage.BodyPartEnum;
 
 public class JsonBodyPartResistance {
     public static final Codec<JsonBodyPartResistance> CODEC = RecordCodecBuilder.create((inst) -> inst.group(
-            Codec.DOUBLE.fieldOf("body_resistance").forGetter(c -> c.bodyResistance),
-            Codec.DOUBLE.fieldOf("head_resistance").forGetter(c -> c.headResistance),
-            Codec.DOUBLE.fieldOf("chest_resistance").forGetter(c -> c.chestResistance),
-            Codec.DOUBLE.fieldOf("right_arm_resistance").forGetter(c -> c.rightArmResistance),
-            Codec.DOUBLE.fieldOf("left_arm_resistance").forGetter(c -> c.leftArmResistance),
-            Codec.DOUBLE.fieldOf("legs_resistance").forGetter(c -> c.legsResistance),
-            Codec.DOUBLE.fieldOf("feet_resistance").forGetter(c -> c.feetResistance)
+            Codec.FLOAT.optionalFieldOf("body_resistance", 0.0f).forGetter(c -> c.bodyResistance),
+            Codec.FLOAT.optionalFieldOf("head_resistance", 0.0f).forGetter(c -> c.headResistance),
+            Codec.FLOAT.optionalFieldOf("chest_resistance", 0.0f).forGetter(c -> c.chestResistance),
+            Codec.FLOAT.optionalFieldOf("right_arm_resistance", 0.0f).forGetter(c -> c.rightArmResistance),
+            Codec.FLOAT.optionalFieldOf("left_arm_resistance", 0.0f).forGetter(c -> c.leftArmResistance),
+            Codec.FLOAT.optionalFieldOf("legs_resistance", 0.0f).forGetter(c -> c.legsResistance),
+            Codec.FLOAT.optionalFieldOf("feet_resistance", 0.0f).forGetter(c -> c.feetResistance)
     ).apply(inst, JsonBodyPartResistance::new));
 
-    public double bodyResistance;
-    public double headResistance;
-    public double chestResistance;
-    public double rightArmResistance;
-    public double leftArmResistance;
-    public double legsResistance;
-    public double feetResistance;
+    public float bodyResistance;
+    public float headResistance;
+    public float chestResistance;
+    public float rightArmResistance;
+    public float leftArmResistance;
+    public float legsResistance;
+    public float feetResistance;
 
-    public JsonBodyPartResistance(double bodyResistance, double headResistance, double chestResistance,
-                                  double rightArmResistance, double leftArmResistance,
-                                  double legsResistance, double feetResistance) {
+    public JsonBodyPartResistance(float bodyResistance, float headResistance, float chestResistance,
+                                  float rightArmResistance, float leftArmResistance,
+                                  float legsResistance, float feetResistance) {
         this.bodyResistance = bodyResistance;
         this.headResistance = headResistance;
         this.chestResistance = chestResistance;
@@ -35,7 +35,7 @@ public class JsonBodyPartResistance {
         this.feetResistance = feetResistance;
     }
 
-    public double getBodyPartResistance(BodyPartEnum bodyPartEnum) {
+    public float getBodyPartResistance(BodyPartEnum bodyPartEnum) {
         return switch (bodyPartEnum) {
             case HEAD -> headResistance;
             case CHEST -> chestResistance;
