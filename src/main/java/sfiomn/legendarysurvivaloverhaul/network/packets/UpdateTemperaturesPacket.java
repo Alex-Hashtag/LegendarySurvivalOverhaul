@@ -12,6 +12,7 @@ import net.minecraftforge.network.PacketDistributor;
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.temperature.TemperatureCapability;
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.temperature.TemperatureProvider;
 import sfiomn.legendarysurvivaloverhaul.network.NetworkHandler;
+import sfiomn.legendarysurvivaloverhaul.util.CapabilityUtil;
 
 import java.util.function.Supplier;
 
@@ -56,7 +57,7 @@ public class UpdateTemperaturesPacket
 				LocalPlayer player = Minecraft.getInstance().player;
 
 				if (player != null) {
-					TemperatureCapability temperature = player.getCapability(TemperatureProvider.TEMPERATURE_CAPABILITY).orElse(new TemperatureCapability());
+					TemperatureCapability temperature = CapabilityUtil.getTempCapability(player);
 
 					temperature.readNBT(compound);
 				}

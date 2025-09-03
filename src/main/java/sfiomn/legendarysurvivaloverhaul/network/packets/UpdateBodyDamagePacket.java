@@ -12,6 +12,7 @@ import net.minecraftforge.network.PacketDistributor;
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.bodydamage.BodyDamageCapability;
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.bodydamage.BodyDamageProvider;
 import sfiomn.legendarysurvivaloverhaul.network.NetworkHandler;
+import sfiomn.legendarysurvivaloverhaul.util.CapabilityUtil;
 
 import java.util.function.Supplier;
 
@@ -56,7 +57,7 @@ public class UpdateBodyDamagePacket
 				LocalPlayer player = Minecraft.getInstance().player;
 
 				if (player != null) {
-					BodyDamageCapability bodyDamageCapability = player.getCapability(BodyDamageProvider.BODY_DAMAGE_CAPABILITY).orElse(new BodyDamageCapability());
+					BodyDamageCapability bodyDamageCapability = CapabilityUtil.getBodyDamageCapability(player);
 
 					bodyDamageCapability.readNBT(compound);
 				}

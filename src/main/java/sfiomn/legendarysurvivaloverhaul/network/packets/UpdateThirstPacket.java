@@ -12,6 +12,7 @@ import net.minecraftforge.network.PacketDistributor;
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.thirst.ThirstCapability;
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.thirst.ThirstProvider;
 import sfiomn.legendarysurvivaloverhaul.network.NetworkHandler;
+import sfiomn.legendarysurvivaloverhaul.util.CapabilityUtil;
 
 import java.util.function.Supplier;
 
@@ -56,7 +57,7 @@ public class UpdateThirstPacket
 				LocalPlayer player = Minecraft.getInstance().player;
 
 				if (player != null) {
-					ThirstCapability thirst = player.getCapability(ThirstProvider.THIRST_CAPABILITY).orElse(new ThirstCapability());
+					ThirstCapability thirst = CapabilityUtil.getThirstCapability(player);
 
 					thirst.readNBT(compound);
 				}

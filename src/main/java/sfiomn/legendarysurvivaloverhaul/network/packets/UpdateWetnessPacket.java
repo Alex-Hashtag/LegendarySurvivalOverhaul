@@ -12,6 +12,7 @@ import net.minecraftforge.network.PacketDistributor;
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.wetness.WetnessCapability;
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.wetness.WetnessProvider;
 import sfiomn.legendarysurvivaloverhaul.network.NetworkHandler;
+import sfiomn.legendarysurvivaloverhaul.util.CapabilityUtil;
 
 import java.util.function.Supplier;
 
@@ -56,7 +57,7 @@ public class UpdateWetnessPacket
 				LocalPlayer player = Minecraft.getInstance().player;
 
 				if (player != null) {
-					WetnessCapability wetness = player.getCapability(WetnessProvider.WETNESS_CAPABILITY).orElse(new WetnessCapability());
+					WetnessCapability wetness = CapabilityUtil.getWetnessCapability(player);
 
 					wetness.readNBT(compound);
 				}
