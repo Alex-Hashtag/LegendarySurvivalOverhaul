@@ -90,7 +90,7 @@ public class BodyPartHealingTimeMessage
 
         if (jhc != null) {
             if (shouldApplyEffect)
-                player.addEffect(new MobEffectInstance(MobEffectRegistry.RECOVERY.get(), jhc.recoveryEffectDuration, jhc.recoveryEffectAmplifier, false, true, true));
+                player.addEffect(new MobEffectInstance(MobEffectRegistry.RECOVERY.get(), jhc.recoveryEffectDuration, jhc.recoveryEffectAmplifier, false, false, true));
             BodyDamageUtil.applyHealingTimeBodyPart(player, bodyPartEnum, jhc.healingValue, jhc.healingTime);
         }
     }

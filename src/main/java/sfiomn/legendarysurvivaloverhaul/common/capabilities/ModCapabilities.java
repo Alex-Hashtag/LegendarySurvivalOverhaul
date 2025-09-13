@@ -172,8 +172,7 @@ public class ModCapabilities
 
 		if (event.isWasDeath())
 		{
-			if (Config.Baked.localizedBodyDamageEnabled) {
-				sendBodyDamageUpdate(player);
+			if (Config.Baked.localizedBodyDamageEnabled && Config.Baked.healthOverhaulEnabled) {
 				BodyDamageUtil.updatePlayerBrokenHeartAttribute(player);
 			}
 
@@ -197,7 +196,6 @@ public class ModCapabilities
 					HealthUtil.updatePlayerMaxHealthAttribute(player);
 
 				player.setHealth(player.getMaxHealth());
-				sendHealthUpdate(player);
 			}
 		}
 		else

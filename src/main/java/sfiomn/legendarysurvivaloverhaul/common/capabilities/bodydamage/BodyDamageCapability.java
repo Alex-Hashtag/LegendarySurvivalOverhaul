@@ -127,7 +127,7 @@ public class BodyDamageCapability implements IBodyDamageCapability
 
 			if (Config.Baked.bodyPartHealthMode == EnumUtil.bodyPartHealthMode.DYNAMIC && playerMaxHealth != playerMaxHealthCheckUpdate) {
 				playerMaxHealth = (float) playerMaxHealthCheckUpdate;
-				updateDynamicMaxHealth(playerMaxHealth);
+				updateBodyPartDynamicMaxHealth(playerMaxHealth);
 			}
 
 			// Refresh all the malus a player should have
@@ -393,13 +393,13 @@ public class BodyDamageCapability implements IBodyDamageCapability
         };
 	}
 
-	private void updateDynamicMaxHealth(float maxHealth) {
+	private void updateBodyPartDynamicMaxHealth(float maxHealth) {
 		for (BodyPart bodyPart: this.bodyParts.values()) {
 			float newMaxHealth = Math.round(bodyPart.getHealthMultiplier() * maxHealth * 100) / 100.0f;
 			float oldMaxHealth = bodyPart.getMaxHealth();
 			bodyPart.setMaxHealth(newMaxHealth);
 			if (oldMaxHealth != 0)
-				bodyPart.setDamage(bodyPart.getDamage() + Math.max(newMaxHealth - oldMaxHealth, 0));
+				bodyPart.setDamage(bodyPart.getDamage() + newMaxHealth - oldMaxHealth);
 		}
 	}
 

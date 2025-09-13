@@ -458,7 +458,7 @@ public class Config
 			builder.push("biomes");
 			biomeTemperatureMultiplier = builder
 					.comment(" How much a biome's temperature effects are multiplied.")
-					.defineInRange("Biome Temperature Multiplier", 16.0d, 0.0d, 1000);
+					.defineInRange("Biome Temperature Multiplier", 18.0d, 0.0d, 1000);
 			biomeEffectsEnabled = builder
 					.comment(" Whether biomes will have an effect on a player's temperature.")
 					.define("Biomes affect Temperature", true);
