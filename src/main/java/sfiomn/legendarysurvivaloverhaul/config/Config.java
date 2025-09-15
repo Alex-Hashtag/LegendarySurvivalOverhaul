@@ -1092,6 +1092,7 @@ public class Config
 		public final ForgeConfigSpec.BooleanValue showHydrationTooltip;
 		public final ForgeConfigSpec.BooleanValue mergeHydrationAndSaturationTooltip;
 		public final ForgeConfigSpec.BooleanValue thirstSaturationDisplayed;
+		public final ForgeConfigSpec.BooleanValue thirstExhaustionDisplayed;
 		public final ForgeConfigSpec.BooleanValue lowHydrationEffect;
 		public final ForgeConfigSpec.BooleanValue showHydrationBar;
 		public final ForgeConfigSpec.BooleanValue showDrinkPreview;
@@ -1193,6 +1194,7 @@ public class Config
 			builder.pop();
 
 			builder.push("thirst");
+
 			builder.push("tooltip");
 			showHydrationTooltip = builder
 					.comment(" If enabled, show the hydration values in the item tooltip.")
@@ -1201,9 +1203,13 @@ public class Config
 					.comment(" If enabled, show the hydration and the saturation values on the same line in the tooltip.")
 					.define("Merge Hydration And Saturation Tooltip", true);
 			builder.pop();
+
 			thirstSaturationDisplayed = builder
 					.comment(" Whether the Thirst Saturation is displayed or not.")
 					.define("Render the thirst saturation", true);
+			thirstExhaustionDisplayed = builder
+					.comment(" Whether the Thirst Exhaustion is displayed or not (grey bar behind the hydration bar).")
+					.define("Render the thirst exhaustion", true);
 			lowHydrationEffect = builder
 					.comment(" If enabled, player's vision will become blurry when running low on hydration.")
 					.define("Low Thirst Effect", true);
@@ -1504,6 +1510,7 @@ public class Config
 		public static boolean showHydrationTooltip;
 		public static boolean mergeHydrationAndSaturationTooltip;
 		public static boolean thirstSaturationDisplayed;
+		public static boolean thirstExhaustionDisplayed;
 		public static boolean lowHydrationEffect;
 		public static boolean showHydrationBar;
 		public static boolean showDrinkPreview;
@@ -1783,6 +1790,7 @@ public class Config
 				bodyDamageIndicatorRenderHealthLimit = CLIENT.bodyDamageIndicatorRenderHealthLimit.get();
 
 				thirstSaturationDisplayed = CLIENT.thirstSaturationDisplayed.get();
+				thirstExhaustionDisplayed = CLIENT.thirstExhaustionDisplayed.get();
 				showHydrationTooltip = CLIENT.showHydrationTooltip.get();
 				mergeHydrationAndSaturationTooltip = CLIENT.mergeHydrationAndSaturationTooltip.get();
 				lowHydrationEffect = CLIENT.lowHydrationEffect.get();
