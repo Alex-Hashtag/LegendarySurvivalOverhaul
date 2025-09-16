@@ -13,8 +13,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
+import net.minecraft.core.registries.Registries;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jetbrains.annotations.NotNull;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.temperature.TemperatureUtil;
@@ -103,10 +103,10 @@ public class JeiIntegration implements IModPlugin {
     private ArrayList<SewingRecipe> sewingCoatRecipes() {
         ArrayList<SewingRecipe> sewingRecipes = new ArrayList<>();
 
-        for (Item item: ForgeRegistries.ITEMS) {
-            if (item instanceof ArmorItem && ForgeRegistries.ITEMS.getKey(item) != null) {
+        for (Item item: Registries.ITEMS) {
+            if (item instanceof ArmorItem && Registries.ITEMS.getKey(item) != null) {
                 addSewingRecipe(item, sewingRecipes);
-            } else if (isMutantMonstersArmor(item) && ForgeRegistries.ITEMS.getKey(item) != null) {
+            } else if (isMutantMonstersArmor(item) && Registries.ITEMS.getKey(item) != null) {
                 addSewingRecipe(item, sewingRecipes);
             }
         }
@@ -115,7 +115,7 @@ public class JeiIntegration implements IModPlugin {
     }
 
     private void addSewingRecipe(Item itemArmor, ArrayList<SewingRecipe> sewingRecipes) {
-        ResourceLocation itemArmorRegistryName = ForgeRegistries.ITEMS.getKey(itemArmor);
+        ResourceLocation itemArmorRegistryName = Registries.ITEMS.getKey(itemArmor);
         for (RegistryObject<Item> modItem : ItemRegistry.ITEMS.getEntries()) {
             if (modItem.get() instanceof CoatItem itemCoat && itemArmorRegistryName != null) {
                 ItemStack result = new ItemStack(itemArmor);

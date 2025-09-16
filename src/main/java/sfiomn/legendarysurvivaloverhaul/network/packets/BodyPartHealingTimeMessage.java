@@ -9,9 +9,9 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.network.NetworkDirection;
-import net.minecraftforge.network.NetworkEvent;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.network.NetworkDirection;
+import net.neoforged.neoforge.network.NetworkEvent;
+import net.minecraft.core.registries.Registries;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.bodydamage.BodyDamageUtil;
 import sfiomn.legendarysurvivaloverhaul.api.bodydamage.BodyPartEnum;
@@ -80,7 +80,7 @@ public class BodyPartHealingTimeMessage
                 usedItemStack = itemStackInBasket;
         }
 
-        ResourceLocation itemStackRegistryName = ForgeRegistries.ITEMS.getKey(usedItemStack.getItem());
+        ResourceLocation itemStackRegistryName = Registries.ITEMS.getKey(usedItemStack.getItem());
         JsonHealingConsumable jhc = BodyDamageDataManager.getHealingItem(itemStackRegistryName);
 
         player.serverLevel().playSound(null, player, SoundRegistry.HEAL_BODY_PART.get(), SoundSource.PLAYERS, 1.0f, 1.0f);

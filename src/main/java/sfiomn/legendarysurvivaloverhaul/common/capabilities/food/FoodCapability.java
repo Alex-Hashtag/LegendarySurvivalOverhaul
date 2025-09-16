@@ -3,7 +3,7 @@ package sfiomn.legendarysurvivaloverhaul.common.capabilities.food;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.event.TickEvent;
+import net.neoforged.neoforge.event.TickEvent;
 import sfiomn.legendarysurvivaloverhaul.api.food.IFoodCapability;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
 

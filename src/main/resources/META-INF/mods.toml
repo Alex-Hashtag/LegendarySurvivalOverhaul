@@ -7,7 +7,7 @@
 modLoader="javafml" #mandatory
 
 # A version range to match for said mod loader - for regular FML @Mod it will be the forge version
-loaderVersion="${loader_version_range}" #mandatory This is typically bumped every Minecraft version by Forge. See our download page for lists of versions.
+loaderVersion="${loader_version_range}" #mandatory This is typically bumped every Minecraft version by Forge/NeoForge. See download pages for lists of versions.
 
 # The license for you mod. This is mandatory metadata and allows for easier comprehension of your redistributive properties.
 # Review your options at https://choosealicense.com/. All rights reserved is the default copyright stance, and is thus the default here.
@@ -51,14 +51,12 @@ Making survival harder. Highly configurable so you can play the way you want.
 # A dependency - use the . to indicate dependency for a specific modid. Dependencies are optional.
 [[dependencies.${mod_id}]] #optional
     # the modid of the dependency
-    modId="forge" #mandatory
-    # Does this dependency have to exist - if not, ordering below must be specified
-    mandatory=true #mandatory
+    modId="neoforge" #mandatory
+    # The type of the dependency. One of: required, optional, incompatible, discouraged
+    type="required"
     # The version range of the dependency
-    versionRange="${forge_version_range}" #mandatory
-    # An ordering relationship for the dependency - BEFORE or AFTER required if the dependency is not mandatory
-    # BEFORE - This mod is loaded BEFORE the dependency
-    # AFTER - This mod is loaded AFTER the dependency
+    versionRange="[${neo_version},)" #mandatory
+    # An ordering relationship for the dependency
     ordering="NONE"
     # Side this dependency is applied on - BOTH, CLIENT or SERVER
     side="BOTH"
@@ -66,7 +64,7 @@ Making survival harder. Highly configurable so you can play the way you want.
 # Here's another dependency
 [[dependencies.${mod_id}]]
     modId="minecraft"
-    mandatory=true
+    type="required"
     # This version range declares a minimum of the current minecraft version up to but not including the next major version
     versionRange="${minecraft_version_range}"
     ordering="NONE"
@@ -74,35 +72,35 @@ Making survival harder. Highly configurable so you can play the way you want.
     
 [[dependencies.${mod_id}]]
     modId="sereneseasons"
-    mandatory=false
+    type="optional"
     versionRange="[9.1.0.0,)"
     ordering="BEFORE"
     side="BOTH"
     
 [[dependencies.${mod_id}]]
     modId="curios"
-    mandatory=false
+    type="optional"
     versionRange="[5.9.0+1.20.1,)"
     ordering="BEFORE"
     side="BOTH"
 
 [[dependencies.${mod_id}]]
     modId="beachparty"
-    mandatory=false
+    type="optional"
     versionRange="[2.0.0,)"
     ordering="BEFORE"
     side="BOTH"
 
 [[dependencies.${mod_id}]]
     modId="meadow"
-    mandatory=false
+    type="optional"
     versionRange="[1.3.20,)"
     ordering="BEFORE"
     side="BOTH"
 
 [[dependencies.${mod_id}]]
     modId="eclipticseasons"
-    mandatory=false
+    type="optional"
     versionRange="[0.11.2.1.1,)"
     ordering="BEFORE"
     side="BOTH"

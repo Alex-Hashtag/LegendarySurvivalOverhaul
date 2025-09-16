@@ -9,9 +9,8 @@ import net.minecraft.world.entity.decoration.ItemFrame;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
-import net.minecraftforge.client.gui.overlay.ForgeGui;
-import net.minecraftforge.client.gui.overlay.IGuiOverlay;
-import net.minecraftforge.common.ForgeMod;
+import net.neoforged.neoforge.client.gui.overlay.ExtendedGui;
+import net.neoforged.neoforge.client.gui.overlay.IGuiOverlay;
 import sereneseasons.api.SSItems;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.temperature.TemperatureItemCapability;
@@ -75,7 +74,7 @@ public class RenderTooltipFrame {
         }
     };
 
-    public static void render(ForgeGui forgeGui, GuiGraphics guiGraphics, int width, int height, Component text) {
+    public static void render(ExtendedGui forgeGui, GuiGraphics guiGraphics, int width, int height, Component text) {
         forgeGui.setupOverlayRenderState(true, false);
 
         Minecraft.getInstance().getProfiler().push("tooltip_frame");

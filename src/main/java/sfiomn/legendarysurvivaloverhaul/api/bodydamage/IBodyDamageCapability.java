@@ -2,7 +2,8 @@ package sfiomn.legendarysurvivaloverhaul.api.bodydamage;
 
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.event.TickEvent;
+import net.neoforged.neoforge.event.TickEvent;
+
 
 public interface IBodyDamageCapability
 {

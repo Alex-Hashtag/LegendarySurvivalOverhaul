@@ -13,14 +13,13 @@ import net.minecraft.world.effect.MobEffectUtil;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.RenderTooltipEvent;
-import net.minecraftforge.event.entity.player.ItemTooltipEvent;
-import net.minecraftforge.eventbus.api.EventPriority;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.neoforge.client.event.RenderTooltipEvent;
+import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
+import net.neoforged.bus.api.EventPriority;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.Mod;
+import net.minecraft.core.registries.Registries;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonHealingConsumable;
 import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonMobEffect;
@@ -42,7 +41,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-@Mod.EventBusSubscriber(modid = LegendarySurvivalOverhaul.MOD_ID, value = Dist.CLIENT, bus = EventBusSubscriber.Bus.FORGE)
+@Mod.EventBusSubscriber(modid = LegendarySurvivalOverhaul.MOD_ID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class TooltipHandler
 {
 	
@@ -52,7 +51,7 @@ public class TooltipHandler
 	{
 		ItemStack stack = event.getItemStack();
 
-		ResourceLocation itemRegistryName = ForgeRegistries.ITEMS.getKey(stack.getItem());
+		ResourceLocation itemRegistryName = Registries.ITEMS.getKey(stack.getItem());
 
 		if (!stack.isEmpty() && itemRegistryName != null)
 		{
@@ -143,7 +142,7 @@ public class TooltipHandler
 	}
 
 	private static void addFoodEffectText(ItemStack stack, List<Component> tooltips) {
-		ResourceLocation itemRegistryName = ForgeRegistries.ITEMS.getKey(stack.getItem());
+		ResourceLocation itemRegistryName = Registries.ITEMS.getKey(stack.getItem());
 		List<JsonTemperatureConsumable> jtcs = TemperatureDataManager.getConsumable(itemRegistryName);
 
 		if (jtcs != null) {
@@ -170,7 +169,7 @@ public class TooltipHandler
 
 	private static void addHealingText(ItemStack stack, List<Component> tooltips) {
 
-		ResourceLocation itemRegistryName = ForgeRegistries.ITEMS.getKey(stack.getItem());
+		ResourceLocation itemRegistryName = Registries.ITEMS.getKey(stack.getItem());
 		JsonHealingConsumable jsonConsumableHeal = BodyDamageDataManager.getHealingItem(itemRegistryName);
 
 		if (jsonConsumableHeal != null) {
@@ -201,7 +200,7 @@ public class TooltipHandler
 
 	private static void addShadeText(ItemStack stack, List<Component> tooltips) {
 
-		ResourceLocation itemRegistryName = ForgeRegistries.ITEMS.getKey(stack.getItem());
+		ResourceLocation itemRegistryName = Registries.ITEMS.getKey(stack.getItem());
 
 		if (itemRegistryName != null && (BeachpartyUtil.canProvideShade(itemRegistryName) || ArtifactsUtil.canProvideShade(itemRegistryName))) {
 			tooltips.add(
@@ -239,7 +238,7 @@ public class TooltipHandler
 	private static MutableComponent getHydrationEffectTooltip(double effectChance, String effectName, int amplifier, int duration) {
 		MobEffect effect = null;
 		if (effectName != null && !effectName.isEmpty() && effectChance > 0)
-			effect = ForgeRegistries.MOB_EFFECTS.getValue(new ResourceLocation(effectName));
+			effect = Registries.MOB_EFFECTS.getValue(new ResourceLocation(effectName));
 
 		if (effect == null)
 			return null;

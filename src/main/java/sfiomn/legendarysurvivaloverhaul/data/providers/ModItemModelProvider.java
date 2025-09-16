@@ -3,10 +3,10 @@ package sfiomn.legendarysurvivaloverhaul.data.providers;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
-import net.minecraftforge.client.model.generators.ItemModelProvider;
-import net.minecraftforge.client.model.generators.ModelFile;
-import net.minecraftforge.common.data.ExistingFileHelper;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.neoforge.client.model.generators.ItemModelProvider;
+import net.neoforged.neoforge.client.model.generators.ModelFile;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.registry.ItemRegistry;
 
@@ -110,7 +110,7 @@ public class ModItemModelProvider extends ItemModelProvider {
                 "layer0", new ResourceLocation(LegendarySurvivalOverhaul.MOD_ID, "item/seasonal_calendar/calendar_null"));
     }
 
-    private void simpleItem(RegistryObject<Item> item) {
+    private void simpleItem(DeferredHolder<Item, ? extends Item> item) {
         singleTexture(item.getId().getPath(), new ResourceLocation("item/generated"),
                 "layer0", new ResourceLocation(LegendarySurvivalOverhaul.MOD_ID, "item/" + item.getId().getPath()));
     }
@@ -120,32 +120,32 @@ public class ModItemModelProvider extends ItemModelProvider {
                 "layer0", new ResourceLocation(LegendarySurvivalOverhaul.MOD_ID, "item/" + jsonName));
     }
 
-    private void simpleArmorItem(RegistryObject<Item> item) {
+    private void simpleArmorItem(DeferredHolder<Item, ? extends Item> item) {
         singleTexture(item.getId().getPath(), new ResourceLocation("item/generated"),
                 "layer0", new ResourceLocation(LegendarySurvivalOverhaul.MOD_ID, "item/armor/" + item.getId().getPath()));
     }
 
-    private void simpleCoatItem(RegistryObject<Item> item) {
+    private void simpleCoatItem(DeferredHolder<Item, ? extends Item> item) {
         singleTexture(item.getId().getPath(), new ResourceLocation("item/generated"),
                 "layer0", new ResourceLocation(LegendarySurvivalOverhaul.MOD_ID, "item/coat/" + item.getId().getPath()));
     }
 
-    private void simpleHealingItem(RegistryObject<Item> item) {
+    private void simpleHealingItem(DeferredHolder<Item, ? extends Item> item) {
         singleTexture(item.getId().getPath(), new ResourceLocation("item/generated"),
                 "layer0", new ResourceLocation(LegendarySurvivalOverhaul.MOD_ID, "item/healing/" + item.getId().getPath()));
     }
 
-    private void simpleJuiceItem(RegistryObject<Item> item) {
+    private void simpleJuiceItem(DeferredHolder<Item, ? extends Item> item) {
         singleTexture(item.getId().getPath(), new ResourceLocation("item/generated"),
                 "layer0", new ResourceLocation(LegendarySurvivalOverhaul.MOD_ID, "item/juice/" + item.getId().getPath()));
     }
 
-    private void simplePaddingItem(RegistryObject<Item> item) {
+    private void simplePaddingItem(DeferredHolder<Item, ? extends Item> item) {
         singleTexture(item.getId().getPath(), new ResourceLocation("item/generated"),
                 "layer0", new ResourceLocation(LegendarySurvivalOverhaul.MOD_ID, "item/padding/" + item.getId().getPath()));
     }
 
-    private void canteenItem(RegistryObject<Item> canteenItem) {
+    private void canteenItem(DeferredHolder<Item, ? extends Item> canteenItem) {
         withExistingParent(canteenItem.getId().getPath(), new ResourceLocation("item/generated"))
                 .texture("layer0", new ResourceLocation(LegendarySurvivalOverhaul.MOD_ID, "item/" + canteenItem.getId().getPath()))
                 .override()

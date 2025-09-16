@@ -1,7 +1,7 @@
 package sfiomn.legendarysurvivaloverhaul.api.config.json_old.temperature;
 
 import net.minecraft.world.effect.MobEffect;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import sfiomn.legendarysurvivaloverhaul.api.temperature.TemporaryModifierGroupEnum;
 
 /**
@@ -13,33 +13,33 @@ import sfiomn.legendarysurvivaloverhaul.api.temperature.TemporaryModifierGroupEn
 
 public class JsonConsumableTemperature
 {
-	public TemporaryModifierGroupEnum group;
-	public int temperatureLevel;
-	public int duration;
-	private RegistryObject<MobEffect> effect;
-	private RegistryObject<MobEffect> oppositeEffect;
-	
-	public JsonConsumableTemperature(TemporaryModifierGroupEnum group, int temperatureLevel, int duration)
-	{
-		this.temperatureLevel = temperatureLevel;
-		this.duration = duration;
-		this.group = group;
-		this.effect = null;
-		this.oppositeEffect = null;
-		if (temperatureLevel > 0) {
-			this.effect = group.hotEffect;
-			this.oppositeEffect = group.coldEffect;
-		} else if (temperatureLevel < 0) {
-			this.effect = group.coldEffect;
-			this.oppositeEffect = group.hotEffect;
-		}
-	}
+    public TemporaryModifierGroupEnum group;
+    public int temperatureLevel;
+    public int duration;
+    private DeferredHolder<MobEffect, MobEffect> effect;
+    private DeferredHolder<MobEffect, MobEffect> oppositeEffect;
+    
+    public JsonConsumableTemperature(TemporaryModifierGroupEnum group, int temperatureLevel, int duration)
+    {
+        this.temperatureLevel = temperatureLevel;
+        this.duration = duration;
+        this.group = group;
+        this.effect = null;
+        this.oppositeEffect = null;
+        if (temperatureLevel > 0) {
+            this.effect = group.hotEffect;
+            this.oppositeEffect = group.coldEffect;
+        } else if (temperatureLevel < 0) {
+            this.effect = group.coldEffect;
+            this.oppositeEffect = group.hotEffect;
+        }
+    }
 
-	public MobEffect getEffect() {
-		return this.effect.get();
-	}
+    public MobEffect getEffect() {
+        return this.effect.get();
+    }
 
-	public MobEffect getOppositeEffect() {
-		return this.oppositeEffect.get();
-	}
+    public MobEffect getOppositeEffect() {
+        return this.oppositeEffect.get();
+    }
 }

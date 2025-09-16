@@ -10,9 +10,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
-import net.minecraftforge.common.Tags;
-import net.minecraftforge.common.crafting.PartialNBTIngredient;
-import net.minecraftforge.common.crafting.conditions.IConditionBuilder;
+import net.neoforged.neoforge.common.Tags;
 import org.jetbrains.annotations.NotNull;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.thirst.HydrationEnum;
@@ -21,18 +19,18 @@ import sfiomn.legendarysurvivaloverhaul.data.recipes.SewingRecipeBuilder;
 import sfiomn.legendarysurvivaloverhaul.registry.BlockRegistry;
 import sfiomn.legendarysurvivaloverhaul.registry.ItemRegistry;
 
-import java.util.function.Consumer;
+import net.minecraft.core.registries.BuiltInRegistries;
 
 import static sfiomn.legendarysurvivaloverhaul.util.internal.ThirstUtilInternal.HYDRATION_ENUM_TAG;
 
-public class ModRecipeProvider extends RecipeProvider implements IConditionBuilder {
+public class ModRecipeProvider extends RecipeProvider {
 
     public ModRecipeProvider(PackOutput generator) {
         super(generator);
     }
 
     @Override
-    protected void buildRecipes(@NotNull Consumer<FinishedRecipe> consumer) {
+    protected void buildRecipes(@NotNull RecipeOutput output) {
         ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, ItemRegistry.DESERT_HELMET.get())
                 .pattern("r#r")
                 .pattern("r r")
@@ -40,7 +38,7 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .define('r', Items.STRING)
                 .group("desert_armor")
                 .unlockedBy(getHasName(Items.LEATHER), has(Items.LEATHER))
-                .save(consumer);
+                .save(output);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, ItemRegistry.DESERT_BOOTS.get())
                 .pattern("r r")
@@ -49,7 +47,7 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .define('r', Items.STRING)
                 .group("desert_armor")
                 .unlockedBy(getHasName(Items.LEATHER), has(Items.LEATHER))
-                .save(consumer);
+                .save(output);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, ItemRegistry.DESERT_CHEST.get())
                 .pattern("r r")
@@ -59,7 +57,7 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .define('r', Items.STRING)
                 .unlockedBy(getHasName(Items.LEATHER), has(Items.LEATHER))
                 .group("desert_armor")
-                .save(consumer);
+                .save(output);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, ItemRegistry.DESERT_LEGGINGS.get())
                 .pattern("###")
@@ -69,7 +67,7 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .define('r', Items.STRING)
                 .unlockedBy(getHasName(Items.LEATHER), has(Items.LEATHER))
                 .group("desert_armor")
-                .save(consumer);
+                .save(output);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, ItemRegistry.SNOW_HELMET.get())
                 .pattern("w#w")
@@ -78,7 +76,7 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .define('w', ItemTags.WOOL)
                 .group("snow_Armor")
                 .unlockedBy("has_wool", has(ItemTags.WOOL))
-                .save(consumer);
+                .save(output);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, ItemRegistry.SNOW_BOOTS.get())
                 .pattern("w w")
@@ -86,7 +84,7 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .define('w', ItemTags.WOOL)
                 .group("snow_Armor")
                 .unlockedBy("has_wool", has(ItemTags.WOOL))
-                .save(consumer);
+                .save(output);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, ItemRegistry.SNOW_CHEST.get())
                 .pattern("w w")
@@ -96,7 +94,7 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .define('w', ItemTags.WOOL)
                 .group("snow_Armor")
                 .unlockedBy("has_wool", has(ItemTags.WOOL))
-                .save(consumer);
+                .save(output);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, ItemRegistry.SNOW_LEGGINGS.get())
                 .pattern("www")
@@ -105,7 +103,7 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .define('w', ItemTags.WOOL)
                 .group("snow_Armor")
                 .unlockedBy("has_wool", has(ItemTags.WOOL))
-                .save(consumer);
+                .save(output);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ItemRegistry.COOLING_COAT_1.get())
                 .pattern(" is")
@@ -116,7 +114,7 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .define('s', Items.STICK)
                 .group("cooling_coat")
                 .unlockedBy(getHasName(ItemRegistry.COLD_STRING.get()), has(ItemRegistry.COLD_STRING.get()))
-                .save(consumer);
+                .save(output);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ItemRegistry.COOLING_COAT_2.get())
                 .pattern(" db")
@@ -127,7 +125,7 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .define('#', ItemRegistry.COOLING_COAT_1.get())
                 .group("cooling_coat")
                 .unlockedBy(getHasName(ItemRegistry.COLD_STRING.get()), has(ItemRegistry.COLD_STRING.get()))
-                .save(consumer);
+                .save(output);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ItemRegistry.COOLING_COAT_3.get())
                 .pattern(" ne")
@@ -138,7 +136,7 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .define('#', ItemRegistry.COOLING_COAT_2.get())
                 .group("cooling_coat")
                 .unlockedBy(getHasName(ItemRegistry.COLD_STRING.get()), has(ItemRegistry.COLD_STRING.get()))
-                .save(consumer);
+                .save(output);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ItemRegistry.HEATING_COAT_1.get())
                 .pattern(" is")
@@ -149,7 +147,7 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .define('s', Items.STICK)
                 .group("heating_coat")
                 .unlockedBy(getHasName(ItemRegistry.WARM_STRING.get()), has(ItemRegistry.WARM_STRING.get()))
-                .save(consumer);
+                .save(output);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ItemRegistry.HEATING_COAT_2.get())
                 .pattern(" db")
@@ -160,7 +158,7 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .define('#', ItemRegistry.HEATING_COAT_1.get())
                 .group("heating_coat")
                 .unlockedBy(getHasName(ItemRegistry.WARM_STRING.get()), has(ItemRegistry.WARM_STRING.get()))
-                .save(consumer);
+                .save(output);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ItemRegistry.HEATING_COAT_3.get())
                 .pattern(" ne")
@@ -171,7 +169,7 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .define('#', ItemRegistry.HEATING_COAT_2.get())
                 .group("heating_coat")
                 .unlockedBy(getHasName(ItemRegistry.WARM_STRING.get()), has(ItemRegistry.WARM_STRING.get()))
-                .save(consumer);
+                .save(output);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ItemRegistry.THERMAL_COAT_1.get())
                 .pattern(" cs")
@@ -183,7 +181,7 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .group("thermal_coat")
                 .unlockedBy(getHasName(ItemRegistry.COOLING_COAT_1.get()), has(ItemRegistry.COOLING_COAT_1.get()))
                 .unlockedBy(getHasName(ItemRegistry.HEATING_COAT_1.get()), has(ItemRegistry.HEATING_COAT_1.get()))
-                .save(consumer);
+                .save(output);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ItemRegistry.THERMAL_COAT_2.get())
                 .pattern(" cb")
@@ -195,7 +193,7 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .group("thermal_coat")
                 .unlockedBy(getHasName(ItemRegistry.COOLING_COAT_2.get()), has(ItemRegistry.COOLING_COAT_2.get()))
                 .unlockedBy(getHasName(ItemRegistry.HEATING_COAT_2.get()), has(ItemRegistry.HEATING_COAT_2.get()))
-                .save(consumer);
+                .save(output);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ItemRegistry.THERMAL_COAT_3.get())
                 .pattern(" ce")
@@ -207,7 +205,7 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .group("thermal_coat")
                 .unlockedBy(getHasName(ItemRegistry.COOLING_COAT_3.get()), has(ItemRegistry.COOLING_COAT_3.get()))
                 .unlockedBy(getHasName(ItemRegistry.HEATING_COAT_3.get()), has(ItemRegistry.HEATING_COAT_3.get()))
-                .save(consumer);
+                .save(output);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, BlockRegistry.COOLER.get())
                 .pattern("psp")
@@ -217,7 +215,7 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .define('p', ItemTags.PLANKS)
                 .define('r', Items.REDSTONE)
                 .unlockedBy(getHasName(Items.STONE), has(Items.STONE))
-                .save(consumer);
+                .save(output);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, BlockRegistry.HEATER.get())
                 .pattern(" i ")
@@ -227,7 +225,7 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .define('c', Items.CAMPFIRE)
                 .define('w', Items.COAL_BLOCK)
                 .unlockedBy(getHasName(Items.CAMPFIRE), has(Items.CAMPFIRE))
-                .save(consumer);
+                .save(output);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, ItemRegistry.SEASONAL_CALENDAR.get())
                 .pattern("ppp")
@@ -236,7 +234,7 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .define('p', Items.PAPER)
                 .define('c', Items.CLOCK)
                 .unlockedBy(getHasName(Items.PAPER), has(Items.PAPER))
-                .save(consumer);
+                .save(output);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, ItemRegistry.THERMOMETER.get())
                 .pattern("#g#")
@@ -250,7 +248,7 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .unlockedBy("has_iron", has(Items.IRON_INGOT))
                 .unlockedBy("has_redstone", has(Items.REDSTONE))
                 .unlockedBy("has_gold_ingot", has(Items.GOLD_INGOT))
-                .save(consumer);
+                .save(output);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, BlockRegistry.SEWING_TABLE.get())
                 .pattern("iii")
@@ -262,7 +260,7 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .unlockedBy("has_planks", has(ItemTags.PLANKS))
                 .unlockedBy("has_iron", has(Items.IRON_INGOT))
                 .unlockedBy("has_redstone", has(Items.REDSTONE))
-                .save(consumer);
+                .save(output);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.FOOD, ItemRegistry.HEART_CONTAINER.get())
                 .pattern("hhh")
@@ -270,7 +268,7 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .pattern("hhh")
                 .define('h', ItemRegistry.HEART_FRAGMENT.get())
                 .unlockedBy("has_heart_fragment", has(ItemRegistry.HEART_FRAGMENT.get()))
-                .save(consumer);
+                .save(output);
 
         CompoundTag nbt = new CompoundTag();
         nbt.putString("Potion",  LegendarySurvivalOverhaul.MOD_ID + ":temperature_immunity");
@@ -280,25 +278,25 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .pattern("cs ")
                 .define('w', ItemRegistry.WARM_STRING.get())
                 .define('s', ItemRegistry.COLD_STRING.get())
-                .define('t', PartialNBTIngredient.of(nbt, Items.POTION))
+                .define('t', partialNbtIngredient(Items.POTION, nbt))
                 .define('h', ItemRegistry.HEAT_RESISTANCE_RING.get())
                 .define('c', ItemRegistry.COLD_RESISTANCE_RING.get())
                 .unlockedBy("has_heat_resistance_ring", has(ItemRegistry.HEAT_RESISTANCE_RING.get()))
                 .unlockedBy("has_cold_resistance_ring", has(ItemRegistry.COLD_RESISTANCE_RING.get()))
-                .save(consumer);
+                .save(output);
 
-        juice(consumer, Items.APPLE, ItemRegistry.APPLE_JUICE.get());
-        juice(consumer, Items.BEETROOT, ItemRegistry.BEETROOT_JUICE.get());
-        juice(consumer, Items.CACTUS, ItemRegistry.CACTUS_JUICE.get());
-        juice(consumer, Items.CARROT, ItemRegistry.CARROT_JUICE.get());
-        juice(consumer, Items.CHORUS_FRUIT, ItemRegistry.CHORUS_FRUIT_JUICE.get());
-        juice(consumer, Items.GLISTERING_MELON_SLICE, ItemRegistry.GLISTERING_MELON_JUICE.get());
-        juice(consumer, Items.GOLDEN_APPLE, ItemRegistry.GOLDEN_APPLE_JUICE.get());
-        juice(consumer, Items.GOLDEN_CARROT, ItemRegistry.GOLDEN_CARROT_JUICE.get());
-        juice(consumer, Items.MELON_SLICE, ItemRegistry.MELON_JUICE.get());
-        juice(consumer, Items.PUMPKIN, ItemRegistry.PUMPKIN_JUICE.get());
-        juice(consumer, Items.SWEET_BERRIES, ItemRegistry.SWEET_BERRIES_JUICE.get());
-        juice(consumer, Items.GLOW_BERRIES, ItemRegistry.GLOW_BERRIES_JUICE.get());
+        juice(output, Items.APPLE, ItemRegistry.APPLE_JUICE.get());
+        juice(output, Items.BEETROOT, ItemRegistry.BEETROOT_JUICE.get());
+        juice(output, Items.CACTUS, ItemRegistry.CACTUS_JUICE.get());
+        juice(output, Items.CARROT, ItemRegistry.CARROT_JUICE.get());
+        juice(output, Items.CHORUS_FRUIT, ItemRegistry.CHORUS_FRUIT_JUICE.get());
+        juice(output, Items.GLISTERING_MELON_SLICE, ItemRegistry.GLISTERING_MELON_JUICE.get());
+        juice(output, Items.GOLDEN_APPLE, ItemRegistry.GOLDEN_APPLE_JUICE.get());
+        juice(output, Items.GOLDEN_CARROT, ItemRegistry.GOLDEN_CARROT_JUICE.get());
+        juice(output, Items.MELON_SLICE, ItemRegistry.MELON_JUICE.get());
+        juice(output, Items.PUMPKIN, ItemRegistry.PUMPKIN_JUICE.get());
+        juice(output, Items.SWEET_BERRIES, ItemRegistry.SWEET_BERRIES_JUICE.get());
+        juice(output, Items.GLOW_BERRIES, ItemRegistry.GLOW_BERRIES_JUICE.get());
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ItemRegistry.CANTEEN.get())
                 .pattern(" i ")
@@ -308,7 +306,7 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .define('l', Items.LEATHER)
                 .group("drink")
                 .unlockedBy(getHasName(Items.LEATHER), has(Items.LEATHER))
-                .save(consumer);
+                .save(output);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ItemRegistry.LARGE_CANTEEN.get())
                 .pattern(" n ")
@@ -318,7 +316,7 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .define('l', Items.LEATHER)
                 .group("healing")
                 .unlockedBy(getHasName(Items.LEATHER), has(Items.LEATHER))
-                .save(consumer);
+                .save(output);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.FOOD, ItemRegistry.HEALING_HERBS.get())
                 .pattern("ff ")
@@ -328,7 +326,7 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .define('s', Tags.Items.SEEDS)
                 .group("healing")
                 .unlockedBy("has_flower", has(ItemTags.FLOWERS))
-                .save(consumer);
+                .save(output);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ItemRegistry.PLASTER.get())
                 .pattern("ss ")
@@ -338,7 +336,7 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .define('w', ItemTags.WOOL)
                 .group("healing")
                 .unlockedBy("has_wool", has(ItemTags.WOOL))
-                .save(consumer);
+                .save(output);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ItemRegistry.MEDKIT.get())
                 .pattern("sis")
@@ -351,7 +349,7 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .define('w', ItemTags.WOOL)
                 .group("healing")
                 .unlockedBy(getHasName(ItemRegistry.BANDAGE.get()), has(ItemRegistry.BANDAGE.get()))
-                .save(consumer);
+                .save(output);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ItemRegistry.MORPHINE.get())
                 .pattern("  n")
@@ -362,7 +360,7 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .define('g', Tags.Items.GLASS)
                 .group("healing")
                 .unlockedBy(getHasName(ItemRegistry.PLASTER.get()), has(ItemRegistry.PLASTER.get()))
-                .save(consumer);
+                .save(output);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ItemRegistry.BANDAGE.get())
                 .pattern("  p")
@@ -372,7 +370,7 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .define('h', ItemRegistry.HEALING_HERBS.get())
                 .group("healing")
                 .unlockedBy("has_plaster", has(ItemRegistry.PLASTER.get()))
-                .save(consumer);
+                .save(output);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ItemRegistry.TONIC.get())
                 .pattern(" h ")
@@ -383,33 +381,32 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .define('g', Items.GOLD_INGOT)
                 .group("healing")
                 .unlockedBy(getHasName(ItemRegistry.HEALING_HERBS.get()), has(ItemRegistry.HEALING_HERBS.get()))
-                .save(consumer);
+                .save(output);
 
         nbt = new CompoundTag();
         nbt.putString("Potion", "minecraft:water");
-        smelting(consumer, PartialNBTIngredient.of(nbt, Items.POTION), ItemRegistry.PURIFIED_WATER_BOTTLE.get(), 1.0f, 200, "purified_water_bottle");
-        blasting(consumer, PartialNBTIngredient.of(nbt, Items.POTION), ItemRegistry.PURIFIED_WATER_BOTTLE.get(), 1.0f, 60, "purified_water_bottle");
+        smelting(output, partialNbtIngredient(Items.POTION, nbt), ItemRegistry.PURIFIED_WATER_BOTTLE.get(), 1.0f, 200, "purified_water_bottle");
+        blasting(output, partialNbtIngredient(Items.POTION, nbt), ItemRegistry.PURIFIED_WATER_BOTTLE.get(), 1.0f, 60, "purified_water_bottle");
 
         nbt = new CompoundTag();
         nbt.putString(HYDRATION_ENUM_TAG, HydrationEnum.NORMAL.getName());
-        purification_smelting(consumer, PartialNBTIngredient.of(nbt, ItemRegistry.CANTEEN.get()), ItemRegistry.CANTEEN.get(), 1.0f, 240, "purified_canteen");
-        purification_smelting(consumer, PartialNBTIngredient.of(nbt, ItemRegistry.LARGE_CANTEEN.get()), ItemRegistry.LARGE_CANTEEN.get(), 1.0f, 240, "purified_large_canteen");
-        purification_blasting(consumer, PartialNBTIngredient.of(nbt, ItemRegistry.CANTEEN.get()), ItemRegistry.CANTEEN.get(), 1.0f, 80, "purified_canteen");
-        purification_blasting(consumer, PartialNBTIngredient.of(nbt, ItemRegistry.LARGE_CANTEEN.get()), ItemRegistry.LARGE_CANTEEN.get(), 1.0f, 80, "purified_large_canteen");
+        purification_smelting(output, partialNbtIngredient(ItemRegistry.CANTEEN.get(), nbt), ItemRegistry.CANTEEN.get(), 1.0f, 240, "purified_canteen");
+        purification_smelting(output, partialNbtIngredient(ItemRegistry.LARGE_CANTEEN.get(), nbt), ItemRegistry.LARGE_CANTEEN.get(), 1.0f, 240, "purified_large_canteen");
+        purification_blasting(output, partialNbtIngredient(ItemRegistry.CANTEEN.get(), nbt), ItemRegistry.CANTEEN.get(), 1.0f, 80, "purified_canteen");
+        purification_blasting(output, partialNbtIngredient(ItemRegistry.LARGE_CANTEEN.get(), nbt), ItemRegistry.LARGE_CANTEEN.get(), 1.0f, 80, "purified_large_canteen");
 
-        sewing(consumer, Ingredient.of(Items.STRING), Ingredient.of(ItemRegistry.ICE_FERN.get()), new ItemStack(ItemRegistry.COLD_STRING.get()), "cold_string");
-
-        sewing(consumer, Ingredient.of(Items.STRING), Ingredient.of(ItemRegistry.SUN_FERN.get()), new ItemStack(ItemRegistry.WARM_STRING.get()), "warm_string");
+        sewing(output, Ingredient.of(Items.STRING), Ingredient.of(ItemRegistry.ICE_FERN.get()), new ItemStack(ItemRegistry.COLD_STRING.get()), "cold_string");
+        sewing(output, Ingredient.of(Items.STRING), Ingredient.of(ItemRegistry.SUN_FERN.get()), new ItemStack(ItemRegistry.WARM_STRING.get()), "warm_string");
     }
 
-    protected static void smelting(@NotNull Consumer<FinishedRecipe> consumer, Ingredient input, ItemLike result, float experience, int cookingTime, String recipeName) {
+    protected static void smelting(@NotNull java.util.function.Consumer<FinishedRecipe> consumer, Ingredient input, ItemLike result, float experience, int cookingTime, String recipeName) {
         SimpleCookingRecipeBuilder
                 .smelting(input, RecipeCategory.MISC, result, experience, cookingTime)
                 .unlockedBy(getHasName(input.getItems()[0].getItem()), has(input.getItems()[0].getItem()))
                 .save(consumer, LegendarySurvivalOverhaul.MOD_ID + ":" + recipeName + "_from_smelting_" + getItemName(input.getItems()[0].getItem()));
     }
 
-    protected static void purification_smelting(@NotNull Consumer<FinishedRecipe> consumer, Ingredient input, ItemLike result, float experience, int cookingTime, String recipeName) {
+    protected static void purification_smelting(@NotNull java.util.function.Consumer<FinishedRecipe> consumer, Ingredient input, ItemLike result, float experience, int cookingTime, String recipeName) {
         PurificationRecipeBuilder
                 .smelting(input, RecipeCategory.MISC, result, experience, cookingTime)
                 .unlockedBy(getHasName(input.getItems()[0].getItem()), has(input.getItems()[0].getItem()))
@@ -417,14 +414,14 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .save(consumer, LegendarySurvivalOverhaul.MOD_ID + ":" + recipeName + "_from_purification_smelting_" + getItemName(input.getItems()[0].getItem()));
     }
 
-    protected static void blasting(@NotNull Consumer<FinishedRecipe> consumer, Ingredient input, ItemLike result, float experience, int cookingTime, String recipeName) {
+    protected static void blasting(@NotNull java.util.function.Consumer<FinishedRecipe> consumer, Ingredient input, ItemLike result, float experience, int cookingTime, String recipeName) {
         SimpleCookingRecipeBuilder
                 .blasting(input, RecipeCategory.MISC, result, experience, cookingTime)
                 .unlockedBy(getHasName(input.getItems()[0].getItem()), has(input.getItems()[0].getItem()))
                 .save(consumer, LegendarySurvivalOverhaul.MOD_ID + ":" + recipeName + "_from_blasting_" + getItemName(input.getItems()[0].getItem()));
     }
 
-    protected static void purification_blasting(@NotNull Consumer<FinishedRecipe> consumer, Ingredient input, ItemLike result, float experience, int cookingTime, String recipeName) {
+    protected static void purification_blasting(@NotNull java.util.function.Consumer<FinishedRecipe> consumer, Ingredient input, ItemLike result, float experience, int cookingTime, String recipeName) {
         PurificationRecipeBuilder
                 .blasting(input, RecipeCategory.MISC, result, experience, cookingTime)
                 .unlockedBy(getHasName(input.getItems()[0].getItem()), has(input.getItems()[0].getItem()))
@@ -432,10 +429,11 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .save(consumer, LegendarySurvivalOverhaul.MOD_ID + ":" + recipeName + "_from_purification_blasting_" + getItemName(input.getItems()[0].getItem()));
     }
 
-    protected static void sewing(@NotNull Consumer<FinishedRecipe> consumer, Ingredient input, Ingredient addition, ItemStack result, String recipeName) {
+    protected static void sewing(@NotNull java.util.function.Consumer<FinishedRecipe> consumer, Ingredient input, Ingredient addition, ItemStack result, String recipeName) {
         String additionName = "";
-        if (addition instanceof PartialNBTIngredient) {
-            String nbt = ((JsonObject) addition.toJson()).get("nbt").getAsString();
+        var additionJson = addition.toJson();
+        if (additionJson.isJsonObject() && additionJson.getAsJsonObject().has("nbt")) {
+            String nbt = additionJson.getAsJsonObject().get("nbt").getAsString();
             if (nbt.contains("Potion")) {
                 additionName = nbt.split("Potion:")[1].split(":")[1];
                 additionName = additionName.substring(0, additionName.length() - 2);
@@ -452,7 +450,7 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .save(consumer, LegendarySurvivalOverhaul.MOD_ID + ":" + recipeName + "_from_sewing_" + getItemName(input.getItems()[0].getItem()) + "_" + additionName);
     }
 
-    protected static void juice(@NotNull Consumer<FinishedRecipe> consumer, ItemLike fruit, Item juice) {
+    protected static void juice(RecipeOutput consumer, ItemLike fruit, Item juice) {
         ShapelessRecipeBuilder.shapeless(RecipeCategory.FOOD, juice)
                 .requires(ItemRegistry.PURIFIED_WATER_BOTTLE.get())
                 .requires(Items.SUGAR)
@@ -462,5 +460,13 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .group("drink")
                 .unlockedBy(getHasName(fruit), has(fruit))
                 .save(consumer);
+    }
+
+    private static Ingredient partialNbtIngredient(ItemLike item, CompoundTag nbt) {
+        JsonObject obj = new JsonObject();
+        obj.addProperty("type", "forge:partial_nbt");
+        obj.addProperty("item", BuiltInRegistries.ITEM.getKey(item.asItem()).toString());
+        obj.addProperty("nbt", nbt.toString());
+        return Ingredient.fromJson(obj);
     }
 }

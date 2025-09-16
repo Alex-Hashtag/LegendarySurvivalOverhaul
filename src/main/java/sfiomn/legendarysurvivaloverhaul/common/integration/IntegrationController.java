@@ -1,6 +1,6 @@
 package sfiomn.legendarysurvivaloverhaul.common.integration;
 
-import net.minecraftforge.fml.ModList;
+import net.neoforged.fml.ModList;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.block.ThermalTypeEnum;
 import sfiomn.legendarysurvivaloverhaul.api.bodydamage.BodyPartEnum;

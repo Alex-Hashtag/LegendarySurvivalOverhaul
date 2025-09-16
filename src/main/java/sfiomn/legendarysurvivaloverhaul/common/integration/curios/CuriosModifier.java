@@ -1,9 +1,9 @@
 package sfiomn.legendarysurvivaloverhaul.common.integration.curios;
 
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.fml.loading.FMLLoader;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.neoforge.fml.loading.FMLLoader;
+import net.minecraft.core.registries.Registries;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonTemperatureResistance;
 import sfiomn.legendarysurvivaloverhaul.api.data.manager.TemperatureDataManager;
@@ -28,7 +28,7 @@ public class CuriosModifier
 		if (!LegendarySurvivalOverhaul.curiosLoaded)
 			return;
 
-		ResourceLocation itemRegistryName = ForgeRegistries.ITEMS.getKey(event.getItemStack().getItem());
+		ResourceLocation itemRegistryName = Registries.ITEMS.getKey(event.getItemStack().getItem());
 		JsonTemperatureResistance tempConfig = TemperatureDataManager.getItem(itemRegistryName);
 
 		if (itemRegistryName != null && tempConfig != null) {

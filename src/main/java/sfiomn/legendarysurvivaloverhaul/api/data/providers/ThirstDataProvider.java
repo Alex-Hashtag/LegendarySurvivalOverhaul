@@ -7,8 +7,8 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
-import net.minecraftforge.common.data.ExistingFileHelper;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import net.minecraft.core.registries.Registries;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.data.builder.IThirstData;
 import sfiomn.legendarysurvivaloverhaul.api.data.builder.IThirstDataHolder;
@@ -65,7 +65,7 @@ public abstract class ThirstDataProvider implements DataProvider {
     }
 
     public final IThirstDataHolder consumable(Item item) {
-        ResourceLocation itemRegistryName = ForgeRegistries.ITEMS.getKey(item);
+        ResourceLocation itemRegistryName = Registries.ITEMS.getKey(item);
         assert itemRegistryName != null;
         return this.consumablesBuilders.computeIfAbsent(itemRegistryName.toString(), (k) -> new ThirstDataHolder());
     }
@@ -75,7 +75,7 @@ public abstract class ThirstDataProvider implements DataProvider {
     }
 
     public final IThirstDataHolder block(Block block) {
-        ResourceLocation blockRegistryName = ForgeRegistries.BLOCKS.getKey(block);
+        ResourceLocation blockRegistryName = Registries.BLOCKS.getKey(block);
         assert blockRegistryName != null;
         return this.blocksBuilders.computeIfAbsent(blockRegistryName.toString(), (k) -> new ThirstDataHolder());
     }

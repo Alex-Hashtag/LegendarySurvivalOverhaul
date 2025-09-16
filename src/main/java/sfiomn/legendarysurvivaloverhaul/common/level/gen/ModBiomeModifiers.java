@@ -6,10 +6,10 @@ import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.levelgen.GenerationStep;
-import net.minecraftforge.common.Tags;
-import net.minecraftforge.common.world.BiomeModifier;
-import net.minecraftforge.common.world.ForgeBiomeModifiers;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.common.Tags;
+import net.neoforged.neoforge.common.world.BiomeModifier;
+import net.neoforged.neoforge.common.world.ForgeBiomeModifiers;
+import net.minecraft.core.registries.Registries;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 
 
@@ -19,7 +19,7 @@ public class ModBiomeModifiers {
     public static final ResourceKey<BiomeModifier> ADD_WATER_PLANT = registerKey("add_water_plant");
 
     public static ResourceKey<BiomeModifier> registerKey(String name) {
-        return ResourceKey.create(ForgeRegistries.Keys.BIOME_MODIFIERS, new ResourceLocation(LegendarySurvivalOverhaul.MOD_ID, name));
+        return ResourceKey.create(Registries.Keys.BIOME_MODIFIERS, new ResourceLocation(LegendarySurvivalOverhaul.MOD_ID, name));
     }
 
     public static void bootstrap(BootstapContext<BiomeModifier> context) {

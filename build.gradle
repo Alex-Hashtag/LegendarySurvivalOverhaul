@@ -2,8 +2,7 @@ plugins {
     id 'eclipse'
     id 'idea'
     id 'maven-publish'
-    id 'net.minecraftforge.gradle' version '[6.0,6.2)'
-    id 'org.spongepowered.mixin' version '0.7.+'
+    id 'net.neoforged.gradle.userdev' version '7.0.192'
 }
 
 version = minecraft_version + '-' + mod_version
@@ -17,108 +16,65 @@ base {
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 println "Java: ${System.getProperty 'java.version'}, JVM: ${System.getProperty 'java.vm.version'} (${System.getProperty 'java.vendor'}), Arch: ${System.getProperty 'os.arch'}"
-minecraft {
-    // The mappings can be changed at any time and must be in the following format.
-    // Channel:   Version:
-    // official   MCVersion             Official field/method names from Mojang mapping files
-    // parchment  YYYY.MM.DD-MCVersion  Open community-sourced parameter names and javadocs layered on top of official
-    //
-    // You must be aware of the Mojang license when using the 'official' or 'parchment' mappings.
-    // See more information here: https://github.com/MinecraftForge/MCPConfig/blob/master/Mojang.md
-    //
-    // Parchment is an unofficial project maintained by ParchmentMC, separate from MinecraftForge
-    // Additional setup is needed to use their mappings: https://parchmentmc.org/docs/getting-started
-    //
-    // Use non-default mappings at your own risk. They may not always work.
-    // Simply re-run your setup task after changing the mappings to update your workspace.
-    mappings channel: mapping_channel, version: mapping_version
+runs {
+    // applies to all the run configs below
+    configureEach {
+        // Recommended logging data for a userdev environment
+        // The markers can be added/remove as needed separated by commas.
+        // "SCAN": For mods scan.
+        // "REGISTRIES": For firing of registry events.
+        // "REGISTRYDUMP": For getting the contents of all registries.
+        systemProperty 'forge.logging.markers', 'REGISTRIES'
 
-    // When true, this property will have all Eclipse/IntelliJ IDEA run configurations run the "prepareX" task for the given run configuration before launching the game.
-    // In most cases, it is not necessary to enable.
-    // enableEclipsePrepareRuns = true
-    // enableIdeaPrepareRuns = true
+        // Recommended logging level for the console
+        // You can set various levels here.
+        // Please read: https://stackoverflow.com/questions/2031163/when-to-use-the-different-log-levels
+        systemProperty 'forge.logging.console.level', 'debug'
 
-    // This property allows configuring Gradle's ProcessResources task(s) to run on IDE output locations before launching the game.
-    // It is REQUIRED to be set to true for this template to function.
-    // See https://docs.gradle.org/current/dsl/org.gradle.language.jvm.tasks.ProcessResources.html
-    copyIdeResources = true
+        modSource project.sourceSets.main
+    }
 
-    // When true, this property will add the folder name of all declared run configurations to generated IDE run configurations.
-    // The folder name can be set on a run configuration using the "folderName" property.
-    // By default, the folder name of a run configuration is the name of the Gradle project containing it.
-    // generateRunFolders = true
+    client {
+        // Comma-separated list of namespaces to load gametests from. Empty = all namespaces.
+        systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+    }
 
-    // This property enables access transformers for use in development.
-    // They will be applied to the Minecraft artifact.
-    // The access transformer file can be anywhere in the project.
-    // However, it must be at "META-INF/accesstransformer.cfg" in the final mod jar to be loaded by Forge.
-    // This default location is a best practice to automatically put the file in the right place in the final jar.
-    // See https://docs.minecraftforge.net/en/latest/advanced/accesstransformers/ for more information.
-    // accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
+    server {
+        systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+        argument '--nogui'
+    }
 
-    // Default run configurations.
-    // These can be tweaked, removed, or duplicated as needed.
-    runs {
-        // applies to all the run configs below
-        configureEach {
-            workingDirectory project.file('run')
+    // This run config launches GameTestServer and runs all registered gametests, then exits.
+    // By default, the server will crash when no gametests are provided.
+    // The gametest system is also enabled by default for other run configs under the /test command.
+    gameTestServer {
+        systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+    }
 
-            // Recommended logging data for a userdev environment
-            // The markers can be added/remove as needed separated by commas.
-            // "SCAN": For mods scan.
-            // "REGISTRIES": For firing of registry events.
-            // "REGISTRYDUMP": For getting the contents of all registries.
-            property 'forge.logging.markers', 'REGISTRIES'
-
-            // Recommended logging level for the console
-            // You can set various levels here.
-            // Please read: https://stackoverflow.com/questions/2031163/when-to-use-the-different-log-levels
-            property 'forge.logging.console.level', 'debug'
-
-            mods {
-                "${mod_id}" {
-                    source sourceSets.main
-                }
-            }
-        }
-
-        client {
-            // Comma-separated list of namespaces to load gametests from. Empty = all namespaces.
-            property 'forge.enabledGameTestNamespaces', mod_id
-        }
-
-        server {
-            property 'forge.enabledGameTestNamespaces', mod_id
-            args '--nogui'
-        }
-
-        // This run config launches GameTestServer and runs all registered gametests, then exits.
-        // By default, the server will crash when no gametests are provided.
-        // The gametest system is also enabled by default for other run configs under the /test command.
-        gameTestServer {
-            property 'forge.enabledGameTestNamespaces', mod_id
-        }
-
-        data {
-            // example of overriding the workingDirectory set in configureEach above
-            workingDirectory project.file('run-data')
-
-            // Specify the modid for data generation, where to output the resulting resource, and where to look for existing resources.
-            args '--mod', mod_id, '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
-        }
+    data {
+        // Specify the modid for data generation, where to output the resulting resource, and where to look for existing resources.
+        arguments.addAll '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
     }
 }
 
 // Include resources generated by data generators.
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
-mixin {
-    // MixinGradle Settings
+// Sets up a dependency configuration called 'localRuntime'.
+// This configuration should be used instead of 'runtimeOnly' to declare
+// a dependency that will be present for runtime testing but will not be
+// published as a dependency of this mod.
+configurations {
+    runtimeClasspath.extendsFrom localRuntime
 }
 
 repositories {
     // Put repositories for dependencies here
     // ForgeGradle automatically adds the Forge maven and Maven Central for you
+    // NeoForge maven for NeoForge userdev and artifacts
+    maven {
+        url = "https://maven.neoforged.net/releases"
+    }
 
     // JEI repositories
     maven {
@@ -154,42 +110,46 @@ dependencies {
     // The "userdev" classifier will be requested and setup by ForgeGradle.
     // If the group id is "net.minecraft" and the artifact id is one of ["client", "server", "joined"],
     // then special handling is done to allow a setup of a vanilla dependency without the use of an external repository.
-    minecraft 'net.minecraftforge:forge:' + minecraft_version + '-' + forge_version
+    // NeoForge for 1.20.1 uses the 'forge' artifact coordinates under the 'net.neoforged' group
+    implementation "net.neoforged:neoforge:${neo_version}"
 
     // Apply Mixin AP
-    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
+    // annotationProcessor 'org.spongepowered:mixin:0.8.5:processor' // Not used; removed for NeoForge migration
 
     // External libraries.
 
     // These are REQUIRED for the mod to compile correctly and should not be removed.
-    implementation(fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}"))
-    implementation(fg.deobf("curse.maven:eclipticseasons-1118306:6942865"))
+    // NeoForge migration: use compileOnly for optional integrations so we don't pull runtime jars.
+    // If a NeoForge variant exists, switch coordinates (e.g., curios-neoforge) and optionally move back to implementation/localRuntime.
+    compileOnly("top.theillusivec4.curios:curios-forge:${curios_version}") // TODO: switch to curios-neoforge for 1.20.4 once available
+    compileOnly("curse.maven:eclipticseasons-1118306:6942865") // TODO: verify NeoForge build; keep compileOnly for now
 
-    // compile against the JEI API but do not include it at runtime
-    compileOnly(fg.deobf("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}"))
-    compileOnly(fg.deobf("mezz.jei:jei-${minecraft_version}-forge-api:${jei_version}"))
-    compileOnly(fg.deobf("curse.maven:serene-seasons-291874:5790653"))
-    compileOnly(fg.deobf("curse.maven:glitchcore-955399:5787839"))
-    compileOnly(fg.deobf("curse.maven:terrafirmacraft-302973:6187491"))
-    compileOnly(fg.deobf("curse.maven:origins-474438:5314209"))
-    compileOnly(fg.deobf("curse.maven:mutantmonsters-852665:5107399"))
-    compileOnly(fg.deobf("curse.maven:vampirism-233029:5990073"))
-    compileOnly(fg.deobf("curse.maven:supplementaries-412082:6463022"))
-    compileOnly(fg.deobf("curse.maven:beachparty-858691:6458692"))
-    compileOnly(fg.deobf("curse.maven:meadow-821483:6467344"))
-    compileOnly(fg.deobf("curse.maven:architectury-419699:5137938"))
-    compileOnly(fg.deobf("curse.maven:artifacts-312353:6399828"))
-    compileOnly(fg.deobf("curse.maven:overflowingbars-852662:5763974"))
-    compileOnly(fg.deobf("curse.maven:puzzlelib-495476:6387081"))
+    // Keep API jars as compileOnly so code compiles; runtime files remain disabled below until NeoForge status is confirmed
+    compileOnly("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}")
+    compileOnly("mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}")
+    compileOnly("curse.maven:serene-seasons-291874:5790653")
+    compileOnly("curse.maven:glitchcore-955399:5787839")
+    compileOnly("curse.maven:terrafirmacraft-302973:6187491")
+    compileOnly("curse.maven:origins-474438:5314209")
+    compileOnly("curse.maven:mutantmonsters-852665:5107399")
+    compileOnly("curse.maven:vampirism-233029:5990073")
+    compileOnly("curse.maven:supplementaries-412082:6463022")
+    compileOnly("curse.maven:beachparty-858691:6458692")
+    compileOnly("curse.maven:meadow-821483:6467344")
+    compileOnly("curse.maven:architectury-419699:5137938")
+    compileOnly("curse.maven:artifacts-312353:6399828")
+    compileOnly("curse.maven:overflowingbars-852662:5763974")
+    compileOnly("curse.maven:puzzlelib-495476:6387081")
 
     //implementation(fg.deobf("curse.maven:weather2-237746:5244118"))
     //implementation(fg.deobf("curse.maven:coroutil-237749:5096038"))
     //implementation(fg.deobf("curse.maven:werewolves-417851:5406832"))
 
     // at runtime, use the full JEI jar for Forge
-    runtimeOnly(fg.deobf("mezz.jei:jei-${minecraft_version}-forge:${jei_version}"))
-    runtimeOnly(fg.deobf("curse.maven:appleskin-248787:4770828"))
-    runtimeOnly(fg.deobf("curse.maven:spark-361579:4738952"))
+    // NeoForge migration: temporarily disabled runtime mods until NeoForge variants are confirmed
+    // runtimeOnly(fg.deobf("mezz.jei:jei-${minecraft_version}-forge:${jei_version}"))
+    // runtimeOnly(fg.deobf("curse.maven:appleskin-248787:4770828"))
+    // runtimeOnly(fg.deobf("curse.maven:spark-361579:4738952"))
 
     //runtimeOnly(fg.deobf("curse.maven:letsdoapi-864599:5468182"))
     //runtimeOnly(fg.deobf("curse.maven:vinery-704465:6264246"))
@@ -228,22 +188,26 @@ dependencies {
     //runtimeOnly fg.deobf("curse.maven:alekis-nifty-ships-1068445:5669604")
 }
 
-// This block of code expands all declared replace properties in the specified resource targets.
-// A missing property will result in an error. Properties are expanded using ${} Groovy notation.
-// When "copyIdeResources" is enabled, this will also run before the game launches in IDE environments.
+// This block of code expands declared replace properties in mods.toml
+// Properties are expanded using ${} Groovy notation.
 // See https://docs.gradle.org/current/dsl/org.gradle.language.jvm.tasks.ProcessResources.html
 tasks.named('processResources', ProcessResources).configure {
     var replaceProperties = [
-            minecraft_version: minecraft_version, minecraft_version_range: minecraft_version_range,
-            forge_version: forge_version, forge_version_range: forge_version_range,
-            loader_version_range: loader_version_range,
-            mod_id: mod_id, mod_name: mod_name, mod_license: mod_license, mod_version: version,
-            mod_authors: mod_authors, mod_description: mod_description,
+            minecraft_version      : minecraft_version,
+            minecraft_version_range: minecraft_version_range,
+            neo_version            : neo_version,
+            loader_version_range   : loader_version_range,
+            mod_id                 : mod_id,
+            mod_name               : mod_name,
+            mod_license            : mod_license,
+            mod_version            : mod_version,
+            mod_authors            : mod_authors,
+            mod_description        : mod_description,
     ]
     inputs.properties replaceProperties
 
-    filesMatching(['META-INF/mods.toml', 'pack.mcmeta']) {
-        expand replaceProperties + [project: project]
+    filesMatching(['META-INF/mods.toml']) {
+        expand replaceProperties
     }
 }
 
@@ -255,14 +219,11 @@ tasks.named('jar', Jar).configure {
                 'Specification-Vendor'    : mod_authors,
                 'Specification-Version'   : '1', // We are version 1 of ourselves
                 'Implementation-Title'    : project.name,
-                'Implementation-Version'  : project.jar.archiveVersion,
+                'Implementation-Version'  : mod_version,
                 'Implementation-Vendor'   : mod_authors,
                 'Implementation-Timestamp': new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
         ])
     }
-
-    // This is the preferred method to reobfuscate your jar file
-    finalizedBy 'reobfJar'
 }
 
 // However if you are in a multi-project build, dev time needs unobfed jar files, so you can delay the obfuscation until publishing by doing:
@@ -274,7 +235,7 @@ tasks.named('jar', Jar).configure {
 publishing {
     publications {
         register('mavenJava', MavenPublication) {
-            artifact jar
+            from components.java
         }
     }
     repositories {

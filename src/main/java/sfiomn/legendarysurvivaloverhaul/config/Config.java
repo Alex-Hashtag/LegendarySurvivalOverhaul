@@ -1,10 +1,10 @@
 package sfiomn.legendarysurvivaloverhaul.config;
 
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.fml.ModLoadingContext;
-import net.minecraftforge.fml.config.ModConfig;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.fml.ModLoadingContext;
+import net.neoforged.fml.config.ModConfig;
+import net.neoforged.neoforge.common.ModConfigSpec;
+import net.minecraft.core.registries.Registries;
 import org.apache.commons.lang3.tuple.Pair;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.config.json_old.JsonConfigRegistration;
@@ -19,19 +19,19 @@ import java.util.List;
 
 public class Config
 {
-	public static final ForgeConfigSpec COMMON_SPEC;
+	public static final ModConfigSpec COMMON_SPEC;
 	public static final Config.Common COMMON;
 
-	public static final ForgeConfigSpec CLIENT_SPEC;
+	public static final ModConfigSpec CLIENT_SPEC;
 	public static final Config.Client CLIENT;
 
 	static
 	{
-		final Pair<Common, ForgeConfigSpec> common = new ForgeConfigSpec.Builder().configure(Config.Common::new);
+		final Pair<Common, ModConfigSpec> common = new ModConfigSpec.Builder().configure(Config.Common::new);
 		COMMON_SPEC = common.getRight();
 		COMMON = common.getLeft();
 
-		final Pair<Client, ForgeConfigSpec> client = new ForgeConfigSpec.Builder().configure(Config.Client::new);
+		final Pair<Client, ModConfigSpec> client = new ModConfigSpec.Builder().configure(Config.Client::new);
 		CLIENT_SPEC = client.getRight();
 		CLIENT = client.getLeft();
 	}
@@ -57,237 +57,237 @@ public class Config
 	public static class Common
 	{
 		// Core/Advanced
-		public final ForgeConfigSpec.IntValue routinePacketSync;
-		public final ForgeConfigSpec.BooleanValue hideInfoFromDebug;
-		public final ForgeConfigSpec.BooleanValue naturalRegenerationEnabled;
-		public final ForgeConfigSpec.BooleanValue vanillaFreezeEnabled;
-		public final ForgeConfigSpec.EnumValue<EnumUtil.CompassInfo> compassInfoMode;
-		public final ForgeConfigSpec.BooleanValue showCoordinateOnMap;
-		public final ForgeConfigSpec.DoubleValue initialHealth;
+		public final ModConfigSpec.IntValue routinePacketSync;
+		public final ModConfigSpec.BooleanValue hideInfoFromDebug;
+		public final ModConfigSpec.BooleanValue naturalRegenerationEnabled;
+		public final ModConfigSpec.BooleanValue vanillaFreezeEnabled;
+		public final ModConfigSpec.EnumValue<EnumUtil.CompassInfo> compassInfoMode;
+		public final ModConfigSpec.BooleanValue showCoordinateOnMap;
+		public final ModConfigSpec.DoubleValue initialHealth;
 
 		// Food
-		public final ForgeConfigSpec.DoubleValue baseFoodExhaustion;
-		public final ForgeConfigSpec.DoubleValue sprintingFoodExhaustion;
-		public final ForgeConfigSpec.DoubleValue onAttackFoodExhaustion;
+		public final ModConfigSpec.DoubleValue baseFoodExhaustion;
+		public final ModConfigSpec.DoubleValue sprintingFoodExhaustion;
+		public final ModConfigSpec.DoubleValue onAttackFoodExhaustion;
 
 		// Temperature
-		public final ForgeConfigSpec.BooleanValue temperatureEnabled;
-		public final ForgeConfigSpec.EnumValue<EnumUtil.DifficultyMode> difficultyMode;
-		public final ForgeConfigSpec.IntValue tempTickTime;
-		public final ForgeConfigSpec.DoubleValue minTemperatureModification;
-		public final ForgeConfigSpec.DoubleValue maxTemperatureModification;
-		public final ForgeConfigSpec.BooleanValue dangerousHeatTemperature;
-		public final ForgeConfigSpec.BooleanValue dangerousColdTemperature;
-		public final ForgeConfigSpec.DoubleValue goldFernChance;
-		public final ForgeConfigSpec.BooleanValue temperatureImmunityOnDeathEnabled;
-		public final ForgeConfigSpec.IntValue temperatureImmunityOnDeathTime;
-		public final ForgeConfigSpec.BooleanValue temperatureImmunityOnFirstSpawnEnabled;
-		public final ForgeConfigSpec.IntValue temperatureImmunityOnFirstSpawnTime;
+		public final ModConfigSpec.BooleanValue temperatureEnabled;
+		public final ModConfigSpec.EnumValue<EnumUtil.DifficultyMode> difficultyMode;
+		public final ModConfigSpec.IntValue tempTickTime;
+		public final ModConfigSpec.DoubleValue minTemperatureModification;
+		public final ModConfigSpec.DoubleValue maxTemperatureModification;
+		public final ModConfigSpec.BooleanValue dangerousHeatTemperature;
+		public final ModConfigSpec.BooleanValue dangerousColdTemperature;
+		public final ModConfigSpec.DoubleValue goldFernChance;
+		public final ModConfigSpec.BooleanValue temperatureImmunityOnDeathEnabled;
+		public final ModConfigSpec.IntValue temperatureImmunityOnDeathTime;
+		public final ModConfigSpec.BooleanValue temperatureImmunityOnFirstSpawnEnabled;
+		public final ModConfigSpec.IntValue temperatureImmunityOnFirstSpawnTime;
 
-		public final ForgeConfigSpec.BooleanValue heatTemperatureSecondaryEffects;
-		public final ForgeConfigSpec.BooleanValue coldTemperatureSecondaryEffects;
-		public final ForgeConfigSpec.DoubleValue heatThirstEffectModifier;
-		public final ForgeConfigSpec.DoubleValue coldHungerEffectModifier;
+		public final ModConfigSpec.BooleanValue heatTemperatureSecondaryEffects;
+		public final ModConfigSpec.BooleanValue coldTemperatureSecondaryEffects;
+		public final ModConfigSpec.DoubleValue heatThirstEffectModifier;
+		public final ModConfigSpec.DoubleValue coldHungerEffectModifier;
 
-		public final ForgeConfigSpec.BooleanValue biomeEffectsEnabled;
-		public final ForgeConfigSpec.DoubleValue biomeDrynessMultiplier;
-		public final ForgeConfigSpec.DoubleValue biomeTemperatureMultiplier;
+		public final ModConfigSpec.BooleanValue biomeEffectsEnabled;
+		public final ModConfigSpec.DoubleValue biomeDrynessMultiplier;
+		public final ModConfigSpec.DoubleValue biomeTemperatureMultiplier;
 
-		public final ForgeConfigSpec.DoubleValue timeModifier;
-		public final ForgeConfigSpec.DoubleValue biomeTimeMultiplier;
-		public final ForgeConfigSpec.DoubleValue shadeTimeModifier;
-		public final ForgeConfigSpec.DoubleValue shadeTimeModifierThreshold;
+		public final ModConfigSpec.DoubleValue timeModifier;
+		public final ModConfigSpec.DoubleValue biomeTimeMultiplier;
+		public final ModConfigSpec.DoubleValue shadeTimeModifier;
+		public final ModConfigSpec.DoubleValue shadeTimeModifierThreshold;
 
-		public final ForgeConfigSpec.DoubleValue altitudeModifier;
-		public final ForgeConfigSpec.DoubleValue sprintModifier;
-		public final ForgeConfigSpec.DoubleValue onFireModifier;
+		public final ModConfigSpec.DoubleValue altitudeModifier;
+		public final ModConfigSpec.DoubleValue sprintModifier;
+		public final ModConfigSpec.DoubleValue onFireModifier;
 
-		public final ForgeConfigSpec.BooleanValue wetnessEnabled;
-		public final ForgeConfigSpec.ConfigValue<List<? extends String>> wetnessImmunityMounts;
-		public final ForgeConfigSpec.DoubleValue wetMultiplier;
-		public final ForgeConfigSpec.IntValue wetnessTickTimer;
-		public final ForgeConfigSpec.IntValue wetnessDecrease;
-		public final ForgeConfigSpec.IntValue wetnessRainIncrease;
-		public final ForgeConfigSpec.IntValue wetnessFluidIncrease;
+		public final ModConfigSpec.BooleanValue wetnessEnabled;
+		public final ModConfigSpec.ConfigValue<List<? extends String>> wetnessImmunityMounts;
+		public final ModConfigSpec.DoubleValue wetMultiplier;
+		public final ModConfigSpec.IntValue wetnessTickTimer;
+		public final ModConfigSpec.IntValue wetnessDecrease;
+		public final ModConfigSpec.IntValue wetnessRainIncrease;
+		public final ModConfigSpec.IntValue wetnessFluidIncrease;
 
-		public final ForgeConfigSpec.IntValue tempInfluenceMaximumDist;
-		public final ForgeConfigSpec.DoubleValue tempInfluenceUpDistMultiplier;
-		public final ForgeConfigSpec.DoubleValue tempInfluenceInWaterDistMultiplier;
-		public final ForgeConfigSpec.DoubleValue tempInfluenceOutsideDistMultiplier;
+		public final ModConfigSpec.IntValue tempInfluenceMaximumDist;
+		public final ModConfigSpec.DoubleValue tempInfluenceUpDistMultiplier;
+		public final ModConfigSpec.DoubleValue tempInfluenceInWaterDistMultiplier;
+		public final ModConfigSpec.DoubleValue tempInfluenceOutsideDistMultiplier;
 
-		public final ForgeConfigSpec.DoubleValue undergroundBiomeTemperatureMultiplier;
-		public final ForgeConfigSpec.IntValue undergroundEffectStartDistanceToWS;
-		public final ForgeConfigSpec.IntValue undergroundEffectEndDistanceToWS;
+		public final ModConfigSpec.DoubleValue undergroundBiomeTemperatureMultiplier;
+		public final ModConfigSpec.IntValue undergroundEffectStartDistanceToWS;
+		public final ModConfigSpec.IntValue undergroundEffectEndDistanceToWS;
 
-		public final ForgeConfigSpec.DoubleValue rainTemperatureModifier;
-		public final ForgeConfigSpec.DoubleValue snowTemperatureModifier;
+		public final ModConfigSpec.DoubleValue rainTemperatureModifier;
+		public final ModConfigSpec.DoubleValue snowTemperatureModifier;
 
-		public final ForgeConfigSpec.DoubleValue maxFreezeTemperatureModifier;
-		public final ForgeConfigSpec.IntValue maxFreezeEffectTick;
+		public final ModConfigSpec.DoubleValue maxFreezeTemperatureModifier;
+		public final ModConfigSpec.IntValue maxFreezeEffectTick;
 
-		public final ForgeConfigSpec.DoubleValue playerHuddlingModifier;
-		public final ForgeConfigSpec.IntValue playerHuddlingRadius;
+		public final ModConfigSpec.DoubleValue playerHuddlingModifier;
+		public final ModConfigSpec.IntValue playerHuddlingRadius;
 
-		public final ForgeConfigSpec.DoubleValue heatingCoat1Modifier;
-		public final ForgeConfigSpec.DoubleValue heatingCoat2Modifier;
-		public final ForgeConfigSpec.DoubleValue heatingCoat3Modifier;
+		public final ModConfigSpec.DoubleValue heatingCoat1Modifier;
+		public final ModConfigSpec.DoubleValue heatingCoat2Modifier;
+		public final ModConfigSpec.DoubleValue heatingCoat3Modifier;
 
-		public final ForgeConfigSpec.DoubleValue coolingCoat1Modifier;
-		public final ForgeConfigSpec.DoubleValue coolingCoat2Modifier;
-		public final ForgeConfigSpec.DoubleValue coolingCoat3Modifier;
+		public final ModConfigSpec.DoubleValue coolingCoat1Modifier;
+		public final ModConfigSpec.DoubleValue coolingCoat2Modifier;
+		public final ModConfigSpec.DoubleValue coolingCoat3Modifier;
 
-		public final ForgeConfigSpec.DoubleValue thermalCoat1Modifier;
-		public final ForgeConfigSpec.DoubleValue thermalCoat2Modifier;
-		public final ForgeConfigSpec.DoubleValue thermalCoat3Modifier;
+		public final ModConfigSpec.DoubleValue thermalCoat1Modifier;
+		public final ModConfigSpec.DoubleValue thermalCoat2Modifier;
+		public final ModConfigSpec.DoubleValue thermalCoat3Modifier;
 
-		public final ForgeConfigSpec.DoubleValue tfcItemHeatMultiplier;
-		public final ForgeConfigSpec.DoubleValue tfcTemperatureMultiplier;
+		public final ModConfigSpec.DoubleValue tfcItemHeatMultiplier;
+		public final ModConfigSpec.DoubleValue tfcTemperatureMultiplier;
 
-		public final ForgeConfigSpec.BooleanValue sereneSeasonsEnabled;
-		public final ForgeConfigSpec.BooleanValue ssTropicalSeasonsEnabled;
-		public final ForgeConfigSpec.BooleanValue ssSeasonCardsEnabled;
-		public final ForgeConfigSpec.BooleanValue ssDefaultSeasonEnabled;
+		public final ModConfigSpec.BooleanValue sereneSeasonsEnabled;
+		public final ModConfigSpec.BooleanValue ssTropicalSeasonsEnabled;
+		public final ModConfigSpec.BooleanValue ssSeasonCardsEnabled;
+		public final ModConfigSpec.BooleanValue ssDefaultSeasonEnabled;
 
-		public final ForgeConfigSpec.DoubleValue ssEarlySpringModifier;
-		public final ForgeConfigSpec.DoubleValue ssMidSpringModifier;
-		public final ForgeConfigSpec.DoubleValue ssLateSpringModifier;
+		public final ModConfigSpec.DoubleValue ssEarlySpringModifier;
+		public final ModConfigSpec.DoubleValue ssMidSpringModifier;
+		public final ModConfigSpec.DoubleValue ssLateSpringModifier;
 
-		public final ForgeConfigSpec.DoubleValue ssEarlySummerModifier;
-		public final ForgeConfigSpec.DoubleValue ssMidSummerModifier;
-		public final ForgeConfigSpec.DoubleValue ssLateSummerModifier;
+		public final ModConfigSpec.DoubleValue ssEarlySummerModifier;
+		public final ModConfigSpec.DoubleValue ssMidSummerModifier;
+		public final ModConfigSpec.DoubleValue ssLateSummerModifier;
 
-		public final ForgeConfigSpec.DoubleValue ssEarlyAutumnModifier;
-		public final ForgeConfigSpec.DoubleValue ssMidAutumnModifier;
-		public final ForgeConfigSpec.DoubleValue ssLateAutumnModifier;
+		public final ModConfigSpec.DoubleValue ssEarlyAutumnModifier;
+		public final ModConfigSpec.DoubleValue ssMidAutumnModifier;
+		public final ModConfigSpec.DoubleValue ssLateAutumnModifier;
 
-		public final ForgeConfigSpec.DoubleValue ssEarlyWinterModifier;
-		public final ForgeConfigSpec.DoubleValue ssMidWinterModifier;
-		public final ForgeConfigSpec.DoubleValue ssLateWinterModifier;
+		public final ModConfigSpec.DoubleValue ssEarlyWinterModifier;
+		public final ModConfigSpec.DoubleValue ssMidWinterModifier;
+		public final ModConfigSpec.DoubleValue ssLateWinterModifier;
 
-		public final ForgeConfigSpec.DoubleValue ssEarlyWetSeasonModifier;
-		public final ForgeConfigSpec.DoubleValue ssMidWetSeasonModifier;
-		public final ForgeConfigSpec.DoubleValue ssLateWetSeasonModifier;
+		public final ModConfigSpec.DoubleValue ssEarlyWetSeasonModifier;
+		public final ModConfigSpec.DoubleValue ssMidWetSeasonModifier;
+		public final ModConfigSpec.DoubleValue ssLateWetSeasonModifier;
 
-		public final ForgeConfigSpec.DoubleValue ssEarlyDrySeasonModifier;
-		public final ForgeConfigSpec.DoubleValue ssMidDrySeasonModifier;
-		public final ForgeConfigSpec.DoubleValue ssLateDrySeasonModifier;
+		public final ModConfigSpec.DoubleValue ssEarlyDrySeasonModifier;
+		public final ModConfigSpec.DoubleValue ssMidDrySeasonModifier;
+		public final ModConfigSpec.DoubleValue ssLateDrySeasonModifier;
 
-		public final ForgeConfigSpec.BooleanValue eclipticSeasonsEnabled;
-		public final ForgeConfigSpec.ConfigValue<List<? extends Double>> esSpringModifier;
-		public final ForgeConfigSpec.ConfigValue<List<? extends Double>> esSummerModifier;
-		public final ForgeConfigSpec.ConfigValue<List<? extends Double>> esAutumnModifier;
-		public final ForgeConfigSpec.ConfigValue<List<? extends Double>> esWinterModifier;
+		public final ModConfigSpec.BooleanValue eclipticSeasonsEnabled;
+		public final ModConfigSpec.ConfigValue<List<? extends Double>> esSpringModifier;
+		public final ModConfigSpec.ConfigValue<List<? extends Double>> esSummerModifier;
+		public final ModConfigSpec.ConfigValue<List<? extends Double>> esAutumnModifier;
+		public final ModConfigSpec.ConfigValue<List<? extends Double>> esWinterModifier;
 
 		// Thirst
-		public final ForgeConfigSpec.BooleanValue thirstEnabled;
-		public final ForgeConfigSpec.BooleanValue dangerousDehydration;
-		public final ForgeConfigSpec.BooleanValue cumulativeThirstEffectDuration;
-		public final ForgeConfigSpec.DoubleValue dehydrationDamageScaling;
-		public final ForgeConfigSpec.DoubleValue thirstEffectModifier;
-		public final ForgeConfigSpec.DoubleValue baseThirstExhaustion;
-		public final ForgeConfigSpec.DoubleValue sprintingThirstExhaustion;
-		public final ForgeConfigSpec.DoubleValue onJumpThirstExhaustion;
-		public final ForgeConfigSpec.DoubleValue onBlockBreakThirstExhaustion;
-		public final ForgeConfigSpec.DoubleValue onAttackThirstExhaustion;
-		public final ForgeConfigSpec.IntValue canteenCapacity;
-		public final ForgeConfigSpec.BooleanValue selfWateringCanteenEnabled;
-		public final ForgeConfigSpec.IntValue selfWateringCanteenWetnessIncrease;
-		public final ForgeConfigSpec.IntValue largeCanteenCapacity;
-		public final ForgeConfigSpec.BooleanValue allowOverridePurifiedWater;
-		public final ForgeConfigSpec.IntValue hydrationLava;
-		public final ForgeConfigSpec.DoubleValue saturationLava;
-		public final ForgeConfigSpec.BooleanValue glassBottleLootAfterDrink;
+		public final ModConfigSpec.BooleanValue thirstEnabled;
+		public final ModConfigSpec.BooleanValue dangerousDehydration;
+		public final ModConfigSpec.BooleanValue cumulativeThirstEffectDuration;
+		public final ModConfigSpec.DoubleValue dehydrationDamageScaling;
+		public final ModConfigSpec.DoubleValue thirstEffectModifier;
+		public final ModConfigSpec.DoubleValue baseThirstExhaustion;
+		public final ModConfigSpec.DoubleValue sprintingThirstExhaustion;
+		public final ModConfigSpec.DoubleValue onJumpThirstExhaustion;
+		public final ModConfigSpec.DoubleValue onBlockBreakThirstExhaustion;
+		public final ModConfigSpec.DoubleValue onAttackThirstExhaustion;
+		public final ModConfigSpec.IntValue canteenCapacity;
+		public final ModConfigSpec.BooleanValue selfWateringCanteenEnabled;
+		public final ModConfigSpec.IntValue selfWateringCanteenWetnessIncrease;
+		public final ModConfigSpec.IntValue largeCanteenCapacity;
+		public final ModConfigSpec.BooleanValue allowOverridePurifiedWater;
+		public final ModConfigSpec.IntValue hydrationLava;
+		public final ModConfigSpec.DoubleValue saturationLava;
+		public final ModConfigSpec.BooleanValue glassBottleLootAfterDrink;
 
 		// > Integration
-		public final ForgeConfigSpec.IntValue hydrationLavaBlazeborn;
-		public final ForgeConfigSpec.DoubleValue saturationLavaBlazeborn;
-		public final ForgeConfigSpec.DoubleValue extraThirstExhaustionShulk;
-		public final ForgeConfigSpec.DoubleValue extraThirstExhaustionPhantom;
-		public final ForgeConfigSpec.BooleanValue thirstEnabledIfVampire;
+		public final ModConfigSpec.IntValue hydrationLavaBlazeborn;
+		public final ModConfigSpec.DoubleValue saturationLavaBlazeborn;
+		public final ModConfigSpec.DoubleValue extraThirstExhaustionShulk;
+		public final ModConfigSpec.DoubleValue extraThirstExhaustionPhantom;
+		public final ModConfigSpec.BooleanValue thirstEnabledIfVampire;
 
 		// Health Overhaul
-		public final ForgeConfigSpec.BooleanValue healthOverhaulEnabled;
-		public final ForgeConfigSpec.DoubleValue maxAdditionalHealth;
-		public final ForgeConfigSpec.DoubleValue maxShieldHealth;
-		public final ForgeConfigSpec.BooleanValue absorptionEffectOverride;
-		public final ForgeConfigSpec.IntValue heartsLostOnDeath;
-		public final ForgeConfigSpec.IntValue permanentHearts;
-		public final ForgeConfigSpec.IntValue resilientHeartsWithBrokenHearts;
-		public final ForgeConfigSpec.DoubleValue brokenHeartsPerInjuredLimb;
-		public final ForgeConfigSpec.EnumValue<EnumUtil.brokenHeartsPerInjuredLimbMode> brokenHeartsPerInjuredLimbMode;
+		public final ModConfigSpec.BooleanValue healthOverhaulEnabled;
+		public final ModConfigSpec.DoubleValue maxAdditionalHealth;
+		public final ModConfigSpec.DoubleValue maxShieldHealth;
+		public final ModConfigSpec.BooleanValue absorptionEffectOverride;
+		public final ModConfigSpec.IntValue heartsLostOnDeath;
+		public final ModConfigSpec.IntValue permanentHearts;
+		public final ModConfigSpec.IntValue resilientHeartsWithBrokenHearts;
+		public final ModConfigSpec.DoubleValue brokenHeartsPerInjuredLimb;
+		public final ModConfigSpec.EnumValue<EnumUtil.brokenHeartsPerInjuredLimbMode> brokenHeartsPerInjuredLimbMode;
 
 		// Localized Body Damage
-		public final ForgeConfigSpec.BooleanValue localizedBodyDamageEnabled;
-		public final ForgeConfigSpec.DoubleValue headCriticalShotMultiplier;
-		public final ForgeConfigSpec.DoubleValue bodyDamageMultiplier;
-		public final ForgeConfigSpec.DoubleValue bodyHealthRatioRecoveredFromSleep;
-		public final ForgeConfigSpec.DoubleValue healthRatioRecoveredFromSleep;
-		public final ForgeConfigSpec.DoubleValue bodyHealingFoodExhaustion;
-		public final ForgeConfigSpec.IntValue minFoodOnBodyHealing;
-		public final ForgeConfigSpec.IntValue painkillerAddictionDuration;
+		public final ModConfigSpec.BooleanValue localizedBodyDamageEnabled;
+		public final ModConfigSpec.DoubleValue headCriticalShotMultiplier;
+		public final ModConfigSpec.DoubleValue bodyDamageMultiplier;
+		public final ModConfigSpec.DoubleValue bodyHealthRatioRecoveredFromSleep;
+		public final ModConfigSpec.DoubleValue healthRatioRecoveredFromSleep;
+		public final ModConfigSpec.DoubleValue bodyHealingFoodExhaustion;
+		public final ModConfigSpec.IntValue minFoodOnBodyHealing;
+		public final ModConfigSpec.IntValue painkillerAddictionDuration;
 
-		public final ForgeConfigSpec.BooleanValue passiveLimbRegenerationOnFullHealth;
-		public final ForgeConfigSpec.ConfigValue<List<? extends String>> passiveLimbRegenerationEffects;
-		public final ForgeConfigSpec.BooleanValue passiveLimbRegenerationAmplificationEnabled;
-		public final ForgeConfigSpec.DoubleValue passiveLimbHealthRegenerated;
-		public final ForgeConfigSpec.IntValue passiveLimbRegenerationTickTimer;
+		public final ModConfigSpec.BooleanValue passiveLimbRegenerationOnFullHealth;
+		public final ModConfigSpec.ConfigValue<List<? extends String>> passiveLimbRegenerationEffects;
+		public final ModConfigSpec.BooleanValue passiveLimbRegenerationAmplificationEnabled;
+		public final ModConfigSpec.DoubleValue passiveLimbHealthRegenerated;
+		public final ModConfigSpec.IntValue passiveLimbRegenerationTickTimer;
 
-		public final ForgeConfigSpec.DoubleValue firstAidSuppliesLimbHealthRegenerated;
-		public final ForgeConfigSpec.EnumValue<EnumUtil.limbRegenerationMode> firstAidSuppliesLimbRegenerationMode;
-		public final ForgeConfigSpec.BooleanValue firstAidSuppliesHealingOverflow;
-		public final ForgeConfigSpec.IntValue firstAidSuppliesTickTimer;
-		public final ForgeConfigSpec.BooleanValue firstAidSuppliesExhaustsFood;
-		public final ForgeConfigSpec.ConfigValue<List<? extends String>> firstAidSuppliesBoostedOnEffects;
-		public final ForgeConfigSpec.DoubleValue firstAidSuppliesBoostedTickTimerMultiplier;
+		public final ModConfigSpec.DoubleValue firstAidSuppliesLimbHealthRegenerated;
+		public final ModConfigSpec.EnumValue<EnumUtil.limbRegenerationMode> firstAidSuppliesLimbRegenerationMode;
+		public final ModConfigSpec.BooleanValue firstAidSuppliesHealingOverflow;
+		public final ModConfigSpec.IntValue firstAidSuppliesTickTimer;
+		public final ModConfigSpec.BooleanValue firstAidSuppliesExhaustsFood;
+		public final ModConfigSpec.ConfigValue<List<? extends String>> firstAidSuppliesBoostedOnEffects;
+		public final ModConfigSpec.DoubleValue firstAidSuppliesBoostedTickTimerMultiplier;
 
-		public final ForgeConfigSpec.DoubleValue recoveryEffectHealingValue;
-		public final ForgeConfigSpec.IntValue healingHerbsUseTime;
-		public final ForgeConfigSpec.IntValue plasterUseTime;
-		public final ForgeConfigSpec.IntValue bandageUseTime;
-		public final ForgeConfigSpec.IntValue tonicUseTime;
-		public final ForgeConfigSpec.IntValue medkitUseTime;
-		public final ForgeConfigSpec.IntValue morphineUseTime;
-		public final ForgeConfigSpec.IntValue morphinePainkillerTickDuration;
+		public final ModConfigSpec.DoubleValue recoveryEffectHealingValue;
+		public final ModConfigSpec.IntValue healingHerbsUseTime;
+		public final ModConfigSpec.IntValue plasterUseTime;
+		public final ModConfigSpec.IntValue bandageUseTime;
+		public final ModConfigSpec.IntValue tonicUseTime;
+		public final ModConfigSpec.IntValue medkitUseTime;
+		public final ModConfigSpec.IntValue morphineUseTime;
+		public final ModConfigSpec.IntValue morphinePainkillerTickDuration;
 
-		public final ForgeConfigSpec.EnumValue<EnumUtil.bodyPartHealthMode> bodyPartHealthMode;
-		public final ForgeConfigSpec.DoubleValue headPartHealth;
-		public final ForgeConfigSpec.DoubleValue armsPartHealth;
-		public final ForgeConfigSpec.DoubleValue chestPartHealth;
-		public final ForgeConfigSpec.DoubleValue legsPartHealth;
-		public final ForgeConfigSpec.DoubleValue feetPartHealth;
+		public final ModConfigSpec.EnumValue<EnumUtil.bodyPartHealthMode> bodyPartHealthMode;
+		public final ModConfigSpec.DoubleValue headPartHealth;
+		public final ModConfigSpec.DoubleValue armsPartHealth;
+		public final ModConfigSpec.DoubleValue chestPartHealth;
+		public final ModConfigSpec.DoubleValue legsPartHealth;
+		public final ModConfigSpec.DoubleValue feetPartHealth;
 
-		public final ForgeConfigSpec.ConfigValue<List<? extends String>> headPartEffects;
-		public final ForgeConfigSpec.ConfigValue<List<? extends Integer>> headPartEffectAmplifiers;
-		public final ForgeConfigSpec.ConfigValue<List<? extends Double>> headPartEffectThresholds;
+		public final ModConfigSpec.ConfigValue<List<? extends String>> headPartEffects;
+		public final ModConfigSpec.ConfigValue<List<? extends Integer>> headPartEffectAmplifiers;
+		public final ModConfigSpec.ConfigValue<List<? extends Double>> headPartEffectThresholds;
 
-		public final ForgeConfigSpec.ConfigValue<List<? extends String>> armsPartEffects;
-		public final ForgeConfigSpec.ConfigValue<List<? extends Integer>> armsPartEffectAmplifiers;
-		public final ForgeConfigSpec.ConfigValue<List<? extends Double>> armsPartEffectThresholds;
-		public final ForgeConfigSpec.ConfigValue<List<? extends String>> bothArmsPartEffects;
-		public final ForgeConfigSpec.ConfigValue<List<? extends Integer>> bothArmsPartEffectAmplifiers;
-		public final ForgeConfigSpec.ConfigValue<List<? extends Double>> bothArmsPartEffectThresholds;
+		public final ModConfigSpec.ConfigValue<List<? extends String>> armsPartEffects;
+		public final ModConfigSpec.ConfigValue<List<? extends Integer>> armsPartEffectAmplifiers;
+		public final ModConfigSpec.ConfigValue<List<? extends Double>> armsPartEffectThresholds;
+		public final ModConfigSpec.ConfigValue<List<? extends String>> bothArmsPartEffects;
+		public final ModConfigSpec.ConfigValue<List<? extends Integer>> bothArmsPartEffectAmplifiers;
+		public final ModConfigSpec.ConfigValue<List<? extends Double>> bothArmsPartEffectThresholds;
 
-		public final ForgeConfigSpec.ConfigValue<List<? extends String>> chestPartEffects;
-		public final ForgeConfigSpec.ConfigValue<List<? extends Integer>> chestPartEffectAmplifiers;
-		public final ForgeConfigSpec.ConfigValue<List<? extends Double>> chestPartEffectThresholds;
+		public final ModConfigSpec.ConfigValue<List<? extends String>> chestPartEffects;
+		public final ModConfigSpec.ConfigValue<List<? extends Integer>> chestPartEffectAmplifiers;
+		public final ModConfigSpec.ConfigValue<List<? extends Double>> chestPartEffectThresholds;
 
-		public final ForgeConfigSpec.ConfigValue<List<? extends String>> legsPartEffects;
-		public final ForgeConfigSpec.ConfigValue<List<? extends Integer>> legsPartEffectAmplifiers;
-		public final ForgeConfigSpec.ConfigValue<List<? extends Double>> legsPartEffectThresholds;
-		public final ForgeConfigSpec.ConfigValue<List<? extends String>> bothLegsPartEffects;
-		public final ForgeConfigSpec.ConfigValue<List<? extends Integer>> bothLegsPartEffectAmplifiers;
-		public final ForgeConfigSpec.ConfigValue<List<? extends Double>> bothLegsPartEffectThresholds;
+		public final ModConfigSpec.ConfigValue<List<? extends String>> legsPartEffects;
+		public final ModConfigSpec.ConfigValue<List<? extends Integer>> legsPartEffectAmplifiers;
+		public final ModConfigSpec.ConfigValue<List<? extends Double>> legsPartEffectThresholds;
+		public final ModConfigSpec.ConfigValue<List<? extends String>> bothLegsPartEffects;
+		public final ModConfigSpec.ConfigValue<List<? extends Integer>> bothLegsPartEffectAmplifiers;
+		public final ModConfigSpec.ConfigValue<List<? extends Double>> bothLegsPartEffectThresholds;
 
-		public final ForgeConfigSpec.ConfigValue<List<? extends String>> feetPartEffects;
-		public final ForgeConfigSpec.ConfigValue<List<? extends Integer>> feetPartEffectAmplifiers;
-		public final ForgeConfigSpec.ConfigValue<List<? extends Double>> feetPartEffectThresholds;
-		public final ForgeConfigSpec.ConfigValue<List<? extends String>> bothFeetPartEffects;
-		public final ForgeConfigSpec.ConfigValue<List<? extends Integer>> bothFeetPartEffectAmplifiers;
-		public final ForgeConfigSpec.ConfigValue<List<? extends Double>> bothFeetPartEffectThresholds;
+		public final ModConfigSpec.ConfigValue<List<? extends String>> feetPartEffects;
+		public final ModConfigSpec.ConfigValue<List<? extends Integer>> feetPartEffectAmplifiers;
+		public final ModConfigSpec.ConfigValue<List<? extends Double>> feetPartEffectThresholds;
+		public final ModConfigSpec.ConfigValue<List<? extends String>> bothFeetPartEffects;
+		public final ModConfigSpec.ConfigValue<List<? extends Integer>> bothFeetPartEffectAmplifiers;
+		public final ModConfigSpec.ConfigValue<List<? extends Double>> bothFeetPartEffectThresholds;
 
-		public final ForgeConfigSpec.BooleanValue morphineSyringeApplyPainkillerAddiction;
+		public final ModConfigSpec.BooleanValue morphineSyringeApplyPainkillerAddiction;
 
-		Common(ForgeConfigSpec.Builder builder)
+		Common(ModConfigSpec.Builder builder)
 		{
 			builder.comment(new String [] {
 					" Options related to enabling/disabling specific features",
@@ -1051,56 +1051,56 @@ public class Config
 
 	private static boolean validateEffectName(final Object obj)
 	{
-		return obj instanceof final String effectName && ForgeRegistries.MOB_EFFECTS.containsKey(new ResourceLocation(effectName));
+		return obj instanceof final String effectName && Registries.MOB_EFFECTS.containsKey(new ResourceLocation(effectName));
 	}
 
 	private static boolean validateEntityType(final Object obj)
 	{
-		return obj instanceof final String entityName && ForgeRegistries.ENTITY_TYPES.containsKey(new ResourceLocation(entityName));
+		return obj instanceof final String entityName && Registries.ENTITY_TYPES.containsKey(new ResourceLocation(entityName));
 	}
 
 	public static class Client
 	{
-		public final ForgeConfigSpec.BooleanValue foodSaturationDisplayed;
-		public final ForgeConfigSpec.BooleanValue showVanillaBarAnimationOverlay;
+		public final ModConfigSpec.BooleanValue foodSaturationDisplayed;
+		public final ModConfigSpec.BooleanValue showVanillaBarAnimationOverlay;
 
-		public final ForgeConfigSpec.EnumValue<EnumUtil.temperatureDisplayMode> temperatureDisplayMode;
-		public final ForgeConfigSpec.IntValue temperatureDisplayOffsetX;
-		public final ForgeConfigSpec.IntValue temperatureDisplayOffsetY;
-		public final ForgeConfigSpec.IntValue bodyTemperatureDisplayOffsetX;
-		public final ForgeConfigSpec.IntValue bodyTemperatureDisplayOffsetY;
-		public final ForgeConfigSpec.BooleanValue heatTemperatureOverlay;
-		public final ForgeConfigSpec.BooleanValue coldTemperatureOverlay;
-		public final ForgeConfigSpec.BooleanValue breathingSoundEnabled;
-		public final ForgeConfigSpec.DoubleValue coldBreathEffectThreshold;
-		public final ForgeConfigSpec.BooleanValue renderTemperatureInFahrenheit;
+		public final ModConfigSpec.EnumValue<EnumUtil.temperatureDisplayMode> temperatureDisplayMode;
+		public final ModConfigSpec.IntValue temperatureDisplayOffsetX;
+		public final ModConfigSpec.IntValue temperatureDisplayOffsetY;
+		public final ModConfigSpec.IntValue bodyTemperatureDisplayOffsetX;
+		public final ModConfigSpec.IntValue bodyTemperatureDisplayOffsetY;
+		public final ModConfigSpec.BooleanValue heatTemperatureOverlay;
+		public final ModConfigSpec.BooleanValue coldTemperatureOverlay;
+		public final ModConfigSpec.BooleanValue breathingSoundEnabled;
+		public final ModConfigSpec.DoubleValue coldBreathEffectThreshold;
+		public final ModConfigSpec.BooleanValue renderTemperatureInFahrenheit;
 
-		public final ForgeConfigSpec.IntValue wetnessIndicatorOffsetX;
-		public final ForgeConfigSpec.IntValue wetnessIndicatorOffsetY;
+		public final ModConfigSpec.IntValue wetnessIndicatorOffsetX;
+		public final ModConfigSpec.IntValue wetnessIndicatorOffsetY;
 
-		public final ForgeConfigSpec.IntValue bodyDamageIndicatorOffsetX;
-		public final ForgeConfigSpec.IntValue bodyDamageIndicatorOffsetY;
-		public final ForgeConfigSpec.DoubleValue bodyDamageIndicatorRenderHealthLimit;
+		public final ModConfigSpec.IntValue bodyDamageIndicatorOffsetX;
+		public final ModConfigSpec.IntValue bodyDamageIndicatorOffsetY;
+		public final ModConfigSpec.DoubleValue bodyDamageIndicatorRenderHealthLimit;
 
-		public final ForgeConfigSpec.IntValue seasonCardsDisplayOffsetX;
-		public final ForgeConfigSpec.IntValue seasonCardsDisplayOffsetY;
-		public final ForgeConfigSpec.IntValue seasonCardsSpawnDimensionDelayInTicks;
-		public final ForgeConfigSpec.IntValue seasonCardsDisplayTimeInTicks;
-		public final ForgeConfigSpec.IntValue seasonCardsFadeInInTicks;
-		public final ForgeConfigSpec.IntValue seasonCardsFadeOutInTicks;
+		public final ModConfigSpec.IntValue seasonCardsDisplayOffsetX;
+		public final ModConfigSpec.IntValue seasonCardsDisplayOffsetY;
+		public final ModConfigSpec.IntValue seasonCardsSpawnDimensionDelayInTicks;
+		public final ModConfigSpec.IntValue seasonCardsDisplayTimeInTicks;
+		public final ModConfigSpec.IntValue seasonCardsFadeInInTicks;
+		public final ModConfigSpec.IntValue seasonCardsFadeOutInTicks;
 
-		public final ForgeConfigSpec.BooleanValue showHydrationTooltip;
-		public final ForgeConfigSpec.BooleanValue mergeHydrationAndSaturationTooltip;
-		public final ForgeConfigSpec.BooleanValue thirstSaturationDisplayed;
-		public final ForgeConfigSpec.BooleanValue lowHydrationEffect;
-		public final ForgeConfigSpec.BooleanValue showHydrationBar;
-		public final ForgeConfigSpec.BooleanValue showDrinkPreview;
-		public final ForgeConfigSpec.IntValue hydrationBarOffsetX;
-		public final ForgeConfigSpec.IntValue hydrationBarOffsetY;
+		public final ModConfigSpec.BooleanValue showHydrationTooltip;
+		public final ModConfigSpec.BooleanValue mergeHydrationAndSaturationTooltip;
+		public final ModConfigSpec.BooleanValue thirstSaturationDisplayed;
+		public final ModConfigSpec.BooleanValue lowHydrationEffect;
+		public final ModConfigSpec.BooleanValue showHydrationBar;
+		public final ModConfigSpec.BooleanValue showDrinkPreview;
+		public final ModConfigSpec.IntValue hydrationBarOffsetX;
+		public final ModConfigSpec.IntValue hydrationBarOffsetY;
 
-		public final ForgeConfigSpec.BooleanValue appendBrokenShieldHeartsToHealthBar;
+		public final ModConfigSpec.BooleanValue appendBrokenShieldHeartsToHealthBar;
 
-		Client(ForgeConfigSpec.Builder builder)
+		Client(ModConfigSpec.Builder builder)
 		{
 
 			builder.comment(" Options related to the heads up display.",
@@ -1234,7 +1234,7 @@ public class Config
 
 	public static class Server
 	{
-		Server(ForgeConfigSpec.Builder builder)
+		Server(ModConfigSpec.Builder builder)
 		{
 
 		}

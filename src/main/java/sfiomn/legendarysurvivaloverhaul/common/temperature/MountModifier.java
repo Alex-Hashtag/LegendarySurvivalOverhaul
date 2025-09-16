@@ -3,7 +3,7 @@ package sfiomn.legendarysurvivaloverhaul.common.temperature;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraft.core.registries.Registries;
 import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonTemperature;
 import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonTemperatureResistance;
 import sfiomn.legendarysurvivaloverhaul.api.data.manager.TemperatureDataManager;
@@ -26,7 +26,7 @@ public class MountModifier extends ModifierBase {
 
     private float processMountJson(Entity entity)
     {
-        ResourceLocation entityRegistryName = ForgeRegistries.ENTITY_TYPES.getKey(entity.getType());
+        ResourceLocation entityRegistryName = Registries.ENTITY_TYPES.getKey(entity.getType());
         JsonTemperatureResistance jsonTemperature = TemperatureDataManager.getMount(entityRegistryName);
         if (jsonTemperature != null)
         {

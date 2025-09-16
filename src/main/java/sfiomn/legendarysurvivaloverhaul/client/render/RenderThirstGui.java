@@ -8,8 +8,8 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.client.gui.overlay.ForgeGui;
-import net.minecraftforge.client.gui.overlay.IGuiOverlay;
+import net.neoforged.neoforge.client.gui.overlay.ExtendedGui;
+import net.neoforged.neoforge.client.gui.overlay.IGuiOverlay;
 import org.jetbrains.annotations.Nullable;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonThirstConsumable;
@@ -42,35 +42,35 @@ public class RenderThirstGui
 	private static float unclampedAlphaPreview;
 	private static int alphaDirection = 1;
 
-	public static final IGuiOverlay THIRST_GUI = (forgeGui, guiGraphics, partialTicks, width, height) -> {
+	public static final IGuiOverlay THIRST_GUI = (gui, guiGraphics, partialTicks, width, height) -> {
 		if (Config.Baked.thirstEnabled
 				&& Config.Baked.showHydrationBar
 				&& !Minecraft.getInstance().options.hideGui
-				&& forgeGui.shouldDrawSurvivalElements()) {
-			Player player = forgeGui.getMinecraft().player;
+				&& gui.shouldDrawSurvivalElements()) {
+			Player player = gui.getMinecraft().player;
 
 			if (player != null) {
 				if (!ThirstUtil.isThirstActive(player))
 					return;
 
 				rand.setSeed(player.tickCount * 445L);
-				forgeGui.setupOverlayRenderState(true, false);
+				gui.setupOverlayRenderState(true, false);
 				RenderSystem.disableDepthTest();
 				RenderSystem.depthMask(false);
 
 				Minecraft.getInstance().getProfiler().push("thirst_gui");
-				drawHydrationBar(forgeGui, guiGraphics, player, width, height);
+				drawHydrationBar(gui, guiGraphics, player, width, height);
 				Minecraft.getInstance().getProfiler().pop();
 
 				RenderSystem.depthMask(true);
 				RenderSystem.enableDepthTest();
 
-				forgeGui.rightHeight += 10;
+				gui.rightHeight += 10;
 			}
 		}
 	};
 
-	public static void drawHydrationBar(ForgeGui forgeGui, GuiGraphics gui, Player player, int width, int height) {
+	public static void drawHydrationBar(ExtendedGui forgeGui, GuiGraphics gui, Player player, int width, int height) {
 		// Update player's thirst capability every 20 ticks
 		if (THIRST_CAP == null || player.tickCount % 20 == 0)
 			THIRST_CAP = CapabilityUtil.getThirstCapability(player);

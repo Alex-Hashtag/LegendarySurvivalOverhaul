@@ -7,8 +7,7 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
-import net.minecraftforge.common.data.ExistingFileHelper;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.data.builder.*;
 import sfiomn.legendarysurvivaloverhaul.api.temperature.TemporaryModifierGroupEnum;
@@ -117,7 +116,7 @@ public abstract class TemperatureDataProvider implements DataProvider {
     }
 
     public final ITemperatureConsumableDataHolder consumable(Item item) {
-        ResourceLocation itemRegistryName = ForgeRegistries.ITEMS.getKey(item);
+        ResourceLocation itemRegistryName = Registries.ITEMS.getKey(item);
         assert itemRegistryName != null;
         return this.consumableBuilders.computeIfAbsent(itemRegistryName.toString(), (k) -> new TemperatureConsumableDataHolder());
     }
@@ -144,7 +143,7 @@ public abstract class TemperatureDataProvider implements DataProvider {
     }
 
     public final ITemperatureBlockDataHolder block(Block block) {
-        ResourceLocation blockRegistryName = ForgeRegistries.BLOCKS.getKey(block);
+        ResourceLocation blockRegistryName = Registries.BLOCKS.getKey(block);
         assert blockRegistryName != null;
         return this.blockBuilders.computeIfAbsent(blockRegistryName.toString(), (k) -> new TemperatureBlockDataHolder());
     }
@@ -158,7 +157,7 @@ public abstract class TemperatureDataProvider implements DataProvider {
     }
 
     public final ITemperatureResistanceData item(Item item) {
-        ResourceLocation itemRegistryName = ForgeRegistries.ITEMS.getKey(item);
+        ResourceLocation itemRegistryName = Registries.ITEMS.getKey(item);
         assert itemRegistryName != null;
         return this.itemBuilders.computeIfAbsent(itemRegistryName.toString(), (k) -> new TemperatureResistanceData());
     }

@@ -3,13 +3,13 @@ package sfiomn.legendarysurvivaloverhaul.api.data.json;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.world.effect.MobEffect;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import sfiomn.legendarysurvivaloverhaul.api.temperature.TemporaryModifierGroupEnum;
 
 import java.util.List;
 
 public class JsonTemperatureConsumable {
-    public static final Codec<JsonTemperatureConsumable> CODEC = RecordCodecBuilder.<JsonTemperatureConsumable>create((inst) -> inst.group(
+    public static final Codec<JsonTemperatureConsumable> CODEC = RecordCodecBuilder.<JsonTemperatureConsumable>Create((inst) -> inst.group(
             Codec.STRING.fieldOf("group").forGetter(c -> c.group.name()),
             Codec.INT.fieldOf("temperature_level").forGetter(c -> c.temperatureLevel),
             Codec.INT.fieldOf("duration").forGetter(c -> c.duration)
@@ -20,8 +20,8 @@ public class JsonTemperatureConsumable {
     public TemporaryModifierGroupEnum group;
     public int temperatureLevel;
     public int duration;
-    private RegistryObject<MobEffect> effect;
-    private RegistryObject<MobEffect> oppositeEffect;
+    private DeferredHolder<MobEffect, MobEffect> effect;
+    private DeferredHolder<MobEffect, MobEffect> oppositeEffect;
 
     public JsonTemperatureConsumable(String group, int temperatureLevel, int duration) {
 

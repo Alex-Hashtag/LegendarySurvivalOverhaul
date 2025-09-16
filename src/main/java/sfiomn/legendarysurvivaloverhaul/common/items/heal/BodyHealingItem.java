@@ -17,7 +17,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraft.core.registries.Registries;
 import sfiomn.legendarysurvivaloverhaul.api.bodydamage.BodyDamageUtil;
 import sfiomn.legendarysurvivaloverhaul.api.bodydamage.BodyPartEnum;
 import sfiomn.legendarysurvivaloverhaul.api.bodydamage.IBodyDamageCapability;
@@ -59,7 +59,7 @@ public class BodyHealingItem extends Item {
             return InteractionResultHolder.success(stack);
         }
 
-        ResourceLocation registryName = ForgeRegistries.ITEMS.getKey(this);
+        ResourceLocation registryName = Registries.ITEMS.getKey(this);
         JsonHealingConsumable jsonConsumableHeal = BodyDamageDataManager.getHealingItem(registryName);
 
         if(jsonConsumableHeal != null) {
@@ -87,7 +87,7 @@ public class BodyHealingItem extends Item {
         if(!(entity instanceof Player player))
             return stack;
 
-        ResourceLocation registryName = ForgeRegistries.ITEMS.getKey(this);
+        ResourceLocation registryName = Registries.ITEMS.getKey(this);
         JsonHealingConsumable  jsonConsumableHeal = BodyDamageDataManager.getHealingItem(registryName);
 
         if (jsonConsumableHeal == null)

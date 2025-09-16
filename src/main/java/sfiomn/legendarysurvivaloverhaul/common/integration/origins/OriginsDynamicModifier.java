@@ -6,7 +6,6 @@ import io.github.edwinmindcraft.origins.api.origin.Origin;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.common.util.LazyOptional;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonTemperatureResistance;
 import sfiomn.legendarysurvivaloverhaul.api.data.manager.TemperatureDataManager;
@@ -25,13 +24,12 @@ public class OriginsDynamicModifier extends DynamicModifierBase {
         float effectiveResistance = 0.0f;
         float diffToAverage = currentTemperature - TemperatureEnum.NORMAL.getMiddle();
 
-        LazyOptional<IOriginContainer> optionalOrigin = player.getCapability(OriginsAPI.ORIGIN_CONTAINER);
-        if (optionalOrigin.isPresent() && optionalOrigin.resolve().isPresent()) {
-            IOriginContainer origins = optionalOrigin.resolve().get();
+        // NeoForge: getCapability now returns the instance or null (LazyOptional removed)
+        IOriginContainer origins = player.getCapability(OriginsAPI.ORIGIN_CONTAINER);
+        if (origins != null) {
             for (ResourceKey<Origin> origin : origins.getOrigins().values()) {
                 JsonTemperatureResistance config = TemperatureDataManager.getOrigin(origin.location());
                 if (config != null) {
-
                     double maxResistance = config.thermalResistance;
 
                     if (diffToAverage > 0) {
@@ -44,7 +42,6 @@ public class OriginsDynamicModifier extends DynamicModifierBase {
                         currentResistance = -currentResistance;
                         effectiveResistance = (float) Mth.clamp(maxResistance, currentResistance, diffToAverage + currentResistance);
                     }
-
                 }
             }
         }

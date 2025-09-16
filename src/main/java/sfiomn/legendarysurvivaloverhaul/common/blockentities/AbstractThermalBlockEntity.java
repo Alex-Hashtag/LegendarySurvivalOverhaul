@@ -21,7 +21,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraft.core.registries.Registries;
 import org.jetbrains.annotations.NotNull;
 import sfiomn.legendarysurvivaloverhaul.api.block.ThermalTypeEnum;
 import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonTemperatureFuelItem;
@@ -147,13 +147,13 @@ public abstract class AbstractThermalBlockEntity extends BaseContainerBlockEntit
     }
 
     public boolean isItemValid(Item item) {
-        ResourceLocation registryNameItem = ForgeRegistries.ITEMS.getKey(item);
+        ResourceLocation registryNameItem = Registries.ITEMS.getKey(item);
         JsonTemperatureFuelItem fuelInfo = TemperatureDataManager.getFuelItem(registryNameItem);
         return fuelInfo != null && fuelInfo.thermalType == thermalType && fuelInfo.duration > 0;
     }
 
     public int getFuelDuration(ItemStack item) {
-        ResourceLocation registryNameItem = ForgeRegistries.ITEMS.getKey(item.getItem());
+        ResourceLocation registryNameItem = Registries.ITEMS.getKey(item.getItem());
         JsonTemperatureFuelItem fuelInfo = TemperatureDataManager.getFuelItem(registryNameItem);
         return fuelInfo != null ? fuelInfo.duration : 0;
     }

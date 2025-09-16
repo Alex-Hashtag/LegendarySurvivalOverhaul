@@ -8,14 +8,16 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.SlotItemHandler;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.capabilities.Capabilities; // <— NEW
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.SlotItemHandler;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import sfiomn.legendarysurvivaloverhaul.api.block.ThermalTypeEnum;
 import sfiomn.legendarysurvivaloverhaul.common.blockentities.AbstractThermalBlockEntity;
+
+import java.util.function.Supplier; // <— use Supplier instead of RegistryObject
 
 public abstract class AbstractThermalContainer extends AbstractContainerMenu {
 
@@ -24,8 +26,14 @@ public abstract class AbstractThermalContainer extends AbstractContainerMenu {
     public final Level level;
     public final ContainerData dataAccess;
 
-    public AbstractThermalContainer(int windowId, Inventory playerInventory, AbstractThermalBlockEntity be, ContainerData dataAccess, RegistryObject<MenuType<AbstractThermalContainer>> registryObject, ThermalTypeEnum thermalType) {
-        super(registryObject.get(), windowId);
+    // Accept Supplier<MenuType<?>> so it works with DeferredHolder (and also RegistryObject if you kept it)
+    public AbstractThermalContainer(int windowId,
+                                    Inventory playerInventory,
+                                    AbstractThermalBlockEntity be,
+                                    ContainerData dataAccess,
+                                    DeferredHolder<MenuType<?>, ? extends MenuType<?>> menuTypeSupplier,
+                                    ThermalTypeEnum thermalType) {
+        super(menuTypeSupplier.get(), windowId);
         checkContainerSize(playerInventory, 4);
         this.thermalType = thermalType;
         this.blockEntity = be;
@@ -34,12 +42,14 @@ public abstract class AbstractThermalContainer extends AbstractContainerMenu {
 
         layoutPlayerInventorySlots(playerInventory, 8, 84);
 
-        this.blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(iItemHandler -> {
-            addSlot(addThermalSlot(iItemHandler, 0, 14, 32));
-            addSlot(addThermalSlot(iItemHandler, 1, 34, 32));
-            addSlot(addThermalSlot(iItemHandler, 2, 14, 52));
-            addSlot(addThermalSlot(iItemHandler, 3, 34, 52));
-        });
+        // NEW: query the ItemHandler capability from the level (block capability API)
+        IItemHandler handler = this.level.getCapability(Capabilities.ItemHandler.BLOCK, be.getBlockPos(), null);
+        if (handler != null) {
+            addSlot(addThermalSlot(handler, 0, 14, 32));
+            addSlot(addThermalSlot(handler, 1, 34, 32));
+            addSlot(addThermalSlot(handler, 2, 14, 52));
+            addSlot(addThermalSlot(handler, 3, 34, 52));
+        }
 
         addDataSlots(dataAccess);
     }
@@ -77,7 +87,6 @@ public abstract class AbstractThermalContainer extends AbstractContainerMenu {
             x += dx;
             index++;
         }
-
         return index;
     }
 
@@ -86,7 +95,6 @@ public abstract class AbstractThermalContainer extends AbstractContainerMenu {
             index = addSlotRange(playerInventory, index, x, y, horAmount, dx);
             y += dy;
         }
-
         return index;
     }
 
@@ -95,9 +103,9 @@ public abstract class AbstractThermalContainer extends AbstractContainerMenu {
         addSlotBox(playerInventory, lastIndex, leftCol, topRow, 9, 18, 3, 18);
     }
 
-    //  0 - 3 = TileInventory slots, which map to our TileEntity slot numbers 0 - 3)
-    //  4 - 12 = hotbar slots (which will map to the InventoryPlayer slot numbers 0 - 8)
-    //  13 - 39 = player inventory slots (which map to the InventoryPlayer slot numbers 9 - 35)
+    //  0 - 3 = TileInventory slots (map to TileEntity slots 0 - 3)
+    //  4 - 12 = hotbar slots (InventoryPlayer slots 0 - 8)
+    //  13 - 39 = player inventory slots (InventoryPlayer slots 9 - 35)
     @Override
     public ItemStack quickMoveStack(Player player, int index) {
         ItemStack itemstack = ItemStack.EMPTY;
@@ -106,28 +114,20 @@ public abstract class AbstractThermalContainer extends AbstractContainerMenu {
             ItemStack itemstack1 = slot.getItem();
             itemstack = itemstack1.copy();
 
-            // Index is in Tile entity inventory
             if (index < AbstractThermalBlockEntity.SLOT_COUNT) {
-                // Move to Player inventory
                 if (!this.moveItemStackTo(itemstack1, AbstractThermalBlockEntity.SLOT_COUNT + 9, this.slots.size(), false)) {
                     return ItemStack.EMPTY;
                 }
             } else if (index < this.slots.size()) {
-                // Item is a valid fuel for the tile entity
                 if (blockEntity.isItemValid(itemstack1.getItem())) {
-                    // Move to Tile entity inventory
                     if (!this.moveItemStackTo(itemstack1, 0, AbstractThermalBlockEntity.SLOT_COUNT, false)) {
                         return ItemStack.EMPTY;
                     }
-                // Index is in Player hot bar
                 } else if (index < AbstractThermalBlockEntity.SLOT_COUNT + 9) {
-                    // Move to Player inventory
                     if (!this.moveItemStackTo(itemstack1, AbstractThermalBlockEntity.SLOT_COUNT + 9, this.slots.size(), false)) {
                         return ItemStack.EMPTY;
                     }
-                // Index is in Player inventory
                 } else {
-                    // Move to Player hot bar
                     if (!this.moveItemStackTo(itemstack1, AbstractThermalBlockEntity.SLOT_COUNT, AbstractThermalBlockEntity.SLOT_COUNT + 9, false)) {
                         return ItemStack.EMPTY;
                     }
@@ -136,7 +136,6 @@ public abstract class AbstractThermalContainer extends AbstractContainerMenu {
                 return ItemStack.EMPTY;
             }
 
-            // If stack size == 0 (the entire stack was moved) set slot contents to null
             if (itemstack1.isEmpty()) {
                 slot.set(ItemStack.EMPTY);
             } else {
@@ -149,7 +148,6 @@ public abstract class AbstractThermalContainer extends AbstractContainerMenu {
 
             slot.onTake(player, itemstack1);
         }
-
         return itemstack;
     }
 }

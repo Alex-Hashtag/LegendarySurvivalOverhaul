@@ -6,8 +6,7 @@ import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
-import net.minecraftforge.common.data.ExistingFileHelper;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.data.builder.IBodyPartResistanceData;
 import sfiomn.legendarysurvivaloverhaul.api.data.builder.IBodyPartsDamageSourceData;
@@ -74,7 +73,7 @@ public abstract class BodyDamageDataProvider implements DataProvider {
     }
 
     public final IHealingConsumableData consumable(Item item) {
-        ResourceLocation itemRegistryName = ForgeRegistries.ITEMS.getKey(item);
+        ResourceLocation itemRegistryName = Registries.ITEMS.getKey(item);
         assert itemRegistryName != null;
         return this.consumablesBuilders.computeIfAbsent(itemRegistryName.toString(), (k) -> new HealingConsumableData());
     }
@@ -88,7 +87,7 @@ public abstract class BodyDamageDataProvider implements DataProvider {
     }
 
     public final IBodyPartResistanceData item(Item item) {
-        ResourceLocation itemRegistryName = ForgeRegistries.ITEMS.getKey(item);
+        ResourceLocation itemRegistryName = Registries.ITEMS.getKey(item);
         assert itemRegistryName != null;
         return this.bodyPartResistanceBuilders.computeIfAbsent(itemRegistryName.toString(), (k) -> new BodyPartResistanceData());
     }

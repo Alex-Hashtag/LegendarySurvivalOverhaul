@@ -8,7 +8,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraft.core.registries.Registries;
 import org.jetbrains.annotations.Nullable;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonTemperatureBiomeOverride;
@@ -105,7 +105,7 @@ public abstract class ModifierBase {
 		// Get the biome's humidity
 		// Dry biomes have humidity below 0.2
 
-		ResourceLocation name = ForgeRegistries.BIOMES.getKey(biome);
+		ResourceLocation name = Registries.BIOMES.getKey(biome);
 		JsonTemperatureBiomeOverride biomeInfo = TemperatureDataManager.getBiome(name);
 		if (name != null && biomeInfo != null)
 		{

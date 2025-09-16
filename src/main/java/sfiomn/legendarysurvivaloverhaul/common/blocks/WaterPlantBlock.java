@@ -24,9 +24,9 @@ import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.common.IPlantable;
-import net.minecraftforge.common.PlantType;
-import net.minecraftforge.common.Tags;
+import net.neoforged.neoforge.common.IPlantable;
+import net.neoforged.neoforge.common.PlantType;
+import net.neoforged.neoforge.common.Tags;
 import org.jetbrains.annotations.NotNull;
 import sfiomn.legendarysurvivaloverhaul.registry.ItemRegistry;
 
@@ -71,12 +71,12 @@ public class WaterPlantBlock extends CropBlock implements IPlantable {
             int age = this.getAge(state);
             if (canGrow(level, state, pos)) {
                 float f = getGrowthSpeed(this, level, pos);
-                if (net.minecraftforge.common.ForgeHooks.onCropsGrowPre(level, pos, state, random.nextInt((int)(25.0F / f) + 1) == 0)) {
+                if (net.neoforged.neoforge.common.ForgeHooks.onCropsGrowPre(level, pos, state, random.nextInt((int)(25.0F / f) + 1) == 0)) {
                     level.setBlock(pos, this.getStateForAge(age + 1), 2);
                     if (this.getAge(state) > this.getMaxAge() / 2) {
                         level.setBlock(pos.above(), this.getStateForAge(age + 1).setValue(HALF, DoubleBlockHalf.UPPER), 2);
                     }
-                    net.minecraftforge.common.ForgeHooks.onCropsGrowPost(level, pos, state);
+                    net.neoforged.neoforge.common.ForgeHooks.onCropsGrowPost(level, pos, state);
                 }
             }
         }

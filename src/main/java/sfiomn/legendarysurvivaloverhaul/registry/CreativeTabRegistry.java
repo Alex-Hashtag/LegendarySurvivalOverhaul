@@ -4,9 +4,9 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.registries.DeferredRegister;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.thirst.HydrationEnum;
 import sfiomn.legendarysurvivaloverhaul.api.thirst.ThirstUtil;
@@ -14,10 +14,12 @@ import sfiomn.legendarysurvivaloverhaul.config.Config;
 
 import java.util.List;
 
-public class CreativeTabRegistry {
+
+public class CreativeTabRegistry
+{
     public static final DeferredRegister<CreativeModeTab> ITEM_GROUPS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, LegendarySurvivalOverhaul.MOD_ID);
 
-    public static final RegistryObject<CreativeModeTab> LEGENDARY_CREATURES_TAB = ITEM_GROUPS.register("legendary_creatures", () -> CreativeModeTab.builder()
+    public static final DeferredHolder<CreativeModeTab, ? extends CreativeModeTab> LEGENDARY_CREATURES_TAB = ITEM_GROUPS.register("legendary_creatures", () -> CreativeModeTab.builder()
             .icon(() -> ItemRegistry.THERMOMETER.get().getDefaultInstance())
             .displayItems((parameters, list) ->
             {
@@ -109,7 +111,8 @@ public class CreativeTabRegistry {
             .title(Component.translatable("itemGroup." + LegendarySurvivalOverhaul.MOD_ID))
             .build());
 
-    public static void register(IEventBus eventBus) {
+    public static void register(IEventBus eventBus)
+    {
         ITEM_GROUPS.register(eventBus);
     }
 }

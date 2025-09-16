@@ -22,22 +22,22 @@ import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.LevelData;
 import net.minecraft.world.level.storage.PrimaryLevelData;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.common.ForgeMod;
-import net.minecraftforge.event.ItemAttributeModifierEvent;
-import net.minecraftforge.event.OnDatapackSyncEvent;
-import net.minecraftforge.event.entity.living.*;
-import net.minecraftforge.event.entity.player.*;
-import net.minecraftforge.event.level.BlockEvent;
-import net.minecraftforge.event.level.LevelEvent;
-import net.minecraftforge.event.level.SleepFinishedTimeEvent;
-import net.minecraftforge.eventbus.api.Event;
-import net.minecraftforge.eventbus.api.EventPriority;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.loading.FMLEnvironment;
-import net.minecraftforge.network.PacketDistributor;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.api.distmarker.Dist;
+//import net.neoforged.neoforge.common.ForgeMod;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.event.ItemAttributeModifierEvent;
+import net.neoforged.neoforge.event.OnDatapackSyncEvent;
+import net.neoforged.neoforge.event.entity.living.*;
+import net.neoforged.neoforge.event.entity.player.*;
+import net.neoforged.neoforge.event.level.BlockEvent;
+import net.neoforged.neoforge.event.level.LevelEvent;
+import net.neoforged.neoforge.event.level.SleepFinishedTimeEvent;
+//import net.neoforged.neoforge.eventbus.api.Event;
+import net.neoforged.bus.api.EventPriority;
+import net.neoforged.fml.common.Mod;
+//import net.neoforged.neoforge.fml.loading.FMLEnvironment;
+import net.neoforged.neoforge.network.PacketDistributor;
+import net.minecraft.core.registries.Registries;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.ModDamageTypes;
 import sfiomn.legendarysurvivaloverhaul.api.bodydamage.BodyDamageUtil;
@@ -69,7 +69,6 @@ import sfiomn.legendarysurvivaloverhaul.util.PlayerModelUtil;
 
 import java.util.*;
 
-import static sfiomn.legendarysurvivaloverhaul.registry.TemperatureModifierRegistry.ITEM_ATTRIBUTE_MODIFIERS_REGISTRY;
 import static sfiomn.legendarysurvivaloverhaul.util.internal.BodyDamageUtilInternal.*;
 import static sfiomn.legendarysurvivaloverhaul.util.internal.TemperatureUtilInternal.*;
 import static sfiomn.legendarysurvivaloverhaul.util.internal.TemperatureUtilInternal.equipmentSlotTemperatureUuid;
@@ -91,7 +90,7 @@ public class CommonForgeEvents {
             if (itemStackInBasket != ItemStack.EMPTY)
                 usedItemStack = itemStackInBasket;
         }
-        ResourceLocation itemRegistryName = ForgeRegistries.ITEMS.getKey(usedItemStack.getItem());
+        ResourceLocation itemRegistryName = Registries.ITEMS.getKey(usedItemStack.getItem());
 
         if (LegendarySurvivalOverhaul.medsandherbsLoaded
                 && itemRegistryName != null && itemRegistryName.getNamespace().equals("meds_and_herbs")) {
@@ -120,7 +119,7 @@ public class CommonForgeEvents {
         }
 
         if (!entity.level().isClientSide) {
-            ResourceLocation itemRegistryName = ForgeRegistries.ITEMS.getKey(usedItemStack.getItem());
+            ResourceLocation itemRegistryName = Registries.ITEMS.getKey(usedItemStack.getItem());
             TemperatureUtil.applyConsumableTemperature(player, itemRegistryName);
         }
 
@@ -221,7 +220,7 @@ public class CommonForgeEvents {
             }
 
             if ((Config.Baked.localizedBodyDamageEnabled)) {
-                ResourceLocation itemRegistryName = ForgeRegistries.ITEMS.getKey(event.getItemStack().getItem());
+                ResourceLocation itemRegistryName = Registries.ITEMS.getKey(event.getItemStack().getItem());
                 JsonBodyPartResistance config = BodyDamageDataManager.getBodyResistanceItem(itemRegistryName);
 
                 if (itemRegistryName == null || config == null)

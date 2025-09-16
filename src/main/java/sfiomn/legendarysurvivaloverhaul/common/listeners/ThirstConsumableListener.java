@@ -9,9 +9,9 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.fml.ModList;
-import net.minecraftforge.network.PacketDistributor;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.fml.ModList;
+import net.neoforged.neoforge.network.PacketDistributor;
+import net.minecraft.core.registries.Registries;
 import org.jetbrains.annotations.NotNull;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonThirstConsumable;
@@ -67,7 +67,7 @@ public class ThirstConsumableListener extends SimpleJsonResourceReloadListener i
         List<JsonThirstConsumable> jsonThirstConsumables = null;
         JsonThirstConsumable defaultJct = null;
 
-        ResourceLocation itemRegistryName = ForgeRegistries.ITEMS.getKey(itemStack.getItem());
+        ResourceLocation itemRegistryName = Registries.ITEMS.getKey(itemStack.getItem());
 
         if (itemRegistryName != null)
             jsonThirstConsumables = THIRST_CONSUMABLES.get(itemRegistryName);

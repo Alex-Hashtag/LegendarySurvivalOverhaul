@@ -4,7 +4,7 @@ import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.event.ItemAttributeModifierEvent;
+import net.neoforged.neoforge.event.ItemAttributeModifierEvent;
 
 import java.util.UUID;
 

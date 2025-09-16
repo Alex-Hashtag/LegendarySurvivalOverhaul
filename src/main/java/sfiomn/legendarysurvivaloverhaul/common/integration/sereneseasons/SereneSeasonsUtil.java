@@ -7,7 +7,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraft.core.registries.Registries;
 import sereneseasons.api.season.ISeasonState;
 import sereneseasons.api.season.Season;
 import sereneseasons.api.season.SeasonHelper;
@@ -76,7 +76,7 @@ public class SereneSeasonsUtil {
     }
 
     public static boolean plantCanGrow(Level level, BlockPos pos, BlockState plant) {
-        ResourceLocation resourceLocation = ForgeRegistries.BLOCKS.getKey(plant.getBlock());
+        ResourceLocation resourceLocation = Registries.BLOCKS.getKey(plant.getBlock());
         if (resourceLocation != null) {
             boolean isFertile = ModFertility.isCropFertile(resourceLocation.getPath(), level, pos);
             if (ModConfig.fertility.seasonalCrops && ModFertility.isCrop(plant) && !isFertile && !isGlassAboveBlock(level, pos)) {

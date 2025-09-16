@@ -16,7 +16,7 @@ import net.minecraft.world.item.crafting.CookingBookCategory;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.ItemLike;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraft.core.registries.Registries;
 import org.jetbrains.annotations.NotNull;
 import sfiomn.legendarysurvivaloverhaul.registry.RecipeRegistry;
 
@@ -125,7 +125,7 @@ public class PurificationRecipeBuilder {
                 pJson.addProperty("group", this.group);
             }
 
-            ResourceLocation resultRegistryName = ForgeRegistries.ITEMS.getKey(this.result);
+            ResourceLocation resultRegistryName = Registries.ITEMS.getKey(this.result);
 
             pJson.addProperty("category", this.category.getSerializedName());
             pJson.add("ingredient", this.ingredient.toJson());

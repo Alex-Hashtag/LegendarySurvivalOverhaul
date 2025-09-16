@@ -12,7 +12,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraft.core.registries.Registries;
 import org.jetbrains.annotations.NotNull;
 import sfiomn.legendarysurvivaloverhaul.registry.RecipeRegistry;
 
@@ -66,7 +66,7 @@ public class SewingRecipeBuilder {
             json.add("base", this.base.toJson());
             json.add("addition", this.addition.toJson());
 
-            ResourceLocation resultRegistryName = ForgeRegistries.ITEMS.getKey(this.result.getItem());
+            ResourceLocation resultRegistryName = Registries.ITEMS.getKey(this.result.getItem());
             if (resultRegistryName != null) {
                 JsonObject jsonobject = new JsonObject();
                 jsonobject.addProperty("item", resultRegistryName.toString());

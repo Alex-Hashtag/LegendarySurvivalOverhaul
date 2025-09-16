@@ -1,7 +1,7 @@
 package sfiomn.legendarysurvivaloverhaul.common.integration.origins;
 
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.neoforged.neoforge.event.TickEvent;
+import net.neoforged.bus.api.SubscribeEvent;
 
 public class OriginsEvents {
 

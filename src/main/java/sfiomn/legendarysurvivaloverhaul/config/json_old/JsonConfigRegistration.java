@@ -10,7 +10,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.WorldDimensions;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraft.core.registries.Registries;
 import org.apache.commons.io.FileUtils;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.block.ThermalTypeEnum;
@@ -625,7 +625,7 @@ public class JsonConfigRegistration
 						td.hydration(jbft.hydration);
 						td.saturation(jbft.saturation);
 						for (JsonEffectParameter jep: jbft.effects) {
-							MobEffect me = ForgeRegistries.MOB_EFFECTS.getValue(new ResourceLocation(jep.name));
+							MobEffect me = Registries.MOB_EFFECTS.getValue(new ResourceLocation(jep.name));
 							if (me != null)
 								td.addEffect(me, jep.duration, jep.chance, jep.amplifier);
 						}
@@ -673,7 +673,7 @@ public class JsonConfigRegistration
 						td.hydration(jct.hydration);
 						td.saturation(jct.saturation);
 						for (JsonEffectParameter jep: jct.effects) {
-							MobEffect me = ForgeRegistries.MOB_EFFECTS.getValue(new ResourceLocation(jep.name));
+							MobEffect me = Registries.MOB_EFFECTS.getValue(new ResourceLocation(jep.name));
 							if (me != null)
 								td.addEffect(me, jep.duration, jep.chance, jep.amplifier);
 						}
