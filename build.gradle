@@ -171,7 +171,7 @@ dependencies {
     compileOnly(fg.deobf("curse.maven:serene-seasons-291874:5790653"))
     compileOnly(fg.deobf("curse.maven:glitchcore-955399:5787839"))
     compileOnly(fg.deobf("curse.maven:terrafirmacraft-302973:6187491"))
-    implementation(fg.deobf("curse.maven:origins-474438:5314209"))
+    compileOnly(fg.deobf("curse.maven:origins-474438:5314209"))
     compileOnly(fg.deobf("curse.maven:mutantmonsters-852665:5107399"))
     compileOnly(fg.deobf("curse.maven:vampirism-233029:5990073"))
     compileOnly(fg.deobf("curse.maven:supplementaries-412082:6463022"))

@@ -8,8 +8,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffect;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.levelgen.WorldDimensions;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.io.FileUtils;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
