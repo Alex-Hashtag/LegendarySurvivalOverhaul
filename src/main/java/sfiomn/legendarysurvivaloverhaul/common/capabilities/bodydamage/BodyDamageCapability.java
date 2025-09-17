@@ -179,7 +179,7 @@ public class BodyDamageCapability implements IBodyDamageCapability
 
 		if (updateTickTimer % 10 == 0) {
 			this.hasHeadache = player.hasEffect(MobEffectRegistry.HEADACHE.get());
-			this.headacheAmplifier = Objects.requireNonNull(player.getEffect(MobEffectRegistry.HEADACHE.get())).getAmplifier();
+			this.headacheAmplifier = this.hasHeadache ? Objects.requireNonNull(player.getEffect(MobEffectRegistry.HEADACHE.get())).getAmplifier() : 0;
 			this.hasFirstAidSupplies = CuriosUtil.isCurioItemEquipped(player, ItemRegistry.FIRST_AID_SUPPLIES.get());
 			if (hasFirstAidSupplies) {
 				this.hasFirstAidSuppliesBoosted = BodyDamageUtil.hasPlayerFirstAidSuppliesBoostingEffect(player);
