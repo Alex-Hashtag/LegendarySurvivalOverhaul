@@ -47,7 +47,7 @@ public class BodyDamageCapability implements IBodyDamageCapability
 	private float playerMaxHealth;
 	private boolean manualDirty;
 	private int packetTimer;
-	private List<Triple<MalusBodyPartEnum, MobEffect, Integer>> malus;
+	private Map<MobEffect, Integer> malus;
 
 	public BodyDamageCapability()
 	{
@@ -69,7 +69,7 @@ public class BodyDamageCapability implements IBodyDamageCapability
 		this.healingTickTimer = 0;
 
 		this.bodyParts = new HashMap<>();
-		this.malus = new ArrayList<>();
+		this.malus = new HashMap<>();
 
 		this.bodyParts.put(BodyPartEnum.HEAD, new BodyPart(BodyPartEnum.HEAD, (float) Config.Baked.headPartHealth));
 		this.bodyParts.put(BodyPartEnum.RIGHT_ARM, new BodyPart(BodyPartEnum.RIGHT_ARM, (float) Config.Baked.armsPartHealth));
@@ -133,32 +133,35 @@ public class BodyDamageCapability implements IBodyDamageCapability
 			}
 
 			// Refresh all the malus a player should have
-			List<Triple<MalusBodyPartEnum, MobEffect, Integer>> newMalus = new ArrayList<>();
+			Map<MobEffect, Integer> newMalus = new HashMap<>();
 			for (MalusBodyPartEnum malusBodyPart: MalusBodyPartEnum.values()) {
 				List<Pair<MobEffect, Integer>> malusEffects = new ArrayList<>();
 				if (!player.hasEffect(MobEffectRegistry.PAINKILLER.get()))
 					malusEffects = BodyDamageUtil.getEffects(malusBodyPart, getHealthRatioForMalusBodyPart(malusBodyPart));
-				for (Triple<MalusBodyPartEnum, MobEffect, Integer> bodyPartMalusEffect: this.malus) {
-					if (bodyPartMalusEffect.getLeft() == malusBodyPart) {
-						Pair<MobEffect, Integer> oldEffect = Pair.of(bodyPartMalusEffect.getMiddle(), bodyPartMalusEffect.getRight());
-						if (!malusEffects.contains(oldEffect)) {
-							player.removeEffect(oldEffect.getLeft());
-							if (oldEffect.getLeft() == MobEffectRegistry.HEADACHE.get())
-								player.removeEffect(MobEffects.BLINDNESS);
-						}
-					}
-				}
+
 				for (Pair<MobEffect, Integer> malusEffect: malusEffects) {
-					newMalus.add(Triple.of(malusBodyPart, malusEffect.getLeft(), malusEffect.getRight()));
+					Integer alreadyAppliedEffectAmplifier = newMalus.get(malusEffect.getLeft());
+					if (alreadyAppliedEffectAmplifier == null || alreadyAppliedEffectAmplifier < malusEffect.getRight())
+						newMalus.put(malusEffect.getLeft(), malusEffect.getRight());
+				}
+			}
+
+			// Clean old effects that shouldn't be applied anymore
+			for (Map.Entry<MobEffect, Integer> bodyPartMalusEffect: this.malus.entrySet()) {
+				MobEffect oldEffect = bodyPartMalusEffect.getKey();
+				MobEffectInstance playerOldEffect = player.getEffect(oldEffect);
+				if (playerOldEffect != null && (!newMalus.containsKey(oldEffect) || playerOldEffect.getAmplifier() > bodyPartMalusEffect.getValue())) {
+					player.removeEffect(oldEffect);
+					if (oldEffect == MobEffectRegistry.HEADACHE.get())
+						player.removeEffect(MobEffects.BLINDNESS);
 				}
 			}
 
 			this.malus = newMalus;
 
 			// Assign all malus effect to the player
-			for (Triple<MalusBodyPartEnum, MobEffect, Integer> malusEffect: this.malus) {
-				if (!player.hasEffect(malusEffect.getMiddle()))
-					player.addEffect(new MobEffectInstance(malusEffect.getMiddle(), -1, malusEffect.getRight(), false, false, true));
+			for (Map.Entry<MobEffect, Integer> malusEffect: this.malus.entrySet()) {
+				player.addEffect(new MobEffectInstance(malusEffect.getKey(), -1, malusEffect.getValue(), false, false, true));
 			}
 
 			// Heal each body limb of the player

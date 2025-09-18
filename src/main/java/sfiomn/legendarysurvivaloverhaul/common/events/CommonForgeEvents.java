@@ -103,13 +103,6 @@ public class CommonForgeEvents {
             }
             BodyDamageUtil.applyConsumableHealing(player, usedItemStack, true);
         }
-
-        //if (usedItemStack.isEdible() && !player.getFoodData().needsFood()) {
-            //player.startUsingItem(player.getUsedItemHand());
-        //}
-    }
-
-    public static void onUseItem(LivingEntityUseItemEvent.Start event) {
     }
 
     @SubscribeEvent
