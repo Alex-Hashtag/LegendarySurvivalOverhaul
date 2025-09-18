@@ -22,6 +22,7 @@ import sfiomn.legendarysurvivaloverhaul.registry.ItemRegistry;
 import sfiomn.legendarysurvivaloverhaul.util.CapabilityUtil;
 import sfiomn.legendarysurvivaloverhaul.util.WorldUtil;
 
+import static sfiomn.legendarysurvivaloverhaul.util.ItemUtil.compassDeathLocation;
 import static sfiomn.legendarysurvivaloverhaul.util.ItemUtil.compassLocation;
 import static sfiomn.legendarysurvivaloverhaul.util.WorldUtil.timeInGame;
 
@@ -71,6 +72,10 @@ public class RenderTooltipFrame {
                     render(forgeGui, guiGraphics, width, height, Component.literal(compassLocation));
             } else if (itemInFrame == Items.CLOCK) {
                 render(forgeGui, guiGraphics, width, height, Component.literal(timeInGame(Minecraft.getInstance())));
+            } else if (itemInFrame == Items.RECOVERY_COMPASS && player != null) {
+                String deathLocation = compassDeathLocation(player);
+                if (!deathLocation.isEmpty())
+                    render(forgeGui, guiGraphics, width, height, Component.literal(deathLocation));
             }
         }
     };

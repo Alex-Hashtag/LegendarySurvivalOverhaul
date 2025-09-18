@@ -1,14 +1,17 @@
 package sfiomn.legendarysurvivaloverhaul.util;
 
+import net.minecraft.core.GlobalPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ShieldItem;
 import sfiomn.legendarysurvivaloverhaul.common.integration.curios.CuriosUtil;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
 
-import static sfiomn.legendarysurvivaloverhaul.util.EnumUtil.CompassInfo;
+import java.util.Optional;
 
 public class ItemUtil {
 
@@ -48,5 +51,15 @@ public class ItemUtil {
             case HORIZONTAL -> "XZ: " + entity.blockPosition().getX() + " / " + entity.blockPosition().getZ();
             case NONE -> "";
         };
+    }
+
+    public static String compassDeathLocation(Player player) {
+        Optional<GlobalPos> globalDeathPos = player.getLastDeathLocation();
+        if (globalDeathPos.isPresent()) {
+            GlobalPos pos = globalDeathPos.get();
+            return Component.translatable("message.legendarysurvivaloverhaul.compass_death_location",
+                    pos.dimension().location().getPath().replace("_", " ").replace("-", " "), pos.pos().getX(), pos.pos().getY(), pos.pos().getZ()).getString();
+        }
+        return "";
     }
 }

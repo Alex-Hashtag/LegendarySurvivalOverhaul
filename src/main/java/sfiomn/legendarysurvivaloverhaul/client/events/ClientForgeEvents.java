@@ -5,6 +5,7 @@ import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.MapItem;
 import net.minecraft.world.level.block.Block;
@@ -48,6 +49,7 @@ import java.util.ListIterator;
 import static sfiomn.legendarysurvivaloverhaul.common.events.CommonForgeEvents.playerDrinkEffect;
 import static sfiomn.legendarysurvivaloverhaul.common.integration.sereneseasons.SereneSeasonsUtil.plantCanGrow;
 import static sfiomn.legendarysurvivaloverhaul.common.integration.sereneseasons.SereneSeasonsUtil.seasonTooltip;
+import static sfiomn.legendarysurvivaloverhaul.util.ItemUtil.compassDeathLocation;
 import static sfiomn.legendarysurvivaloverhaul.util.ItemUtil.compassLocation;
 import static sfiomn.legendarysurvivaloverhaul.util.WorldUtil.timeInGame;
 
@@ -63,20 +65,26 @@ public class ClientForgeEvents {
         if (player == null) {
             return;
         }
-        if (LegendarySurvivalOverhaul.sereneSeasonsLoaded && event.getItemStack().getItem() == SSItems.CALENDAR) {
+        Item heldItem = event.getItemStack().getItem();
+
+        if (LegendarySurvivalOverhaul.sereneSeasonsLoaded && heldItem == SSItems.CALENDAR) {
             player.displayClientMessage(seasonTooltip(player.blockPosition(), player.level()), true);
-        } else if (event.getItemStack().getItem() == Items.CLOCK) {
+        } else if (heldItem == Items.CLOCK) {
             player.displayClientMessage(Component.literal(timeInGame(Minecraft.getInstance())), true);
-        } else if (event.getItemStack().getItem() == Items.COMPASS) {
+        } else if (heldItem == Items.COMPASS) {
             String compassLocation = compassLocation(player);
             if (!compassLocation.isEmpty())
                 player.displayClientMessage(Component.literal(compassLocation), true);
-        } else if (Config.Baked.showCoordinateOnMap && event.getItemStack().getItem() == Items.FILLED_MAP) {
+        } else if (Config.Baked.showCoordinateOnMap && heldItem == Items.FILLED_MAP) {
             MapItemSavedData mapData = MapItem.getSavedData(event.getItemStack(), event.getLevel());
             if (mapData != null)
                 player.displayClientMessage(
                         Component.translatable("message.legendarysurvivaloverhaul.filled_map.destination",
                                 mapData.centerX, mapData.centerZ), true);
+        } else if (heldItem == Items.RECOVERY_COMPASS) {
+            String deathLocation = compassDeathLocation(player);
+            if (!deathLocation.isEmpty())
+                player.displayClientMessage(Component.literal(deathLocation), true);
         }
     }
 
