@@ -7,6 +7,7 @@ public interface ITemperatureDimensionData {
     ITemperatureDimensionData temperature(float temperatureValue);
     ITemperatureDimensionData seaLevelHeight(int seaLevelHeight);
     ITemperatureDimensionData hasAltitude();
+    ITemperatureDimensionData temperatureTimeCycleTicks(int cycleDurationTicks);
 
     JsonObject build();
 }

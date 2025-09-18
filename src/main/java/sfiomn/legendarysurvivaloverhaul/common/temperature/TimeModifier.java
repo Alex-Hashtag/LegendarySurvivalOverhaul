@@ -3,6 +3,8 @@ package sfiomn.legendarysurvivaloverhaul.common.temperature;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonTemperatureDimension;
+import sfiomn.legendarysurvivaloverhaul.api.data.manager.TemperatureDataManager;
 import sfiomn.legendarysurvivaloverhaul.api.temperature.ModifierBase;
 import sfiomn.legendarysurvivaloverhaul.common.integration.eclipticseasons.EclipticSeasonsUtil;
 import sfiomn.legendarysurvivaloverhaul.common.integration.terrafirmacraft.TerraFirmaCraftUtil;
@@ -21,8 +23,10 @@ public class TimeModifier extends ModifierBase
 	@Override
 	public float getWorldInfluence(Player player, Level level, BlockPos pos)
 	{
-		// This effect should only be provided in surface worlds
-		if(level.dimensionType().hasCeiling() || TerraFirmaCraftUtil.shouldUseTerraFirmaCraftTemp())
+		JsonTemperatureDimension jsonTemperatureDimension = TemperatureDataManager.getDimension(level.dimension().location());
+		int timeCycleTicks = jsonTemperatureDimension != null ? jsonTemperatureDimension.temperatureTimeCycleTicks : 0;
+
+		if (timeCycleTicks == 0 || TerraFirmaCraftUtil.shouldUseTerraFirmaCraftTemp())
 		{
 			return 0.0f;
 		}
@@ -30,17 +34,19 @@ public class TimeModifier extends ModifierBase
 		long time = level.getLevelData().getDayTime();
 
 		// 2 * PI / 24000 = 0.00026179938
-		double timeAngle = time * 0.00026179938;
+		double timeAngle = time * 2 * Math.PI / timeCycleTicks;
+
+		// Adjust timeAngle based on Ecliptic custom day time length
 		if (hasDimensionSeason(level)) {
 			long sunRiseTime = EclipticSeasonsUtil.getSunRiseTime(level);
 			int dayDuration = EclipticSeasonsUtil.getDayDuration(level);
 			long sunSetTime = sunRiseTime + dayDuration;
 
-			// If during day time -> use sinusoidale starting at sunrise and reaching 1 at noon (= day duration / 2)
-			if (time > sunRiseTime && time < sunSetTime % 24000) {
-				timeAngle = (Math.PI / dayDuration) * ((time - sunRiseTime) % 24000);
+			// If during day time -> use sinusoidal starting at sunrise and reaching 1 at noon (= day duration / 2)
+			if (time > sunRiseTime && time < sunSetTime % timeCycleTicks) {
+				timeAngle = (Math.PI / dayDuration) * ((time - sunRiseTime) % timeCycleTicks);
 			} else {
-				timeAngle = -(Math.PI / (24000 - dayDuration)) * ((time - sunSetTime) % 24000);
+				timeAngle = -(Math.PI / (timeCycleTicks - dayDuration)) * ((time - sunSetTime) % timeCycleTicks);
 			}
 		}
 

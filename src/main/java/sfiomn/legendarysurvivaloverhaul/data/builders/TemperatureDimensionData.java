@@ -7,6 +7,7 @@ public class TemperatureDimensionData implements ITemperatureDimensionData {
     private float temperature;
     private int seaLevelHeight;
     private boolean hasAltitude;
+    private int temperatureTimeCycleTicks;
 
     public TemperatureDimensionData() {
     }
@@ -30,11 +31,18 @@ public class TemperatureDimensionData implements ITemperatureDimensionData {
     }
 
     @Override
+    public ITemperatureDimensionData temperatureTimeCycleTicks(int cycleDurationTicks) {
+        temperatureTimeCycleTicks = cycleDurationTicks;
+        return this;
+    }
+
+    @Override
     public JsonObject build() {
         JsonObject json = new JsonObject();
         json.addProperty("temperature", this.temperature);
         json.addProperty("sea_level_height", this.seaLevelHeight);
         json.addProperty("has_altitude", this.hasAltitude);
+        json.addProperty("temperatureTimeCycleTicks", this.temperatureTimeCycleTicks);
         return json;
     }
 }
