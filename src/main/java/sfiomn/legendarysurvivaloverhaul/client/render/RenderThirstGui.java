@@ -56,7 +56,6 @@ public class RenderThirstGui
 
 				rand.setSeed(player.tickCount * 445L);
 				forgeGui.setupOverlayRenderState(true, false);
-				RenderSystem.disableDepthTest();
 				RenderSystem.depthMask(false);
 
 				Minecraft.getInstance().getProfiler().push("thirst_gui");
@@ -64,7 +63,7 @@ public class RenderThirstGui
 				Minecraft.getInstance().getProfiler().pop();
 
 				RenderSystem.depthMask(true);
-				RenderSystem.enableDepthTest();
+				forgeGui.setupOverlayRenderState(false, false);
 
 				forgeGui.rightHeight += 10;
 			}
@@ -113,7 +112,7 @@ public class RenderThirstGui
 		ThirstEffect targetThirstEffect = ThirstEffect.getEffect(hasThirstEffect || heldItemThirst, hasHeatThirstEffect);
 
 		// Draw exhaustion bar
-		if (Config.Baked.hydrationExhaustionDisplayed) {
+		if (Config.Baked.showHydrationExhaustion) {
 			float exhaustionRatio = Mth.clamp(exhaustion / 4.0f, 0, 1.0f);
 			int exhaustionBarWidth = (int) (exhaustionRatio * EXHAUSTION_BAR_WIDTH);
 			int x = left - exhaustionBarWidth;
@@ -128,15 +127,15 @@ public class RenderThirstGui
 			int halfIcon = i * 2 + 1;
 			int x = left - i * 8 - 9;
 			int y = top;
-			int yOffset = 0;
+			int shakeYOffset = 0;
 
 			// Shake based on hydration level and saturation level
 			if (Config.Baked.showVanillaBarAnimationOverlay && saturation <= 0.0f && player.tickCount % (hydration * 3 + 1) == 0) {
-				yOffset = rand.nextInt(3) - 1;
+				shakeYOffset = rand.nextInt(3) - 1;
 			}
 
 			if (hydration + Math.min(heldItemHydration, 0) <= halfIcon && halfIcon <= hydration + Math.max(heldItemHydration, 0)) {
-				renderFading(gui, x, y + yOffset,
+				renderFading(gui, x, y + shakeYOffset,
 						new ThirstIcon(thirstEffect.getXTextureOffset(halfIcon == hydration, heldItemHydration > 0), thirstEffect.getYTextureOffset()),
 						new ThirstIcon(targetThirstEffect.getXTextureOffset(halfIcon == hydration + heldItemHydration, heldItemHydration < 0), thirstEffect.getYTextureOffset()));
 
@@ -149,7 +148,7 @@ public class RenderThirstGui
 				} else {
 					gui.blit(ICONS, x, y + yOffset, thirstEffect.getXTextureOffset(false, halfIcon > hydration + Math.max(heldItemHydration, 0)), thirstEffect.getYTextureOffset(), THIRST_TEXTURE_WIDTH, THIRST_TEXTURE_HEIGHT);
 				}*/
-				gui.blit(ICONS, x, y + yOffset, thirstEffect.getXTextureOffset(false, halfIcon > hydration + Math.max(heldItemHydration, 0)), thirstEffect.getYTextureOffset(), HYDRATION_TEXTURE_WIDTH, HYDRATION_TEXTURE_HEIGHT);
+				gui.blit(ICONS, x, y + shakeYOffset, thirstEffect.getXTextureOffset(false, halfIcon > hydration + Math.max(heldItemHydration, 0)), thirstEffect.getYTextureOffset(), HYDRATION_TEXTURE_WIDTH, HYDRATION_TEXTURE_HEIGHT);
 			}
 
 			// Draw saturation icons if enabled
@@ -157,11 +156,11 @@ public class RenderThirstGui
 				if (Mth.ceil(saturation + Math.min(heldItemSaturation, 0)) <= halfIcon && halfIcon <= Mth.ceil(saturation + Math.max(heldItemSaturation, 0))) {
 					if (heldItemSaturation < 0 || halfIcon == Mth.ceil(saturation)) {
 						RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1 - alphaPreview);
-						gui.blit(ICONS, x, y, thirstEffect.getXTextureOffsetSaturation(halfIcon == Mth.ceil(saturation)), 0, HYDRATION_TEXTURE_WIDTH, HYDRATION_TEXTURE_HEIGHT);
+						gui.blit(ICONS, x, y + shakeYOffset, thirstEffect.getXTextureOffsetSaturation(halfIcon == Mth.ceil(saturation)), 0, HYDRATION_TEXTURE_WIDTH, HYDRATION_TEXTURE_HEIGHT);
 					}
 					if (heldItemSaturation > 0 || Mth.ceil(saturation + heldItemSaturation) == halfIcon) {
 						RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, alphaPreview);
-						gui.blit(ICONS, x, y, targetThirstEffect.getXTextureOffsetSaturation(halfIcon == Mth.ceil(saturation + heldItemSaturation)), 0, HYDRATION_TEXTURE_WIDTH, HYDRATION_TEXTURE_HEIGHT);
+						gui.blit(ICONS, x, y + shakeYOffset, targetThirstEffect.getXTextureOffsetSaturation(halfIcon == Mth.ceil(saturation + heldItemSaturation)), 0, HYDRATION_TEXTURE_WIDTH, HYDRATION_TEXTURE_HEIGHT);
 					}
 					RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 				} else if (halfIcon < Mth.ceil(saturation + Math.min(heldItemSaturation, 0))) {
@@ -173,7 +172,7 @@ public class RenderThirstGui
 					} else {
 						gui.blit(ICONS, x, y + yOffset, thirstEffect.getXTextureOffsetSaturation(false), 0, THIRST_TEXTURE_WIDTH, THIRST_TEXTURE_HEIGHT);
 					}*/
-					gui.blit(ICONS, x, y + yOffset, thirstEffect.getXTextureOffsetSaturation(false), 0, HYDRATION_TEXTURE_WIDTH, HYDRATION_TEXTURE_HEIGHT);
+					gui.blit(ICONS, x, y + shakeYOffset, thirstEffect.getXTextureOffsetSaturation(false), 0, HYDRATION_TEXTURE_WIDTH, HYDRATION_TEXTURE_HEIGHT);
 				}
 			}
 		}

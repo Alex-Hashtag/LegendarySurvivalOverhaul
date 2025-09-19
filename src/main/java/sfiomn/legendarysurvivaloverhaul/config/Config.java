@@ -1092,7 +1092,7 @@ public class Config
 		public final ForgeConfigSpec.BooleanValue showHydrationTooltip;
 		public final ForgeConfigSpec.BooleanValue mergeHydrationAndSaturationTooltip;
 		public final ForgeConfigSpec.BooleanValue hydrationSaturationDisplayed;
-		public final ForgeConfigSpec.BooleanValue hydrationExhaustionDisplayed;
+		public final ForgeConfigSpec.BooleanValue showHydrationExhaustion;
 		public final ForgeConfigSpec.BooleanValue lowHydrationEffect;
 		public final ForgeConfigSpec.BooleanValue showHydrationBar;
 		public final ForgeConfigSpec.BooleanValue showDrinkPreview;
@@ -1207,9 +1207,6 @@ public class Config
 			hydrationSaturationDisplayed = builder
 					.comment(" Whether the Hydration Saturation is displayed or not.")
 					.define("Render the hydration saturation", true);
-			hydrationExhaustionDisplayed = builder
-					.comment(" Whether the Hydration Exhaustion is displayed or not (grey bar behind the hydration bar).")
-					.define("Render the hydration exhaustion", true);
 			lowHydrationEffect = builder
 					.comment(" If enabled, player's vision will become blurry when running low on hydration.")
 					.define("Low Hydration Effect", true);
@@ -1217,6 +1214,9 @@ public class Config
 			showHydrationBar = builder
 					.comment(" If enabled, the hydration bar will be displayed.")
 					.define("Show Hydration Bar", true);
+			showHydrationExhaustion = builder
+					.comment(" If enabled, the Hydration Exhaustion will be displayed (grey bar behind the hydration bar).")
+					.define("Render the hydration exhaustion", true);
 			showDrinkPreview = builder
 					.comment(" If enabled, a preview on hydration bar will be displayed if player holds a drink item.")
 					.define("Show Drink Preview", true);
@@ -1510,9 +1510,9 @@ public class Config
 		public static boolean showHydrationTooltip;
 		public static boolean mergeHydrationAndSaturationTooltip;
 		public static boolean hydrationSaturationDisplayed;
-		public static boolean hydrationExhaustionDisplayed;
 		public static boolean lowHydrationEffect;
 		public static boolean showHydrationBar;
+		public static boolean showHydrationExhaustion;
 		public static boolean showDrinkPreview;
 		public static int hydrationBarOffsetX;
 		public static int hydrationBarOffsetY;
@@ -1790,11 +1790,11 @@ public class Config
 				bodyDamageIndicatorRenderHealthLimit = CLIENT.bodyDamageIndicatorRenderHealthLimit.get();
 
 				hydrationSaturationDisplayed = CLIENT.hydrationSaturationDisplayed.get();
-				hydrationExhaustionDisplayed = CLIENT.hydrationExhaustionDisplayed.get();
 				showHydrationTooltip = CLIENT.showHydrationTooltip.get();
 				mergeHydrationAndSaturationTooltip = CLIENT.mergeHydrationAndSaturationTooltip.get();
 				lowHydrationEffect = CLIENT.lowHydrationEffect.get();
 				showHydrationBar = CLIENT.showHydrationBar.get();
+				showHydrationExhaustion = CLIENT.showHydrationExhaustion.get();
 				showDrinkPreview = CLIENT.showDrinkPreview.get();
 				hydrationBarOffsetX = CLIENT.hydrationBarOffsetX.get();
 				hydrationBarOffsetY = CLIENT.hydrationBarOffsetY.get();
