@@ -80,7 +80,7 @@ public class ThirstUtil
 	 */
 	public static void setHydrationEnumTag(final ItemStack stack, HydrationEnum hydrationEnum)
 	{
-		internal.setThirstEnumTag(stack, hydrationEnum);
+		internal.setHydrationEnumTag(stack, hydrationEnum);
 	}
 
 	/**

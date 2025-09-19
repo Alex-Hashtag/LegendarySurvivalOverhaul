@@ -56,19 +56,16 @@ public class BlockModifier extends ModifierBase
 
 		if(result > hottestValue)
 		{
-			// LegendarySurvivalOverhaul.LOGGER.debug("Block temp influence hotter than max : " + Math.min(hottestValue + 2.5f, result));
 			// Hotter than hottestValue, clamp
 			return Math.min(hottestValue + 2.5f, result);
 		}
 		else if(result < coldestValue)
 		{
-			// LegendarySurvivalOverhaul.LOGGER.debug("Block temp influence hotter than max : " + Math.max(coldestValue - 2.5f, result));
 			// Colder than coldestValue, clamp
 			return Math.max(coldestValue - 2.5f, result);
 		}
 		else
 		{
-			// LegendarySurvivalOverhaul.LOGGER.debug("Block temp influence : " + result);
 			// Within bounds, no need to clamp
 			return result;
 		}
@@ -79,7 +76,6 @@ public class BlockModifier extends ModifierBase
 		HashSet<BlockPos> visitedBlockPos = new HashSet<>();
 		ArrayList<SpreadPoint> visitedSpreadPoints = new ArrayList<>();
 		ArrayList<SpreadPoint> spreadPointsToProcess = new ArrayList<>();
-		Map<Pair<Integer, Integer>, Map<Boolean, Integer>> cachedCanSeeSky = new HashMap<>();
 
 		SpreadPoint spreadPointFeetPlayer = new SpreadPoint(pos, Direction.DOWN, tempInfluenceMaximumDist(), 0, level);
 		SpreadPoint spreadPointHeadPlayer = new SpreadPoint(pos.above(), Direction.UP, tempInfluenceMaximumDist(), 0, level);

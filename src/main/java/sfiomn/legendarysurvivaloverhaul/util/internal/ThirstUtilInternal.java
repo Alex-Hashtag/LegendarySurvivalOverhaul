@@ -37,7 +37,7 @@ public class ThirstUtilInternal implements IThirstUtil {
     public static final String CAPACITY_TAG = LegendarySurvivalOverhaul.MOD_ID + ":HydrationCapacity";
 
     @Override
-    public void setThirstEnumTag(ItemStack stack, HydrationEnum hydrationEnum)
+    public void setHydrationEnumTag(ItemStack stack, HydrationEnum hydrationEnum)
     {
         if (!stack.hasTag())
         {
@@ -280,21 +280,21 @@ public class ThirstUtilInternal implements IThirstUtil {
     @Override
     public void deactivateThirst(Player player) {
         ThirstCapability cap = CapabilityUtil.getThirstCapability(player);
-        cap.setThirstTickTimer(-1);
+        cap.setTickTimer(-1);
         cap.setDirty();
     }
 
     @Override
     public void activateThirst(Player player) {
         ThirstCapability cap = CapabilityUtil.getThirstCapability(player);
-        if (cap.getThirstTickTimer() == -1) {
-            cap.setThirstTickTimer(0);
+        if (cap.getTickTimer() == -1) {
+            cap.setTickTimer(0);
             cap.setDirty();
         }
     }
 
     @Override
     public boolean isThirstActive(Player player) {
-        return CapabilityUtil.getThirstCapability(player).getThirstTickTimer() != -1;
+        return CapabilityUtil.getThirstCapability(player).getTickTimer() != -1;
     }
 }

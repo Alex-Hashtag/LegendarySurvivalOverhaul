@@ -264,7 +264,7 @@ public class CommonForgeEvents {
     public static void onJump(LivingEvent.LivingJumpEvent event) {
         LivingEntity entity = event.getEntity();
         if (entity instanceof Player && shouldApplyThirst((Player) entity) && !entity.level().isClientSide) {
-            ThirstUtil.addExhaustion((Player) entity, (float) Config.Baked.onJumpThirstExhaustion);
+            ThirstUtil.addExhaustion((Player) entity, (float) Config.Baked.onJumpHydrationExhaustion);
         }
     }
 
@@ -272,7 +272,7 @@ public class CommonForgeEvents {
     public static void onBlockBreak(BlockEvent.BreakEvent event) {
         Player player = event.getPlayer();
         if (shouldApplyThirst(player) && !player.level().isClientSide && event.getState().getDestroySpeed(event.getLevel(), event.getPos()) > 0.0f) {
-            ThirstUtil.addExhaustion(player, (float) Config.Baked.onBlockBreakThirstExhaustion);
+            ThirstUtil.addExhaustion(player, (float) Config.Baked.onBlockBreakHydrationExhaustion);
         }
     }
 
@@ -282,7 +282,7 @@ public class CommonForgeEvents {
         if (shouldApplyThirst(player) && !player.level().isClientSide) {
             Entity monster = event.getTarget();
             if(monster.isAttackable()) {
-                ThirstUtil.addExhaustion(player, (float) Config.Baked.onAttackThirstExhaustion);
+                ThirstUtil.addExhaustion(player, (float) Config.Baked.onAttackHydrationExhaustion);
                 player.causeFoodExhaustion((float) Config.Baked.onAttackFoodExhaustion);
             }
         }

@@ -184,11 +184,11 @@ public class Config
 		public final ForgeConfigSpec.BooleanValue cumulativeThirstEffectDuration;
 		public final ForgeConfigSpec.DoubleValue dehydrationDamageScaling;
 		public final ForgeConfigSpec.DoubleValue thirstEffectModifier;
-		public final ForgeConfigSpec.DoubleValue baseThirstExhaustion;
-		public final ForgeConfigSpec.DoubleValue sprintingThirstExhaustion;
-		public final ForgeConfigSpec.DoubleValue onJumpThirstExhaustion;
-		public final ForgeConfigSpec.DoubleValue onBlockBreakThirstExhaustion;
-		public final ForgeConfigSpec.DoubleValue onAttackThirstExhaustion;
+		public final ForgeConfigSpec.DoubleValue baseHydrationExhaustion;
+		public final ForgeConfigSpec.DoubleValue sprintingHydrationExhaustion;
+		public final ForgeConfigSpec.DoubleValue onJumpHydrationExhaustion;
+		public final ForgeConfigSpec.DoubleValue onBlockBreakHydrationExhaustion;
+		public final ForgeConfigSpec.DoubleValue onAttackHydrationExhaustion;
 		public final ForgeConfigSpec.IntValue canteenCapacity;
 		public final ForgeConfigSpec.BooleanValue selfWateringCanteenEnabled;
 		public final ForgeConfigSpec.IntValue selfWateringCanteenWetnessIncrease;
@@ -673,7 +673,7 @@ public class Config
 			builder.pop();
 			builder.pop();
 
-			builder.comment(" Options related to thirst").push("thirst");
+			builder.comment(" Options related to thirst feature").push("thirst");
 			dangerousDehydration = builder
 					.comment(" If enabled, players will take damage from the complete dehydration.")
 					.define("Dangerous Dehydration", true);
@@ -681,27 +681,27 @@ public class Config
 					.comment(" If enabled, each time the player receives a thirst effect, its duration will be added to the thirst effect duration if already on the player.")
 					.define("Cumulative Thirst Effect Duration", true);
 			builder.push("exhaustion");
-			baseThirstExhaustion = builder
-					.comment(" Thirst exhausted every 10 ticks.")
-					.defineInRange("Base Thirst Exhaustion", 0.03d, 0, 1000.0d);
-			sprintingThirstExhaustion = builder
-					.comment(" Thirst exhausted when sprinting, replacing the base thirst exhausted.")
-					.defineInRange("Sprinting Thirst Exhaustion", 0.1d, 0, 1000.0d);
-			onJumpThirstExhaustion = builder
-					.comment(" Thirst exhausted on every jump.")
-					.defineInRange("On Jump Thirst Exhaustion", 0.15d, 0, 1000.0d);
-			onBlockBreakThirstExhaustion = builder
-					.comment(" Thirst exhausted on every block break.")
-					.defineInRange("On Block Break Thirst Exhaustion", 0.07d, 0, 1000.0d);
-			onAttackThirstExhaustion = builder
-					.comment(" Thirst exhausted on every attack.")
-					.defineInRange("On Attack Thirst Exhaustion", 0.3d, 0, 1000.0d);
+			baseHydrationExhaustion = builder
+					.comment(" Hydration exhausted every 10 ticks.")
+					.defineInRange("Base Hydration Exhaustion", 0.03d, 0, 1000.0d);
+			sprintingHydrationExhaustion = builder
+					.comment(" Hydration exhausted when sprinting, replacing the base hydration exhausted.")
+					.defineInRange("Sprinting Hydration Exhaustion", 0.1d, 0, 1000.0d);
+			onJumpHydrationExhaustion = builder
+					.comment(" Hydration exhausted on every jump.")
+					.defineInRange("On Jump Hydration Exhaustion", 0.15d, 0, 1000.0d);
+			onBlockBreakHydrationExhaustion = builder
+					.comment(" Hydration exhausted on every block break.")
+					.defineInRange("On Block Break Hydration Exhaustion", 0.07d, 0, 1000.0d);
+			onAttackHydrationExhaustion = builder
+					.comment(" Hydration exhausted on every attack.")
+					.defineInRange("On Attack Hydration Exhaustion", 0.3d, 0, 1000.0d);
 			builder.pop();
 			dehydrationDamageScaling = builder
 					.comment(" Scaling of the damages dealt when completely dehydrated. Each tick damage will be increased by this value.")
 					.defineInRange("Dehydration Damage Scaling", 0.3d, 0, 1000.0d);
 			thirstEffectModifier = builder
-					.comment(" How much thirst exhaustion will be added every 50 ticks when the player suffers from not amplified Thirst Effect.",
+					.comment(" How much thirst exhaustion will be added every 50 ticks when the player suffers from non amplified Thirst Effect.",
 							" The player will suffer Thirst Effect from dirty water for example.")
 					.defineInRange("Thirst Effect Modifier", 0.25d, 0, 1000);
 			builder.push("canteen");
@@ -1091,8 +1091,8 @@ public class Config
 
 		public final ForgeConfigSpec.BooleanValue showHydrationTooltip;
 		public final ForgeConfigSpec.BooleanValue mergeHydrationAndSaturationTooltip;
-		public final ForgeConfigSpec.BooleanValue thirstSaturationDisplayed;
-		public final ForgeConfigSpec.BooleanValue thirstExhaustionDisplayed;
+		public final ForgeConfigSpec.BooleanValue hydrationSaturationDisplayed;
+		public final ForgeConfigSpec.BooleanValue hydrationExhaustionDisplayed;
 		public final ForgeConfigSpec.BooleanValue lowHydrationEffect;
 		public final ForgeConfigSpec.BooleanValue showHydrationBar;
 		public final ForgeConfigSpec.BooleanValue showDrinkPreview;
@@ -1204,15 +1204,15 @@ public class Config
 					.define("Merge Hydration And Saturation Tooltip", true);
 			builder.pop();
 
-			thirstSaturationDisplayed = builder
-					.comment(" Whether the Thirst Saturation is displayed or not.")
-					.define("Render the thirst saturation", true);
-			thirstExhaustionDisplayed = builder
-					.comment(" Whether the Thirst Exhaustion is displayed or not (grey bar behind the hydration bar).")
-					.define("Render the thirst exhaustion", true);
+			hydrationSaturationDisplayed = builder
+					.comment(" Whether the Hydration Saturation is displayed or not.")
+					.define("Render the hydration saturation", true);
+			hydrationExhaustionDisplayed = builder
+					.comment(" Whether the Hydration Exhaustion is displayed or not (grey bar behind the hydration bar).")
+					.define("Render the hydration exhaustion", true);
 			lowHydrationEffect = builder
 					.comment(" If enabled, player's vision will become blurry when running low on hydration.")
-					.define("Low Thirst Effect", true);
+					.define("Low Hydration Effect", true);
 			builder.push("hydration-bar");
 			showHydrationBar = builder
 					.comment(" If enabled, the hydration bar will be displayed.")
@@ -1377,11 +1377,11 @@ public class Config
 		public static boolean cumulativeThirstEffectDuration;
 		public static double dehydrationDamageScaling;
 		public static double thirstEffectModifier;
-		public static double baseThirstExhaustion;
-		public static double sprintingThirstExhaustion;
-		public static double onJumpThirstExhaustion;
-		public static double onBlockBreakThirstExhaustion;
-		public static double onAttackThirstExhaustion;
+		public static double baseHydrationExhaustion;
+		public static double sprintingHydrationExhaustion;
+		public static double onJumpHydrationExhaustion;
+		public static double onBlockBreakHydrationExhaustion;
+		public static double onAttackHydrationExhaustion;
 		public static boolean selfWateringCanteenEnabled;
 		public static int selfWateringCanteenWetnessIncrease;
 		public static int canteenCapacity;
@@ -1509,8 +1509,8 @@ public class Config
 
 		public static boolean showHydrationTooltip;
 		public static boolean mergeHydrationAndSaturationTooltip;
-		public static boolean thirstSaturationDisplayed;
-		public static boolean thirstExhaustionDisplayed;
+		public static boolean hydrationSaturationDisplayed;
+		public static boolean hydrationExhaustionDisplayed;
 		public static boolean lowHydrationEffect;
 		public static boolean showHydrationBar;
 		public static boolean showDrinkPreview;
@@ -1650,11 +1650,11 @@ public class Config
 				dehydrationDamageScaling = COMMON.dehydrationDamageScaling.get();
 				thirstEffectModifier = COMMON.thirstEffectModifier.get();
 
-				baseThirstExhaustion = COMMON.baseThirstExhaustion.get();
-				sprintingThirstExhaustion = COMMON.sprintingThirstExhaustion.get();
-				onJumpThirstExhaustion = COMMON.onJumpThirstExhaustion.get();
-				onBlockBreakThirstExhaustion = COMMON.onBlockBreakThirstExhaustion.get();
-				onAttackThirstExhaustion = COMMON.onAttackThirstExhaustion.get();
+				baseHydrationExhaustion = COMMON.baseHydrationExhaustion.get();
+				sprintingHydrationExhaustion = COMMON.sprintingHydrationExhaustion.get();
+				onJumpHydrationExhaustion = COMMON.onJumpHydrationExhaustion.get();
+				onBlockBreakHydrationExhaustion = COMMON.onBlockBreakHydrationExhaustion.get();
+				onAttackHydrationExhaustion = COMMON.onAttackHydrationExhaustion.get();
 
 				selfWateringCanteenEnabled = COMMON.selfWateringCanteenEnabled.get();
 				selfWateringCanteenWetnessIncrease = COMMON.selfWateringCanteenWetnessIncrease.get();
@@ -1789,8 +1789,8 @@ public class Config
 				bodyDamageIndicatorOffsetY = CLIENT.bodyDamageIndicatorOffsetY.get();
 				bodyDamageIndicatorRenderHealthLimit = CLIENT.bodyDamageIndicatorRenderHealthLimit.get();
 
-				thirstSaturationDisplayed = CLIENT.thirstSaturationDisplayed.get();
-				thirstExhaustionDisplayed = CLIENT.thirstExhaustionDisplayed.get();
+				hydrationSaturationDisplayed = CLIENT.hydrationSaturationDisplayed.get();
+				hydrationExhaustionDisplayed = CLIENT.hydrationExhaustionDisplayed.get();
 				showHydrationTooltip = CLIENT.showHydrationTooltip.get();
 				mergeHydrationAndSaturationTooltip = CLIENT.mergeHydrationAndSaturationTooltip.get();
 				lowHydrationEffect = CLIENT.lowHydrationEffect.get();
