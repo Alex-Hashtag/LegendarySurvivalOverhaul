@@ -5,20 +5,19 @@ import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.neoforged.api.distmarker.Dist;
-import net.neoforged.neoforge.common.MinecraftForge;
-import net.neoforged.neoforge.common.capabilities.RegisterCapabilitiesEvent;
+import net.neoforged.fml.ModContainer;
+import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.AddReloadListenerEvent;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.Mod;
-import net.neoforged.neoforge.fml.config.ModConfig;
-import net.neoforged.neoforge.fml.event.config.ModConfigEvent;
-import net.neoforged.neoforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.neoforged.neoforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.neoforged.neoforge.fml.event.lifecycle.FMLLoadCompleteEvent;
-import net.neoforged.neoforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.neoforged.neoforge.fml.loading.FMLPaths;
+import net.neoforged.fml.config.ModConfig;
+import net.neoforged.fml.event.config.ModConfigEvent;
+import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.fml.event.lifecycle.FMLLoadCompleteEvent;
+import net.neoforged.fml.loading.FMLPaths;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import sfiomn.legendarysurvivaloverhaul.api.bodydamage.BodyDamageUtil;
@@ -35,13 +34,7 @@ import sfiomn.legendarysurvivaloverhaul.client.itemproperties.SeasonalCalendarTi
 import sfiomn.legendarysurvivaloverhaul.client.itemproperties.ThermometerProperty;
 import sfiomn.legendarysurvivaloverhaul.client.screens.SewingTableScreen;
 import sfiomn.legendarysurvivaloverhaul.client.screens.ThermalScreen;
-import sfiomn.legendarysurvivaloverhaul.common.capabilities.bodydamage.BodyDamageCapability;
-import sfiomn.legendarysurvivaloverhaul.common.capabilities.food.FoodCapability;
-import sfiomn.legendarysurvivaloverhaul.common.capabilities.health.HealthCapability;
-import sfiomn.legendarysurvivaloverhaul.common.capabilities.temperature.TemperatureCapability;
-import sfiomn.legendarysurvivaloverhaul.common.capabilities.temperature.TemperatureItemCapability;
-import sfiomn.legendarysurvivaloverhaul.common.capabilities.thirst.ThirstCapability;
-import sfiomn.legendarysurvivaloverhaul.common.capabilities.wetness.WetnessCapability;
+import sfiomn.legendarysurvivaloverhaul.common.capabilities.ModAttachments;
 import sfiomn.legendarysurvivaloverhaul.common.integration.curios.CuriosEvents;
 import sfiomn.legendarysurvivaloverhaul.common.integration.eclipticseasons.EclipticSeasonsUtil;
 import sfiomn.legendarysurvivaloverhaul.common.integration.jsonConfig.JsonIntegrationConfigRegistration;
@@ -106,15 +99,15 @@ public class LegendarySurvivalOverhaul
 	public static Path modConfigJsons = Paths.get(modConfigPath.toString(), "json");
 	public static Path modIntegrationConfigJsons = Paths.get(modConfigJsons.toString(), "integration");
 	
-	public LegendarySurvivalOverhaul()
+	public LegendarySurvivalOverhaul(IEventBus modBus, ModContainer modContainer)
 	{
-		IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
-		IEventBus forgeBus = MinecraftForge.EVENT_BUS;
-		
+
 		modBus.addListener(this::commonSetup);
 		modBus.addListener(this::onModConfigLoadEvent);
 		modBus.addListener(this::onModConfigReloadEvent);
 		modBus.addListener(this::onLoadComplete);
+
+        IEventBus forgeBus = NeoForge.EVENT_BUS;
 
 		forgeBus.addListener(this::addReloadListenerEvent);
 
@@ -135,7 +128,7 @@ public class LegendarySurvivalOverhaul
 		CreativeTabRegistry.register(modBus);
 
 		forgeBus.addListener(CommandRegistry::registerCommandsEvent);
-		forgeBus.addListener(this::registerCapabilities);
+		ModAttachments.register(modBus);
 
 		forgeBus.register(this);
 
@@ -265,16 +258,6 @@ public class LegendarySurvivalOverhaul
 			if (Config.Baked.temperatureEnabled)
 				MobEffectRegistry.registerBrewingRecipes();
 		});
-	}
-
-	private void registerCapabilities(RegisterCapabilitiesEvent event) {
-		event.register(TemperatureCapability.class);
-		event.register(WetnessCapability.class);
-		event.register(ThirstCapability.class);
-		event.register(HealthCapability.class);
-		event.register(TemperatureItemCapability.class);
-		event.register(FoodCapability.class);
-		event.register(BodyDamageCapability.class);
 	}
 
 	private void onModConfigLoadEvent(ModConfigEvent.Loading event)

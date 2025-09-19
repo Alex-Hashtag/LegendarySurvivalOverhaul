@@ -76,7 +76,7 @@ public class SereneSeasonsUtil {
     }
 
     public static boolean plantCanGrow(Level level, BlockPos pos, BlockState plant) {
-        ResourceLocation resourceLocation = Registries.BLOCKS.getKey(plant.getBlock());
+        ResourceLocation resourceLocation = Registries.BLOCK.getKey(plant.getBlock());
         if (resourceLocation != null) {
             boolean isFertile = ModFertility.isCropFertile(resourceLocation.getPath(), level, pos);
             if (ModConfig.fertility.seasonalCrops && ModFertility.isCrop(plant) && !isFertile && !isGlassAboveBlock(level, pos)) {

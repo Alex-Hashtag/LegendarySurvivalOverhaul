@@ -238,7 +238,7 @@ public class TooltipHandler
 	private static MutableComponent getHydrationEffectTooltip(double effectChance, String effectName, int amplifier, int duration) {
 		MobEffect effect = null;
 		if (effectName != null && !effectName.isEmpty() && effectChance > 0)
-			effect = Registries.MOB_EFFECTS.getValue(new ResourceLocation(effectName));
+			effect = Registries.MOB_EFFECT.getValue(new ResourceLocation(effectName));
 
 		if (effect == null)
 			return null;

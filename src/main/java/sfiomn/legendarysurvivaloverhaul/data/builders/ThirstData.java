@@ -42,7 +42,7 @@ public class ThirstData implements IThirstData {
 
     @Override
     public IThirstData addEffect(MobEffect effect, int durationInTick, float chance, int amplifier) {
-        ResourceLocation effectName = Objects.requireNonNull(Registries.MOB_EFFECTS.getKey(effect));
+        ResourceLocation effectName = Objects.requireNonNull(Registries.MOB_EFFECT.getKey(effect));
         effects.add(new EffectData(effectName, Math.max(durationInTick, 0), Math.max(amplifier, 0), Mth.clamp(chance, 0, 1.0f)));
         return this;
     }

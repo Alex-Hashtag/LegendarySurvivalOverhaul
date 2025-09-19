@@ -73,7 +73,7 @@ public class BodyDamageUtilInternal implements IBodyDamageUtil {
             }
 
             for (int i=0; i<malus.effects.size(); i++) {
-                MobEffect malusEffect = Registries.MOB_EFFECTS.getValue(new ResourceLocation(malus.effects.get(i)));
+                MobEffect malusEffect = Registries.MOB_EFFECT.getValue(new ResourceLocation(malus.effects.get(i)));
                 int malusAmplifier;
                 float malusThreshold;
                 if (malusEffect == null) {
@@ -103,7 +103,7 @@ public class BodyDamageUtilInternal implements IBodyDamageUtil {
             if (!ResourceLocation.isValidResourceLocation(effectRegistryName))
                 LegendarySurvivalOverhaul.LOGGER.info("First Aid Supplies boosting effect : not valid effect registry name : {}", effectRegistryName);
 
-            MobEffect boostingEffect = Registries.MOB_EFFECTS.getValue(new ResourceLocation(effectRegistryName));
+            MobEffect boostingEffect = Registries.MOB_EFFECT.getValue(new ResourceLocation(effectRegistryName));
             if (boostingEffect == null) {
                 LegendarySurvivalOverhaul.LOGGER.info("Unknown effect {}", effectRegistryName);
                 continue;
@@ -115,7 +115,7 @@ public class BodyDamageUtilInternal implements IBodyDamageUtil {
             if (!ResourceLocation.isValidResourceLocation(effectRegistryName))
                 LegendarySurvivalOverhaul.LOGGER.info("Limb Regeneration Effect : not valid effect registry name : {}", effectRegistryName);
 
-            MobEffect regenerationEffect = Registries.MOB_EFFECTS.getValue(new ResourceLocation(effectRegistryName));
+            MobEffect regenerationEffect = Registries.MOB_EFFECT.getValue(new ResourceLocation(effectRegistryName));
             if (regenerationEffect == null) {
                 LegendarySurvivalOverhaul.LOGGER.info("Unknown effect {}", effectRegistryName);
                 continue;

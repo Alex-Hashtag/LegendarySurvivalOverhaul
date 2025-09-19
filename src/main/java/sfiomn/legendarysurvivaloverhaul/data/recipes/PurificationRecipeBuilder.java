@@ -3,11 +3,11 @@ package sfiomn.legendarysurvivaloverhaul.data.recipes;
 import com.google.gson.JsonObject;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.CriterionTriggerInstance;
-import net.minecraft.advancements.RequirementsStrategy;
 import net.minecraft.advancements.critereon.RecipeUnlockedTrigger;
-import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeBuilder;
 import net.minecraft.data.recipes.RecipeCategory;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -16,12 +16,10 @@ import net.minecraft.world.item.crafting.CookingBookCategory;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.ItemLike;
-import net.minecraft.core.registries.Registries;
 import org.jetbrains.annotations.NotNull;
 import sfiomn.legendarysurvivaloverhaul.registry.RecipeRegistry;
 
 import javax.annotation.Nullable;
-import java.util.function.Consumer;
 
 public class PurificationRecipeBuilder {
     private final RecipeCategory category;
@@ -30,7 +28,7 @@ public class PurificationRecipeBuilder {
     private final Ingredient ingredient;
     private final float experience;
     private final int cookingTime;
-    private final Advancement.Builder advancement = Advancement.Builder.recipeAdvancement();
+    private final Advancement.Builder advancement = Advancement.Builder.advancement();
     @Nullable
     private String group;
     private final RecipeSerializer<? extends AbstractCookingRecipe> serializer;
@@ -67,14 +65,29 @@ public class PurificationRecipeBuilder {
         return this.result;
     }
 
-    public void save(@NotNull Consumer<FinishedRecipe> consumer, @NotNull String id) {
-        this.save(consumer, new ResourceLocation(id));
+    public void save(@NotNull RecipeOutput output, @NotNull String id) {
+        this.save(output, new ResourceLocation(id));
     }
 
-    public void save(Consumer<FinishedRecipe> pFinishedRecipeConsumer, @NotNull ResourceLocation pRecipeId) {
-        this.ensureValid(pRecipeId);
-        this.advancement.parent(RecipeBuilder.ROOT_RECIPE_ADVANCEMENT).addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(pRecipeId)).rewards(net.minecraft.advancements.AdvancementRewards.Builder.recipe(pRecipeId)).requirements(RequirementsStrategy.OR);
-        pFinishedRecipeConsumer.accept(new Result(pRecipeId, this.group == null ? "" : this.group, this.bookCategory, this.ingredient, this.result, this.experience, this.cookingTime, this.advancement, pRecipeId.withPrefix("recipes/" + this.category.getFolderName() + "/"), this.serializer));
+    public void save(RecipeOutput output, @NotNull ResourceLocation recipeId) {
+        this.ensureValid(recipeId);
+        this.advancement.parent(RecipeBuilder.ROOT_RECIPE_ADVANCEMENT)
+                .addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(recipeId));
+
+        JsonObject json = new JsonObject();
+        if (this.group != null && !this.group.isEmpty()) {
+            json.addProperty("group", this.group);
+        }
+        var resultRegistryName = Registries.ITEM.getKey(this.result);
+        json.addProperty("category", this.bookCategory.getSerializedName());
+        json.add("ingredient", this.ingredient.toJson());
+        if (resultRegistryName != null) {
+            json.addProperty("result", resultRegistryName.toString());
+        }
+        json.addProperty("experience", this.experience);
+        json.addProperty("cookingtime", this.cookingTime);
+
+        output.accept(recipeId, this.serializer, json, this.advancement, recipeId.withPrefix("recipes/" + this.category.getFolderName() + "/"));
     }
 
     private static CookingBookCategory determineSmeltingRecipeCategory(ItemLike pResult) {
@@ -95,62 +108,5 @@ public class PurificationRecipeBuilder {
         }
     }
 
-    static class Result implements FinishedRecipe {
-        private final ResourceLocation id;
-        private final String group;
-        private final CookingBookCategory category;
-        private final Ingredient ingredient;
-        private final Item result;
-        private final float experience;
-        private final int cookingTime;
-        private final Advancement.Builder advancement;
-        private final ResourceLocation advancementId;
-        private final RecipeSerializer<? extends AbstractCookingRecipe> serializer;
-
-        public Result(ResourceLocation pId, String pGroup, CookingBookCategory pCategory, Ingredient pIngredient, Item pResult, float pExperience, int pCookingTime, Advancement.Builder pAdvancement, ResourceLocation pAdvancementId, RecipeSerializer<? extends AbstractCookingRecipe> pSerializer) {
-            this.id = pId;
-            this.group = pGroup;
-            this.category = pCategory;
-            this.ingredient = pIngredient;
-            this.result = pResult;
-            this.experience = pExperience;
-            this.cookingTime = pCookingTime;
-            this.advancement = pAdvancement;
-            this.advancementId = pAdvancementId;
-            this.serializer = pSerializer;
-        }
-
-        public void serializeRecipeData(JsonObject pJson) {
-            if (!this.group.isEmpty()) {
-                pJson.addProperty("group", this.group);
-            }
-
-            ResourceLocation resultRegistryName = Registries.ITEMS.getKey(this.result);
-
-            pJson.addProperty("category", this.category.getSerializedName());
-            pJson.add("ingredient", this.ingredient.toJson());
-            if (resultRegistryName != null)
-                pJson.addProperty("result", resultRegistryName.toString());
-            pJson.addProperty("experience", this.experience);
-            pJson.addProperty("cookingtime", this.cookingTime);
-        }
-
-        public RecipeSerializer<?> getType() {
-            return this.serializer;
-        }
-
-        public ResourceLocation getId() {
-            return this.id;
-        }
-
-        @Nullable
-        public JsonObject serializeAdvancement() {
-            return this.advancement.serializeToJson();
-        }
-
-        @Nullable
-        public ResourceLocation getAdvancementId() {
-            return this.advancementId;
-        }
-    }
+    // Note: 1.20.4 RecipeOutput path used; no FinishedRecipe implementation needed.
 }

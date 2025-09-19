@@ -3,21 +3,19 @@ package sfiomn.legendarysurvivaloverhaul.data.recipes;
 import com.google.gson.JsonObject;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.CriterionTriggerInstance;
-import net.minecraft.advancements.RequirementsStrategy;
 import net.minecraft.advancements.critereon.RecipeUnlockedTrigger;
-import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeBuilder;
 import net.minecraft.data.recipes.RecipeCategory;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.core.registries.Registries;
 import org.jetbrains.annotations.NotNull;
 import sfiomn.legendarysurvivaloverhaul.registry.RecipeRegistry;
 
 import javax.annotation.Nullable;
-import java.util.function.Consumer;
 
 public class SewingRecipeBuilder {
     private final RecipeCategory category;
@@ -44,14 +42,31 @@ public class SewingRecipeBuilder {
         return this;
     }
 
-    public void save(Consumer<FinishedRecipe> consumer, String id) {
-        this.save(consumer, new ResourceLocation(id));
+    public void save(RecipeOutput output, String id) {
+        this.save(output, new ResourceLocation(id));
     }
 
-    public void save(Consumer<FinishedRecipe> consumer, ResourceLocation id) {
+    public void save(RecipeOutput output, ResourceLocation id) {
         this.ensureValid(id);
-        this.advancement.parent(RecipeBuilder.ROOT_RECIPE_ADVANCEMENT).addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(id)).rewards(net.minecraft.advancements.AdvancementRewards.Builder.recipe(id)).requirements(RequirementsStrategy.OR);
-        consumer.accept(new Result(id, this.type, this.base, this.addition, this.result, this.advancement, id.withPrefix("recipes/" + category.getFolderName() + "/")));
+        this.advancement.parent(RecipeBuilder.ROOT_RECIPE_ADVANCEMENT)
+                .addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(id));
+
+        JsonObject json = new JsonObject();
+        json.add("base", this.base.toJson());
+        json.add("addition", this.addition.toJson());
+
+        ResourceLocation resultRegistryName = Registries.ITEM.getKey(this.result.getItem());
+        if (resultRegistryName != null) {
+            JsonObject jsonobject = new JsonObject();
+            jsonobject.addProperty("item", resultRegistryName.toString());
+            if (this.result.hasTag() && this.result.getTag() != null) {
+                jsonobject.addProperty("type", "forge:partial_nbt");
+                jsonobject.addProperty("nbt", this.result.getTag().toString());
+            }
+            json.add("result", jsonobject);
+        }
+
+        output.accept(id, this.type, json, this.advancement, id.withPrefix("recipes/" + category.getFolderName() + "/"));
     }
 
     private void ensureValid(ResourceLocation id) {
@@ -60,40 +75,5 @@ public class SewingRecipeBuilder {
         }
     }
 
-    public record Result(ResourceLocation id, RecipeSerializer<?> type, Ingredient base, Ingredient addition, ItemStack result, Advancement.Builder advancement, ResourceLocation advancementId) implements FinishedRecipe {
-
-        public void serializeRecipeData(@NotNull JsonObject json) {
-            json.add("base", this.base.toJson());
-            json.add("addition", this.addition.toJson());
-
-            ResourceLocation resultRegistryName = Registries.ITEMS.getKey(this.result.getItem());
-            if (resultRegistryName != null) {
-                JsonObject jsonobject = new JsonObject();
-                jsonobject.addProperty("item", resultRegistryName.toString());
-                if (this.result.hasTag() && this.result.getTag() != null) {
-                    jsonobject.addProperty("type", "forge:partial_nbt");
-                    jsonobject.addProperty("nbt", this.result.getTag().toString());
-                }
-                json.add("result", jsonobject);
-            }
-        }
-
-        public @NotNull ResourceLocation getId() {
-            return this.id;
-        }
-
-        public @NotNull RecipeSerializer<?> getType() {
-            return this.type;
-        }
-
-        @Nullable
-        public JsonObject serializeAdvancement() {
-            return this.advancement.serializeToJson();
-        }
-
-        @Nullable
-        public ResourceLocation getAdvancementId() {
-            return this.advancementId;
-        }
-    }
+    // 1.20.4 RecipeOutput pathway used; no FinishedRecipe implementation required.
 }

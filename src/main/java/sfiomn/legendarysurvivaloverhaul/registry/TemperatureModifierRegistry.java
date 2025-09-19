@@ -34,9 +34,9 @@ public class TemperatureModifierRegistry
     public static final DeferredRegister<AttributeModifierBase> ITEM_ATTRIBUTE_MODIFIERS = DeferredRegister.create(ITEM_ATTRIBUTE_MODIFIERS_KEY, LegendarySurvivalOverhaul.MOD_ID);
 
     static {
-        MODIFIERS.makeRegistry(RegistryBuilder::new);
-        DYNAMIC_MODIFIERS.makeRegistry(RegistryBuilder::new);
-        ITEM_ATTRIBUTE_MODIFIERS.makeRegistry(RegistryBuilder::new);
+        MODIFIERS.makeRegistry(() -> new RegistryBuilder<>(MODIFIERS_KEY));
+        DYNAMIC_MODIFIERS.makeRegistry(() -> new RegistryBuilder<>(DYNAMIC_MODIFIERS_KEY));
+        ITEM_ATTRIBUTE_MODIFIERS.makeRegistry(() -> new RegistryBuilder<>(ITEM_ATTRIBUTE_MODIFIERS_KEY));
     }
 
     // Base Modifiers

@@ -1051,7 +1051,7 @@ public class Config
 
 	private static boolean validateEffectName(final Object obj)
 	{
-		return obj instanceof final String effectName && Registries.MOB_EFFECTS.containsKey(new ResourceLocation(effectName));
+		return obj instanceof final String effectName && Registries.MOB_EFFECT.containsKey(new ResourceLocation(effectName));
 	}
 
 	private static boolean validateEntityType(final Object obj)

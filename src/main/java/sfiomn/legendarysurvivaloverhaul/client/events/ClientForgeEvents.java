@@ -83,7 +83,7 @@ public class ClientForgeEvents {
     public static void onApplyBonemeal(BonemealEvent event)
     {
         Block plant = event.getBlock().getBlock();
-        if (event.getEntity() == null || Registries.BLOCKS.getKey(plant) == null) {
+        if (event.getEntity() == null || Registries.BLOCK.getKey(plant) == null) {
             return;
         }
 

@@ -75,7 +75,7 @@ public abstract class ThirstDataProvider implements DataProvider {
     }
 
     public final IThirstDataHolder block(Block block) {
-        ResourceLocation blockRegistryName = Registries.BLOCKS.getKey(block);
+        ResourceLocation blockRegistryName = Registries.BLOCK.getKey(block);
         assert blockRegistryName != null;
         return this.blocksBuilders.computeIfAbsent(blockRegistryName.toString(), (k) -> new ThirstDataHolder());
     }

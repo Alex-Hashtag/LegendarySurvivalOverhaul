@@ -1,48 +1,139 @@
 package sfiomn.legendarysurvivaloverhaul.network;
 
 import net.minecraft.resources.ResourceLocation;
-import net.neoforged.neoforge.network.NetworkRegistry;
-import net.neoforged.neoforge.network.simple.SimpleChannel;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.network.packets.*;
 
-public class NetworkHandler
-{
-	private static final String PROTOCOL_VERSION = "1";
-	
-	public static final SimpleChannel INSTANCE = NetworkRegistry.newSimpleChannel(
-			new ResourceLocation(LegendarySurvivalOverhaul.MOD_ID, "main"),
-			() -> PROTOCOL_VERSION,
-			PROTOCOL_VERSION::equals,
-			PROTOCOL_VERSION::equals);
-	
-	public static void register()
-	{
-		int id = -1;
-		
-		INSTANCE.registerMessage(id++, UpdateTemperaturesPacket.class, UpdateTemperaturesPacket::encode, UpdateTemperaturesPacket::decode, UpdateTemperaturesPacket::handle);
-		INSTANCE.registerMessage(id++, UpdateWetnessPacket.class, UpdateWetnessPacket::encode, UpdateWetnessPacket::decode, UpdateWetnessPacket::handle);
-		INSTANCE.registerMessage(id++, UpdateThirstPacket.class, UpdateThirstPacket::encode, UpdateThirstPacket::decode, UpdateThirstPacket::handle);
-		INSTANCE.registerMessage(id++, UpdateHeartsPacket.class, UpdateHeartsPacket::encode, UpdateHeartsPacket::decode, UpdateHeartsPacket::handle);
-		INSTANCE.registerMessage(id++, UpdateBodyDamagePacket.class, UpdateBodyDamagePacket::encode, UpdateBodyDamagePacket::decode, UpdateBodyDamagePacket::handle);
-		INSTANCE.registerMessage(id++, DrinkBlockFluidMessage.class, DrinkBlockFluidMessage::encode, DrinkBlockFluidMessage::decode, DrinkBlockFluidMessage::handle);
-		INSTANCE.registerMessage(id++, BodyPartHealingTimeMessage.class, BodyPartHealingTimeMessage::encode, BodyPartHealingTimeMessage::decode, BodyPartHealingTimeMessage::handle);
+public class NetworkHandler {
+    private static final String PROTOCOL_VERSION = "1";
 
-		INSTANCE.registerMessage(id++, SyncTemperatureConsumablesPacket.class, SyncTemperatureConsumablesPacket::encode, SyncTemperatureConsumablesPacket::decode, SyncTemperatureConsumablesPacket::handle);
-		INSTANCE.registerMessage(id++, SyncTemperatureConsumableBlocksPacket.class, SyncTemperatureConsumableBlocksPacket::encode, SyncTemperatureConsumableBlocksPacket::decode, SyncTemperatureConsumableBlocksPacket::handle);
-		INSTANCE.registerMessage(id++, SyncTemperatureBlocksPacket.class, SyncTemperatureBlocksPacket::encode, SyncTemperatureBlocksPacket::decode, SyncTemperatureBlocksPacket::handle);
-		INSTANCE.registerMessage(id++, SyncTemperatureItemsPacket.class, SyncTemperatureItemsPacket::encode, SyncTemperatureItemsPacket::decode, SyncTemperatureItemsPacket::handle);
-		INSTANCE.registerMessage(id++, SyncTemperatureBiomesPacket.class, SyncTemperatureBiomesPacket::encode, SyncTemperatureBiomesPacket::decode, SyncTemperatureBiomesPacket::handle);
-		INSTANCE.registerMessage(id++, SyncTemperatureFuelItemsPacket.class, SyncTemperatureFuelItemsPacket::encode, SyncTemperatureFuelItemsPacket::decode, SyncTemperatureFuelItemsPacket::handle);
-		INSTANCE.registerMessage(id++, SyncTemperatureMountsPacket.class, SyncTemperatureMountsPacket::encode, SyncTemperatureMountsPacket::decode, SyncTemperatureMountsPacket::handle);
-		INSTANCE.registerMessage(id++, SyncTemperatureDimensionsPacket.class, SyncTemperatureDimensionsPacket::encode, SyncTemperatureDimensionsPacket::decode, SyncTemperatureDimensionsPacket::handle);
-		INSTANCE.registerMessage(id++, SyncTemperatureOriginsPacket.class, SyncTemperatureOriginsPacket::encode, SyncTemperatureOriginsPacket::decode, SyncTemperatureOriginsPacket::handle);
+    public static final SimpleChannel INSTANCE = NetworkRegistry.newSimpleChannel(
+            new ResourceLocation(LegendarySurvivalOverhaul.MOD_ID, "main"),
+            () -> PROTOCOL_VERSION,
+            PROTOCOL_VERSION::equals,
+            PROTOCOL_VERSION::equals
+    );
 
-		INSTANCE.registerMessage(id++, SyncThirstBlocksPacket.class, SyncThirstBlocksPacket::encode, SyncThirstBlocksPacket::decode, SyncThirstBlocksPacket::handle);
-		INSTANCE.registerMessage(id++, SyncThirstConsumablesPacket.class, SyncThirstConsumablesPacket::encode, SyncThirstConsumablesPacket::decode, SyncThirstConsumablesPacket::handle);
+    private static int nextId = 0;
 
-		INSTANCE.registerMessage(id++, SyncBodyDamageHealingConsumablesPacket.class, SyncBodyDamageHealingConsumablesPacket::encode, SyncBodyDamageHealingConsumablesPacket::decode, SyncBodyDamageHealingConsumablesPacket::handle);
-		INSTANCE.registerMessage(id++, SyncBodyPartsDamageSourcesPacket.class, SyncBodyPartsDamageSourcesPacket::encode, SyncBodyPartsDamageSourcesPacket::decode, SyncBodyPartsDamageSourcesPacket::handle);
-		INSTANCE.registerMessage(id++, SyncBodyPartResistanceItemsPacket.class, SyncBodyPartResistanceItemsPacket::encode, SyncBodyPartResistanceItemsPacket::decode, SyncBodyPartResistanceItemsPacket::handle);
-	}
+    private static <T> void registerMessage(Class<T> type, SimpleChannel.MessageBuilder<T> builder) {
+        builder.add();
+    }
+
+    public static void register() {
+        INSTANCE.messageBuilder(UpdateTemperaturesPacket.class, nextId++)
+                .encoder(UpdateTemperaturesPacket::encode)
+                .decoder(UpdateTemperaturesPacket::decode)
+                .consumerMainThread(UpdateTemperaturesPacket::handle)
+                .add();
+
+        INSTANCE.messageBuilder(UpdateWetnessPacket.class, nextId++)
+                .encoder(UpdateWetnessPacket::encode)
+                .decoder(UpdateWetnessPacket::decode)
+                .consumerMainThread(UpdateWetnessPacket::handle)
+                .add();
+
+        INSTANCE.messageBuilder(UpdateThirstPacket.class, nextId++)
+                .encoder(UpdateThirstPacket::encode)
+                .decoder(UpdateThirstPacket::decode)
+                .consumerMainThread(UpdateThirstPacket::handle)
+                .add();
+
+        INSTANCE.messageBuilder(UpdateHeartsPacket.class, nextId++)
+                .encoder(UpdateHeartsPacket::encode)
+                .decoder(UpdateHeartsPacket::decode)
+                .consumerMainThread(UpdateHeartsPacket::handle)
+                .add();
+
+        INSTANCE.messageBuilder(UpdateBodyDamagePacket.class, nextId++)
+                .encoder(UpdateBodyDamagePacket::encode)
+                .decoder(UpdateBodyDamagePacket::decode)
+                .consumerMainThread(UpdateBodyDamagePacket::handle)
+                .add();
+
+        INSTANCE.messageBuilder(DrinkBlockFluidMessage.class, nextId++)
+                .encoder(DrinkBlockFluidMessage::encode)
+                .decoder(DrinkBlockFluidMessage::decode)
+                .consumerMainThread(DrinkBlockFluidMessage::handle)
+                .add();
+
+        INSTANCE.messageBuilder(BodyPartHealingTimeMessage.class, nextId++)
+                .encoder(BodyPartHealingTimeMessage::encode)
+                .decoder(BodyPartHealingTimeMessage::decode)
+                .consumerMainThread(BodyPartHealingTimeMessage::handle)
+                .add();
+
+        INSTANCE.messageBuilder(SyncTemperatureConsumablesPacket.class, nextId++)
+                .encoder(SyncTemperatureConsumablesPacket::encode)
+                .decoder(SyncTemperatureConsumablesPacket::decode)
+                .consumerMainThread(SyncTemperatureConsumablesPacket::handle)
+                .add();
+        INSTANCE.messageBuilder(SyncTemperatureConsumableBlocksPacket.class, nextId++)
+                .encoder(SyncTemperatureConsumableBlocksPacket::encode)
+                .decoder(SyncTemperatureConsumableBlocksPacket::decode)
+                .consumerMainThread(SyncTemperatureConsumableBlocksPacket::handle)
+                .add();
+        INSTANCE.messageBuilder(SyncTemperatureBlocksPacket.class, nextId++)
+                .encoder(SyncTemperatureBlocksPacket::encode)
+                .decoder(SyncTemperatureBlocksPacket::decode)
+                .consumerMainThread(SyncTemperatureBlocksPacket::handle)
+                .add();
+        INSTANCE.messageBuilder(SyncTemperatureItemsPacket.class, nextId++)
+                .encoder(SyncTemperatureItemsPacket::encode)
+                .decoder(SyncTemperatureItemsPacket::decode)
+                .consumerMainThread(SyncTemperatureItemsPacket::handle)
+                .add();
+        INSTANCE.messageBuilder(SyncTemperatureBiomesPacket.class, nextId++)
+                .encoder(SyncTemperatureBiomesPacket::encode)
+                .decoder(SyncTemperatureBiomesPacket::decode)
+                .consumerMainThread(SyncTemperatureBiomesPacket::handle)
+                .add();
+        INSTANCE.messageBuilder(SyncTemperatureFuelItemsPacket.class, nextId++)
+                .encoder(SyncTemperatureFuelItemsPacket::encode)
+                .decoder(SyncTemperatureFuelItemsPacket::decode)
+                .consumerMainThread(SyncTemperatureFuelItemsPacket::handle)
+                .add();
+        INSTANCE.messageBuilder(SyncTemperatureMountsPacket.class, nextId++)
+                .encoder(SyncTemperatureMountsPacket::encode)
+                .decoder(SyncTemperatureMountsPacket::decode)
+                .consumerMainThread(SyncTemperatureMountsPacket::handle)
+                .add();
+        INSTANCE.messageBuilder(SyncTemperatureDimensionsPacket.class, nextId++)
+                .encoder(SyncTemperatureDimensionsPacket::encode)
+                .decoder(SyncTemperatureDimensionsPacket::decode)
+                .consumerMainThread(SyncTemperatureDimensionsPacket::handle)
+                .add();
+        INSTANCE.messageBuilder(SyncTemperatureOriginsPacket.class, nextId++)
+                .encoder(SyncTemperatureOriginsPacket::encode)
+                .decoder(SyncTemperatureOriginsPacket::decode)
+                .consumerMainThread(SyncTemperatureOriginsPacket::handle)
+                .add();
+
+        INSTANCE.messageBuilder(SyncThirstBlocksPacket.class, nextId++)
+                .encoder(SyncThirstBlocksPacket::encode)
+                .decoder(SyncThirstBlocksPacket::decode)
+                .consumerMainThread(SyncThirstBlocksPacket::handle)
+                .add();
+        INSTANCE.messageBuilder(SyncThirstConsumablesPacket.class, nextId++)
+                .encoder(SyncThirstConsumablesPacket::encode)
+                .decoder(SyncThirstConsumablesPacket::decode)
+                .consumerMainThread(SyncThirstConsumablesPacket::handle)
+                .add();
+
+        INSTANCE.messageBuilder(SyncBodyDamageHealingConsumablesPacket.class, nextId++)
+                .encoder(SyncBodyDamageHealingConsumablesPacket::encode)
+                .decoder(SyncBodyDamageHealingConsumablesPacket::decode)
+                .consumerMainThread(SyncBodyDamageHealingConsumablesPacket::handle)
+                .add();
+        INSTANCE.messageBuilder(SyncBodyPartsDamageSourcesPacket.class, nextId++)
+                .encoder(SyncBodyPartsDamageSourcesPacket::encode)
+                .decoder(SyncBodyPartsDamageSourcesPacket::decode)
+                .consumerMainThread(SyncBodyPartsDamageSourcesPacket::handle)
+                .add();
+        INSTANCE.messageBuilder(SyncBodyPartResistanceItemsPacket.class, nextId++)
+                .encoder(SyncBodyPartResistanceItemsPacket::encode)
+                .decoder(SyncBodyPartResistanceItemsPacket::decode)
+                .consumerMainThread(SyncBodyPartResistanceItemsPacket::handle)
+                .add();
+    }
 }

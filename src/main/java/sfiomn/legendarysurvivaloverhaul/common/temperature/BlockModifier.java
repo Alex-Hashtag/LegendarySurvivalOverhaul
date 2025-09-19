@@ -208,7 +208,7 @@ public class BlockModifier extends ModifierBase
 	private float getTemperatureFromSpreadPoint(Level level, SpreadPoint spreadPoint, Map<ResourceLocation, List<JsonTemperatureBlock>> cachedTemperatureBlocks) {
 		BlockState blockState = level.getBlockState(spreadPoint.position());
 		float temperature = 0.0f;
-		ResourceLocation registryName = Registries.BLOCKS.getKey(blockState.getBlock());
+		ResourceLocation registryName = Registries.BLOCK.getKey(blockState.getBlock());
 
 		if (registryName == null || blockState.isAir()) {
 			return 0.0f;

@@ -163,7 +163,7 @@ public class TemperatureUtilInternal implements ITemperatureUtil
 	@Override
 	public void applyConsumableBlockTemperature(Player player, BlockState blockState) {
 		if (Config.Baked.temperatureEnabled) {
-			ResourceLocation blockRegistryName = Registries.BLOCKS.getKey(blockState.getBlock());
+			ResourceLocation blockRegistryName = Registries.BLOCK.getKey(blockState.getBlock());
 			List<JsonTemperatureConsumableBlock> jsonConsumableBlockTemperatures = TemperatureDataManager.getConsumableBlock(blockRegistryName);
 
 			if (jsonConsumableBlockTemperatures != null) {

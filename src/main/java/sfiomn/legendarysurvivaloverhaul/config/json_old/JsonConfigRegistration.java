@@ -625,7 +625,7 @@ public class JsonConfigRegistration
 						td.hydration(jbft.hydration);
 						td.saturation(jbft.saturation);
 						for (JsonEffectParameter jep: jbft.effects) {
-							MobEffect me = Registries.MOB_EFFECTS.getValue(new ResourceLocation(jep.name));
+							MobEffect me = Registries.MOB_EFFECT.getValue(new ResourceLocation(jep.name));
 							if (me != null)
 								td.addEffect(me, jep.duration, jep.chance, jep.amplifier);
 						}
@@ -673,7 +673,7 @@ public class JsonConfigRegistration
 						td.hydration(jct.hydration);
 						td.saturation(jct.saturation);
 						for (JsonEffectParameter jep: jct.effects) {
-							MobEffect me = Registries.MOB_EFFECTS.getValue(new ResourceLocation(jep.name));
+							MobEffect me = Registries.MOB_EFFECT.getValue(new ResourceLocation(jep.name));
 							if (me != null)
 								td.addEffect(me, jep.duration, jep.chance, jep.amplifier);
 						}

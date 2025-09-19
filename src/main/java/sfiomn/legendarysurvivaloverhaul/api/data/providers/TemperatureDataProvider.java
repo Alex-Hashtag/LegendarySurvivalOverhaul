@@ -143,7 +143,7 @@ public abstract class TemperatureDataProvider implements DataProvider {
     }
 
     public final ITemperatureBlockDataHolder block(Block block) {
-        ResourceLocation blockRegistryName = Registries.BLOCKS.getKey(block);
+        ResourceLocation blockRegistryName = Registries.BLOCK.getKey(block);
         assert blockRegistryName != null;
         return this.blockBuilders.computeIfAbsent(blockRegistryName.toString(), (k) -> new TemperatureBlockDataHolder());
     }

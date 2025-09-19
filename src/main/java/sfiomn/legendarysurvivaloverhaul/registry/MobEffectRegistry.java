@@ -1,5 +1,6 @@
 package sfiomn.legendarysurvivaloverhaul.registry;
 
+import net.minecraft.core.registries.Registries;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -11,7 +12,6 @@ import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.item.alchemy.Potions;
 import net.neoforged.neoforge.common.brewing.BrewingRecipeRegistry;
-import net.neoforged.neoforge.common.crafting.StrictNBTIngredient;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -22,9 +22,9 @@ import sfiomn.legendarysurvivaloverhaul.common.effects.*;
 public class MobEffectRegistry
 {
 
-    public static final DeferredRegister<MobEffect> EFFECTS = DeferredRegister.create(Registries.MOB_EFFECTS, LegendarySurvivalOverhaul.MOD_ID);
-    public static final DeferredRegister<Potion> TEMPERATURE_POTIONS = DeferredRegister.create(Registries.POTIONS, LegendarySurvivalOverhaul.MOD_ID);
-    public static final DeferredRegister<Potion> THIRST_POTIONS = DeferredRegister.create(Registries.POTIONS, LegendarySurvivalOverhaul.MOD_ID);
+    public static final DeferredRegister<MobEffect> EFFECTS = DeferredRegister.create(Registries.MOB_EFFECT, LegendarySurvivalOverhaul.MOD_ID);
+    public static final DeferredRegister<Potion> TEMPERATURE_POTIONS = DeferredRegister.create(Registries.POTION, LegendarySurvivalOverhaul.MOD_ID);
+    public static final DeferredRegister<Potion> THIRST_POTIONS = DeferredRegister.create(Registries.POTION, LegendarySurvivalOverhaul.MOD_ID);
 
     public static final DeferredHolder<MobEffect, ThirstEffect> THIRST = EFFECTS.register("thirst", ThirstEffect::new);
     public static final DeferredHolder<Potion, Potion> THIRST_POTION = THIRST_POTIONS.register("thirst", () -> new Potion("thirst", new MobEffectInstance(THIRST.get(), 3600, 0, false, true, true)));
@@ -33,12 +33,12 @@ public class MobEffectRegistry
     public static final DeferredHolder<Potion, Potion> HYDRATION_FILL_POTION = THIRST_POTIONS.register("hydration_fill", () -> new Potion("hydration_fill", new MobEffectInstance(HYDRATION_FILL.get(), 3600, 0, false, true, true)));
     public static final DeferredHolder<Potion, Potion> HYDRATION_FILL_POTION_LONG = THIRST_POTIONS.register("hydration_fill_long", () -> new Potion("hydration_fill_long", new MobEffectInstance(HYDRATION_FILL.get(), 9600, 0, false, true, true)));
 
-    public static final DeferredHolder<MobEffect, SimpleAttributeEffect> HOT_FOOD = EFFECTS.register("hot_food", () -> new SimpleAttributeEffect(MobEffectCategory.BENEFICIAL, 16714764, 1).addAttributeModifier(AttributeRegistry.HEATING_TEMPERATURE.get(), SimpleAttributeEffect.HOT_FOOD_ATTRIBUTE_UUID, 1.0, AttributeModifier.Operation.ADDITION));
-    public static final DeferredHolder<MobEffect, SimpleAttributeEffect> HOT_DRINk = EFFECTS.register("hot_drink", () -> new SimpleAttributeEffect(MobEffectCategory.BENEFICIAL, 16714764, 1).addAttributeModifier(AttributeRegistry.HEATING_TEMPERATURE.get(), SimpleAttributeEffect.HOT_DRINK_ATTRIBUTE_UUID, 1.0, AttributeModifier.Operation.ADDITION));
-    public static final DeferredHolder<MobEffect, SimpleAttributeEffect> COLD_FOOD = EFFECTS.register("cold_food", () -> new SimpleAttributeEffect(MobEffectCategory.BENEFICIAL, 1166574, -1).addAttributeModifier(AttributeRegistry.COOLING_TEMPERATURE.get(), SimpleAttributeEffect.COLD_FOOD_ATTRIBUTE_UUID, -1.0, AttributeModifier.Operation.ADDITION));
-    public static final DeferredHolder<MobEffect, SimpleAttributeEffect> COLD_DRINK = EFFECTS.register("cold_drink", () -> new SimpleAttributeEffect(MobEffectCategory.BENEFICIAL, 1166574, -1).addAttributeModifier(AttributeRegistry.COOLING_TEMPERATURE.get(), SimpleAttributeEffect.COLD_DRINK_ATTRIBUTE_UUID, -1.0, AttributeModifier.Operation.ADDITION));
-    public static final DeferredHolder<MobEffect, SimpleAttributeEffect> HEAT_RESISTANCE = EFFECTS.register("heat_resistance", () -> new SimpleAttributeEffect(MobEffectCategory.BENEFICIAL, 16420407, 1).addAttributeModifier(AttributeRegistry.HEAT_RESISTANCE.get(), SimpleAttributeEffect.HEAT_RESISTANCE_ATTRIBUTE_UUID, 1.0, AttributeModifier.Operation.ADDITION));
-    public static final DeferredHolder<MobEffect, SimpleAttributeEffect> COLD_RESISTANCE = EFFECTS.register("cold_resistance", () -> new SimpleAttributeEffect(MobEffectCategory.BENEFICIAL, 6466303, 1).addAttributeModifier(AttributeRegistry.COLD_RESISTANCE.get(), SimpleAttributeEffect.COLD_RESISTANCE_ATTRIBUTE_UUID, 1.0, AttributeModifier.Operation.ADDITION));
+    public static final DeferredHolder<MobEffect, MobEffect> HOT_FOOD = EFFECTS.register("hot_food", () -> new SimpleAttributeEffect(MobEffectCategory.BENEFICIAL, 16714764, 1).addAttributeModifier(AttributeRegistry.HEATING_TEMPERATURE.get(), SimpleAttributeEffect.HOT_FOOD_ATTRIBUTE_UUID, 1.0, AttributeModifier.Operation.ADDITION));
+    public static final DeferredHolder<MobEffect, MobEffect> HOT_DRINk = EFFECTS.register("hot_drink", () -> new SimpleAttributeEffect(MobEffectCategory.BENEFICIAL, 16714764, 1).addAttributeModifier(AttributeRegistry.HEATING_TEMPERATURE.get(), SimpleAttributeEffect.HOT_DRINK_ATTRIBUTE_UUID, 1.0, AttributeModifier.Operation.ADDITION));
+    public static final DeferredHolder<MobEffect, MobEffect> COLD_FOOD = EFFECTS.register("cold_food", () -> new SimpleAttributeEffect(MobEffectCategory.BENEFICIAL, 1166574, -1).addAttributeModifier(AttributeRegistry.COOLING_TEMPERATURE.get(), SimpleAttributeEffect.COLD_FOOD_ATTRIBUTE_UUID, -1.0, AttributeModifier.Operation.ADDITION));
+    public static final DeferredHolder<MobEffect, MobEffect> COLD_DRINK = EFFECTS.register("cold_drink", () -> new SimpleAttributeEffect(MobEffectCategory.BENEFICIAL, 1166574, -1).addAttributeModifier(AttributeRegistry.COOLING_TEMPERATURE.get(), SimpleAttributeEffect.COLD_DRINK_ATTRIBUTE_UUID, -1.0, AttributeModifier.Operation.ADDITION));
+    public static final DeferredHolder<MobEffect, MobEffect> HEAT_RESISTANCE = EFFECTS.register("heat_resistance", () -> new SimpleAttributeEffect(MobEffectCategory.BENEFICIAL, 16420407, 1).addAttributeModifier(AttributeRegistry.HEAT_RESISTANCE.get(), SimpleAttributeEffect.HEAT_RESISTANCE_ATTRIBUTE_UUID, 1.0, AttributeModifier.Operation.ADDITION));
+    public static final DeferredHolder<MobEffect, MobEffect> COLD_RESISTANCE = EFFECTS.register("cold_resistance", () -> new SimpleAttributeEffect(MobEffectCategory.BENEFICIAL, 6466303, 1).addAttributeModifier(AttributeRegistry.COLD_RESISTANCE.get(), SimpleAttributeEffect.COLD_RESISTANCE_ATTRIBUTE_UUID, 1.0, AttributeModifier.Operation.ADDITION));
 
     public static final DeferredHolder<MobEffect, FrostbiteEffect> FROSTBITE = EFFECTS.register("frostbite", FrostbiteEffect::new);
     public static final DeferredHolder<MobEffect, ColdHungerEffect> COLD_HUNGER = EFFECTS.register("cold_hunger", ColdHungerEffect::new);

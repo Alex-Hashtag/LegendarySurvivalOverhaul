@@ -1,13 +1,8 @@
 package sfiomn.legendarysurvivaloverhaul.common.capabilities.temperature;
 
-import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.common.capabilities.*;
-import net.neoforged.neoforge.common.util.LazyOptional;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import sfiomn.legendarysurvivaloverhaul.api.temperature.ITemperatureItemCapability;
 import sfiomn.legendarysurvivaloverhaul.api.temperature.TemperatureEnum;
 import sfiomn.legendarysurvivaloverhaul.util.WorldUtil;
@@ -60,37 +55,5 @@ public class TemperatureItemCapability implements ITemperatureItemCapability {
         this.init();
         if (compound.contains("temperature"))
             this.setWorldTemperatureLevel(compound.getFloat("temperature"));
-    }
-
-    public static class TemperatureItemProvider implements ICapabilityProvider, ICapabilitySerializable<CompoundTag>
-    {
-        public static Capability<TemperatureItemCapability> TEMPERATURE_ITEM_CAPABILITY = CapabilityManager.get(new CapabilityToken<TemperatureItemCapability>() { });
-        private final LazyOptional<TemperatureItemCapability> instance = LazyOptional.of(this::getInstance);
-        private TemperatureItemCapability temperatureItemCapability = null;
-
-        private TemperatureItemCapability getInstance() {
-            if (this.temperatureItemCapability == null) {
-                this.temperatureItemCapability = new TemperatureItemCapability();
-            }
-            return this.temperatureItemCapability;
-        }
-
-        @Override
-        public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> capability, @Nullable Direction direction)
-        {
-            if (capability == TEMPERATURE_ITEM_CAPABILITY)
-                return instance.cast();
-            return LazyOptional.empty();
-        }
-
-        @Override
-        public CompoundTag serializeNBT() {
-            return getInstance().writeNBT();
-        }
-
-        @Override
-        public void deserializeNBT(CompoundTag tag) {
-            getInstance().readNBT(tag);
-        }
     }
 }

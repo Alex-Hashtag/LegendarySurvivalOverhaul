@@ -2,13 +2,10 @@ package sfiomn.legendarysurvivaloverhaul.common.capabilities;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.Mod;
-import net.neoforged.neoforge.event.AttachCapabilitiesEvent;
 import net.neoforged.neoforge.event.TickEvent.Phase;
 import net.neoforged.neoforge.event.TickEvent.PlayerTickEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
@@ -19,17 +16,11 @@ import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.bodydamage.BodyDamageUtil;
 import sfiomn.legendarysurvivaloverhaul.api.health.HealthUtil;
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.bodydamage.BodyDamageCapability;
-import sfiomn.legendarysurvivaloverhaul.common.capabilities.bodydamage.BodyDamageProvider;
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.food.FoodCapability;
-import sfiomn.legendarysurvivaloverhaul.common.capabilities.food.FoodProvider;
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.health.HealthCapability;
-import sfiomn.legendarysurvivaloverhaul.common.capabilities.health.HealthProvider;
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.temperature.TemperatureCapability;
-import sfiomn.legendarysurvivaloverhaul.common.capabilities.temperature.TemperatureProvider;
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.thirst.ThirstCapability;
-import sfiomn.legendarysurvivaloverhaul.common.capabilities.thirst.ThirstProvider;
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.wetness.WetnessCapability;
-import sfiomn.legendarysurvivaloverhaul.common.capabilities.wetness.WetnessProvider;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
 import sfiomn.legendarysurvivaloverhaul.network.packets.*;
 import sfiomn.legendarysurvivaloverhaul.util.CapabilityUtil;
@@ -43,23 +34,6 @@ public class ModCapabilities
 	public static final ResourceLocation HEALTH_RES = new ResourceLocation(LegendarySurvivalOverhaul.MOD_ID, "health");
 	public static final ResourceLocation FOOD_RES = new ResourceLocation(LegendarySurvivalOverhaul.MOD_ID, "food");
 	public static final ResourceLocation BODY_DAMAGE_RES = new ResourceLocation(LegendarySurvivalOverhaul.MOD_ID, "body_damage");
-	
-	@SubscribeEvent
-	public static void attachCapabilityPlayer(AttachCapabilitiesEvent<Entity> event)
-	{
-		if (event.getObject() instanceof LivingEntity)
-		{
-			if (event.getObject() instanceof Player player)
-			{
-				event.addCapability(TEMPERATURE_RES, new TemperatureProvider());
-				event.addCapability(WETNESS_RES, new WetnessProvider());
-				event.addCapability(THIRST_RES, new ThirstProvider());
-				event.addCapability(HEALTH_RES, new HealthProvider());
-				event.addCapability(FOOD_RES, new FoodProvider());
-				event.addCapability(BODY_DAMAGE_RES, new BodyDamageProvider());
-			}
-		}
-	}
 
 	@SubscribeEvent
 	public static void onPlayerTick(PlayerTickEvent event)
@@ -166,7 +140,6 @@ public class ModCapabilities
 	@SubscribeEvent
 	public static void deathHandler(PlayerEvent.Clone event)
 	{
-		Player orig = event.getOriginal();
 		Player player = event.getEntity();
 
 		if (event.isWasDeath())
@@ -177,17 +150,10 @@ public class ModCapabilities
 			}
 
 			if (Config.Baked.temperatureEnabled)
-				player.getPersistentData().putBoolean("tempImmuneOnSpawn", orig.getPersistentData().getBoolean("tempImmuneOnSpawn"));
+				player.getPersistentData().putBoolean("tempImmuneOnSpawn", event.getOriginal().getPersistentData().getBoolean("tempImmuneOnSpawn"));
 
 			if (Config.Baked.healthOverhaulEnabled)
 			{
-				orig.reviveCaps();
-				HealthCapability oldCap = CapabilityUtil.getHealthCapability(orig);
-				orig.invalidateCaps();
-
-				HealthCapability newCap = CapabilityUtil.getHealthCapability(player);
-				newCap.readNBT(oldCap.writeNBT());
-
 				HealthUtil.initializeHealthAttributes(player);
 
 				if (Config.Baked.heartsLostOnDeath > 0)
@@ -203,49 +169,21 @@ public class ModCapabilities
 		{
 			if (Config.Baked.temperatureEnabled)
 			{
-				orig.reviveCaps();
-				TemperatureCapability oldCap = CapabilityUtil.getTempCapability(orig);
-				orig.invalidateCaps();
-
-				TemperatureCapability newCap = CapabilityUtil.getTempCapability(player);
-				newCap.readNBT(oldCap.writeNBT());
-
 				sendTemperatureUpdate(player);
 			}
 
 			if (Config.Baked.wetnessEnabled)
 			{
-				orig.reviveCaps();
-				WetnessCapability oldCap = CapabilityUtil.getWetnessCapability(orig);
-				orig.invalidateCaps();
-
-				WetnessCapability newCap = CapabilityUtil.getWetnessCapability(player);
-				newCap.readNBT(oldCap.writeNBT());
-
 				sendWetnessUpdate(player);
 			}
 
 			if (Config.Baked.thirstEnabled)
 			{
-				orig.reviveCaps();
-				ThirstCapability oldCap = CapabilityUtil.getThirstCapability(orig);
-				orig.invalidateCaps();
-
-				ThirstCapability newCap = CapabilityUtil.getThirstCapability(player);
-				newCap.readNBT(oldCap.writeNBT());
-
 				sendThirstUpdate(player);
 			}
 			
 			if (Config.Baked.healthOverhaulEnabled)
 			{
-				orig.reviveCaps();
-				HealthCapability oldCap = CapabilityUtil.getHealthCapability(orig);
-				orig.invalidateCaps();
-
-				HealthCapability newCap = CapabilityUtil.getHealthCapability(player);
-				newCap.readNBT(oldCap.writeNBT());
-
 				HealthUtil.initializeHealthAttributes(player);
 				HealthUtil.updatePlayerMaxHealthAttribute(player);
 				player.setHealth(player.getMaxHealth());
@@ -254,13 +192,6 @@ public class ModCapabilities
 
 			if (Config.Baked.localizedBodyDamageEnabled)
 			{
-				orig.reviveCaps();
-				BodyDamageCapability oldCap = CapabilityUtil.getBodyDamageCapability(orig);
-				orig.invalidateCaps();
-
-				BodyDamageCapability newCap = CapabilityUtil.getBodyDamageCapability(player);
-				newCap.readNBT(oldCap.writeNBT());
-
 				BodyDamageUtil.updatePlayerBrokenHeartAttribute(player);
 				sendBodyDamageUpdate(player);
 			}

@@ -17,7 +17,7 @@ import java.util.function.Supplier;
 public class BlockRegistry
 {
 
-    public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(Registries.BLOCKS, LegendarySurvivalOverhaul.MOD_ID);
+    public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(Registries.BLOCK, LegendarySurvivalOverhaul.MOD_ID);
 
     public static final DeferredHolder<Block, ? extends Block> HEATER = registerBlock("heater", () -> new HeaterBaseBlock(ThermalTypeEnum.HEATING));
     public static final DeferredHolder<Block, ? extends Block> HEATER_TOP = BLOCKS.register("heater_top", HeaterTopBlock::new);

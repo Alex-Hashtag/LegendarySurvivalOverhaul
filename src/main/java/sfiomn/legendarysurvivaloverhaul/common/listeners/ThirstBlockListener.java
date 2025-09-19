@@ -68,7 +68,7 @@ public class ThirstBlockListener extends SimpleJsonResourceReloadListener implem
         List<JsonThirstBlock> jsonThirstBlocks = null;
         JsonThirstBlock defaultJct = null;
 
-        ResourceLocation blockRegistryName = Registries.BLOCKS.getKey(block.getBlock());
+        ResourceLocation blockRegistryName = Registries.BLOCK.getKey(block.getBlock());
 
         if (blockRegistryName != null)
             jsonThirstBlocks = THIRST_BLOCKS.get(blockRegistryName);
