@@ -17,7 +17,7 @@ public class MinecraftTemperatureProvider extends TemperatureDataProvider {
 
     @Override
     public void generate(HolderLookup.Provider provider, ExistingFileHelper existingFileHelper) {
-        dimension("overworld").temperature(20).hasAltitude().seaLevelHeight(64);
+        dimension("overworld").temperature(20).hasAltitude().seaLevelHeight(64).temperatureTimeCycleTicks(24000);
         dimension("the_end").temperature(-13);
         dimension("the_nether").temperature(27);
 

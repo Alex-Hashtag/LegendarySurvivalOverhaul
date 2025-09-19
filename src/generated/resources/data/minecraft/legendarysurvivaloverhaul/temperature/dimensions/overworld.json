@@ -1,5 +1,6 @@
 {
   "has_altitude": true,
   "sea_level_height": 64,
-  "temperature": 20.0
+  "temperature": 20.0,
+  "temperatureTimeCycleTicks": 24000
 }
