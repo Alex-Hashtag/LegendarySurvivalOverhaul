@@ -36,8 +36,7 @@ public class BodyDamageCapability implements IBodyDamageCapability
 	private float healingTickTimer;
 
 	// Unsaved data
-	private boolean hasHeadache;
-	private int headacheAmplifier;
+	private MobEffectInstance headacheEffect;
 	private boolean hasFirstAidSupplies;
 	private boolean hasFirstAidSuppliesBoosted;
 	private MobEffectInstance passiveLimbRegenerationEffects;
@@ -56,8 +55,7 @@ public class BodyDamageCapability implements IBodyDamageCapability
 
 	public void init()
 	{
-		this.hasHeadache = false;
-		this.headacheAmplifier = 0;
+		this.headacheEffect = null;
 		this.hasFirstAidSupplies = false;
 		this.hasFirstAidSuppliesBoosted = false;
 		this.passiveLimbRegenerationEffects = null;
@@ -178,8 +176,7 @@ public class BodyDamageCapability implements IBodyDamageCapability
 		}
 
 		if (updateTickTimer % 10 == 0) {
-			this.hasHeadache = player.hasEffect(MobEffectRegistry.HEADACHE.get());
-			this.headacheAmplifier = Objects.requireNonNull(player.getEffect(MobEffectRegistry.HEADACHE.get())).getAmplifier();
+			this.headacheEffect = player.getEffect(MobEffectRegistry.HEADACHE.get());
 			this.hasFirstAidSupplies = CuriosUtil.isCurioItemEquipped(player, ItemRegistry.FIRST_AID_SUPPLIES.get());
 			if (hasFirstAidSupplies) {
 				this.hasFirstAidSuppliesBoosted = BodyDamageUtil.hasPlayerFirstAidSuppliesBoostingEffect(player);
@@ -190,9 +187,9 @@ public class BodyDamageCapability implements IBodyDamageCapability
 			}
 		}
 
-		if (this.hasHeadache) {
+		if (this.headacheEffect != null) {
 			if (this.headacheTimer-- < 0) {
-				applyHeadache(player, this.headacheAmplifier);
+				applyHeadache(player, this.headacheEffect.getAmplifier());
 			}
 		} else {
 			this.headacheTimer = 0;
