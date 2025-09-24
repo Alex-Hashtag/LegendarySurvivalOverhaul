@@ -1,8 +1,9 @@
 package sfiomn.legendarysurvivaloverhaul.network.packets;
 
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
@@ -10,6 +11,8 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.core.registries.Registries;
+import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.network.handling.PlayPayloadContext;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.bodydamage.BodyDamageUtil;
 import sfiomn.legendarysurvivaloverhaul.api.bodydamage.BodyPartEnum;
@@ -17,52 +20,41 @@ import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonHealingConsumable;
 import sfiomn.legendarysurvivaloverhaul.api.data.manager.BodyDamageDataManager;
 import sfiomn.legendarysurvivaloverhaul.common.integration.supplementaries.SupplementariesUtil;
 import sfiomn.legendarysurvivaloverhaul.common.items.heal.BodyHealingItem;
-import sfiomn.legendarysurvivaloverhaul.network.NetworkHandler;
 import sfiomn.legendarysurvivaloverhaul.registry.MobEffectRegistry;
 import sfiomn.legendarysurvivaloverhaul.registry.SoundRegistry;
+ 
+public record BodyPartHealingTimeMessage(
+        CompoundTag compound
+) implements CustomPacketPayload {
 
-import java.util.function.Supplier;
+    public static final ResourceLocation ID =
+            new ResourceLocation(LegendarySurvivalOverhaul.MOD_ID, "body_part_healing_time");
 
-public class BodyPartHealingTimeMessage
-{
-    private CompoundTag compound;
-    // CLIENT to SERVER side message
+    public BodyPartHealingTimeMessage(BodyPartEnum bodyPart, InteractionHand hand, boolean consumeItem, boolean applyEffect) {
+        this(createPayload(bodyPart, hand, consumeItem, applyEffect));
+    }
 
-    public BodyPartHealingTimeMessage(BodyPartEnum bodyPart, InteractionHand hand, boolean consumeItem, boolean applyEffect)
-    {
+    private static CompoundTag createPayload(BodyPartEnum bodyPart, InteractionHand hand, boolean consumeItem, boolean applyEffect) {
         CompoundTag bodyPartHealNbt = new CompoundTag();
         bodyPartHealNbt.putString("bodyPartEnum", bodyPart.name());
         bodyPartHealNbt.putBoolean("mainHand", hand == InteractionHand.MAIN_HAND);
         bodyPartHealNbt.putBoolean("consumeItem", consumeItem);
         bodyPartHealNbt.putBoolean("applyEffect", applyEffect);
-        this.compound = bodyPartHealNbt;
+        return bodyPartHealNbt;
     }
 
-    public BodyPartHealingTimeMessage(Tag nbt) {
-        this.compound = (CompoundTag) nbt;
+    public BodyPartHealingTimeMessage(FriendlyByteBuf buf) {
+        this(buf.readNbt());
     }
 
-    public BodyPartHealingTimeMessage() {}
+    @Override
+    public void write(FriendlyByteBuf buf) { buf.writeNbt(compound); }
 
-    public static void encode(BodyPartHealingTimeMessage message, FriendlyByteBuf buffer) {
-        buffer.writeNbt(message.compound);
-    }
+    @Override
+    public ResourceLocation id() { return ID; }
 
-    public static BodyPartHealingTimeMessage decode(FriendlyByteBuf buffer)
-    {
-        return new BodyPartHealingTimeMessage(buffer.readNbt());
-    }
-
-    public static void handle(BodyPartHealingTimeMessage message, Supplier<NetworkEvent.Context> supplier)
-    {
-        final NetworkEvent.Context context = supplier.get();
-        if (context.getDirection() == NetworkDirection.PLAY_TO_SERVER) {
-            ServerPlayer player = context.getSender();
-            if (player != null) {
-                context.enqueueWork(() -> applyHealingItemOnServer(player, message.compound));
-            }
-        }
-        supplier.get().setPacketHandled(true);
+    public static void handle(BodyPartHealingTimeMessage pkt, PlayPayloadContext ctx) {
+        ctx.workHandler().submitAsync(() -> ctx.player().ifPresent(p -> applyHealingItemOnServer(p, pkt.compound())));
     }
 
     public static void applyHealingItemOnServer(ServerPlayer player, CompoundTag nbt) {
@@ -78,7 +70,7 @@ public class BodyPartHealingTimeMessage
                 usedItemStack = itemStackInBasket;
         }
 
-        ResourceLocation itemStackRegistryName = Registries.ITEMS.getKey(usedItemStack.getItem());
+        ResourceLocation itemStackRegistryName = BuiltInRegistries.ITEM.getKey(usedItemStack.getItem());
         JsonHealingConsumable jhc = BodyDamageDataManager.getHealingItem(itemStackRegistryName);
 
         player.serverLevel().playSound(null, player, SoundRegistry.HEAL_BODY_PART.get(), SoundSource.PLAYERS, 1.0f, 1.0f);
@@ -94,7 +86,6 @@ public class BodyPartHealingTimeMessage
     }
 
     public static void sendToServer(BodyPartEnum bodyPart, InteractionHand hand, boolean consumeItem, boolean applyEffect) {
-        BodyPartHealingTimeMessage bodyPartHealingTimeMessageToServer = new BodyPartHealingTimeMessage(bodyPart, hand, consumeItem, applyEffect);
-        NetworkHandler.INSTANCE.sendToServer(bodyPartHealingTimeMessageToServer);
+        PacketDistributor.SERVER.noArg().send(new BodyPartHealingTimeMessage(bodyPart, hand, consumeItem, applyEffect));
     }
 }

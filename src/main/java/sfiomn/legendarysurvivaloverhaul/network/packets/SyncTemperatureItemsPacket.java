@@ -4,78 +4,73 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.neoforged.api.distmarker.Dist;
-
-
+import net.neoforged.fml.DistExecutor;
 import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.network.handling.PlayPayloadContext;
+import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonTemperatureResistance;
 import sfiomn.legendarysurvivaloverhaul.common.listeners.TemperatureItemListener;
-import sfiomn.legendarysurvivaloverhaul.network.NetworkHandler;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Supplier;
 
-public class SyncTemperatureItemsPacket
-{
-	private final Map<ResourceLocation, JsonTemperatureResistance> temperatureItems;
-	private final int size;
+public record SyncTemperatureItemsPacket(
+        Map<ResourceLocation, JsonTemperatureResistance> temperatureItems
+) implements CustomPacketPayload {
 
-	public SyncTemperatureItemsPacket(Map<ResourceLocation, JsonTemperatureResistance> temperatureItems)
-	{
-		this.temperatureItems = Map.copyOf(temperatureItems);
-		this.size = temperatureItems.size();
-	}
+    public static final ResourceLocation ID =
+            new ResourceLocation(LegendarySurvivalOverhaul.MOD_ID, "sync_temperature_items");
 
-	public static void encode(SyncTemperatureItemsPacket message, FriendlyByteBuf buffer)
-	{
-		buffer.writeInt(message.size);
-		for (Map.Entry<ResourceLocation, JsonTemperatureResistance> e : message.temperatureItems.entrySet()) {
-			buffer.writeResourceLocation(e.getKey());
-			var r = JsonTemperatureResistance.CODEC.encodeStart(NbtOps.INSTANCE, e.getValue());
-			r.result().ifPresent(j -> buffer.writeNbt((CompoundTag) j));
-		}
-	}
-	
-	public static SyncTemperatureItemsPacket decode(FriendlyByteBuf buffer)
-	{
-		int size = buffer.readInt();
-		Map<ResourceLocation, JsonTemperatureResistance> temperatureItems = new HashMap<>();
-		for (int i = 0; i < size; i++) {
-			ResourceLocation key = buffer.readResourceLocation();
-			CompoundTag tag = buffer.readNbt();
-			if (tag != null) {
-				var r = JsonTemperatureResistance.CODEC.parse(NbtOps.INSTANCE, tag);
-				r.result().ifPresent(t -> temperatureItems.put(key, t));
-			}
-		}
+    public SyncTemperatureItemsPacket(FriendlyByteBuf buffer) {
+        this(readMap(buffer));
+    }
 
-		return new SyncTemperatureItemsPacket(temperatureItems);
-	}
-	
-	public static void handle(SyncTemperatureItemsPacket message, Supplier<NetworkEvent.Context> supplier)
-	{
-		final NetworkEvent.Context context = supplier.get();
-		context.enqueueWork(() -> DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> syncTemperatureItems(message.temperatureItems)));
-		
-		supplier.get().setPacketHandled(true);
-	}
+    private static Map<ResourceLocation, JsonTemperatureResistance> readMap(FriendlyByteBuf buffer) {
+        int size = buffer.readInt();
+        Map<ResourceLocation, JsonTemperatureResistance> out = new HashMap<>();
+        for (int i = 0; i < size; i++) {
+            ResourceLocation key = buffer.readResourceLocation();
+            CompoundTag tag = buffer.readNbt();
+            if (tag != null) {
+                JsonTemperatureResistance.CODEC.parse(NbtOps.INSTANCE, tag)
+                        .result().ifPresent(v -> out.put(key, v));
+            }
+        }
+        return Map.copyOf(out);
+    }
 
-	public static DistExecutor.SafeRunnable syncTemperatureItems(Map<ResourceLocation, JsonTemperatureResistance> temperatureItems)
-	{
-		return new DistExecutor.SafeRunnable()
-		{
-			private static final long serialVersionUID = 1L;
+    @Override
+    public void write(FriendlyByteBuf buffer) {
+        buffer.writeInt(temperatureItems.size());
+        for (Map.Entry<ResourceLocation, JsonTemperatureResistance> e : temperatureItems.entrySet()) {
+            buffer.writeResourceLocation(e.getKey());
+            JsonTemperatureResistance.CODEC.encodeStart(NbtOps.INSTANCE, e.getValue())
+                    .result().ifPresent(j -> buffer.writeNbt((CompoundTag) j));
+        }
+    }
 
-			@Override
-			public void run()
-			{
-				TemperatureItemListener.acceptServerTemperatureItems(temperatureItems);
-			}
-		};
-	}
+    @Override
+    public ResourceLocation id() { return ID; }
 
-	public static void sendTo(PacketDistributor.PacketTarget packetDistributor, Map<ResourceLocation, JsonTemperatureResistance> temperatureItems) {
-		NetworkHandler.INSTANCE.send(packetDistributor, new SyncTemperatureItemsPacket(temperatureItems));
-	}
+    public static void handle(SyncTemperatureItemsPacket pkt, PlayPayloadContext ctx) {
+        ctx.workHandler().submitAsync(() ->
+                DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () ->
+                        TemperatureItemListener.acceptServerTemperatureItems(pkt.temperatureItems())
+                )
+        );
+    }
+
+    public static void sendToServer(Map<ResourceLocation, JsonTemperatureResistance> data) {
+        PacketDistributor.SERVER.noArg().send(new SyncTemperatureItemsPacket(data));
+    }
+
+    public static void sendToPlayer(net.minecraft.server.level.ServerPlayer player, Map<ResourceLocation, JsonTemperatureResistance> data) {
+        PacketDistributor.PLAYER.with(player).send(new SyncTemperatureItemsPacket(data));
+    }
+
+    public static void sendToAll(Map<ResourceLocation, JsonTemperatureResistance> data) {
+        PacketDistributor.ALL.noArg().send(new SyncTemperatureItemsPacket(data));
+    }
 }

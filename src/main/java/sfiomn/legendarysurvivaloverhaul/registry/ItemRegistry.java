@@ -24,7 +24,7 @@ import static sfiomn.legendarysurvivaloverhaul.common.items.armor.ArmorMaterialB
 public class ItemRegistry
 {
 
-    public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(Registries.ITEMS, LegendarySurvivalOverhaul.MOD_ID);
+    public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(Registries.ITEM, LegendarySurvivalOverhaul.MOD_ID);
 
     public static final DeferredHolder<Item, ? extends Item> THERMOMETER = ITEMS.register("thermometer", () -> new ThermometerItem(new Item.Properties().stacksTo(1)));
     public static final DeferredHolder<Item, ? extends Item> SEASONAL_CALENDAR = ITEMS.register("seasonal_calendar", () -> new SeasonalCalendarItem(new Item.Properties()));

@@ -2,7 +2,6 @@ package sfiomn.legendarysurvivaloverhaul.util;
 
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import sfiomn.legendarysurvivaloverhaul.common.capabilities.ModAttachments;
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.bodydamage.BodyDamageCapability;
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.food.FoodCapability;
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.health.HealthCapability;

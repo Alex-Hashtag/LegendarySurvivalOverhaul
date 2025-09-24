@@ -160,7 +160,7 @@ public class BodyHealthScreen extends Screen {
     public void render(@NotNull GuiGraphics gui, int mouseX, int mouseY, float partialTicks) {
         checkAutoCloseWhenHealing();
 
-        this.renderBackground(gui);
+        this.renderBackground(gui, mouseX, mouseY, partialTicks);
 
         for (BodyPartEnum bodyPart: BodyPartEnum.values())
             renderBodyPartHealth(gui, bodyPart, mouseX, mouseY, partialTicks);
@@ -176,11 +176,10 @@ public class BodyHealthScreen extends Screen {
     }
 
     @Override
-    public void renderBackground(@NotNull GuiGraphics gui) {
-        if (minecraft == null) {
-            return;
-        }
-        super.renderBackground(gui);
+    public void renderBackground(@NotNull GuiGraphics gui, int mouseX, int mouseY, float partialTick) {
+        if (minecraft == null) return;
+
+        super.renderBackground(gui, mouseX, mouseY, partialTick);
 
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1, 1, 1, 1);

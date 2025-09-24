@@ -15,7 +15,7 @@ import sfiomn.legendarysurvivaloverhaul.common.containers.SewingTableContainer;
 public class ContainerRegistry
 {
     public static final DeferredRegister<MenuType<?>> CONTAINERS =
-            DeferredRegister.create(Registries.MENU_TYPES, LegendarySurvivalOverhaul.MOD_ID);
+            DeferredRegister.create(Registries.MENU, LegendarySurvivalOverhaul.MOD_ID);
 
     public static final DeferredHolder<MenuType<AbstractThermalContainer>, ? extends MenuType<AbstractThermalContainer>> COOLER_CONTAINER = CONTAINERS.register("cooler_container", () -> IForgeMenuType.create(CoolerContainer::new));
 

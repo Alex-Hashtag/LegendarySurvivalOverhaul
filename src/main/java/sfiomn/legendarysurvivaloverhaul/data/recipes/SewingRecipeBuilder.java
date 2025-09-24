@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.CriterionTriggerInstance;
 import net.minecraft.advancements.critereon.RecipeUnlockedTrigger;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeBuilder;
 import net.minecraft.data.recipes.RecipeCategory;
@@ -55,7 +56,7 @@ public class SewingRecipeBuilder {
         json.add("base", this.base.toJson());
         json.add("addition", this.addition.toJson());
 
-        ResourceLocation resultRegistryName = Registries.ITEM.getKey(this.result.getItem());
+        ResourceLocation resultRegistryName = BuiltInRegistries.ITEM.getKey(this.result.getItem());
         if (resultRegistryName != null) {
             JsonObject jsonobject = new JsonObject();
             jsonobject.addProperty("item", resultRegistryName.toString());

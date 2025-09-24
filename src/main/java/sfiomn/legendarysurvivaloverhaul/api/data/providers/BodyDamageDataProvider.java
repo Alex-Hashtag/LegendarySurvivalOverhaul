@@ -1,6 +1,8 @@
 package sfiomn.legendarysurvivaloverhaul.api.data.providers;
 
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
@@ -73,7 +75,7 @@ public abstract class BodyDamageDataProvider implements DataProvider {
     }
 
     public final IHealingConsumableData consumable(Item item) {
-        ResourceLocation itemRegistryName = Registries.ITEMS.getKey(item);
+        ResourceLocation itemRegistryName = BuiltInRegistries.ITEM.getKey(item);
         assert itemRegistryName != null;
         return this.consumablesBuilders.computeIfAbsent(itemRegistryName.toString(), (k) -> new HealingConsumableData());
     }
@@ -87,7 +89,7 @@ public abstract class BodyDamageDataProvider implements DataProvider {
     }
 
     public final IBodyPartResistanceData item(Item item) {
-        ResourceLocation itemRegistryName = Registries.ITEMS.getKey(item);
+        ResourceLocation itemRegistryName = BuiltInRegistries.ITEM.getKey(item);
         assert itemRegistryName != null;
         return this.bodyPartResistanceBuilders.computeIfAbsent(itemRegistryName.toString(), (k) -> new BodyPartResistanceData());
     }

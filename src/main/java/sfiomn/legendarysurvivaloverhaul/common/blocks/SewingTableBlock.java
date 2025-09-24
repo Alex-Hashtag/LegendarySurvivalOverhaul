@@ -1,5 +1,6 @@
 package sfiomn.legendarysurvivaloverhaul.common.blocks;
 
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -28,70 +29,71 @@ import org.jetbrains.annotations.Nullable;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.common.containers.SewingTableContainer;
 
-public class SewingTableBlock extends HorizontalDirectionalBlock implements MenuProvider
-{
-	private static final Component CONTAINER_TITLE = Component.translatable("container." + LegendarySurvivalOverhaul.MOD_ID + ".sewing_table").withStyle();
+public class SewingTableBlock extends HorizontalDirectionalBlock implements MenuProvider {
 
+    // --- 1) Required codec for 1.20.3+ ---
+    public static final MapCodec<SewingTableBlock> CODEC = simpleCodec(SewingTableBlock::new);
+    @Override public MapCodec<SewingTableBlock> codec() { return CODEC; }
 
-	private static final VoxelShape BASE = Block.box(0.0D, 0.0D, 0.0D, 16.0D, 1.0D, 16.0D);
-	private static final VoxelShape X_TOP = Block.box(6.0D, 1.0D, 2.0D, 10.0D, 10.0D, 14.0D);
-	private static final VoxelShape Z_TOP = Block.box(2.0D, 1.0D, 6.0D, 14.0D, 10.0D, 10.0D);
+    private static final Component CONTAINER_TITLE =
+            Component.translatable("container." + LegendarySurvivalOverhaul.MOD_ID + ".sewing_table").withStyle();
 
-	private static final VoxelShape X_AXIS_AABB = Shapes.or(BASE, X_TOP);
-	private static final VoxelShape Z_AXIS_AABB = Shapes.or(BASE, Z_TOP);
+    private static final VoxelShape BASE   = Block.box(0.0D, 0.0D, 0.0D, 16.0D, 1.0D, 16.0D);
+    private static final VoxelShape X_TOP  = Block.box(6.0D, 1.0D, 2.0D, 10.0D, 10.0D, 14.0D);
+    private static final VoxelShape Z_TOP  = Block.box(2.0D, 1.0D, 6.0D, 14.0D, 10.0D, 10.0D);
+    private static final VoxelShape X_AABB = Shapes.or(BASE, X_TOP);
+    private static final VoxelShape Z_AABB = Shapes.or(BASE, Z_TOP);
 
-	public SewingTableBlock()
-	{
-		super(Properties
-				.of()
-				.mapColor(MapColor.WOOD)
-				.strength(4.0f, 10.0f)
-				.noOcclusion());
-		
-		this.registerDefaultState(this.getStateDefinition().any()
-				.setValue(FACING, Direction.NORTH));
-	}
-	
-	public BlockState getStateForPlacement(BlockPlaceContext context)
-	{
-		return this.defaultBlockState().setValue(FACING, context.getHorizontalDirection());
-	}
-	
-	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder)
-	{
-		builder.add(FACING);
-	}
-	
-	public VoxelShape getShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context)
-	{
-		Direction direction = state.getValue(FACING);
-		return direction.getAxis() == Direction.Axis.X ? X_AXIS_AABB : Z_AXIS_AABB;
-	}
+    // --- 2) Properties + ctor used by codec & registry ---
+    public static Properties getProperties() {
+        return Properties.of()
+                .mapColor(MapColor.WOOD)
+                .strength(4.0f, 10.0f)
+                .noOcclusion();
+    }
 
-	@SuppressWarnings("deprecation")
-	@Override
-	public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult rayTrace) {
-		if (level.isClientSide) {
-			return InteractionResult.SUCCESS;
-		}
-		player.openMenu(state.getMenuProvider(level, pos));
-		return InteractionResult.CONSUME;
-	}
+    public SewingTableBlock(Properties properties) {
+        super(properties);
+        this.registerDefaultState(this.getStateDefinition().any().setValue(FACING, Direction.NORTH));
+    }
 
-	@Override
-	public MenuProvider getMenuProvider(BlockState pState, Level pLevel, BlockPos pPos) {
-		return new SimpleMenuProvider((windowIs, inventory, player) ->
-				new SewingTableContainer(windowIs, inventory, ContainerLevelAccess.create(pLevel, pPos)), CONTAINER_TITLE);
-	}
+    @Override
+    public BlockState getStateForPlacement(BlockPlaceContext context) {
+        return this.defaultBlockState().setValue(FACING, context.getHorizontalDirection());
+    }
 
-	@Override
-	public @NotNull Component getDisplayName() {
-		return CONTAINER_TITLE;
-	}
+    @Override
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        builder.add(FACING);
+    }
 
-	@Nullable
-	@Override
-	public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player player) {
-		return new SewingTableContainer(windowId, playerInventory, ContainerLevelAccess.create(player.level(), player.blockPosition()));
-	}
+    @Override
+    public VoxelShape getShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
+        return state.getValue(FACING).getAxis() == Direction.Axis.X ? X_AABB : Z_AABB;
+    }
+
+    @SuppressWarnings("deprecation")
+    @Override
+    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+        if (level.isClientSide) return InteractionResult.SUCCESS;
+        player.openMenu(state.getMenuProvider(level, pos));
+        return InteractionResult.CONSUME;
+    }
+
+    @Override
+    public MenuProvider getMenuProvider(BlockState state, Level level, BlockPos pos) {
+        return new SimpleMenuProvider(
+                (windowId, inv, player) -> new SewingTableContainer(windowId, inv, ContainerLevelAccess.create(level, pos)),
+                CONTAINER_TITLE
+        );
+    }
+
+    @Override public @NotNull Component getDisplayName() { return CONTAINER_TITLE; }
+
+    @Nullable
+    @Override
+    public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player player) {
+        return new SewingTableContainer(windowId, playerInventory,
+                ContainerLevelAccess.create(player.level(), player.blockPosition()));
+    }
 }

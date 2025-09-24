@@ -100,20 +100,23 @@ public abstract class ModifierBase {
 		return Mth.lerp(WorldUtil.getUndergroundEffectAtPos(level, pos), temperature, undergroundTemperature);
 	}
 
-	protected float getHumidityForBiome(Biome biome)
-	{
-		// Get the biome's humidity
-		// Dry biomes have humidity below 0.2
+    protected float getHumidityForBiome(Level level, Biome biome)
+    {
+        // Get the biome's humidity
+        // Dry biomes have humidity below 0.2
 
-		ResourceLocation name = Registries.BIOMES.getKey(biome);
-		JsonTemperatureBiomeOverride biomeInfo = TemperatureDataManager.getBiome(name);
-		if (name != null && biomeInfo != null)
-		{
-			return biomeInfo.isDry ? 0.1f : 0.5f;
-		}
+        ResourceLocation name = level.registryAccess()
+                .registryOrThrow(Registries.BIOME)
+                .getKey(biome);
 
-		return biome.getModifiedClimateSettings().downfall();
-	}
+        JsonTemperatureBiomeOverride biomeInfo = TemperatureDataManager.getBiome(name);
+        if (name != null && biomeInfo != null)
+        {
+            return biomeInfo.isDry ? 0.1f : 0.5f;
+        }
+
+        return biome.getModifiedClimateSettings().downfall();
+    }
 
 	// Clamp and normalize the temperature
 	protected float clampNormalizeTemperature(float temp)

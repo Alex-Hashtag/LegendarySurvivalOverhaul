@@ -102,7 +102,7 @@ public class CanteenItem extends DrinkItem {
 
     @Override
     public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level level, Player player, @NotNull InteractionHand hand) {
-        HitResult positionLookedAt = player.pick(player.getAttributeValue(ForgeMod.BLOCK_REACH.get()) / 2, 0.0F, true);
+        HitResult positionLookedAt = player.pick(player.getAttributeValue(NeoForgeMod.BLOCK_REACH.get) / 2, 0.0F, true);
 
         boolean isWater = false;
         if (positionLookedAt.getType() == HitResult.Type.BLOCK) {

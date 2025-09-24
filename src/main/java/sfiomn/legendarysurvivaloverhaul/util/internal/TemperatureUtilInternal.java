@@ -1,6 +1,7 @@
 package sfiomn.legendarysurvivaloverhaul.util.internal;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -163,7 +164,7 @@ public class TemperatureUtilInternal implements ITemperatureUtil
 	@Override
 	public void applyConsumableBlockTemperature(Player player, BlockState blockState) {
 		if (Config.Baked.temperatureEnabled) {
-			ResourceLocation blockRegistryName = Registries.BLOCK.getKey(blockState.getBlock());
+            ResourceLocation blockRegistryName = BuiltInRegistries.BLOCK.getKey(blockState.getBlock());
 			List<JsonTemperatureConsumableBlock> jsonConsumableBlockTemperatures = TemperatureDataManager.getConsumableBlock(blockRegistryName);
 
 			if (jsonConsumableBlockTemperatures != null) {
@@ -213,6 +214,12 @@ public class TemperatureUtilInternal implements ITemperatureUtil
 		}
 	}
 
+
+    @Override
+    public float clampTemperature(float temperature)
+    {
+        return Mth.clamp(temperature, TemperatureEnum.FROSTBITE.getLowerBound(), TemperatureEnum.HEAT_STROKE.getUpperBound());
+    }
 	@Override
 	public String getArmorCoatTag(ItemStack stack)
 	{

@@ -1,6 +1,8 @@
 package sfiomn.legendarysurvivaloverhaul.api.data.providers;
 
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
@@ -116,8 +118,7 @@ public abstract class TemperatureDataProvider implements DataProvider {
     }
 
     public final ITemperatureConsumableDataHolder consumable(Item item) {
-        ResourceLocation itemRegistryName = Registries.ITEMS.getKey(item);
-        assert itemRegistryName != null;
+        ResourceLocation itemRegistryName = BuiltInRegistries.ITEM.getKey(item);
         return this.consumableBuilders.computeIfAbsent(itemRegistryName.toString(), (k) -> new TemperatureConsumableDataHolder());
     }
 
@@ -143,7 +144,7 @@ public abstract class TemperatureDataProvider implements DataProvider {
     }
 
     public final ITemperatureBlockDataHolder block(Block block) {
-        ResourceLocation blockRegistryName = Registries.BLOCK.getKey(block);
+        ResourceLocation blockRegistryName = BuiltInRegistries.BLOCK.getKey(block);
         assert blockRegistryName != null;
         return this.blockBuilders.computeIfAbsent(blockRegistryName.toString(), (k) -> new TemperatureBlockDataHolder());
     }
@@ -157,7 +158,7 @@ public abstract class TemperatureDataProvider implements DataProvider {
     }
 
     public final ITemperatureResistanceData item(Item item) {
-        ResourceLocation itemRegistryName = Registries.ITEMS.getKey(item);
+        ResourceLocation itemRegistryName = BuiltInRegistries.ITEM.getKey(item);
         assert itemRegistryName != null;
         return this.itemBuilders.computeIfAbsent(itemRegistryName.toString(), (k) -> new TemperatureResistanceData());
     }

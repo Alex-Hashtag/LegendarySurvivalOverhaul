@@ -4,6 +4,7 @@ import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -208,7 +209,7 @@ public class BlockModifier extends ModifierBase
 	private float getTemperatureFromSpreadPoint(Level level, SpreadPoint spreadPoint, Map<ResourceLocation, List<JsonTemperatureBlock>> cachedTemperatureBlocks) {
 		BlockState blockState = level.getBlockState(spreadPoint.position());
 		float temperature = 0.0f;
-		ResourceLocation registryName = Registries.BLOCK.getKey(blockState.getBlock());
+        ResourceLocation registryName = BuiltInRegistries.BLOCK.getKey(blockState.getBlock());
 
 		if (registryName == null || blockState.isAir()) {
 			return 0.0f;

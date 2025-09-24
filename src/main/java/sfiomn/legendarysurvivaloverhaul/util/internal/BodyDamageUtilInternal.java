@@ -1,6 +1,7 @@
 package sfiomn.legendarysurvivaloverhaul.util.internal;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
@@ -73,7 +74,9 @@ public class BodyDamageUtilInternal implements IBodyDamageUtil {
             }
 
             for (int i=0; i<malus.effects.size(); i++) {
-                MobEffect malusEffect = Registries.MOB_EFFECT.getValue(new ResourceLocation(malus.effects.get(i)));
+                MobEffect malusEffect = BuiltInRegistries.MOB_EFFECT
+                        .getOptional(new ResourceLocation(malus.effects.get(i)))
+                        .orElse(null);
                 int malusAmplifier;
                 float malusThreshold;
                 if (malusEffect == null) {
@@ -103,7 +106,9 @@ public class BodyDamageUtilInternal implements IBodyDamageUtil {
             if (!ResourceLocation.isValidResourceLocation(effectRegistryName))
                 LegendarySurvivalOverhaul.LOGGER.info("First Aid Supplies boosting effect : not valid effect registry name : {}", effectRegistryName);
 
-            MobEffect boostingEffect = Registries.MOB_EFFECT.getValue(new ResourceLocation(effectRegistryName));
+            MobEffect boostingEffect = BuiltInRegistries.MOB_EFFECT
+                    .getOptional(new ResourceLocation(effectRegistryName))
+                    .orElse(null);
             if (boostingEffect == null) {
                 LegendarySurvivalOverhaul.LOGGER.info("Unknown effect {}", effectRegistryName);
                 continue;
@@ -115,7 +120,9 @@ public class BodyDamageUtilInternal implements IBodyDamageUtil {
             if (!ResourceLocation.isValidResourceLocation(effectRegistryName))
                 LegendarySurvivalOverhaul.LOGGER.info("Limb Regeneration Effect : not valid effect registry name : {}", effectRegistryName);
 
-            MobEffect regenerationEffect = Registries.MOB_EFFECT.getValue(new ResourceLocation(effectRegistryName));
+            MobEffect regenerationEffect = BuiltInRegistries.MOB_EFFECT
+                    .getOptional(new ResourceLocation(effectRegistryName))
+                    .orElse(null);
             if (regenerationEffect == null) {
                 LegendarySurvivalOverhaul.LOGGER.info("Unknown effect {}", effectRegistryName);
                 continue;
@@ -126,7 +133,7 @@ public class BodyDamageUtilInternal implements IBodyDamageUtil {
 
     @Override
     public void applyConsumableHealing(Player player, ItemStack itemStack, boolean itemAlreadyConsumed) {
-        ResourceLocation itemRegistryName = Registries.ITEMS.getKey(itemStack.getItem());
+        ResourceLocation itemRegistryName = BuiltInRegistries.ITEM.getKey(itemStack.getItem());
         JsonHealingConsumable jsonConsumableHeal = BodyDamageDataManager.getHealingItem(itemRegistryName);
 
         if (jsonConsumableHeal == null)

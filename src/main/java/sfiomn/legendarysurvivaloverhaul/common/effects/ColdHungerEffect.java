@@ -24,8 +24,7 @@ public class ColdHungerEffect extends IncurableMobEffect {
     }
 
     @Override
-    public boolean isDurationEffectTick(int duration, int amplifier) {
-        // Apply thirsty effect every 50 ticks for amplifier 0
+    public boolean shouldApplyEffectTickThisTick(int duration, int amplifier) {
         int time = 50 >> amplifier;
         return time == 0 || duration % time == 0;
     }

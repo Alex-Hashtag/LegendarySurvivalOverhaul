@@ -1,6 +1,7 @@
 package sfiomn.legendarysurvivaloverhaul.common.events;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -24,7 +25,10 @@ import net.minecraft.world.level.storage.LevelData;
 import net.minecraft.world.level.storage.PrimaryLevelData;
 import net.neoforged.api.distmarker.Dist;
 //import net.neoforged.neoforge.common.ForgeMod;
+import net.neoforged.bus.api.Event;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.loading.FMLEnvironment;
+import net.neoforged.neoforge.common.NeoForgeMod;
 import net.neoforged.neoforge.event.ItemAttributeModifierEvent;
 import net.neoforged.neoforge.event.OnDatapackSyncEvent;
 import net.neoforged.neoforge.event.entity.living.*;
@@ -63,6 +67,7 @@ import sfiomn.legendarysurvivaloverhaul.config.Config;
 import sfiomn.legendarysurvivaloverhaul.registry.ItemRegistry;
 import sfiomn.legendarysurvivaloverhaul.registry.MobEffectRegistry;
 import sfiomn.legendarysurvivaloverhaul.registry.SoundRegistry;
+import sfiomn.legendarysurvivaloverhaul.registry.TemperatureModifierRegistry;
 import sfiomn.legendarysurvivaloverhaul.util.CapabilityUtil;
 import sfiomn.legendarysurvivaloverhaul.util.ItemUtil;
 import sfiomn.legendarysurvivaloverhaul.util.PlayerModelUtil;
@@ -90,7 +95,7 @@ public class CommonForgeEvents {
             if (itemStackInBasket != ItemStack.EMPTY)
                 usedItemStack = itemStackInBasket;
         }
-        ResourceLocation itemRegistryName = Registries.ITEMS.getKey(usedItemStack.getItem());
+        ResourceLocation itemRegistryName = BuiltInRegistries.ITEM.getKey(usedItemStack.getItem());
 
         if (LegendarySurvivalOverhaul.medsandherbsLoaded
                 && itemRegistryName != null && itemRegistryName.getNamespace().equals("meds_and_herbs")) {
@@ -119,7 +124,7 @@ public class CommonForgeEvents {
         }
 
         if (!entity.level().isClientSide) {
-            ResourceLocation itemRegistryName = Registries.ITEMS.getKey(usedItemStack.getItem());
+            ResourceLocation itemRegistryName = BuiltInRegistries.ITEM.getKey(usedItemStack.getItem());
             TemperatureUtil.applyConsumableTemperature(player, itemRegistryName);
         }
 
@@ -147,8 +152,8 @@ public class CommonForgeEvents {
                     if (hasMenu)
                         return;
 
-                    JsonThirstBlock jsonBlockThirst = ThirstUtil.getBlockThirstLookedAt(player, player.getAttributeValue(ForgeMod.BLOCK_REACH.get()) / 2);
-                    JsonThirstBlock jsonFluidThirst = ThirstUtil.getFluidThirstLookedAt(player, player.getAttributeValue(ForgeMod.BLOCK_REACH.get()) / 2);
+                    JsonThirstBlock jsonBlockThirst = ThirstUtil.getBlockThirstLookedAt(player, player.getAttributeValue(NeoForgeMod.BLOCK_REACH) / 2);
+                    JsonThirstBlock jsonFluidThirst = ThirstUtil.getFluidThirstLookedAt(player, player.getAttributeValue(NeoForgeMod.BLOCK_REACH) / 2);
 
                     //  If we can drink on a block, cancel its use except if crouching
                     if (jsonBlockThirst != null && (jsonBlockThirst.hydration != 0 || jsonBlockThirst.saturation != 0) && !event.getEntity().isCrouching()) {
@@ -198,7 +203,10 @@ public class CommonForgeEvents {
 
             if (Config.Baked.temperatureEnabled) {
                 JsonTemperatureResistance config = new JsonTemperatureResistance();
-                for (AttributeModifierBase attributeModifier : ITEM_ATTRIBUTE_MODIFIERS_REGISTRY.get().getValues()) {
+                for (AttributeModifierBase attributeModifier : new AttributeModifierBase[] {
+                        TemperatureModifierRegistry.ITEM_ATTRIBUTE.get(),
+                        TemperatureModifierRegistry.COAT_ATTRIBUTE.get()
+                }) {
                     config.add(attributeModifier.getItemAttributes(event.getItemStack()));
                 }
 
@@ -220,7 +228,7 @@ public class CommonForgeEvents {
             }
 
             if ((Config.Baked.localizedBodyDamageEnabled)) {
-                ResourceLocation itemRegistryName = Registries.ITEMS.getKey(event.getItemStack().getItem());
+                ResourceLocation itemRegistryName = BuiltInRegistries.ITEM.getKey(event.getItemStack().getItem());
                 JsonBodyPartResistance config = BodyDamageDataManager.getBodyResistanceItem(itemRegistryName);
 
                 if (itemRegistryName == null || config == null)
@@ -433,7 +441,9 @@ public class CommonForgeEvents {
     @SubscribeEvent
     public static void onDataPackSyncEvent(OnDatapackSyncEvent event) {
         final ServerPlayer player = event.getPlayer();
-        final PacketDistributor.PacketTarget target = player == null ? PacketDistributor.ALL.noArg() : PacketDistributor.PLAYER.with(() -> player);
+        final PacketDistributor.PacketTarget target =
+                player == null ? PacketDistributor.ALL.noArg() : PacketDistributor.PLAYER.with(player);
+
 
         ThirstBlockListener.sendDataToClient(target);
         ThirstConsumableListener.sendDataToClient(target);

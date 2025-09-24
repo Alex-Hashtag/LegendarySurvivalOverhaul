@@ -50,8 +50,8 @@ public class BiomeModifier extends ModifierBase
 
 		for (Vec3i offset : posOffsets)
 		{
-			Biome biome = level.getBiome(pos.offset(offset)).get();
-			float humidity = getHumidityForBiome(biome);
+			Biome biome = level.getBiome(pos.offset(offset)).value();
+			float humidity = getHumidityForBiome(level, biome);
 			float biomeTemperature = getNormalizedTempForBiome(level, biome);
 
 			// Deserts are cold at night since heat isn't kept by moisture in the air

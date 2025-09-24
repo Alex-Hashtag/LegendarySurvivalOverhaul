@@ -66,12 +66,13 @@ public class WaterPlantBlock extends CropBlock implements IPlantable {
 
     @Override
     public void randomTick(@NotNull BlockState state, ServerLevel level, @NotNull BlockPos pos, @NotNull RandomSource random) {
-        if (!level.isAreaLoaded(pos, 1)) return; // Forge: prevent loading unloaded chunks when checking neighbor's light
+        if (!level.isAreaLoaded(pos, 1))
+            return; // Forge: prevent loading unloaded chunks when checking neighbor's light
         if (level.getRawBrightness(pos, 0) >= 9 && !this.isUpperBlock(state)) {
             int age = this.getAge(state);
             if (canGrow(level, state, pos)) {
                 float f = getGrowthSpeed(this, level, pos);
-                if (net.neoforged.neoforge.common.ForgeHooks.onCropsGrowPre(level, pos, state, random.nextInt((int)(25.0F / f) + 1) == 0)) {
+                if (net.neoforged.neoforge.common.ForgeHooks.onCropsGrowPre(level, pos, state, random.nextInt((int) (25.0F / f) + 1) == 0)) {
                     level.setBlock(pos, this.getStateForAge(age + 1), 2);
                     if (this.getAge(state) > this.getMaxAge() / 2) {
                         level.setBlock(pos.above(), this.getStateForAge(age + 1).setValue(HALF, DoubleBlockHalf.UPPER), 2);
@@ -167,16 +168,12 @@ public class WaterPlantBlock extends CropBlock implements IPlantable {
     public void playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
         if (!level.isClientSide) {
             if (isUpperBlock(state)) {
-                if (level.getBlockState(pos.below()).is(this))
-                    level.removeBlock(pos.below(), false);
-            } else if (level.getBlockState(pos.above()).is(this))
-                level.removeBlock(pos.above(), false);
-
+                if (level.getBlockState(pos.below()).is(this)) level.removeBlock(pos.below(), false);
+            } else if (level.getBlockState(pos.above()).is(this)) level.removeBlock(pos.above(), false);
             if (player.isCreative()) {
                 level.removeBlock(pos, false);
             }
         }
-
         super.playerWillDestroy(level, pos, state, player);
     }
 
@@ -186,7 +183,7 @@ public class WaterPlantBlock extends CropBlock implements IPlantable {
     }
 
     @Override
-    public boolean isValidBonemealTarget(@NotNull LevelReader level, @NotNull BlockPos pos, @NotNull BlockState state, boolean isClient) {
+    public boolean isValidBonemealTarget(@NotNull LevelReader level, @NotNull BlockPos pos, @NotNull BlockState state) {
         if (canGrow((Level) level, state, pos)) {
             return state.getBlock() == this;
         }

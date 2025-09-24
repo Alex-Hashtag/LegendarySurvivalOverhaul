@@ -1,5 +1,6 @@
 package sfiomn.legendarysurvivaloverhaul.common.blocks;
 
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockGetter;
@@ -19,11 +20,9 @@ import sfiomn.legendarysurvivaloverhaul.registry.ParticleTypeRegistry;
 
 public class SunFernGoldBlock extends BushBlock implements IPlantable {
 
-    public static final Properties properties = getProperties();
-
-    public SunFernGoldBlock() {
-        super(properties);
-    }
+    // Required for 1.20.3+
+    public static final MapCodec<SunFernGoldBlock> CODEC = simpleCodec(SunFernGoldBlock::new);
+    @Override public MapCodec<SunFernGoldBlock> codec() { return CODEC; }
 
     public static Properties getProperties() {
         return Properties
@@ -37,9 +36,16 @@ public class SunFernGoldBlock extends BushBlock implements IPlantable {
                 .pushReaction(PushReaction.DESTROY);
     }
 
+    // Constructor used by codec & registry
+    public SunFernGoldBlock(Properties properties) {
+        super(properties);
+    }
+
     @Override
-    protected boolean mayPlaceOn(BlockState blockState, BlockGetter blockReader, BlockPos blockPos) {
-        return blockState.is(Blocks.GRASS_BLOCK) || blockState.is(Blocks.DIRT) || blockState.is(Blocks.COARSE_DIRT) || blockState.is(Blocks.PODZOL) || blockState.is(Blocks.FARMLAND) || blockState.is(Tags.Blocks.SAND);
+    protected boolean mayPlaceOn(BlockState blockState, BlockGetter level, BlockPos pos) {
+        return blockState.is(Blocks.GRASS_BLOCK) || blockState.is(Blocks.DIRT) ||
+                blockState.is(Blocks.COARSE_DIRT) || blockState.is(Blocks.PODZOL) ||
+                blockState.is(Blocks.FARMLAND)   || blockState.is(Tags.Blocks.SAND);
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -57,12 +63,8 @@ public class SunFernGoldBlock extends BushBlock implements IPlantable {
     }
 
     @Override
-    public PlantType getPlantType(BlockGetter level, BlockPos pos) {
-        return PlantType.DESERT;
-    }
+    public PlantType getPlantType(BlockGetter level, BlockPos pos) { return PlantType.DESERT; }
 
     @Override
-    public BlockState getPlant(BlockGetter world, BlockPos pos) {
-        return defaultBlockState();
-    }
+    public BlockState getPlant(BlockGetter world, BlockPos pos) { return defaultBlockState(); }
 }

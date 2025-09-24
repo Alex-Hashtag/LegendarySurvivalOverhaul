@@ -1,5 +1,6 @@
 package sfiomn.legendarysurvivaloverhaul.config;
 
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.config.ModConfig;
@@ -1051,12 +1052,12 @@ public class Config
 
 	private static boolean validateEffectName(final Object obj)
 	{
-		return obj instanceof final String effectName && Registries.MOB_EFFECT.containsKey(new ResourceLocation(effectName));
+		return obj instanceof final String effectName && BuiltInRegistries.MOB_EFFECT.containsKey(new ResourceLocation(effectName));
 	}
 
 	private static boolean validateEntityType(final Object obj)
 	{
-		return obj instanceof final String entityName && Registries.ENTITY_TYPES.containsKey(new ResourceLocation(entityName));
+		return obj instanceof final String entityName && BuiltInRegistries.ENTITY_TYPE.containsKey(new ResourceLocation(entityName));
 	}
 
 	public static class Client

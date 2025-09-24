@@ -34,7 +34,6 @@ import sfiomn.legendarysurvivaloverhaul.client.itemproperties.SeasonalCalendarTi
 import sfiomn.legendarysurvivaloverhaul.client.itemproperties.ThermometerProperty;
 import sfiomn.legendarysurvivaloverhaul.client.screens.SewingTableScreen;
 import sfiomn.legendarysurvivaloverhaul.client.screens.ThermalScreen;
-import sfiomn.legendarysurvivaloverhaul.common.capabilities.ModAttachments;
 import sfiomn.legendarysurvivaloverhaul.common.integration.curios.CuriosEvents;
 import sfiomn.legendarysurvivaloverhaul.common.integration.eclipticseasons.EclipticSeasonsUtil;
 import sfiomn.legendarysurvivaloverhaul.common.integration.jsonConfig.JsonIntegrationConfigRegistration;

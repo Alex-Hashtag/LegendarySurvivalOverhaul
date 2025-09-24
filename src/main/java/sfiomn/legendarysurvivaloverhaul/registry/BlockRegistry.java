@@ -1,48 +1,63 @@
 package sfiomn.legendarysurvivaloverhaul.registry;
 
+import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.neoforge.registries.DeferredRegister;
-import net.minecraft.core.registries.Registries;
 import net.neoforged.neoforge.registries.DeferredHolder;
+import net.neoforged.neoforge.registries.DeferredRegister;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.block.ThermalTypeEnum;
 import sfiomn.legendarysurvivaloverhaul.common.blocks.*;
 
 import java.util.function.Supplier;
 
+public class BlockRegistry {
 
-public class BlockRegistry
-{
+    public static final DeferredRegister<Block> BLOCKS =
+            DeferredRegister.create(Registries.BLOCK, LegendarySurvivalOverhaul.MOD_ID);
 
-    public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(Registries.BLOCK, LegendarySurvivalOverhaul.MOD_ID);
+    // Blocks that should also get a BlockItem -> use registerBlock(...)
+    public static final DeferredHolder<Block, HeaterBaseBlock> HEATER =
+            registerBlock("heater", () -> new HeaterBaseBlock(ThermalTypeEnum.HEATING));
 
-    public static final DeferredHolder<Block, ? extends Block> HEATER = registerBlock("heater", () -> new HeaterBaseBlock(ThermalTypeEnum.HEATING));
-    public static final DeferredHolder<Block, ? extends Block> HEATER_TOP = BLOCKS.register("heater_top", HeaterTopBlock::new);
-    public static final DeferredHolder<Block, ? extends Block> COOLER = registerBlock("cooler", () -> new CoolerBlock(ThermalTypeEnum.COOLING));
-    public static final DeferredHolder<Block, ? extends Block> SEWING_TABLE = registerBlock("sewing_table", SewingTableBlock::new);
-    public static final DeferredHolder<Block, ? extends Block> SUN_FERN_CROP = BLOCKS.register("sun_fern_crop", SunFernBlock::new);
-    public static final DeferredHolder<Block, ? extends Block> SUN_FERN_GOLD = registerBlock("sun_fern_gold", SunFernGoldBlock::new);
-    public static final DeferredHolder<Block, ? extends Block> ICE_FERN_CROP = BLOCKS.register("ice_fern_crop", IceFernBlock::new);
-    public static final DeferredHolder<Block, ? extends Block> ICE_FERN_GOLD = registerBlock("ice_fern_gold", IceFernGoldBlock::new);
-    public static final DeferredHolder<Block, ? extends Block> WATER_PLANT_CROP = BLOCKS.register("water_plant_crop", WaterPlantBlock::new);
+    public static final DeferredHolder<Block, HeaterTopBlock> HEATER_TOP =
+            BLOCKS.register("heater_top", HeaterTopBlock::new); // no BlockItem
 
-    private static <T extends Block> RegistryObject<Block> registerBlock(String name, Supplier<T> block)
-    {
-        RegistryObject<Block> newBlock = BLOCKS.register(name, block);
-        registerBlockItem(name, newBlock);
-        return newBlock;
+    public static final DeferredHolder<Block, CoolerBlock> COOLER =
+            registerBlock("cooler", () -> new CoolerBlock(ThermalTypeEnum.COOLING));
+
+    public static final DeferredHolder<Block, SewingTableBlock> SEWING_TABLE =
+            registerBlock("sewing_table", SewingTableBlock::new);
+
+    // Crops – usually no BlockItem
+    public static final DeferredHolder<Block, SunFernBlock> SUN_FERN_CROP =
+            BLOCKS.register("sun_fern_crop", SunFernBlock::new);
+
+    public static final DeferredHolder<Block, SunFernGoldBlock> SUN_FERN_GOLD =
+            registerBlock("sun_fern_gold", SunFernGoldBlock::new);
+
+    public static final DeferredHolder<Block, IceFernBlock> ICE_FERN_CROP =
+            BLOCKS.register("ice_fern_crop", IceFernBlock::new);
+
+    public static final DeferredHolder<Block, IceFernGoldBlock> ICE_FERN_GOLD =
+            registerBlock("ice_fern_gold", IceFernGoldBlock::new);
+
+    public static final DeferredHolder<Block, WaterPlantBlock> WATER_PLANT_CROP =
+            BLOCKS.register("water_plant_crop", WaterPlantBlock::new);
+
+    private static <T extends Block> DeferredHolder<Block, T> registerBlock(String name, Supplier<T> block) {
+        DeferredHolder<Block, T> holder = BLOCKS.register(name, block);
+        registerBlockItem(name, holder);
+        return holder;
     }
 
-    private static <T extends Block> void registerBlockItem(String name, RegistryObject<T> block)
-    {
+    private static <T extends Block> void registerBlockItem(String name, DeferredHolder<Block, T> block) {
         ItemRegistry.ITEMS.register(name, () -> new BlockItem(block.get(), new Item.Properties()));
     }
 
-    public static void register(IEventBus eventBus)
-    {
+    public static void register(IEventBus eventBus) {
         BLOCKS.register(eventBus);
     }
 }

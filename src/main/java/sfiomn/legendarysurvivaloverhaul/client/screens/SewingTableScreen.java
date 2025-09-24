@@ -33,7 +33,7 @@ public class SewingTableScreen extends AbstractContainerScreen<SewingTableContai
 
     @Override
     public void render(GuiGraphics gui, int mouseX, int mouseY, float partialTicks) {
-        this.renderBackground(gui);
+        this.renderBackground(gui, mouseX, mouseY, partialTicks);
         super.render(gui, mouseX, mouseY, partialTicks);
         this.renderTooltip(gui, mouseX, mouseY);
     }

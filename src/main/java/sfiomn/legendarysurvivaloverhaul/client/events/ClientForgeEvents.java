@@ -2,6 +2,7 @@ package sfiomn.legendarysurvivaloverhaul.client.events;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.TitleScreen;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
@@ -17,6 +18,7 @@ import net.neoforged.neoforge.client.event.CustomizeGuiOverlayEvent;
 import net.neoforged.neoforge.client.event.RenderGuiOverlayEvent;
 import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
 import net.neoforged.neoforge.client.gui.overlay.VanillaGuiOverlay;
+import net.neoforged.neoforge.common.NeoForgeMod;
 import net.neoforged.neoforge.event.TickEvent;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.entity.player.BonemealEvent;
@@ -35,7 +37,6 @@ import sfiomn.legendarysurvivaloverhaul.client.sounds.TemperatureBreathSound;
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.thirst.ThirstCapability;
 import sfiomn.legendarysurvivaloverhaul.common.integration.curios.CuriosUtil;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
-import sfiomn.legendarysurvivaloverhaul.config.json_old.JsonConfigRegistration;
 import sfiomn.legendarysurvivaloverhaul.network.packets.DrinkBlockFluidMessage;
 import sfiomn.legendarysurvivaloverhaul.registry.ItemRegistry;
 import sfiomn.legendarysurvivaloverhaul.registry.KeyMappingRegistry;
@@ -83,7 +84,7 @@ public class ClientForgeEvents {
     public static void onApplyBonemeal(BonemealEvent event)
     {
         Block plant = event.getBlock().getBlock();
-        if (event.getEntity() == null || Registries.BLOCK.getKey(plant) == null) {
+        if (event.getEntity() == null || BuiltInRegistries.BLOCK.getKey(plant) == null) {
             return;
         }
 
@@ -102,7 +103,7 @@ public class ClientForgeEvents {
 
                 ThirstCapability thirstCapability = CapabilityUtil.getThirstCapability(player);
                 if (!thirstCapability.isHydrationLevelAtMax()) {
-                    JsonThirstBlock jsonFluidThirst = ThirstUtil.getFluidThirstLookedAt(player, player.getAttributeValue(ForgeMod.BLOCK_REACH.get()) / 2);
+                    JsonThirstBlock jsonFluidThirst = ThirstUtil.getFluidThirstLookedAt(player, player.getAttributeValue(NeoForgeMod.BLOCK_REACH.value()) / 2);
 
                     if (jsonFluidThirst != null && (jsonFluidThirst.hydration != 0 || jsonFluidThirst.saturation != 0)) {
                         playerDrinkEffect(event.getEntity());
@@ -193,16 +194,6 @@ public class ClientForgeEvents {
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onClientTickLowest(TickEvent.ClientTickEvent event) {
 
-        if (event.phase == TickEvent.Phase.END) {
-
-            if (Minecraft.getInstance().screen instanceof TitleScreen) {
-                warningPageDelay = warningPageDelay > 0 ? warningPageDelay - 1 : 0;
-                if (warningPageDelay == 0 & !hasOpened && JsonConfigRegistration.customDatapackFolder.toFile().exists()) {
-                    Minecraft.getInstance().setScreen(new WarningDataPackScreen());
-                    hasOpened = true;
-                }
-            }
-        }
     }
 
     @SubscribeEvent

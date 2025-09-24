@@ -17,7 +17,7 @@ public class RecoveryEffect extends MobEffect {
     }
 
     @Override
-    public boolean isDurationEffectTick(int duration, int amplifier) {
+    public boolean shouldApplyEffectTickThisTick(int duration, int amplifier) {
         // amplifier 0 => every 50 ticks, amplifier 1 => every 25 ticks, amplifier 2 => every 12 ticks
         int i = 50 >> amplifier;
         if (i > 0) {

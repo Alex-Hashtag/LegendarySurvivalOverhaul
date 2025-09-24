@@ -84,7 +84,7 @@ public final class WorldUtil
 		if (!level.isRaining())
 			return Biome.Precipitation.NONE;
 
-		return level.getBiome(pos).get().getPrecipitationAt(pos);
+		return level.getBiome(pos).value().getPrecipitationAt(pos);
 	}
 
 	public static boolean isRainingOrSnowingAt(Level level, BlockPos pos) {

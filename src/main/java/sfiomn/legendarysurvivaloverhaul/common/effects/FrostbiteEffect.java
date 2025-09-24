@@ -28,7 +28,7 @@ public class FrostbiteEffect extends IncurableMobEffect
 	}
 	
 	@Override
-	public boolean isDurationEffectTick(int duration, int amplifier)
+	public boolean shouldApplyEffectTickThisTick(int duration, int amplifier)
 	{
 		int time = 50 >> amplifier;
 		return time == 0 || duration % time == 0;

@@ -11,6 +11,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.neoforged.neoforge.client.gui.overlay.ExtendedGui;
 import net.neoforged.neoforge.client.gui.overlay.IGuiOverlay;
+import net.neoforged.neoforge.common.NeoForgeMod;
 import sereneseasons.api.SSItems;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.temperature.TemperatureItemCapability;
@@ -43,7 +44,10 @@ public class RenderTooltipFrame {
         Player player = Minecraft.getInstance().player;
         if (player != null) {
             if (ENTITY_LOOKED_AT == null || player.tickCount % 4 == 0) {
-                ENTITY_LOOKED_AT = WorldUtil.getEntityLookedAt(player, player.getAttributeValue(ForgeMod.ENTITY_REACH.get()));
+                ENTITY_LOOKED_AT = WorldUtil.getEntityLookedAt(
+                        player,
+                        player.getAttributeValue(NeoForgeMod.ENTITY_REACH)
+                );
             }
         }
 

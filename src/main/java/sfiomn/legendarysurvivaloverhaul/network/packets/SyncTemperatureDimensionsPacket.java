@@ -3,79 +3,83 @@ package sfiomn.legendarysurvivaloverhaul.network.packets;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.api.distmarker.Dist;
-
-
+import net.neoforged.fml.DistExecutor;
 import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.network.handling.PlayPayloadContext;
+import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonTemperatureDimension;
 import sfiomn.legendarysurvivaloverhaul.common.listeners.TemperatureDimensionListener;
-import sfiomn.legendarysurvivaloverhaul.network.NetworkHandler;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Supplier;
 
-public class SyncTemperatureDimensionsPacket
-{
-	private final Map<ResourceLocation, JsonTemperatureDimension> temperatureDimensions;
-	private final int size;
+public record SyncTemperatureDimensionsPacket(
+        Map<ResourceLocation, JsonTemperatureDimension> temperatureDimensions
+) implements CustomPacketPayload {
 
-	public SyncTemperatureDimensionsPacket(Map<ResourceLocation, JsonTemperatureDimension> temperatureDimensions)
-	{
-		this.temperatureDimensions = Map.copyOf(temperatureDimensions);
-		this.size = temperatureDimensions.size();
-	}
+    public static final ResourceLocation ID =
+            new ResourceLocation(LegendarySurvivalOverhaul.MOD_ID, "sync_temperature_dimensions");
 
-	public static void encode(SyncTemperatureDimensionsPacket message, FriendlyByteBuf buffer)
-	{
-		buffer.writeInt(message.size);
-		for (Map.Entry<ResourceLocation, JsonTemperatureDimension> e : message.temperatureDimensions.entrySet()) {
-			buffer.writeResourceLocation(e.getKey());
-			var r = JsonTemperatureDimension.CODEC.encodeStart(NbtOps.INSTANCE, e.getValue());
-			r.result().ifPresent(j -> buffer.writeNbt((CompoundTag) j));
-		}
-	}
-	
-	public static SyncTemperatureDimensionsPacket decode(FriendlyByteBuf buffer)
-	{
-		int size = buffer.readInt();
-		Map<ResourceLocation, JsonTemperatureDimension> temperatureDimensions = new HashMap<>();
-		for (int i = 0; i < size; i++) {
-			ResourceLocation key = buffer.readResourceLocation();
-			CompoundTag tag = buffer.readNbt();
-			if (tag != null) {
-				var r = JsonTemperatureDimension.CODEC.parse(NbtOps.INSTANCE, tag);
-				r.result().ifPresent(t -> temperatureDimensions.put(key, t));
-			}
-		}
+    // Buffer constructor (old decode)
+    public SyncTemperatureDimensionsPacket(FriendlyByteBuf buf) {
+        this(readMap(buf));
+    }
 
-		return new SyncTemperatureDimensionsPacket(temperatureDimensions);
-	}
-	
-	public static void handle(SyncTemperatureDimensionsPacket message, Supplier<NetworkEvent.Context> supplier)
-	{
-		final NetworkEvent.Context context = supplier.get();
-		context.enqueueWork(() -> DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> syncTemperatureDimensions(message.temperatureDimensions)));
-		
-		supplier.get().setPacketHandled(true);
-	}
+    private static Map<ResourceLocation, JsonTemperatureDimension> readMap(FriendlyByteBuf buf) {
+        int size = buf.readInt();
+        Map<ResourceLocation, JsonTemperatureDimension> map = new HashMap<>(size);
+        for (int i = 0; i < size; i++) {
+            ResourceLocation key = buf.readResourceLocation();
+            CompoundTag tag = buf.readNbt();
+            if (tag != null) {
+                JsonTemperatureDimension.CODEC.parse(NbtOps.INSTANCE, tag)
+                        .result().ifPresent(v -> map.put(key, v));
+            }
+        }
+        return Map.copyOf(map);
+    }
 
-	public static DistExecutor.SafeRunnable syncTemperatureDimensions(Map<ResourceLocation, JsonTemperatureDimension> temperatureDimensions)
-	{
-		return new DistExecutor.SafeRunnable()
-		{
-			private static final long serialVersionUID = 1L;
+    // Writer (old encode)
+    @Override
+    public void write(FriendlyByteBuf buf) {
+        buf.writeInt(temperatureDimensions.size());
+        for (var e : temperatureDimensions.entrySet()) {
+            buf.writeResourceLocation(e.getKey());
+            JsonTemperatureDimension.CODEC.encodeStart(NbtOps.INSTANCE, e.getValue())
+                    .result().ifPresent(j -> buf.writeNbt((CompoundTag) j));
+        }
+    }
 
-			@Override
-			public void run()
-			{
-				TemperatureDimensionListener.acceptServerTemperatureDimensions(temperatureDimensions);
-			}
-		};
-	}
+    @Override
+    public ResourceLocation id() { return ID; }
 
-	public static void sendTo(PacketDistributor.PacketTarget packetDistributor, Map<ResourceLocation, JsonTemperatureDimension> temperatureDimensions) {
-		NetworkHandler.INSTANCE.send(packetDistributor, new SyncTemperatureDimensionsPacket(temperatureDimensions));
-	}
+    // Handler
+    public static void handle(SyncTemperatureDimensionsPacket pkt, PlayPayloadContext ctx) {
+        ctx.workHandler().submitAsync(() ->
+                DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () ->
+                        TemperatureDimensionListener.acceptServerTemperatureDimensions(pkt.temperatureDimensions())
+                )
+        );
+    }
+
+    /* ---------- Convenience send helpers ---------- */
+
+    // Client -> Server
+    public static void sendToServer(Map<ResourceLocation, JsonTemperatureDimension> data) {
+        PacketDistributor.SERVER.noArg().send(new SyncTemperatureDimensionsPacket(data));
+    }
+
+    // Server -> one player
+    public static void sendToPlayer(net.minecraft.server.level.ServerPlayer player,
+                                    Map<ResourceLocation, JsonTemperatureDimension> data) {
+        PacketDistributor.PLAYER.with(player).send(new SyncTemperatureDimensionsPacket(data));
+    }
+
+    // Server -> all players
+    public static void sendToAll(Map<ResourceLocation, JsonTemperatureDimension> data) {
+        PacketDistributor.ALL.noArg().send(new SyncTemperatureDimensionsPacket(data));
+    }
 }

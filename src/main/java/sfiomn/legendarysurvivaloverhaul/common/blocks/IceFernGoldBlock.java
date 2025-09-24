@@ -1,5 +1,6 @@
 package sfiomn.legendarysurvivaloverhaul.common.blocks;
 
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockGetter;
@@ -16,15 +17,13 @@ import net.neoforged.neoforge.common.IPlantable;
 import net.neoforged.neoforge.common.PlantType;
 import sfiomn.legendarysurvivaloverhaul.registry.ParticleTypeRegistry;
 
-
 public class IceFernGoldBlock extends BushBlock implements IPlantable {
 
-    public static final Properties properties = getProperties();
+    // 1) Required for 1.20.3+ block serialization
+    public static final MapCodec<IceFernGoldBlock> CODEC = simpleCodec(IceFernGoldBlock::new);
+    @Override public MapCodec<IceFernGoldBlock> codec() { return CODEC; }
 
-    public IceFernGoldBlock() {
-        super(properties);
-    }
-
+    // 2) Properties + ctor used by codec & registry
     public static Properties getProperties() {
         return Properties
                 .of()
@@ -37,15 +36,20 @@ public class IceFernGoldBlock extends BushBlock implements IPlantable {
                 .pushReaction(PushReaction.DESTROY);
     }
 
+    public IceFernGoldBlock(Properties properties) {
+        super(properties);
+    }
+
     @Override
     protected boolean mayPlaceOn(BlockState blockState, BlockGetter level, BlockPos pos) {
-        return blockState.is(Blocks.GRASS_BLOCK) || blockState.is(Blocks.DIRT) || blockState.is(Blocks.COARSE_DIRT) || blockState.is(Blocks.PODZOL) || blockState.is(Blocks.FARMLAND) || blockState.is(Blocks.SNOW_BLOCK);
+        return blockState.is(Blocks.GRASS_BLOCK) || blockState.is(Blocks.DIRT) ||
+                blockState.is(Blocks.COARSE_DIRT) || blockState.is(Blocks.PODZOL) ||
+                blockState.is(Blocks.FARMLAND) || blockState.is(Blocks.SNOW_BLOCK);
     }
 
     @OnlyIn(Dist.CLIENT)
     @Override
     public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource rand) {
-
         double offsetX = (2 * rand.nextFloat() - 1) * 0.3F;
         double offsetZ = (2 * rand.nextFloat() - 1) * 0.3F;
 
@@ -53,8 +57,9 @@ public class IceFernGoldBlock extends BushBlock implements IPlantable {
         double y = pos.getY() + 0.5D + (rand.nextFloat() * 0.05F);
         double z = pos.getZ() + 0.5D + offsetZ;
 
-        if (level.getGameTime() % 3 == 0)
+        if (level.getGameTime() % 3 == 0) {
             level.addParticle(ParticleTypeRegistry.ICE_FERN_BLOSSOM.get(), x, y, z, 0.04D, 0.01D, 0.04D);
+        }
     }
 
     @Override

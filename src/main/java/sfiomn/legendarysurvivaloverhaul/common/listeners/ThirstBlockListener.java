@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.mojang.serialization.JsonOps;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
@@ -68,7 +69,7 @@ public class ThirstBlockListener extends SimpleJsonResourceReloadListener implem
         List<JsonThirstBlock> jsonThirstBlocks = null;
         JsonThirstBlock defaultJct = null;
 
-        ResourceLocation blockRegistryName = Registries.BLOCK.getKey(block.getBlock());
+        ResourceLocation blockRegistryName = BuiltInRegistries.BLOCK.getKey(block.getBlock());
 
         if (blockRegistryName != null)
             jsonThirstBlocks = THIRST_BLOCKS.get(blockRegistryName);

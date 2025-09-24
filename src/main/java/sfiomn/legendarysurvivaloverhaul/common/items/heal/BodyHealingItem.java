@@ -2,6 +2,7 @@ package sfiomn.legendarysurvivaloverhaul.common.items.heal;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
@@ -59,7 +60,7 @@ public class BodyHealingItem extends Item {
             return InteractionResultHolder.success(stack);
         }
 
-        ResourceLocation registryName = Registries.ITEMS.getKey(this);
+        ResourceLocation registryName = BuiltInRegistries.ITEM.getKey(this);
         JsonHealingConsumable jsonConsumableHeal = BodyDamageDataManager.getHealingItem(registryName);
 
         if(jsonConsumableHeal != null) {
@@ -87,7 +88,7 @@ public class BodyHealingItem extends Item {
         if(!(entity instanceof Player player))
             return stack;
 
-        ResourceLocation registryName = Registries.ITEMS.getKey(this);
+        ResourceLocation registryName = BuiltInRegistries.ITEM.getKey(this);
         JsonHealingConsumable  jsonConsumableHeal = BodyDamageDataManager.getHealingItem(registryName);
 
         if (jsonConsumableHeal == null)

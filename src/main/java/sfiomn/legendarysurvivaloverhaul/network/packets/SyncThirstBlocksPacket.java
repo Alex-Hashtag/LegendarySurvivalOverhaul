@@ -4,87 +4,93 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.api.distmarker.Dist;
-
-
+import net.neoforged.fml.DistExecutor;
 import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.network.handling.PlayPayloadContext;
+import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonThirstBlock;
 import sfiomn.legendarysurvivaloverhaul.common.listeners.ThirstBlockListener;
-import sfiomn.legendarysurvivaloverhaul.network.NetworkHandler;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Supplier;
 
-public class SyncThirstBlocksPacket
-{
-	private final Map<ResourceLocation, List<JsonThirstBlock>> thirstBlocks;
-	private final int size;
+public record SyncThirstBlocksPacket(
+        Map<ResourceLocation, List<JsonThirstBlock>> thirstBlocks
+) implements CustomPacketPayload {
 
-	public SyncThirstBlocksPacket(Map<ResourceLocation, List<JsonThirstBlock>> thirstBlocks)
-	{
-		this.thirstBlocks = Map.copyOf(thirstBlocks);
-		this.size = thirstBlocks.size();
-	}
+    public static final ResourceLocation ID =
+            new ResourceLocation(LegendarySurvivalOverhaul.MOD_ID, "sync_thirst_blocks");
 
-	public static void encode(SyncThirstBlocksPacket message, FriendlyByteBuf buffer)
-	{
-		buffer.writeInt(message.size);
-		for (Map.Entry<ResourceLocation, List<JsonThirstBlock>> e : message.thirstBlocks.entrySet()) {
-			buffer.writeResourceLocation(e.getKey());
-			buffer.writeInt(e.getValue().size());
-			var r = JsonThirstBlock.LIST_CODEC.encodeStart(NbtOps.INSTANCE, e.getValue());
-			r.result().ifPresent(j -> ((ListTag) j).forEach(k -> buffer.writeNbt((CompoundTag) k)));
-		}
-	}
-	
-	public static SyncThirstBlocksPacket decode(FriendlyByteBuf buffer)
-	{
-		int size = buffer.readInt();
-		Map<ResourceLocation, List<JsonThirstBlock>> thirstBlocks = new HashMap<>();
-		for (int i = 0; i < size; i++) {
-			ResourceLocation key = buffer.readResourceLocation();
-			int jtbSize = buffer.readInt();
-			List<JsonThirstBlock> jtbList = new ArrayList<>();
-			for (int j = 0; j < jtbSize; j++) {
-				CompoundTag tag = buffer.readNbt();
-				if (tag != null) {
-					var r = JsonThirstBlock.CODEC.parse(NbtOps.INSTANCE, tag);
-					r.result().ifPresent(jtbList::add);
-				}
-			}
-			thirstBlocks.put(key, jtbList);
-		}
+    // Buffer constructor (old decode)
+    public SyncThirstBlocksPacket(FriendlyByteBuf buf) {
+        this(readMap(buf));
+    }
 
-		return new SyncThirstBlocksPacket(thirstBlocks);
-	}
-	
-	public static void handle(SyncThirstBlocksPacket message, Supplier<NetworkEvent.Context> supplier)
-	{
-		final NetworkEvent.Context context = supplier.get();
-		context.enqueueWork(() -> DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> syncThirstBlocks(message.thirstBlocks)));
-		
-		supplier.get().setPacketHandled(true);
-	}
-	
-	public static DistExecutor.SafeRunnable syncThirstBlocks(Map<ResourceLocation, List<JsonThirstBlock>> thirstBlocks)
-	{
-		return new DistExecutor.SafeRunnable()
-		{
-			private static final long serialVersionUID = 1L;
-			
-			@Override
-			public void run()
-			{
-				ThirstBlockListener.acceptServerThirstBlocks(thirstBlocks);
-			}
-		};
-	}
+    private static Map<ResourceLocation, List<JsonThirstBlock>> readMap(FriendlyByteBuf buf) {
+        int size = buf.readInt();
+        Map<ResourceLocation, List<JsonThirstBlock>> map = new HashMap<>(size);
+        for (int i = 0; i < size; i++) {
+            ResourceLocation key = buf.readResourceLocation();
+            int count = buf.readInt();
+            List<JsonThirstBlock> list = new ArrayList<>(count);
+            for (int j = 0; j < count; j++) {
+                CompoundTag tag = buf.readNbt();
+                if (tag != null) {
+                    JsonThirstBlock.CODEC.parse(NbtOps.INSTANCE, tag)
+                            .result().ifPresent(list::add);
+                }
+            }
+            map.put(key, List.copyOf(list));
+        }
+        return Map.copyOf(map);
+    }
 
-	public static void sendTo(PacketDistributor.PacketTarget packetDistributor, Map<ResourceLocation, List<JsonThirstBlock>> thirstBlocks) {
-		NetworkHandler.INSTANCE.send(packetDistributor, new SyncThirstBlocksPacket(thirstBlocks));
-	}
+    // Writer (old encode)
+    @Override
+    public void write(FriendlyByteBuf buf) {
+        buf.writeInt(thirstBlocks.size());
+        for (var e : thirstBlocks.entrySet()) {
+            buf.writeResourceLocation(e.getKey());
+            List<JsonThirstBlock> list = e.getValue();
+            buf.writeInt(list.size());
+            JsonThirstBlock.LIST_CODEC.encodeStart(NbtOps.INSTANCE, list)
+                    .result()
+                    .ifPresent(nbt -> ((ListTag) nbt).forEach(el -> buf.writeNbt((CompoundTag) el)));
+        }
+    }
+
+    @Override
+    public ResourceLocation id() { return ID; }
+
+    // Handler
+    public static void handle(SyncThirstBlocksPacket pkt, PlayPayloadContext ctx) {
+        ctx.workHandler().submitAsync(() ->
+                DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () ->
+                        ThirstBlockListener.acceptServerThirstBlocks(pkt.thirstBlocks())
+                )
+        );
+    }
+
+    /* ---------- Convenience send helpers ---------- */
+
+    // Client -> Server
+    public static void sendToServer(Map<ResourceLocation, List<JsonThirstBlock>> data) {
+        PacketDistributor.SERVER.noArg().send(new SyncThirstBlocksPacket(data));
+    }
+
+    // Server -> one player
+    public static void sendToPlayer(net.minecraft.server.level.ServerPlayer player,
+                                    Map<ResourceLocation, List<JsonThirstBlock>> data) {
+        PacketDistributor.PLAYER.with(player).send(new SyncThirstBlocksPacket(data));
+    }
+
+    // Server -> all players
+    public static void sendToAll(Map<ResourceLocation, List<JsonThirstBlock>> data) {
+        PacketDistributor.ALL.noArg().send(new SyncThirstBlocksPacket(data));
+    }
 }

@@ -9,11 +9,12 @@ import sfiomn.legendarysurvivaloverhaul.api.temperature.TemporaryModifierGroupEn
 import java.util.List;
 
 public class JsonTemperatureConsumable {
-    public static final Codec<JsonTemperatureConsumable> CODEC = RecordCodecBuilder.<JsonTemperatureConsumable>Create((inst) -> inst.group(
-            Codec.STRING.fieldOf("group").forGetter(c -> c.group.name()),
-            Codec.INT.fieldOf("temperature_level").forGetter(c -> c.temperatureLevel),
-            Codec.INT.fieldOf("duration").forGetter(c -> c.duration)
-    ).apply(inst, JsonTemperatureConsumable::new));
+    public static final Codec<JsonTemperatureConsumable> CODEC =
+            RecordCodecBuilder.create(inst -> inst.group(
+                    Codec.STRING.fieldOf("group").forGetter(c -> c.group.name()),
+                    Codec.INT.fieldOf("temperature_level").forGetter(c -> c.temperatureLevel),
+                    Codec.INT.fieldOf("duration").forGetter(c -> c.duration)
+            ).apply(inst, JsonTemperatureConsumable::new));
 
     public static final Codec<List<JsonTemperatureConsumable>> LIST_CODEC = CODEC.listOf();
 
@@ -24,7 +25,6 @@ public class JsonTemperatureConsumable {
     private DeferredHolder<MobEffect, MobEffect> oppositeEffect;
 
     public JsonTemperatureConsumable(String group, int temperatureLevel, int duration) {
-
         this.temperatureLevel = temperatureLevel;
         this.duration = duration;
         this.group = TemporaryModifierGroupEnum.get(group);

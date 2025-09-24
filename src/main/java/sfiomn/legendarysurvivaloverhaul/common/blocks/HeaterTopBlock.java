@@ -1,5 +1,6 @@
 package sfiomn.legendarysurvivaloverhaul.common.blocks;
 
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
@@ -22,27 +23,22 @@ import sfiomn.legendarysurvivaloverhaul.registry.BlockRegistry;
 
 public class HeaterTopBlock extends HorizontalDirectionalBlock {
 
-    public static final Properties properties = getProperties();
+    // Required codec for 1.20.3+ blocks
+    public static final MapCodec<HeaterTopBlock> CODEC = simpleCodec(HeaterTopBlock::new);
+    @Override public MapCodec<HeaterTopBlock> codec() { return CODEC; }
 
     private static final VoxelShape BASE = Block.box(0.0d, 0.0d, 0.0d, 16.0d, 2.0d, 16.0d);
     private static final VoxelShape TUBE = Block.box(4.0d, 2.0d, 4.0d, 12.0d, 14.0d, 12.0d);
-    private static final VoxelShape TOP = Block.box(3.0d, 14.0d, 3.0d, 13.0d, 16.0d, 13.0d);
-
+    private static final VoxelShape TOP  = Block.box(3.0d, 14.0d, 3.0d, 13.0d, 16.0d, 13.0d);
     private static final VoxelShape XZ_AXIS_AABB = Shapes.or(BASE, TUBE, TOP);
 
-    public HeaterTopBlock()
-    {
+    // Constructor that the codec (and your registry) will call
+    public HeaterTopBlock(Properties properties) {
         super(properties);
-
-        this.registerDefaultState(this.getStateDefinition().any()
-                .setValue(FACING, Direction.NORTH));
+        this.registerDefaultState(this.getStateDefinition().any().setValue(FACING, Direction.NORTH));
     }
 
-    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder)
-    {
-        builder.add(FACING);
-    }
-
+    // Convenience factory for your registry call-site
     public static Properties getProperties() {
         return Properties
                 .of()
@@ -53,36 +49,36 @@ public class HeaterTopBlock extends HorizontalDirectionalBlock {
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context)
-    {
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        builder.add(FACING);
+    }
+
+    @Override
+    public VoxelShape getShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
         return XZ_AXIS_AABB;
     }
 
-    @SuppressWarnings("deprecation")
     @Override
-    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult rayTraceResult)
-    {
+    @SuppressWarnings("deprecation")
+    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult rayTraceResult) {
         BlockState bottomState = level.getBlockState(pos.below());
-        if (bottomState.is(BlockRegistry.HEATER.get()))
-        {
+        if (bottomState.is(BlockRegistry.HEATER.get())) {
             ((HeaterBaseBlock) bottomState.getBlock()).use(bottomState, level, pos.below(), player, hand, rayTraceResult);
         }
         return InteractionResult.SUCCESS;
     }
 
     @Override
-    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving)
-    {
+    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
         super.onRemove(state, level, pos, newState, isMoving);
-        if(!state.is(newState.getBlock()) && level.getBlockState(pos.below()).getBlock() instanceof HeaterBaseBlock)
-        {
+        if (!state.is(newState.getBlock()) && level.getBlockState(pos.below()).getBlock() instanceof HeaterBaseBlock) {
             level.removeBlock(pos.below(), false);
         }
     }
 
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
+        // Use getOpposite() if you want the block to face the player on placement
         return this.defaultBlockState().setValue(FACING, context.getHorizontalDirection());
     }
-
 }

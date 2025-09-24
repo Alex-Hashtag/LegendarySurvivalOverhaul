@@ -3,6 +3,7 @@ package sfiomn.legendarysurvivaloverhaul.common.blockentities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -147,13 +148,13 @@ public abstract class AbstractThermalBlockEntity extends BaseContainerBlockEntit
     }
 
     public boolean isItemValid(Item item) {
-        ResourceLocation registryNameItem = Registries.ITEMS.getKey(item);
+        ResourceLocation registryNameItem = BuiltInRegistries.ITEM.getKey(item);
         JsonTemperatureFuelItem fuelInfo = TemperatureDataManager.getFuelItem(registryNameItem);
         return fuelInfo != null && fuelInfo.thermalType == thermalType && fuelInfo.duration > 0;
     }
 
     public int getFuelDuration(ItemStack item) {
-        ResourceLocation registryNameItem = Registries.ITEMS.getKey(item.getItem());
+        ResourceLocation registryNameItem = BuiltInRegistries.ITEM.getKey(item.getItem());
         JsonTemperatureFuelItem fuelInfo = TemperatureDataManager.getFuelItem(registryNameItem);
         return fuelInfo != null ? fuelInfo.duration : 0;
     }

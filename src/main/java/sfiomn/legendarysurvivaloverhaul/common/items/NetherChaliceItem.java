@@ -12,6 +12,7 @@ import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
+import net.neoforged.neoforge.common.NeoForgeMod;
 import org.jetbrains.annotations.Nullable;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.thirst.ThirstUtil;
@@ -35,7 +36,7 @@ public class NetherChaliceItem extends WearableCurioItem {
         if (CapabilityUtil.getThirstCapability(player).isHydrationLevelAtMax())
             return InteractionResultHolder.fail(itemstack);
 
-        HitResult positionLookedAt = player.pick(player.getAttributeValue(ForgeMod.BLOCK_REACH.get()) / 2, 0.0F, true);
+        HitResult positionLookedAt = player.pick(player.getAttributeValue(NeoForgeMod.BLOCK_REACH.get) / 2, 0.0F, true);
         FluidState fluidState = null;
 
         if (positionLookedAt.getType() == HitResult.Type.BLOCK) {

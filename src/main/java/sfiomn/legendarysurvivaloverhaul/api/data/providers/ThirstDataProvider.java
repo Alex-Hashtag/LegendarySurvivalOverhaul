@@ -1,6 +1,7 @@
 package sfiomn.legendarysurvivaloverhaul.api.data.providers;
 
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
@@ -65,7 +66,7 @@ public abstract class ThirstDataProvider implements DataProvider {
     }
 
     public final IThirstDataHolder consumable(Item item) {
-        ResourceLocation itemRegistryName = Registries.ITEMS.getKey(item);
+        ResourceLocation itemRegistryName = BuiltInRegistries.ITEM.getKey(item);
         assert itemRegistryName != null;
         return this.consumablesBuilders.computeIfAbsent(itemRegistryName.toString(), (k) -> new ThirstDataHolder());
     }
@@ -75,7 +76,7 @@ public abstract class ThirstDataProvider implements DataProvider {
     }
 
     public final IThirstDataHolder block(Block block) {
-        ResourceLocation blockRegistryName = Registries.BLOCK.getKey(block);
+        ResourceLocation blockRegistryName = BuiltInRegistries.BLOCK.getKey(block);
         assert blockRegistryName != null;
         return this.blocksBuilders.computeIfAbsent(blockRegistryName.toString(), (k) -> new ThirstDataHolder());
     }

@@ -6,6 +6,7 @@ import mezz.jei.api.ingredients.subtypes.IIngredientSubtypeInterpreter;
 import mezz.jei.api.ingredients.subtypes.UidContext;
 import mezz.jei.api.registration.*;
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.Item;
@@ -104,9 +105,9 @@ public class JeiIntegration implements IModPlugin {
         ArrayList<SewingRecipe> sewingRecipes = new ArrayList<>();
 
         for (Item item: Registries.ITEMS) {
-            if (item instanceof ArmorItem && Registries.ITEMS.getKey(item) != null) {
+            if (item instanceof ArmorItem && BuiltInRegistries.ITEM.getKey(item) != null) {
                 addSewingRecipe(item, sewingRecipes);
-            } else if (isMutantMonstersArmor(item) && Registries.ITEMS.getKey(item) != null) {
+            } else if (isMutantMonstersArmor(item) && BuiltInRegistries.ITEM.getKey(item) != null) {
                 addSewingRecipe(item, sewingRecipes);
             }
         }
@@ -115,7 +116,7 @@ public class JeiIntegration implements IModPlugin {
     }
 
     private void addSewingRecipe(Item itemArmor, ArrayList<SewingRecipe> sewingRecipes) {
-        ResourceLocation itemArmorRegistryName = Registries.ITEMS.getKey(itemArmor);
+        ResourceLocation itemArmorRegistryName = BuiltInRegistries.ITEM.getKey(itemArmor);
         for (RegistryObject<Item> modItem : ItemRegistry.ITEMS.getEntries()) {
             if (modItem.get() instanceof CoatItem itemCoat && itemArmorRegistryName != null) {
                 ItemStack result = new ItemStack(itemArmor);

@@ -25,18 +25,24 @@ import sfiomn.legendarysurvivaloverhaul.common.temperature.dynamic.TemperatureRe
 
 public class TemperatureModifierRegistry
 {
-    public static final ResourceKey<Registry<ModifierBase>> MODIFIERS_KEY = ResourceKey.createRegistryKey(new ResourceLocation(LegendarySurvivalOverhaul.MOD_ID, "temperature_modifiers"));
-    public static final ResourceKey<Registry<DynamicModifierBase>> DYNAMIC_MODIFIERS_KEY = ResourceKey.createRegistryKey(new ResourceLocation(LegendarySurvivalOverhaul.MOD_ID, "dynamic_temperature_modifiers"));
-    public static final ResourceKey<Registry<AttributeModifierBase>> ITEM_ATTRIBUTE_MODIFIERS_KEY = ResourceKey.createRegistryKey(new ResourceLocation(LegendarySurvivalOverhaul.MOD_ID, "item_attribute_temperature_modifiers"));
+    public static final ResourceKey<Registry<ModifierBase>> MODIFIERS_KEY =
+            ResourceKey.createRegistryKey(new ResourceLocation(LegendarySurvivalOverhaul.MOD_ID, "temperature_modifiers"));
+    public static final ResourceKey<Registry<DynamicModifierBase>> DYNAMIC_MODIFIERS_KEY =
+            ResourceKey.createRegistryKey(new ResourceLocation(LegendarySurvivalOverhaul.MOD_ID, "dynamic_temperature_modifiers"));
+    public static final ResourceKey<Registry<AttributeModifierBase>> ITEM_ATTRIBUTE_MODIFIERS_KEY =
+            ResourceKey.createRegistryKey(new ResourceLocation(LegendarySurvivalOverhaul.MOD_ID, "item_attribute_temperature_modifiers"));
 
-    public static final DeferredRegister<ModifierBase> MODIFIERS = DeferredRegister.create(MODIFIERS_KEY, LegendarySurvivalOverhaul.MOD_ID);
-    public static final DeferredRegister<DynamicModifierBase> DYNAMIC_MODIFIERS = DeferredRegister.create(DYNAMIC_MODIFIERS_KEY, LegendarySurvivalOverhaul.MOD_ID);
-    public static final DeferredRegister<AttributeModifierBase> ITEM_ATTRIBUTE_MODIFIERS = DeferredRegister.create(ITEM_ATTRIBUTE_MODIFIERS_KEY, LegendarySurvivalOverhaul.MOD_ID);
+    public static final DeferredRegister<ModifierBase> MODIFIERS =
+            DeferredRegister.create(MODIFIERS_KEY, LegendarySurvivalOverhaul.MOD_ID);
+    public static final DeferredRegister<DynamicModifierBase> DYNAMIC_MODIFIERS =
+            DeferredRegister.create(DYNAMIC_MODIFIERS_KEY, LegendarySurvivalOverhaul.MOD_ID);
+    public static final DeferredRegister<AttributeModifierBase> ITEM_ATTRIBUTE_MODIFIERS =
+            DeferredRegister.create(ITEM_ATTRIBUTE_MODIFIERS_KEY, LegendarySurvivalOverhaul.MOD_ID);
 
     static {
-        MODIFIERS.makeRegistry(() -> new RegistryBuilder<>(MODIFIERS_KEY));
-        DYNAMIC_MODIFIERS.makeRegistry(() -> new RegistryBuilder<>(DYNAMIC_MODIFIERS_KEY));
-        ITEM_ATTRIBUTE_MODIFIERS.makeRegistry(() -> new RegistryBuilder<>(ITEM_ATTRIBUTE_MODIFIERS_KEY));
+        MODIFIERS.makeRegistry(b -> {});
+        DYNAMIC_MODIFIERS.makeRegistry(b -> {});
+        ITEM_ATTRIBUTE_MODIFIERS.makeRegistry(b -> {});
     }
 
     // Base Modifiers

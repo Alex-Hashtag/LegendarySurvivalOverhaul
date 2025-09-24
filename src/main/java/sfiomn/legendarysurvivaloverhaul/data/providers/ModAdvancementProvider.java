@@ -1,6 +1,7 @@
 package sfiomn.legendarysurvivaloverhaul.data.providers;
 
 import net.minecraft.advancements.Advancement;
+import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.AdvancementType;
 import net.minecraft.advancements.critereon.InventoryChangeTrigger;
 import net.minecraft.advancements.critereon.ItemPredicate;
@@ -43,22 +44,22 @@ public class ModAdvancementProvider extends AdvancementProvider {
 
         @Override
         public void generate(HolderLookup.@NotNull Provider registries,
-                             @NotNull Consumer<Advancement> consumer,
+                             @NotNull Consumer<AdvancementHolder> consumer,
                              @NotNull ExistingFileHelper existingFileHelper) {
 
-            Advancement root = Advancement.Builder.advancement()
+            AdvancementHolder root = Advancement.Builder.advancement()
                     .display(
                             ItemRegistry.THERMOMETER.get(),
                             Component.translatable("advancement." + LegendarySurvivalOverhaul.MOD_ID),
                             Component.translatable("advancement." + LegendarySurvivalOverhaul.MOD_ID + ".description"),
                             new ResourceLocation("textures/block/ice.png"),
-                            AdvancementType.TASK,  // <- was FrameType.TASK
+                            AdvancementType.TASK,
                             false, false, false
                     )
                     .addCriterion("main", PlayerTrigger.TriggerInstance.tick())
                     .save(consumer, LegendarySurvivalOverhaul.MOD_ID + ":main/root");
 
-            Advancement get_a_thermometer = Advancement.Builder.advancement()
+            AdvancementHolder get_a_thermometer = Advancement.Builder.advancement()
                     .display(
                             ItemRegistry.THERMOMETER.get(),
                             Component.translatable("advancement." + LegendarySurvivalOverhaul.MOD_ID + ".get_a_thermometer"),
@@ -70,7 +71,7 @@ public class ModAdvancementProvider extends AdvancementProvider {
                             InventoryChangeTrigger.TriggerInstance.hasItems(ItemRegistry.THERMOMETER.get()))
                     .save(consumer, LegendarySurvivalOverhaul.MOD_ID + ":main/get_a_thermometer");
 
-            Advancement get_a_calendar = Advancement.Builder.advancement()
+            AdvancementHolder get_a_calendar = Advancement.Builder.advancement()
                     .display(
                             ItemRegistry.SEASONAL_CALENDAR.get(),
                             Component.translatable("advancement." + LegendarySurvivalOverhaul.MOD_ID + ".get_a_calendar"),
@@ -82,7 +83,7 @@ public class ModAdvancementProvider extends AdvancementProvider {
                             InventoryChangeTrigger.TriggerInstance.hasItems(ItemRegistry.SEASONAL_CALENDAR.get()))
                     .save(consumer, LegendarySurvivalOverhaul.MOD_ID + ":main/get_a_calendar");
 
-            Advancement use_a_sewing_table = Advancement.Builder.advancement()
+            AdvancementHolder use_a_sewing_table = Advancement.Builder.advancement()
                     .display(
                             BlockRegistry.SEWING_TABLE.get(),
                             Component.translatable("advancement." + LegendarySurvivalOverhaul.MOD_ID + ".get_a_sewing_table"),
@@ -94,7 +95,8 @@ public class ModAdvancementProvider extends AdvancementProvider {
                             InventoryChangeTrigger.TriggerInstance.hasItems(BlockRegistry.SEWING_TABLE.get()))
                     .save(consumer, LegendarySurvivalOverhaul.MOD_ID + ":main/get_a_sewing_table");
 
-            List<ItemPredicate> itemPredicates = new ArrayList<>();
+            // The craftedItem trigger now expects List<ItemPredicate.Builder>
+            List<ItemPredicate.Builder> itemPredicates = new ArrayList<>();
             for (CoatEnum coatEnum : CoatEnum.values()) {
                 CompoundTag coatTag = new CompoundTag();
                 coatTag.putString(TemperatureUtilInternal.COAT_TAG, coatEnum.id());
@@ -102,11 +104,10 @@ public class ModAdvancementProvider extends AdvancementProvider {
                         ItemPredicate.Builder.item()
                                 .of(Tags.Items.ARMORS)
                                 .hasNbt(coatTag)
-                                .build()
                 );
             }
 
-            Advancement sew_a_coat = Advancement.Builder.advancement()
+            AdvancementHolder sew_a_coat = Advancement.Builder.advancement()
                     .display(
                             ItemRegistry.COOLING_COAT_1.get(),
                             Component.translatable("advancement." + LegendarySurvivalOverhaul.MOD_ID + ".sew_a_coat"),

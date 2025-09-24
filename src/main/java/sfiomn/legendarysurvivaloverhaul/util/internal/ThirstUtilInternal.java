@@ -1,5 +1,6 @@
 package sfiomn.legendarysurvivaloverhaul.util.internal;
 
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffect;
@@ -251,7 +252,7 @@ public class ThirstUtilInternal implements IThirstUtil {
             JsonThirstBlock defaultThirst = null;
 
             BlockState blockState = player.level().getBlockState(((BlockHitResult) positionLookedAt).getBlockPos());
-            ResourceLocation blockRegistryName = Registries.BLOCK.getKey(blockState.getBlock());
+            ResourceLocation blockRegistryName = BuiltInRegistries.BLOCK.getKey(blockState.getBlock());
 
             if (blockRegistryName != null) {
                 List<JsonThirstBlock> jsonBlockFluidThirsts = ThirstDataManager.getBlock(blockRegistryName);

@@ -5,67 +5,62 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceLocation;
 import net.neoforged.api.distmarker.Dist;
-
-
 import net.neoforged.fml.DistExecutor;
 import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.network.handling.PlayPayloadContext;
+import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.temperature.TemperatureCapability;
-import sfiomn.legendarysurvivaloverhaul.network.NetworkHandler;
 import sfiomn.legendarysurvivaloverhaul.util.CapabilityUtil;
 
-import java.util.function.Supplier;
+public record UpdateTemperaturesPacket(
+        CompoundTag compound
+) implements CustomPacketPayload {
 
-public class UpdateTemperaturesPacket
-{
-	private CompoundTag compound;
-	
-	public UpdateTemperaturesPacket(Tag compound)
-	{
-		this.compound = (CompoundTag) compound;
-	}
-	
-	public UpdateTemperaturesPacket() {}
+    public static final ResourceLocation ID =
+            new ResourceLocation(LegendarySurvivalOverhaul.MOD_ID, "update_temperatures");
 
-	public static void encode(UpdateTemperaturesPacket message, FriendlyByteBuf buffer)
-	{
-		buffer.writeNbt(message.compound);
-	}
-	
-	public static UpdateTemperaturesPacket decode(FriendlyByteBuf buffer)
-	{
-		return new UpdateTemperaturesPacket(buffer.readNbt());
-	}
-	
-	public static void handle(UpdateTemperaturesPacket message, Supplier<NetworkEvent.Context> supplier)
-	{
-		final NetworkEvent.Context context = supplier.get();
-		context.enqueueWork(() -> DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> syncTemperature(message.compound)));
-		
-		supplier.get().setPacketHandled(true);
-	}
-	
-	public static DistExecutor.SafeRunnable syncTemperature(CompoundTag compound)
-	{
-		return new DistExecutor.SafeRunnable()
-		{
-			private static final long serialVersionUID = 1L;
-			
-			@Override
-			public void run()
-			{
-				LocalPlayer player = Minecraft.getInstance().player;
+    // Reader (old decode)
+    public UpdateTemperaturesPacket(FriendlyByteBuf buf) {
+        this(buf.readNbt());
+    }
 
-				if (player != null) {
-					TemperatureCapability temperature = CapabilityUtil.getTempCapability(player);
+    // Writer (old encode)
+    @Override
+    public void write(FriendlyByteBuf buf) {
+        buf.writeNbt(compound);
+    }
 
-					temperature.readNBT(compound);
-				}
-			}
-		};
-	}
+    @Override
+    public ResourceLocation id() {
+        return ID;
+    }
 
-	public static void sendTo(PacketDistributor.PacketTarget packetDistributor, Tag compound) {
-		NetworkHandler.INSTANCE.send(packetDistributor, new UpdateTemperaturesPacket(compound));
-	}
+    // Handler (replaces old handle(...Supplier<NetworkEvent.Context>))
+    public static void handle(UpdateTemperaturesPacket pkt, PlayPayloadContext ctx) {
+        ctx.workHandler().submitAsync(() ->
+                DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
+                    LocalPlayer player = Minecraft.getInstance().player;
+                    if (player != null) {
+                        TemperatureCapability temperature = CapabilityUtil.getTempCapability(player);
+                        temperature.readNBT(pkt.compound());
+                    }
+                })
+        );
+    }
+
+    // Convenience senders
+    public static void sendToServer(CompoundTag compound) {
+        PacketDistributor.SERVER.noArg().send(new UpdateTemperaturesPacket(compound));
+    }
+
+    public static void sendToPlayer(net.minecraft.server.level.ServerPlayer player, CompoundTag compound) {
+        PacketDistributor.PLAYER.with(player).send(new UpdateTemperaturesPacket(compound));
+    }
+
+    public static void sendToAll(CompoundTag compound) {
+        PacketDistributor.ALL.noArg().send(new UpdateTemperaturesPacket(compound));
+    }
 }

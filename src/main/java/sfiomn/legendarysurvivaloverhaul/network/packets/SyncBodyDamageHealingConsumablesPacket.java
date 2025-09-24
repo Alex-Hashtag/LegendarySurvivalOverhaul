@@ -3,78 +3,79 @@ package sfiomn.legendarysurvivaloverhaul.network.packets;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.fml.DistExecutor;
 import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.network.handling.PlayPayloadContext;
+import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonHealingConsumable;
 import sfiomn.legendarysurvivaloverhaul.common.listeners.BodyDamageHealingConsumableListener;
-import sfiomn.legendarysurvivaloverhaul.network.NetworkHandler;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Supplier;
 
-public class SyncBodyDamageHealingConsumablesPacket
-{
-	private final Map<ResourceLocation, JsonHealingConsumable> healingConsumables;
-	private final int size;
+public record SyncBodyDamageHealingConsumablesPacket(
+        Map<ResourceLocation, JsonHealingConsumable> healingConsumables
+) implements CustomPacketPayload {
 
-	public SyncBodyDamageHealingConsumablesPacket(Map<ResourceLocation, JsonHealingConsumable> healingConsumables)
-	{
-		this.healingConsumables = Map.copyOf(healingConsumables);
-		this.size = healingConsumables.size();
-	}
+    public static final ResourceLocation ID =
+            new ResourceLocation(LegendarySurvivalOverhaul.MOD_ID, "sync_body_damage_healing_consumables");
 
-	public static void encode(SyncBodyDamageHealingConsumablesPacket message, FriendlyByteBuf buffer)
-	{
-		buffer.writeInt(message.size);
-		for (Map.Entry<ResourceLocation, JsonHealingConsumable> e : message.healingConsumables.entrySet()) {
-			buffer.writeResourceLocation(e.getKey());
-			var r = JsonHealingConsumable.CODEC.encodeStart(NbtOps.INSTANCE, e.getValue());
-			r.result().ifPresent(j -> buffer.writeNbt((CompoundTag) j));
-		}
-	}
-	
-	public static SyncBodyDamageHealingConsumablesPacket decode(FriendlyByteBuf buffer)
-	{
-		int size = buffer.readInt();
-		Map<ResourceLocation, JsonHealingConsumable> healingConsumables = new HashMap<>();
-		for (int i = 0; i < size; i++) {
-			ResourceLocation key = buffer.readResourceLocation();
-			CompoundTag tag = buffer.readNbt();
-			if (tag != null) {
-				var r = JsonHealingConsumable.CODEC.parse(NbtOps.INSTANCE, tag);
-				r.result().ifPresent(t -> healingConsumables.put(key, t));
-			}
-		}
+    // Reader (old decode)
+    public SyncBodyDamageHealingConsumablesPacket(FriendlyByteBuf buf) {
+        this(readMap(buf));
+    }
 
-		return new SyncBodyDamageHealingConsumablesPacket(healingConsumables);
-	}
-	
-	public static void handle(SyncBodyDamageHealingConsumablesPacket message, Supplier<NetworkEvent.Context> supplier)
-	{
-		final NetworkEvent.Context context = supplier.get();
-		context.enqueueWork(() -> DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> syncTemperatureItems(message.healingConsumables)));
-		
-		supplier.get().setPacketHandled(true);
-	}
+    private static Map<ResourceLocation, JsonHealingConsumable> readMap(FriendlyByteBuf buf) {
+        int size = buf.readInt();
+        Map<ResourceLocation, JsonHealingConsumable> map = new HashMap<>(size);
+        for (int i = 0; i < size; i++) {
+            ResourceLocation key = buf.readResourceLocation();
+            CompoundTag tag = buf.readNbt();
+            if (tag != null) {
+                JsonHealingConsumable.CODEC.parse(NbtOps.INSTANCE, tag)
+                        .result().ifPresent(v -> map.put(key, v));
+            }
+        }
+        return Map.copyOf(map);
+    }
 
-	public static DistExecutor.SafeRunnable syncTemperatureItems(Map<ResourceLocation, JsonHealingConsumable> healingConsumables)
-	{
-		return new DistExecutor.SafeRunnable()
-		{
-			private static final long serialVersionUID = 1L;
+    // Writer (old encode)
+    @Override
+    public void write(FriendlyByteBuf buf) {
+        buf.writeInt(healingConsumables.size());
+        for (var e : healingConsumables.entrySet()) {
+            buf.writeResourceLocation(e.getKey());
+            var r = JsonHealingConsumable.CODEC.encodeStart(NbtOps.INSTANCE, e.getValue());
+            r.result().ifPresent(j -> buf.writeNbt((CompoundTag) j));
+        }
+    }
 
-			@Override
-			public void run()
-			{
-				BodyDamageHealingConsumableListener.acceptServerHealingConsumables(healingConsumables);
-			}
-		};
-	}
+    @Override
+    public ResourceLocation id() {
+        return ID;
+    }
 
-	public static void sendTo(PacketDistributor.PacketTarget packetDistributor, Map<ResourceLocation, JsonHealingConsumable> healingConsumables) {
-		NetworkHandler.INSTANCE.send(packetDistributor, new SyncBodyDamageHealingConsumablesPacket(healingConsumables));
-	}
+    // Handler (replaces old handle(...Supplier<NetworkEvent.Context>))
+    public static void handle(SyncBodyDamageHealingConsumablesPacket pkt, PlayPayloadContext ctx) {
+        // If this payload is server->client only, you’ll register client handler only.
+        ctx.workHandler().submitAsync(() ->
+                DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () ->
+                        BodyDamageHealingConsumableListener.acceptServerHealingConsumables(pkt.healingConsumables())
+                )
+        );
+    }
+
+    // Convenience senders (replace NetworkHandler.INSTANCE.send(...))
+    public static void sendToServer(Map<ResourceLocation, JsonHealingConsumable> data) {
+        PacketDistributor.SERVER.noArg().send(new SyncBodyDamageHealingConsumablesPacket(data));
+    }
+
+    // Example: server->one player
+    public static void sendToPlayer(net.minecraft.server.level.ServerPlayer player,
+                                    Map<ResourceLocation, JsonHealingConsumable> data) {
+        PacketDistributor.PLAYER.with(player).send(new SyncBodyDamageHealingConsumablesPacket(data));
+    }
 }

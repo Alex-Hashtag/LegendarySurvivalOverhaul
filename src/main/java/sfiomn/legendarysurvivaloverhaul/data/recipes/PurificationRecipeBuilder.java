@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.CriterionTriggerInstance;
 import net.minecraft.advancements.critereon.RecipeUnlockedTrigger;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeBuilder;
 import net.minecraft.data.recipes.RecipeCategory;
@@ -78,7 +79,7 @@ public class PurificationRecipeBuilder {
         if (this.group != null && !this.group.isEmpty()) {
             json.addProperty("group", this.group);
         }
-        var resultRegistryName = Registries.ITEM.getKey(this.result);
+        var resultRegistryName = BuiltInRegistries.ITEM.getKey(this.result);
         json.addProperty("category", this.bookCategory.getSerializedName());
         json.add("ingredient", this.ingredient.toJson());
         if (resultRegistryName != null) {
