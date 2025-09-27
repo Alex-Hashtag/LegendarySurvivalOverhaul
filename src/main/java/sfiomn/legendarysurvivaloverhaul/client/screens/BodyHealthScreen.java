@@ -41,6 +41,7 @@ public class BodyHealthScreen extends Screen {
     private int topPos;
 
     private final Player player;
+    private final String itemRegistryName;
     private final InteractionHand hand;
     private int healingCharges;
     private final float healingValue;
@@ -48,10 +49,11 @@ public class BodyHealthScreen extends Screen {
     private boolean consumeItem;
     private boolean applyEffect;
 
-    public BodyHealthScreen(Player player, InteractionHand hand, boolean alreadyConsumed, int healingCharges, float healingValue, int healingTime) {
+    public BodyHealthScreen(Player player, ResourceLocation itemRegistryName, InteractionHand hand, boolean alreadyConsumed, int healingCharges, float healingValue, int healingTime) {
         super(Component.translatable("screen." + LegendarySurvivalOverhaul.MOD_ID + ".body_health_screen"));
 
         this.player = player;
+        this.itemRegistryName = itemRegistryName != null ? itemRegistryName.toString() : "";
         this.hand = hand;
         this.healingCharges = healingCharges;
         this.healingValue = healingValue;
@@ -98,7 +100,7 @@ public class BodyHealthScreen extends Screen {
 
     public void sendBodyPartHeal(BodyPartEnum bodyPart) {
         if (healingCharges > 0) {
-            BodyPartHealingTimeMessage.sendToServer(bodyPart, this.hand, this.consumeItem, this.applyEffect);
+            BodyPartHealingTimeMessage.sendToServer(bodyPart, this.itemRegistryName, this.hand, this.consumeItem, this.applyEffect);
             BodyDamageUtil.applyHealingTimeBodyPart(player, bodyPart, this.healingValue, this.healingTime);
             if (this.consumeItem)
                 this.consumeItem = false;

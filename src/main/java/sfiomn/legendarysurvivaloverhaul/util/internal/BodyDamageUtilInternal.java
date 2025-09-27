@@ -134,7 +134,7 @@ public class BodyDamageUtilInternal implements IBodyDamageUtil {
 
         if (Config.Baked.localizedBodyDamageEnabled && jsonConsumableHeal.healingCharges > 0) {
             if (player.level().isClientSide && Minecraft.getInstance().screen == null)
-                ClientHooks.openBodyHealthScreen(player, player.getUsedItemHand(), itemAlreadyConsumed,
+                ClientHooks.openBodyHealthScreen(player, itemRegistryName, player.getUsedItemHand(), itemAlreadyConsumed,
                         jsonConsumableHeal.healingCharges, jsonConsumableHeal.healingValue, jsonConsumableHeal.healingTime);
         } else {
             if (Config.Baked.localizedBodyDamageEnabled) {

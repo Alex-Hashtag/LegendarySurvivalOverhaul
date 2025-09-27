@@ -30,10 +30,11 @@ public class BodyPartHealingTimeMessage
     private CompoundTag compound;
     // CLIENT to SERVER side message
 
-    public BodyPartHealingTimeMessage(BodyPartEnum bodyPart, InteractionHand hand, boolean consumeItem, boolean applyEffect)
+    public BodyPartHealingTimeMessage(BodyPartEnum bodyPart, String healingItem, InteractionHand hand, boolean consumeItem, boolean applyEffect)
     {
         CompoundTag bodyPartHealNbt = new CompoundTag();
         bodyPartHealNbt.putString("bodyPartEnum", bodyPart.name());
+        bodyPartHealNbt.putString("healingItem", healingItem);
         bodyPartHealNbt.putBoolean("mainHand", hand == InteractionHand.MAIN_HAND);
         bodyPartHealNbt.putBoolean("consumeItem", consumeItem);
         bodyPartHealNbt.putBoolean("applyEffect", applyEffect);
@@ -69,6 +70,7 @@ public class BodyPartHealingTimeMessage
 
     public static void applyHealingItemOnServer(ServerPlayer player, CompoundTag nbt) {
         BodyPartEnum bodyPartEnum = BodyPartEnum.valueOf(nbt.getString("bodyPartEnum"));
+        String healingItem = nbt.getString("healingItem");
         InteractionHand hand = nbt.getBoolean("mainHand") ? InteractionHand.MAIN_HAND: InteractionHand.OFF_HAND;
         boolean shouldConsume = nbt.getBoolean("consumeItem");
         boolean shouldApplyEffect = nbt.getBoolean("applyEffect");
@@ -80,7 +82,7 @@ public class BodyPartHealingTimeMessage
                 usedItemStack = itemStackInBasket;
         }
 
-        ResourceLocation itemStackRegistryName = ForgeRegistries.ITEMS.getKey(usedItemStack.getItem());
+        ResourceLocation itemStackRegistryName = new ResourceLocation(healingItem);
         JsonHealingConsumable jhc = BodyDamageDataManager.getHealingItem(itemStackRegistryName);
 
         player.serverLevel().playSound(null, player, SoundRegistry.HEAL_BODY_PART.get(), SoundSource.PLAYERS, 1.0f, 1.0f);
@@ -95,8 +97,8 @@ public class BodyPartHealingTimeMessage
         }
     }
 
-    public static void sendToServer(BodyPartEnum bodyPart, InteractionHand hand, boolean consumeItem, boolean applyEffect) {
-        BodyPartHealingTimeMessage bodyPartHealingTimeMessageToServer = new BodyPartHealingTimeMessage(bodyPart, hand, consumeItem, applyEffect);
+    public static void sendToServer(BodyPartEnum bodyPart, String healingItem, InteractionHand hand, boolean consumeItem, boolean applyEffect) {
+        BodyPartHealingTimeMessage bodyPartHealingTimeMessageToServer = new BodyPartHealingTimeMessage(bodyPart, healingItem, hand, consumeItem, applyEffect);
         NetworkHandler.INSTANCE.sendToServer(bodyPartHealingTimeMessageToServer);
     }
 }
