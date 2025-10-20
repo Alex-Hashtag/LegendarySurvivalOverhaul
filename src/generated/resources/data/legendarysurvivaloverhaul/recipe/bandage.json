@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "healing",
+  "key": {
+    "h": {
+      "item": "legendarysurvivaloverhaul:healing_herbs"
+    },
+    "p": {
+      "item": "legendarysurvivaloverhaul:plaster"
+    }
+  },
+  "pattern": [
+    "  p",
+    " h ",
+    "p  "
+  ],
+  "result": {
+    "count": 1,
+    "id": "legendarysurvivaloverhaul:bandage"
+  }
+}

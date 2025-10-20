@@ -11,9 +11,9 @@ import static de.teamlapen.vampirism.api.VReference.VAMPIRE_FACTION;
 public class VampirismUtil {
     public static boolean isVampire(Player player) {
         if (LegendarySurvivalOverhaul.vampirismLoaded && player != null) {
-            LazyOptional<IFactionPlayerHandler> factionHandlerOptional = VampirismAPI.getFactionPlayerHandler(player);
-            if (factionHandlerOptional.isPresent() && factionHandlerOptional.resolve().isPresent()) {
-                return factionHandlerOptional.resolve().get().isInFaction(VAMPIRE_FACTION);
+            IFactionPlayerHandler factionHandler = VampirismAPI.getFactionPlayerHandler(player).orElse(null);
+            if (factionHandler != null) {
+                return factionHandler.isInFaction(VAMPIRE_FACTION);
             }
         }
 

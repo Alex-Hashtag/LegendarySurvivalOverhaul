@@ -3,10 +3,8 @@ package sfiomn.legendarysurvivaloverhaul.common.capabilities.food;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.event.TickEvent;
 import sfiomn.legendarysurvivaloverhaul.api.food.IFoodCapability;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
-
 
 public class FoodCapability implements IFoodCapability
 {
@@ -27,9 +25,9 @@ public class FoodCapability implements IFoodCapability
 		this.wasSprinting = false;
 	}
 
-	public void tickUpdate(Player player, Level world, TickEvent.Phase phase)
+	public void tickUpdate(Player player, Level world, boolean isStart)
 	{
-		if(phase == TickEvent.Phase.START) return;
+		if (isStart) return;
 
 		if (oldPos == null)
 			oldPos = player.position();

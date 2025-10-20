@@ -1,7 +1,7 @@
 package sfiomn.legendarysurvivaloverhaul.common.level.gen;
 
 import net.minecraft.core.registries.Registries;
-import net.minecraft.data.worldgen.BootstapContext;
+import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.data.worldgen.features.FeatureUtils;
 import net.minecraft.data.worldgen.placement.PlacementUtils;
 import net.minecraft.resources.ResourceKey;
@@ -27,10 +27,10 @@ public class ModConfiguredFeatures {
     public static final ResourceKey<ConfiguredFeature<?, ?>> WATER_PLANT_CONFIG_KEY = registerKey("water_plant_config_feature");
 
     public static ResourceKey<ConfiguredFeature<?, ?>> registerKey(String name) {
-        return ResourceKey.create(Registries.CONFIGURED_FEATURE, new ResourceLocation(LegendarySurvivalOverhaul.MOD_ID, name));
+        return ResourceKey.create(Registries.CONFIGURED_FEATURE, ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, name));
     }
 
-    public static void registerSimpleRandomPatchConfig(BootstapContext<ConfiguredFeature<?, ?>> context, ResourceKey<ConfiguredFeature<?, ?>> resourceKey, BlockState blockState) {
+    public static void registerSimpleRandomPatchConfig(BootstrapContext<ConfiguredFeature<?, ?>> context, ResourceKey<ConfiguredFeature<?, ?>> resourceKey, BlockState blockState) {
         FeatureUtils.register(context,
                 resourceKey,
                 Feature.RANDOM_PATCH,
@@ -41,7 +41,7 @@ public class ModConfiguredFeatures {
                                 BlockPredicate.replaceable())));
     }
 
-    public static void registerDoubleRandomPatchConfig(BootstapContext<ConfiguredFeature<?, ?>> context, ResourceKey<ConfiguredFeature<?, ?>> resourceKey, BlockState blockState) {
+    public static void registerDoubleRandomPatchConfig(BootstrapContext<ConfiguredFeature<?, ?>> context, ResourceKey<ConfiguredFeature<?, ?>> resourceKey, BlockState blockState) {
         FeatureUtils.register(context,
                 resourceKey,
                 Feature.RANDOM_PATCH,
@@ -52,7 +52,7 @@ public class ModConfiguredFeatures {
                                 BlockPredicate.replaceable())));
     }
 
-    public static void bootstrap(BootstapContext<ConfiguredFeature<?, ?>> context) {
+    public static void bootstrap(BootstrapContext<ConfiguredFeature<?, ?>> context) {
         registerSimpleRandomPatchConfig(context, ICE_FERN_CONFIG_KEY, BlockRegistry.ICE_FERN_CROP.get().defaultBlockState().setValue(IceFernBlock.AGE, IceFernBlock.MAX_AGE));
         registerSimpleRandomPatchConfig(context, SUN_FERN_CONFIG_KEY, BlockRegistry.SUN_FERN_CROP.get().defaultBlockState().setValue(SunFernBlock.AGE, SunFernBlock.MAX_AGE));
         registerDoubleRandomPatchConfig(context, WATER_PLANT_CONFIG_KEY, BlockRegistry.WATER_PLANT_CROP.get().defaultBlockState().setValue(WaterPlantBlock.AGE, WaterPlantBlock.MAX_AGE));

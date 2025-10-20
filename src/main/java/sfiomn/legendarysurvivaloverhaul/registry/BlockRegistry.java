@@ -4,6 +4,8 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.material.MapColor;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -23,26 +25,30 @@ public class BlockRegistry {
             registerBlock("heater", () -> new HeaterBaseBlock(ThermalTypeEnum.HEATING));
 
     public static final DeferredHolder<Block, HeaterTopBlock> HEATER_TOP =
-            BLOCKS.register("heater_top", HeaterTopBlock::new); // no BlockItem
+            BLOCKS.register("heater_top", () -> new HeaterTopBlock(Block.Properties.of()
+                    .mapColor(MapColor.METAL)
+                    .strength(3.5F)
+                    .sound(SoundType.METAL)
+                    .noOcclusion())); // no BlockItem
 
     public static final DeferredHolder<Block, CoolerBlock> COOLER =
             registerBlock("cooler", () -> new CoolerBlock(ThermalTypeEnum.COOLING));
 
     public static final DeferredHolder<Block, SewingTableBlock> SEWING_TABLE =
-            registerBlock("sewing_table", SewingTableBlock::new);
+            registerBlock("sewing_table", () -> new SewingTableBlock(SewingTableBlock.getProperties()));
 
     // Crops – usually no BlockItem
     public static final DeferredHolder<Block, SunFernBlock> SUN_FERN_CROP =
             BLOCKS.register("sun_fern_crop", SunFernBlock::new);
 
     public static final DeferredHolder<Block, SunFernGoldBlock> SUN_FERN_GOLD =
-            registerBlock("sun_fern_gold", SunFernGoldBlock::new);
+            registerBlock("sun_fern_gold", () -> new SunFernGoldBlock(SunFernGoldBlock.getProperties()));
 
     public static final DeferredHolder<Block, IceFernBlock> ICE_FERN_CROP =
             BLOCKS.register("ice_fern_crop", IceFernBlock::new);
 
     public static final DeferredHolder<Block, IceFernGoldBlock> ICE_FERN_GOLD =
-            registerBlock("ice_fern_gold", IceFernGoldBlock::new);
+            registerBlock("ice_fern_gold", () -> new IceFernGoldBlock(IceFernGoldBlock.getProperties()));
 
     public static final DeferredHolder<Block, WaterPlantBlock> WATER_PLANT_CROP =
             BLOCKS.register("water_plant_crop", WaterPlantBlock::new);

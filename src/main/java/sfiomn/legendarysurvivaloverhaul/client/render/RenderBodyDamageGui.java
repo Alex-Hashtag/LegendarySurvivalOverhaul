@@ -1,11 +1,12 @@
 package sfiomn.legendarysurvivaloverhaul.client.render;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.neoforge.client.gui.overlay.IGuiOverlay;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.bodydamage.BodyPartEnum;
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.bodydamage.BodyDamageCapability;
@@ -19,24 +20,23 @@ import java.util.Map;
 public class RenderBodyDamageGui
 {
 	private static BodyDamageCapability BODY_DAMAGE_CAP = null;
-	private static final ResourceLocation ICONS = new ResourceLocation(LegendarySurvivalOverhaul.MOD_ID, "textures/gui/overlay.png");
+    private static final ResourceLocation ICONS = ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "textures/gui/overlay.png");
 
 	private static final int BODY_MODEL_TEXTURE_WIDTH = 16;
 	private static final int BODY_MODEL_TEXTURE_HEIGHT = 32;
 
 	private static final Map<BodyPartEnum, Integer> flashCounters = new HashMap<>();
 	private static final Map<BodyPartEnum, Float> bodyPartHealth = new HashMap<>();
-	
-	public static IGuiOverlay BODY_DAMAGE_GUI = (forgeGui, guiGraphics, partialTicks, width, height) -> {
 
+	public static void render(Gui gui, GuiGraphics guiGraphics, float partialTicks, int width, int height) {
 		if (Config.Baked.localizedBodyDamageEnabled
-				&& !Minecraft.getInstance().options.hideGui
-				&& forgeGui.shouldDrawSurvivalElements()) {
+				&& !Minecraft.getInstance().options.hideGui) {
 
-			Player player = forgeGui.getMinecraft().player;
+			Player player = Minecraft.getInstance().player;
 
-			if (player != null) {
-				forgeGui.setupOverlayRenderState(true, false);
+			if (player != null && !player.isCreative() && !player.isSpectator()) {
+				RenderSystem.enableBlend();
+				RenderSystem.defaultBlendFunc();
 
 				if (BODY_DAMAGE_CAP == null || player.tickCount % 20 == 0)
 					BODY_DAMAGE_CAP = CapabilityUtil.getBodyDamageCapability(player);
@@ -46,10 +46,12 @@ public class RenderBodyDamageGui
 					drawBodyDamage(guiGraphics, player, BODY_DAMAGE_CAP, width, height);
 					Minecraft.getInstance().getProfiler().pop();
 				}
+
+				RenderSystem.disableBlend();
 			}
 		}
-	};
-	
+	}
+
 	public static void drawBodyDamage(GuiGraphics gui, Player player, BodyDamageCapability cap, int width, int height) {
 		int x = width / 2 + 92 + Config.Baked.bodyDamageIndicatorOffsetX;
 		int y = height - 33 + Config.Baked.bodyDamageIndicatorOffsetY;
@@ -93,7 +95,7 @@ public class RenderBodyDamageGui
 				iter.remove();
 		}
 	}
-	
+
 	private enum BodyPartCondition {
 		HEALTHY(0, 0),
 		SLIGHTLY_WOUNDED(1, 0),
@@ -105,10 +107,10 @@ public class RenderBodyDamageGui
 		WOUNDED_FLASH(2, 1),
 		HEAVILY_WOUNDED_FLASH(3, 1),
 		DEAD_FLASH(4, 1);
-		
+
 		public final int iconIndexX;
 		public final int iconIndexY;
-		
+
 		BodyPartCondition(int iconIndexX, int iconIndexY) {
 			this.iconIndexX = iconIndexX;
 			this.iconIndexY = iconIndexY;

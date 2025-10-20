@@ -10,7 +10,7 @@ import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
 
 public class HydrationClientTooltipComponent implements ClientTooltipComponent {
-    public static final ResourceLocation ICONS = new ResourceLocation(LegendarySurvivalOverhaul.MOD_ID, "textures/gui/overlay.png");
+    public static final ResourceLocation ICONS = ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "textures/gui/overlay.png");
     public static final int THIRST_TEXTURE_WIDTH = 9;
     public static final int THIRST_TEXTURE_HEIGHT = 9;
     
@@ -25,7 +25,7 @@ public class HydrationClientTooltipComponent implements ClientTooltipComponent {
 
         this.hydrationIconNumber = Math.min((int) Math.ceil(Math.abs(hydration) / 2f), 10);
 
-        if (Config.Baked.thirstSaturationDisplayed) {
+        if (Config.Baked.hydrationSaturationDisplayed) {
             this.saturationIconNumber = Math.min((int) Math.ceil(Math.abs(saturation) / 2f), 10);
         } else {
             this.saturationIconNumber = 0;
@@ -38,7 +38,7 @@ public class HydrationClientTooltipComponent implements ClientTooltipComponent {
 
         // Saturation bar
         // If merge thirst and saturation, left is kept from thirst alignment to align both the saturation bar and the thirst bar
-        if (saturationIconNumber > 0 && Config.Baked.thirstSaturationDisplayed) {
+        if (saturationIconNumber > 0 && Config.Baked.hydrationSaturationDisplayed) {
             if (hydrationIconNumber > 0 && !Config.Baked.mergeHydrationAndSaturationTooltip)
                 height += 10;
         }
@@ -90,7 +90,7 @@ public class HydrationClientTooltipComponent implements ClientTooltipComponent {
 
         // Saturation bar
         // If merge thirst and saturation, left is kept from thirst alignment to align both the saturation bar and the thirst bar
-        if (saturationIconNumber > 0 && Config.Baked.thirstSaturationDisplayed) {
+        if (saturationIconNumber > 0 && Config.Baked.hydrationSaturationDisplayed) {
             if (hydrationIconNumber > 0 && !Config.Baked.mergeHydrationAndSaturationTooltip)
                 top += 10;
             if (!Config.Baked.mergeHydrationAndSaturationTooltip)

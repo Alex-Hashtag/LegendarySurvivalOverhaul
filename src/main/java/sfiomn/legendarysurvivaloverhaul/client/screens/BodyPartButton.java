@@ -8,7 +8,7 @@ import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.bodydamage.BodyPartEnum;
 
 public class BodyPartButton extends Button {
-    public static final ResourceLocation BODY_PARTS_SCREEN = new ResourceLocation(LegendarySurvivalOverhaul.MOD_ID, "textures/gui/body_parts_screen.png");
+    public static final ResourceLocation BODY_PARTS_SCREEN = ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "textures/gui/body_parts_screen.png");
     public BodyPartEnum bodyPart;
     public boolean isPressed;
     private float healthRatio;
@@ -20,6 +20,10 @@ public class BodyPartButton extends Button {
 
     public void setHealthRatio(float healthRatio) {
         this.healthRatio = healthRatio;
+        sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul.LOGGER.info(
+            "[BodyPartButton] setHealthRatio {}: ratio={}",
+            this.bodyPart.name(), healthRatio
+        );
     }
 
     @Override
@@ -28,6 +32,10 @@ public class BodyPartButton extends Button {
         BodyPartCondition bodyPartCondition = BodyPartCondition.get(this.healthRatio);
         if (bodyPartIcon == null)
             return;
+
+        // Ensure render state is set
+        com.mojang.blaze3d.systems.RenderSystem.setShader(net.minecraft.client.renderer.GameRenderer::getPositionTexShader);
+        com.mojang.blaze3d.systems.RenderSystem.setShaderColor(1, 1, 1, 1);
 
         // Check mouse over body part in screen
         int offsetTexX = 0;
@@ -61,12 +69,21 @@ public class BodyPartButton extends Button {
         }
 
         public static BodyPartCondition get(float healthRatio) {
+            BodyPartCondition result;
             if (healthRatio <= 0) {
-                return DEAD;
+                result = DEAD;
             } else if (healthRatio < 0.66) {
-                return WOUNDED;
+                result = WOUNDED;
+            } else {
+                result = HEALTHY;
             }
-            return HEALTHY;
+            
+            sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul.LOGGER.info(
+                "[BodyPartCondition] get({}): returning {}",
+                healthRatio, result.name()
+            );
+            
+            return result;
         }
     }
 

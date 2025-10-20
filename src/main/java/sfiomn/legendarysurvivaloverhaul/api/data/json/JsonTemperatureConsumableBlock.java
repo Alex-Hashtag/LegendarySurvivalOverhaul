@@ -89,4 +89,14 @@ public class JsonTemperatureConsumableBlock
 
         return true;
     }
+
+    public DeferredHolder<MobEffect, ? extends MobEffect> getEffectHolder()
+    {
+        return this.effect;
+    }
+
+    public DeferredHolder<MobEffect, ? extends MobEffect> getOppositeEffectHolder()
+    {
+        return this.oppositeEffect;
+    }
 }

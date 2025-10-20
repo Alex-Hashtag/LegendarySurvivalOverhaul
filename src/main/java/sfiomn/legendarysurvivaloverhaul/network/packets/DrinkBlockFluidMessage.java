@@ -1,12 +1,14 @@
 package sfiomn.legendarysurvivaloverhaul.network.packets;
 
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload.Type;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.network.PacketDistributor;
-import net.neoforged.neoforge.network.handling.PlayPayloadContext;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonThirstBlock;
 import sfiomn.legendarysurvivaloverhaul.api.thirst.ThirstUtil;
@@ -15,24 +17,25 @@ import net.neoforged.neoforge.common.NeoForgeMod;
 public record DrinkBlockFluidMessage() implements CustomPacketPayload {
 
     public static final ResourceLocation ID =
-            new ResourceLocation(LegendarySurvivalOverhaul.MOD_ID, "drink_block_fluid");
+            ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "drink_block_fluid");
+    public static final Type<DrinkBlockFluidMessage> TYPE = new Type<>(ID);
 
-    public DrinkBlockFluidMessage(FriendlyByteBuf buf) {
-        this();
-    }
-
-    @Override
-    public void write(FriendlyByteBuf buf) { }
+    public static final StreamCodec<RegistryFriendlyByteBuf, DrinkBlockFluidMessage> STREAM_CODEC =
+            StreamCodec.unit(new DrinkBlockFluidMessage());
 
     @Override
-    public ResourceLocation id() { return ID; }
+    public Type<? extends CustomPacketPayload> type() { return TYPE; }
 
-    public static void handle(DrinkBlockFluidMessage pkt, PlayPayloadContext ctx) {
-        ctx.workHandler().submitAsync(() -> ctx.player().ifPresent(DrinkBlockFluidMessage::DrinkWaterOnServer));
+    public static void handle(DrinkBlockFluidMessage pkt, IPayloadContext ctx) {
+        ctx.enqueueWork(() -> {
+            if (ctx.player() != null) {
+                DrinkWaterOnServer(ctx.player());
+            }
+        });
     }
 
     public static void DrinkWaterOnServer(Player player) {
-        JsonThirstBlock jsonFluidThirst = ThirstUtil.getFluidThirstLookedAt(player, player.getAttributeValue(NeoNeoForgeMod.BLOCK_REACH.get) / 2);
+        JsonThirstBlock jsonFluidThirst = ThirstUtil.getFluidThirstLookedAt(player, player.blockInteractionRange() / 2);
 
         if (jsonFluidThirst == null)
             return;
@@ -41,6 +44,6 @@ public record DrinkBlockFluidMessage() implements CustomPacketPayload {
     }
 
     public static void sendToServer() {
-        PacketDistributor.SERVER.noArg().send(new DrinkBlockFluidMessage());
+        PacketDistributor.sendToServer(new DrinkBlockFluidMessage());
     }
 }

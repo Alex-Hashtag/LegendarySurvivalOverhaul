@@ -33,7 +33,7 @@ public class MorphineItem extends Item {
     }
 
     @Override
-    public int getUseDuration(@NotNull ItemStack stack)
+    public int getUseDuration(@NotNull ItemStack stack, LivingEntity entity)
     {
         return Config.Baked.morphineUseTime;
     }
@@ -43,7 +43,7 @@ public class MorphineItem extends Item {
     {
         ItemStack stack = player.getItemInHand(hand);
 
-        if (player.hasEffect(PAINKILLER_ADDICTION.get())) {
+        if (player.hasEffect(PAINKILLER_ADDICTION)) {
             player.displayClientMessage(Component.translatable("message.legendarysurvivaloverhaul.morphine_use_under_painkiller_addiction"), true);
             return InteractionResultHolder.fail(stack);
         }
@@ -58,8 +58,8 @@ public class MorphineItem extends Item {
         if(level.isClientSide || !(entity instanceof Player player))
             return stack;
 
-        player.addEffect(new MobEffectInstance(PAINKILLER.get(), Config.Baked.morphinePainkillerTickDuration, 0, false, false, true));
-        player.addEffect(new MobEffectInstance(PAINKILLER_ADDICTION.get(), Config.Baked.painkillerAddictionDuration, 0, false, false, true));
+        player.addEffect(new MobEffectInstance(PAINKILLER, Config.Baked.morphinePainkillerTickDuration, 0, false, false, true));
+        player.addEffect(new MobEffectInstance(PAINKILLER_ADDICTION, Config.Baked.painkillerAddictionDuration, 0, false, false, true));
 
         if (!player.isCreative())
             stack.shrink(1);
@@ -74,7 +74,7 @@ public class MorphineItem extends Item {
     }
 
     @Override
-    public void appendHoverText(@NotNull ItemStack stack, @Nullable Level level, @NotNull List<Component> tooltip, @NotNull TooltipFlag isAdvanced) {
+    public void appendHoverText(@NotNull ItemStack stack, @Nullable TooltipContext level, @NotNull List<Component> tooltip, @NotNull TooltipFlag isAdvanced) {
         if (Config.Baked.localizedBodyDamageEnabled)
             tooltip.add(Component.translatable("tooltip.legendarysurvivaloverhaul.body_heal_item.morphine"));
         super.appendHoverText(stack, level, tooltip, isAdvanced);

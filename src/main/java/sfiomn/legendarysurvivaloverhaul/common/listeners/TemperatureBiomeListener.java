@@ -12,6 +12,8 @@ import net.minecraft.util.profiling.ProfilerFiller;
 import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import net.minecraft.server.level.ServerPlayer;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonTemperatureBiomeOverride;
 import sfiomn.legendarysurvivaloverhaul.api.data.manager.ITemperatureBiomeManager;
@@ -36,19 +38,23 @@ public class TemperatureBiomeListener extends SimpleJsonResourceReloadListener i
         resourceLocationJsonElementMap.forEach((key, json) -> {
             try {
                 var parsedJson = JsonTemperatureBiomeOverride.CODEC.parse(JsonOps.INSTANCE, json);
-                JsonTemperatureBiomeOverride temperatures = parsedJson.getOrThrow(false, error -> LegendarySurvivalOverhaul.LOGGER.error("Failed parsing temperature biome : {}", error));
+                JsonTemperatureBiomeOverride temperatures = parsedJson.getOrThrow(err -> new IllegalStateException("Failed parsing temperature biome: " + err));
                 if (ModList.get().isLoaded(key.getNamespace()))
                     TEMPERATURE_BIOMES.put(key, temperatures);
-            } catch (JsonParseException error) {
-                LegendarySurvivalOverhaul.LOGGER.error("Failed to parse temperature biome json {}", key);
+            } catch (JsonParseException | IllegalStateException error) {
+                LegendarySurvivalOverhaul.LOGGER.error("Failed to parse temperature biome json {}", key, error);
             }
         });
 
         LegendarySurvivalOverhaul.LOGGER.info("Loaded {} temperature biomes", TEMPERATURE_BIOMES.size());
     }
 
-    public static void sendDataToClient(PacketDistributor.PacketTarget packetTarget) {
-        SyncTemperatureBiomesPacket.sendTo(packetTarget, TEMPERATURE_BIOMES);
+    public static void sendDataToClient(@Nullable ServerPlayer player) {
+        if (player == null) {
+            PacketDistributor.sendToAllPlayers(new SyncTemperatureBiomesPacket(TEMPERATURE_BIOMES));
+        } else {
+            PacketDistributor.sendToPlayer(player, new SyncTemperatureBiomesPacket(TEMPERATURE_BIOMES));
+        }
     }
 
     public static void acceptServerTemperatureBiomes(Map<ResourceLocation, JsonTemperatureBiomeOverride> temperatureBiomes) {

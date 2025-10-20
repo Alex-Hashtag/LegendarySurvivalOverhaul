@@ -12,6 +12,8 @@ import net.minecraft.util.profiling.ProfilerFiller;
 import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import net.minecraft.server.level.ServerPlayer;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonTemperatureBlock;
 import sfiomn.legendarysurvivaloverhaul.api.data.manager.ITemperatureBlockManager;
@@ -37,19 +39,23 @@ public class TemperatureBlockListener extends SimpleJsonResourceReloadListener i
         resourceLocationJsonElementMap.forEach((key, json) -> {
             try {
                 var parsedJson = JsonTemperatureBlock.LIST_CODEC.parse(JsonOps.INSTANCE, json);
-                List<JsonTemperatureBlock> temperatures = parsedJson.getOrThrow(false, error -> LegendarySurvivalOverhaul.LOGGER.error("Failed parsing temperature block : {}", error));
+                List<JsonTemperatureBlock> temperatures = parsedJson.getOrThrow(err -> new IllegalStateException("Failed parsing temperature block: " + err));
                 if (ModList.get().isLoaded(key.getNamespace()))
                     TEMPERATURE_BLOCKS.put(key, temperatures);
-            } catch (JsonParseException error) {
-                LegendarySurvivalOverhaul.LOGGER.error("Failed to parse temperature block json {}", key);
+            } catch (JsonParseException | IllegalStateException error) {
+                LegendarySurvivalOverhaul.LOGGER.error("Failed to parse temperature block json {}", key, error);
             }
         });
 
         LegendarySurvivalOverhaul.LOGGER.info("Loaded {} temperature blocks", TEMPERATURE_BLOCKS.size());
     }
 
-    public static void sendDataToClient(PacketDistributor.PacketTarget packetTarget) {
-        SyncTemperatureBlocksPacket.sendTo(packetTarget, TEMPERATURE_BLOCKS);
+    public static void sendDataToClient(@Nullable ServerPlayer player) {
+        if (player == null) {
+            PacketDistributor.sendToAllPlayers(new SyncTemperatureBlocksPacket(TEMPERATURE_BLOCKS));
+        } else {
+            PacketDistributor.sendToPlayer(player, new SyncTemperatureBlocksPacket(TEMPERATURE_BLOCKS));
+        }
     }
 
     public static void acceptServerTemperatureBlocks(Map<ResourceLocation, List<JsonTemperatureBlock>> temperatureBlocks) {

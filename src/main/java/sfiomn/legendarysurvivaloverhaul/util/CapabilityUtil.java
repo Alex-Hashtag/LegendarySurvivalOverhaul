@@ -2,6 +2,7 @@ package sfiomn.legendarysurvivaloverhaul.util;
 
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import sfiomn.legendarysurvivaloverhaul.common.attachments.ModAttachments;
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.bodydamage.BodyDamageCapability;
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.food.FoodCapability;
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.health.HealthCapability;
@@ -9,6 +10,7 @@ import sfiomn.legendarysurvivaloverhaul.common.capabilities.temperature.Temperat
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.temperature.TemperatureItemCapability;
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.thirst.ThirstCapability;
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.wetness.WetnessCapability;
+import sfiomn.legendarysurvivaloverhaul.registry.DataComponentRegistry;
 
 /**
  * Helper functions for quickly getting player capabilities.
@@ -36,8 +38,8 @@ public final class CapabilityUtil
 	 */
     public static TemperatureItemCapability getTempItemCapability(ItemStack itemStack)
     {
-        TemperatureItemCapability cap = itemStack.getData(ModAttachments.TEMPERATURE_ITEM.get());
-        return cap != null ? cap : new TemperatureItemCapability();
+        // Use data component instead of attachment (1.21+ uses data components for ItemStacks)
+        return new TemperatureItemCapability(itemStack);
     }
 
 	/**

@@ -16,8 +16,8 @@ import sfiomn.legendarysurvivaloverhaul.common.containers.AbstractThermalContain
 
 @OnlyIn(Dist.CLIENT)
 public class ThermalScreen extends AbstractContainerScreen<AbstractThermalContainer> {
-    public static final ResourceLocation HEATER_SCREEN = new ResourceLocation(LegendarySurvivalOverhaul.MOD_ID, "textures/gui/heater_screen.png");
-    public static final ResourceLocation COOLER_SCREEN = new ResourceLocation(LegendarySurvivalOverhaul.MOD_ID, "textures/gui/cooler_screen.png");
+    public static final ResourceLocation HEATER_SCREEN = ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "textures/gui/heater_screen.png");
+    public static final ResourceLocation COOLER_SCREEN = ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "textures/gui/cooler_screen.png");
     public static final int FUEL_LEVEL_WIDTH = 29;
     public static final int FUEL_LEVEL_HEIGHT = 27;
 

@@ -29,7 +29,7 @@ public class HeartContainerItem extends Item
 	}
 
 	@Override
-	public int getUseDuration(@NotNull ItemStack stack) {
+	public int getUseDuration(@NotNull ItemStack stack, LivingEntity entity) {
 		return 30;
 	}
 

@@ -10,6 +10,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.WorldDimensions;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import org.apache.commons.io.FileUtils;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
@@ -336,7 +337,7 @@ public class JsonConfigRegistration
 				entriesToKeep.addAll(diff.entriesDiffering().keySet());
 
 				for (String e: entriesToKeep) {
-					ResourceLocation rl = new ResourceLocation(e);
+                    ResourceLocation rl = ResourceLocation.parse(e);
 					Path endPath = Paths.get(customDatapackFolder.toString(), "data", rl.getNamespace(), LegendarySurvivalOverhaul.MOD_ID, "temperature", "dimensions");
 					if (!endPath.toFile().exists()) {
 						createDirectories(endPath);
@@ -345,7 +346,7 @@ public class JsonConfigRegistration
 					File jsonFile = new File(endPath.toFile(), rl.getPath() + ".json");
 					TemperatureDimensionData tdd = new TemperatureDimensionData();
 					tdd.temperature(JsonConfig.dimensionTemperatures.get(e).temperature);
-					if (!rl.equals(new ResourceLocation("the_nether")) && !rl.equals(new ResourceLocation("the_end"))) {
+					if (!rl.equals(ResourceLocation.parse("the_nether")) && !rl.equals(ResourceLocation.parse("the_end"))) {
 						tdd.hasAltitude().seaLevelHeight(64);
 					}
 
@@ -374,7 +375,7 @@ public class JsonConfigRegistration
 				entriesToKeep.addAll(diff.entriesDiffering().keySet());
 
 				for (String e: entriesToKeep) {
-					ResourceLocation rl = new ResourceLocation(e);
+                    ResourceLocation rl = ResourceLocation.parse(e);
 					Path endPath = Paths.get(customDatapackFolder.toString(), "data", rl.getNamespace(), LegendarySurvivalOverhaul.MOD_ID	, "temperature", "biomes");
 					if (!endPath.toFile().exists()) {
 						createDirectories(endPath);
@@ -410,7 +411,7 @@ public class JsonConfigRegistration
 				entriesToKeep.addAll(diff.entriesDiffering().keySet());
 
 				for (String e: entriesToKeep) {
-					ResourceLocation rl = new ResourceLocation(e);
+                    ResourceLocation rl = ResourceLocation.parse(e);
 					Path endPath = Paths.get(customDatapackFolder.toString(), "data", rl.getNamespace(), LegendarySurvivalOverhaul.MOD_ID, "temperature", "items");
 					if (!endPath.toFile().exists()) {
 						createDirectories(endPath);
@@ -448,7 +449,7 @@ public class JsonConfigRegistration
 				entriesToKeep.addAll(diff.entriesDiffering().keySet());
 
 				for (String e: entriesToKeep) {
-					ResourceLocation rl = new ResourceLocation(e);
+                    ResourceLocation rl = ResourceLocation.parse(e);
 					Path endPath = Paths.get(customDatapackFolder.toString(), "data", rl.getNamespace(), LegendarySurvivalOverhaul.MOD_ID, "temperature", "entities");
 					if (!endPath.toFile().exists()) {
 						createDirectories(endPath);
@@ -486,7 +487,7 @@ public class JsonConfigRegistration
 				entriesToKeep.addAll(diff.entriesDiffering().keySet());
 
 				for (String e: entriesToKeep) {
-					ResourceLocation rl = new ResourceLocation(e);
+                    ResourceLocation rl = ResourceLocation.parse(e);
 					Path endPath = Paths.get(customDatapackFolder.toString(), "data", rl.getNamespace(), LegendarySurvivalOverhaul.MOD_ID, "temperature", "blocks");
 					if (!endPath.toFile().exists()) {
 						createDirectories(endPath);
@@ -528,7 +529,7 @@ public class JsonConfigRegistration
 				entriesToKeep.addAll(diff.entriesDiffering().keySet());
 
 				for (String e: entriesToKeep) {
-					ResourceLocation rl = new ResourceLocation(e);
+                    ResourceLocation rl = ResourceLocation.parse(e);
 					Path endPath = Paths.get(customDatapackFolder.toString(), "data", rl.getNamespace(), LegendarySurvivalOverhaul.MOD_ID, "temperature", "fuel_items");
 					if (!endPath.toFile().exists()) {
 						createDirectories(endPath);
@@ -566,7 +567,7 @@ public class JsonConfigRegistration
 				entriesToKeep.addAll(diff.entriesDiffering().keySet());
 
 				for (String e: entriesToKeep) {
-					ResourceLocation rl = new ResourceLocation(e);
+                    ResourceLocation rl = ResourceLocation.parse(e);
 					Path endPath = Paths.get(customDatapackFolder.toString(), "data", rl.getNamespace(), LegendarySurvivalOverhaul.MOD_ID, "temperature", "consumables");
 					if (!endPath.toFile().exists()) {
 						createDirectories(endPath);
@@ -612,7 +613,7 @@ public class JsonConfigRegistration
 				entriesToKeep.addAll(diff.entriesDiffering().keySet());
 
 				for (String e: entriesToKeep) {
-					ResourceLocation rl = new ResourceLocation(e);
+                    ResourceLocation rl = ResourceLocation.parse(e);
 					Path endPath = Paths.get(customDatapackFolder.toString(), "data", rl.getNamespace(), LegendarySurvivalOverhaul.MOD_ID, "thirst", "blocks");
 					if (!endPath.toFile().exists()) {
 						createDirectories(endPath);
@@ -625,7 +626,7 @@ public class JsonConfigRegistration
 						td.hydration(jbft.hydration);
 						td.saturation(jbft.saturation);
 						for (JsonEffectParameter jep: jbft.effects) {
-							MobEffect me = Registries.MOB_EFFECT.getValue(new ResourceLocation(jep.name));
+							MobEffect me = BuiltInRegistries.MOB_EFFECT.get(ResourceLocation.parse(jep.name));
 							if (me != null)
 								td.addEffect(me, jep.duration, jep.chance, jep.amplifier);
 						}
@@ -660,7 +661,7 @@ public class JsonConfigRegistration
 				entriesToKeep.addAll(diff.entriesDiffering().keySet());
 
 				for (String e: entriesToKeep) {
-					ResourceLocation rl = new ResourceLocation(e);
+                    ResourceLocation rl = ResourceLocation.parse(e);
 					Path endPath = Paths.get(customDatapackFolder.toString(), "data", rl.getNamespace(), LegendarySurvivalOverhaul.MOD_ID, "thirst", "consumables");
 					if (!endPath.toFile().exists()) {
 						createDirectories(endPath);
@@ -673,7 +674,7 @@ public class JsonConfigRegistration
 						td.hydration(jct.hydration);
 						td.saturation(jct.saturation);
 						for (JsonEffectParameter jep: jct.effects) {
-							MobEffect me = Registries.MOB_EFFECT.getValue(new ResourceLocation(jep.name));
+							MobEffect me = BuiltInRegistries.MOB_EFFECT.get(ResourceLocation.parse(jep.name));
 							if (me != null)
 								td.addEffect(me, jep.duration, jep.chance, jep.amplifier);
 						}
@@ -709,7 +710,7 @@ public class JsonConfigRegistration
 				entriesToKeep.addAll(diff.entriesDiffering().keySet());
 
 				for (String e: entriesToKeep) {
-					ResourceLocation rl = new ResourceLocation(e);
+                    ResourceLocation rl = ResourceLocation.parse(e);
 					Path endPath = Paths.get(customDatapackFolder.toString(), "data", rl.getNamespace(), LegendarySurvivalOverhaul.MOD_ID, "body_damage", "consumables");
 					if (!endPath.toFile().exists()) {
 						createDirectories(endPath);
@@ -747,7 +748,7 @@ public class JsonConfigRegistration
 				entriesToKeep.addAll(diff.entriesDiffering().keySet());
 
 				for (String e: entriesToKeep) {
-					ResourceLocation rl = new ResourceLocation(e);
+                    ResourceLocation rl = ResourceLocation.parse(e);
 					Path endPath = Paths.get(customDatapackFolder.toString(), "data", rl.getNamespace(), LegendarySurvivalOverhaul.MOD_ID, "body_damage", "damage_sources");
 					if (!endPath.toFile().exists()) {
 						createDirectories(endPath);

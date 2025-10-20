@@ -2,14 +2,13 @@ package sfiomn.legendarysurvivaloverhaul.client.render;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.neoforge.client.gui.overlay.ExtendedGui;
-import net.neoforged.neoforge.client.gui.overlay.IGuiOverlay;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.health.HealthUtil;
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.health.HealthCapability;
@@ -24,75 +23,67 @@ public class RenderHealthGui
 	private static HealthCapability HEALTH_CAP = null;
 	private static final Random rand = new Random();
 
-	public static final ResourceLocation ICONS = new ResourceLocation(LegendarySurvivalOverhaul.MOD_ID, "textures/gui/overlay.png");
-	protected static final ResourceLocation MINECRAFT_GUI_ICONS_LOCATION = new ResourceLocation("textures/gui/icons.png");
+    public static final ResourceLocation ICONS = ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "textures/gui/overlay.png");
+    protected static final ResourceLocation MINECRAFT_GUI_ICONS_LOCATION = ResourceLocation.parse("textures/gui/icons.png");
 
 	// Row position on the overlay sheet
 	private static final int HEART_TEXTURE_POS_Y = 146;
-	private static final int HEART_TEXTURE_POS_X = 0;
-
 	// Dimensions of the icon
 	private static final int HEART_TEXTURE_WIDTH = 9;
 	private static final int HEART_TEXTURE_HEIGHT = 9;
 
-	public static final IGuiOverlay HEALTH_GUI = (forgeGui, guiGraphics, partialTicks, width, height) -> {
-		if (Config.Baked.healthOverhaulEnabled
-				&& !Minecraft.getInstance().options.hideGui
-				&& forgeGui.shouldDrawSurvivalElements()) {
-			Player player = forgeGui.getMinecraft().player;
+	public static void render(Gui gui, GuiGraphics guiGraphics, float partialTicks, int width, int height) {
+        if (Config.Baked.healthOverhaulEnabled && !Minecraft.getInstance().options.hideGui) {
+            Player player = Minecraft.getInstance().player;
+            if (player != null && !player.isCreative() && !player.isSpectator()) {
+                rand.setSeed(player.tickCount * 445L);
+                RenderSystem.enableBlend();
+                RenderSystem.defaultBlendFunc();
 
-			if (player != null) {
+                Minecraft.getInstance().getProfiler().push("health");
+                drawHealthBar(guiGraphics, player, width, height);
+                Minecraft.getInstance().getProfiler().pop();
 
-				rand.setSeed(player.tickCount * 445L);
-				forgeGui.setupOverlayRenderState(true, false);
+                RenderSystem.disableBlend();
+                RenderSystem.depthMask(true);
+                RenderSystem.enableDepthTest();
+            }
+        }
+    }
 
-				Minecraft.getInstance().getProfiler().push("health");
+    public static void drawHealthBar(GuiGraphics gui, Player player, int width, int height) {
+        if (HEALTH_CAP == null || player.tickCount % 20 == 0)
+            HEALTH_CAP = CapabilityUtil.getHealthCapability(player);
 
-				drawHealthBar(forgeGui, guiGraphics, player, width, height);
-				Minecraft.getInstance().getProfiler().pop();
+        int brokenHearts = HealthUtil.getEffectiveBrokenHearts(player);
+        float shieldHealth = HEALTH_CAP.getShieldHealth();
 
-				RenderSystem.depthMask(true);
-				RenderSystem.enableDepthTest();
-			}
-		}
-	};
-	
-	public static void drawHealthBar(ExtendedGui forgeGui, GuiGraphics gui, Player player, int width, int height) {
-		if (HEALTH_CAP == null || player.tickCount % 20 == 0)
-			HEALTH_CAP = CapabilityUtil.getHealthCapability(player);
+        if (brokenHearts + shieldHealth == 0)
+            return;
 
-		int brokenHearts = HealthUtil.getEffectiveBrokenHearts(player);
-		float shieldHealth = HEALTH_CAP.getShieldHealth();
+        int left = width / 2 - 91; // vanilla health bar X
+        int top = height - 39;     // approximate baseline Y for HUD rows
 
-		if (brokenHearts + shieldHealth == 0)
-			return;
+        int playerHearts = 0;
 
-		int left = width / 2 - 91; // Same x offset as the health bar
-		int top = height - forgeGui.leftHeight;
+        int totalHearts = Mth.ceil(shieldHealth / 2.0F) + brokenHearts;
+        if (Config.Baked.appendBrokenShieldHeartsToHealthBar) {
+            playerHearts = Mth.ceil(player.getMaxHealth() / 2.0f);
 
-		int playerHearts = 0;
+            if (OverflowingBarsUtil.isHealthBarOverflowing())
+                playerHearts = Math.min(10, playerHearts);
 
-		int totalHearts = Mth.ceil(shieldHealth / 2.0F) + brokenHearts;
-		if (Config.Baked.appendBrokenShieldHeartsToHealthBar) {
-			playerHearts = Mth.ceil(player.getMaxHealth() / 2.0f);
+            playerHearts = playerHearts  % 10;
 
-			if (OverflowingBarsUtil.isHealthBarOverflowing())
-				playerHearts = Math.min(10, playerHearts);
+            if (playerHearts > 0) {
+                totalHearts += playerHearts;
+                top -= 10;
+            }
+        }
+        int healthRows = Mth.ceil((totalHearts)  / 10.0F);
 
-			playerHearts = playerHearts  % 10;
-
-			if (playerHearts > 0) {
-				totalHearts += playerHearts;
-				top += 10;
-				forgeGui.leftHeight -= 10;
-			}
-		}
-		int healthRows = Mth.ceil((totalHearts)  / 10.0F);
-
-		forgeGui.leftHeight += healthRows * 10;
-
-		renderHearts(gui, left, top, 10, playerHearts, brokenHearts, Mth.ceil(player.getHealth()), shieldHealth);
-	}
+        renderHearts(gui, left, top, 10, playerHearts, brokenHearts, Mth.ceil(player.getHealth()), shieldHealth);
+    }
 
 	public static void renderHearts(GuiGraphics gui, int left, int top, int rowHeight, int playerHearts, int brokenHearts, int health, float shieldHealth) {
 		int shieldHearts = Mth.ceil((double)shieldHealth / 2.0);

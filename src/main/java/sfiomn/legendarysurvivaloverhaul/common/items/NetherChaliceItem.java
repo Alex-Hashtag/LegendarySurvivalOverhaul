@@ -12,7 +12,7 @@ import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
-import net.neoforged.neoforge.common.NeoForgeMod;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import org.jetbrains.annotations.Nullable;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.thirst.ThirstUtil;
@@ -36,7 +36,7 @@ public class NetherChaliceItem extends WearableCurioItem {
         if (CapabilityUtil.getThirstCapability(player).isHydrationLevelAtMax())
             return InteractionResultHolder.fail(itemstack);
 
-        HitResult positionLookedAt = player.pick(player.getAttributeValue(NeoForgeMod.BLOCK_REACH.get) / 2, 0.0F, true);
+        HitResult positionLookedAt = player.pick(player.getAttributeValue(Attributes.BLOCK_INTERACTION_RANGE) / 2, 0.0F, true);
         FluidState fluidState = null;
 
         if (positionLookedAt.getType() == HitResult.Type.BLOCK) {
@@ -54,7 +54,7 @@ public class NetherChaliceItem extends WearableCurioItem {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
+    public void appendHoverText(ItemStack stack, @Nullable TooltipContext level, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
         super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
 
         tooltipComponents.add(Component.translatable("tooltip." + LegendarySurvivalOverhaul.MOD_ID + ".nether_chalice.description"));

@@ -1,0 +1,58 @@
+{
+  "parent": "legendarysurvivaloverhaul:main/get_a_sewing_table",
+  "criteria": {
+    "recipe_crafted": {
+      "conditions": {
+        "ingredients": [
+          {
+            "items": "#c:armors"
+          },
+          {
+            "items": "#c:armors"
+          },
+          {
+            "items": "#c:armors"
+          },
+          {
+            "items": "#c:armors"
+          },
+          {
+            "items": "#c:armors"
+          },
+          {
+            "items": "#c:armors"
+          },
+          {
+            "items": "#c:armors"
+          },
+          {
+            "items": "#c:armors"
+          },
+          {
+            "items": "#c:armors"
+          }
+        ],
+        "recipe_id": "legendarysurvivaloverhaul:sewing"
+      },
+      "trigger": "minecraft:recipe_crafted"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.legendarysurvivaloverhaul.sew_a_coat.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "legendarysurvivaloverhaul:cooling_coat_1"
+    },
+    "title": {
+      "translate": "advancement.legendarysurvivaloverhaul.sew_a_coat"
+    }
+  },
+  "requirements": [
+    [
+      "recipe_crafted"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

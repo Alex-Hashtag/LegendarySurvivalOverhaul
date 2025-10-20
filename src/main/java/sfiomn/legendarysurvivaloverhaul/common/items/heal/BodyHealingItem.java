@@ -43,7 +43,7 @@ public class BodyHealingItem extends Item {
     }
 
     @Override
-    public int getUseDuration(ItemStack stack)
+    public int getUseDuration(ItemStack stack, LivingEntity entity)
     {
         return 20;
     }
@@ -97,7 +97,7 @@ public class BodyHealingItem extends Item {
         if (!Config.Baked.localizedBodyDamageEnabled) {
             if (jsonConsumableHeal.recoveryEffectDuration > 0)
                 player.addEffect(new MobEffectInstance(
-                        MobEffectRegistry.RECOVERY.get(),
+                        MobEffectRegistry.RECOVERY,
                         jsonConsumableHeal.recoveryEffectDuration,
                         jsonConsumableHeal.recoveryEffectAmplifier, false, true, true));
             stack.shrink(1);

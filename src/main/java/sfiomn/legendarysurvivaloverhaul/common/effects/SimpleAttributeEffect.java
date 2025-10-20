@@ -2,7 +2,6 @@ package sfiomn.legendarysurvivaloverhaul.common.effects;
 
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
-import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 
 public class SimpleAttributeEffect extends MobEffect {
     public static final String HOT_FOOD_ATTRIBUTE_UUID = "dbac2b95-f979-4104-a4ba-3039c1015ae7";
@@ -12,15 +11,16 @@ public class SimpleAttributeEffect extends MobEffect {
     public static final String HEAT_RESISTANCE_ATTRIBUTE_UUID = "fc0998d2-a273-4d8c-aaf4-39f8a25a3c8e";
     public static final String COLD_RESISTANCE_ATTRIBUTE_UUID = "cc64e9cb-10dd-4896-8ff6-5f6a21b949ff";
 
+    /** Per-level scaling you want to apply. */
     protected final double amplifierMultiplier;
 
-    public SimpleAttributeEffect(MobEffectCategory pCategory, int pColor, double amplifierMultiplier) {
-        super(pCategory, pColor);
+    public SimpleAttributeEffect(MobEffectCategory category, int color, double amplifierMultiplier) {
+        super(category, color);
         this.amplifierMultiplier = amplifierMultiplier;
     }
 
-    @Override
-    public double getAttributeModifierValue(int amplifier, AttributeModifier modifier) {
-        return modifier.getAmount() + this.amplifierMultiplier * (double)(amplifier);
+    /** Optional helper if you need custom math elsewhere. */
+    public double valueForLevel(double base, int amplifier) {
+        return base + amplifierMultiplier * amplifier;
     }
 }

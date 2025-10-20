@@ -3,7 +3,7 @@ package sfiomn.legendarysurvivaloverhaul.registry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.*;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.item.Item.TooltipContext;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.minecraft.core.registries.Registries;
@@ -34,9 +34,9 @@ public class ItemRegistry
     {
 
         @Override
-        public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced)
+        public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag isAdvanced)
         {
-            super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
+            super.appendHoverText(stack, context, tooltipComponents, isAdvanced);
 
             tooltipComponents.add(Component.translatable("tooltip." + LegendarySurvivalOverhaul.MOD_ID + ".sponge.description"));
         }
@@ -48,18 +48,18 @@ public class ItemRegistry
     {
 
         @Override
-        public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced)
+        public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag isAdvanced)
         {
-            super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
+            super.appendHoverText(stack, context, tooltipComponents, isAdvanced);
 
             tooltipComponents.add(Component.translatable("tooltip." + LegendarySurvivalOverhaul.MOD_ID + ".first_aid_supplies.description"));
         }
     });
 
-    public static final DeferredHolder<Item, ? extends Item> SNOW_HELMET = ITEMS.register("snow_helmet", () -> new ArmorItem(SNOW, ArmorItem.Type.HELMET, new Item.Properties()));
-    public static final DeferredHolder<Item, ? extends Item> SNOW_CHEST = ITEMS.register("snow_chestplate", () -> new ArmorItem(SNOW, ArmorItem.Type.CHESTPLATE, new Item.Properties()));
-    public static final DeferredHolder<Item, ? extends Item> SNOW_LEGGINGS = ITEMS.register("snow_leggings", () -> new ArmorItem(SNOW, ArmorItem.Type.LEGGINGS, new Item.Properties()));
-    public static final DeferredHolder<Item, ? extends Item> SNOW_BOOTS = ITEMS.register("snow_boots", () -> new ArmorItem(SNOW, ArmorItem.Type.BOOTS, new Item.Properties())
+    public static final DeferredHolder<Item, ? extends Item> SNOW_HELMET = ITEMS.register("snow_helmet", () -> new ArmorItem(SNOW, ArmorItem.Type.HELMET, new Item.Properties().durability(ArmorItem.Type.HELMET.getDurability(6))));
+    public static final DeferredHolder<Item, ? extends Item> SNOW_CHEST = ITEMS.register("snow_chestplate", () -> new ArmorItem(SNOW, ArmorItem.Type.CHESTPLATE, new Item.Properties().durability(ArmorItem.Type.CHESTPLATE.getDurability(6))));
+    public static final DeferredHolder<Item, ? extends Item> SNOW_LEGGINGS = ITEMS.register("snow_leggings", () -> new ArmorItem(SNOW, ArmorItem.Type.LEGGINGS, new Item.Properties().durability(ArmorItem.Type.LEGGINGS.getDurability(6))));
+    public static final DeferredHolder<Item, ? extends Item> SNOW_BOOTS = ITEMS.register("snow_boots", () -> new ArmorItem(SNOW, ArmorItem.Type.BOOTS, new Item.Properties().durability(ArmorItem.Type.BOOTS.getDurability(6)))
     {
         @Override
         public boolean canWalkOnPowderedSnow(ItemStack stack, LivingEntity wearer)
@@ -68,10 +68,10 @@ public class ItemRegistry
         }
     });
 
-    public static final DeferredHolder<Item, ? extends Item> DESERT_HELMET = ITEMS.register("desert_helmet", () -> new ArmorItem(DESERT, ArmorItem.Type.HELMET, new Item.Properties()));
-    public static final DeferredHolder<Item, ? extends Item> DESERT_CHEST = ITEMS.register("desert_chestplate", () -> new ArmorItem(DESERT, ArmorItem.Type.CHESTPLATE, new Item.Properties()));
-    public static final DeferredHolder<Item, ? extends Item> DESERT_LEGGINGS = ITEMS.register("desert_leggings", () -> new ArmorItem(DESERT, ArmorItem.Type.LEGGINGS, new Item.Properties()));
-    public static final DeferredHolder<Item, ? extends Item> DESERT_BOOTS = ITEMS.register("desert_boots", () -> new ArmorItem(DESERT, ArmorItem.Type.BOOTS, new Item.Properties()));
+    public static final DeferredHolder<Item, ? extends Item> DESERT_HELMET = ITEMS.register("desert_helmet", () -> new ArmorItem(DESERT, ArmorItem.Type.HELMET, new Item.Properties().durability(ArmorItem.Type.HELMET.getDurability(6))));
+    public static final DeferredHolder<Item, ? extends Item> DESERT_CHEST = ITEMS.register("desert_chestplate", () -> new ArmorItem(DESERT, ArmorItem.Type.CHESTPLATE, new Item.Properties().durability(ArmorItem.Type.CHESTPLATE.getDurability(6))));
+    public static final DeferredHolder<Item, ? extends Item> DESERT_LEGGINGS = ITEMS.register("desert_leggings", () -> new ArmorItem(DESERT, ArmorItem.Type.LEGGINGS, new Item.Properties().durability(ArmorItem.Type.LEGGINGS.getDurability(6))));
+    public static final DeferredHolder<Item, ? extends Item> DESERT_BOOTS = ITEMS.register("desert_boots", () -> new ArmorItem(DESERT, ArmorItem.Type.BOOTS, new Item.Properties().durability(ArmorItem.Type.BOOTS.getDurability(6))));
 
     public static final DeferredHolder<Item, ? extends Item> COOLING_COAT_1 = ITEMS.register("cooling_coat_1", () -> new CoatItem(CoatEnum.COOLING_1, new Item.Properties().rarity(Rarity.COMMON)));
     public static final DeferredHolder<Item, ? extends Item> COOLING_COAT_2 = ITEMS.register("cooling_coat_2", () -> new CoatItem(CoatEnum.COOLING_2, new Item.Properties().rarity(Rarity.RARE)));
@@ -98,9 +98,9 @@ public class ItemRegistry
     {
 
         @Override
-        public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced)
+        public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag isAdvanced)
         {
-            super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
+            super.appendHoverText(stack, context, tooltipComponents, isAdvanced);
 
             tooltipComponents.add(Component.translatable("tooltip." + LegendarySurvivalOverhaul.MOD_ID + ".water_purifier.description"));
         }

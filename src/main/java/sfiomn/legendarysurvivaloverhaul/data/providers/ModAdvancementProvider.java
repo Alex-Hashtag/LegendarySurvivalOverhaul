@@ -52,7 +52,7 @@ public class ModAdvancementProvider extends AdvancementProvider {
                             ItemRegistry.THERMOMETER.get(),
                             Component.translatable("advancement." + LegendarySurvivalOverhaul.MOD_ID),
                             Component.translatable("advancement." + LegendarySurvivalOverhaul.MOD_ID + ".description"),
-                            new ResourceLocation("textures/block/ice.png"),
+                            ResourceLocation.parse("textures/block/ice.png"),
                             AdvancementType.TASK,
                             false, false, false
                     )
@@ -103,7 +103,6 @@ public class ModAdvancementProvider extends AdvancementProvider {
                 itemPredicates.add(
                         ItemPredicate.Builder.item()
                                 .of(Tags.Items.ARMORS)
-                                .hasNbt(coatTag)
                 );
             }
 

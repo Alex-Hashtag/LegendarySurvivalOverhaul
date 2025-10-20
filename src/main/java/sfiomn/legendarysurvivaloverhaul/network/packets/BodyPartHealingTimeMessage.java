@@ -2,8 +2,11 @@ package sfiomn.legendarysurvivaloverhaul.network.packets;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload.Type;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
@@ -12,7 +15,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.core.registries.Registries;
 import net.neoforged.neoforge.network.PacketDistributor;
-import net.neoforged.neoforge.network.handling.PlayPayloadContext;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.bodydamage.BodyDamageUtil;
 import sfiomn.legendarysurvivaloverhaul.api.bodydamage.BodyPartEnum;
@@ -28,7 +31,15 @@ public record BodyPartHealingTimeMessage(
 ) implements CustomPacketPayload {
 
     public static final ResourceLocation ID =
-            new ResourceLocation(LegendarySurvivalOverhaul.MOD_ID, "body_part_healing_time");
+            ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "body_part_healing_time");
+    public static final Type<BodyPartHealingTimeMessage> TYPE = new Type<>(ID);
+
+    public static final StreamCodec<RegistryFriendlyByteBuf, BodyPartHealingTimeMessage> STREAM_CODEC =
+            StreamCodec.composite(
+                    ByteBufCodecs.COMPOUND_TAG,
+                    BodyPartHealingTimeMessage::compound,
+                    BodyPartHealingTimeMessage::new
+            );
 
     public BodyPartHealingTimeMessage(BodyPartEnum bodyPart, InteractionHand hand, boolean consumeItem, boolean applyEffect) {
         this(createPayload(bodyPart, hand, consumeItem, applyEffect));
@@ -43,18 +54,15 @@ public record BodyPartHealingTimeMessage(
         return bodyPartHealNbt;
     }
 
-    public BodyPartHealingTimeMessage(FriendlyByteBuf buf) {
-        this(buf.readNbt());
-    }
-
     @Override
-    public void write(FriendlyByteBuf buf) { buf.writeNbt(compound); }
+    public Type<? extends CustomPacketPayload> type() { return TYPE; }
 
-    @Override
-    public ResourceLocation id() { return ID; }
-
-    public static void handle(BodyPartHealingTimeMessage pkt, PlayPayloadContext ctx) {
-        ctx.workHandler().submitAsync(() -> ctx.player().ifPresent(p -> applyHealingItemOnServer(p, pkt.compound())));
+    public static void handle(BodyPartHealingTimeMessage pkt, IPayloadContext ctx) {
+        ctx.enqueueWork(() -> {
+            if (ctx.player() instanceof ServerPlayer serverPlayer) {
+                applyHealingItemOnServer(serverPlayer, pkt.compound());
+            }
+        });
     }
 
     public static void applyHealingItemOnServer(ServerPlayer player, CompoundTag nbt) {
@@ -80,12 +88,12 @@ public record BodyPartHealingTimeMessage(
 
         if (jhc != null) {
             if (shouldApplyEffect)
-                player.addEffect(new MobEffectInstance(MobEffectRegistry.RECOVERY.get(), jhc.recoveryEffectDuration, jhc.recoveryEffectAmplifier, false, true, true));
+                player.addEffect(new MobEffectInstance(MobEffectRegistry.RECOVERY, jhc.recoveryEffectDuration, jhc.recoveryEffectAmplifier, false, true, true));
             BodyDamageUtil.applyHealingTimeBodyPart(player, bodyPartEnum, jhc.healingValue, jhc.healingTime);
         }
     }
 
     public static void sendToServer(BodyPartEnum bodyPart, InteractionHand hand, boolean consumeItem, boolean applyEffect) {
-        PacketDistributor.SERVER.noArg().send(new BodyPartHealingTimeMessage(bodyPart, hand, consumeItem, applyEffect));
+        PacketDistributor.sendToServer(new BodyPartHealingTimeMessage(bodyPart, hand, consumeItem, applyEffect));
     }
 }

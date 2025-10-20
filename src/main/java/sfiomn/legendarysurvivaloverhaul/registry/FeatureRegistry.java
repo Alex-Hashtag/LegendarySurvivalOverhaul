@@ -14,7 +14,7 @@ public class FeatureRegistry
 {
     public static final DeferredRegister<Feature<?>> FEATURES = DeferredRegister.create(Registries.FEATURE, LegendarySurvivalOverhaul.MOD_ID);
 
-    public static final DeferredHolder<DoubleBlockFeature, ? extends DoubleBlockFeature> DOUBLE_BLOCK = FEATURES.register("double_block", () -> new DoubleBlockFeature(SimpleBlockConfiguration.CODEC));
+    public static final DeferredHolder<Feature<?>, DoubleBlockFeature> DOUBLE_BLOCK = FEATURES.register("double_block", () -> new DoubleBlockFeature(SimpleBlockConfiguration.CODEC));
 
     public static void register(IEventBus eventBus)
     {

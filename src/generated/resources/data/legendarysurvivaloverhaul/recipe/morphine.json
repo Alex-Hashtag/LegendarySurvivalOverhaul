@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "healing",
+  "key": {
+    "g": {
+      "item": "minecraft:glass"
+    },
+    "n": {
+      "item": "minecraft:iron_nugget"
+    },
+    "t": {
+      "item": "legendarysurvivaloverhaul:tonic"
+    }
+  },
+  "pattern": [
+    "  n",
+    " t ",
+    "g  "
+  ],
+  "result": {
+    "count": 1,
+    "id": "legendarysurvivaloverhaul:morphine"
+  }
+}

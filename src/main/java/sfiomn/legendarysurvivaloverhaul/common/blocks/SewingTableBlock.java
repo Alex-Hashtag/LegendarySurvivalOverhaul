@@ -6,12 +6,14 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerLevelAccess;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -72,13 +74,33 @@ public class SewingTableBlock extends HorizontalDirectionalBlock implements Menu
         return state.getValue(FACING).getAxis() == Direction.Axis.X ? X_AABB : Z_AABB;
     }
 
-    @SuppressWarnings("deprecation")
     @Override
-    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-        if (level.isClientSide) return InteractionResult.SUCCESS;
+    public @NotNull InteractionResult useWithoutItem(BlockState state,
+                                                     Level level,
+                                                     BlockPos pos,
+                                                     Player player,
+                                                     BlockHitResult hit) {
+        if (level.isClientSide) {
+            return InteractionResult.SUCCESS;
+        }
         player.openMenu(state.getMenuProvider(level, pos));
         return InteractionResult.CONSUME;
     }
+
+    @Override
+    public @NotNull ItemInteractionResult useItemOn(ItemStack stack,
+                                                                        BlockState state,
+                                                                        Level level,
+                                                                        BlockPos pos,
+                                                                        Player player,
+                                                                        InteractionHand hand,
+                                                                        BlockHitResult hit) {
+        // If you don't want items to do anything special, delegate to the empty-hand handler:
+        return this.useWithoutItem(state, level, pos, player, hit) == InteractionResult.CONSUME
+                ? ItemInteractionResult.SUCCESS
+                : ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+    }
+
 
     @Override
     public MenuProvider getMenuProvider(BlockState state, Level level, BlockPos pos) {

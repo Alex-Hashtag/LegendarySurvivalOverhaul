@@ -11,6 +11,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
@@ -43,7 +44,7 @@ public class CanteenItem extends DrinkItem {
     }
 
     @Override
-    public int getUseDuration(@NotNull ItemStack stack) {
+    public int getUseDuration(@NotNull ItemStack stack, LivingEntity entity) {
         return canDrink(stack) ? 40 : 0;
     }
 
@@ -87,12 +88,8 @@ public class CanteenItem extends DrinkItem {
         if (canFill(canteen) && isWater && player != null) {
             player.swing(InteractionHand.MAIN_HAND, true);
 
-            if (player instanceof ServerPlayer serverPlayer) {
-                Registries.SOUND_EVENT.getHolder(SoundEvents.BOTTLE_FILL).ifPresent(soundHolder -> serverPlayer.connection.send(
-                        new ClientboundSoundPacket(
-                                soundHolder, SoundSource.PLAYERS, serverPlayer.getX(),
-                                serverPlayer.getY(), serverPlayer.getZ(), 1.0F, 1.0F, player.level().getRandom().nextLong())));
-            }
+            // Play fill sound
+            useOnContext.getLevel().playSound(player, player.blockPosition(), SoundEvents.BOTTLE_FILL, SoundSource.PLAYERS, 1.0F, 1.0F);
             this.fill(canteen);
             return InteractionResult.CONSUME;
         }
@@ -102,7 +99,7 @@ public class CanteenItem extends DrinkItem {
 
     @Override
     public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level level, Player player, @NotNull InteractionHand hand) {
-        HitResult positionLookedAt = player.pick(player.getAttributeValue(NeoForgeMod.BLOCK_REACH.get) / 2, 0.0F, true);
+        HitResult positionLookedAt = player.pick(player.getAttributeValue(Attributes.BLOCK_INTERACTION_RANGE) / 2, 0.0F, true);
 
         boolean isWater = false;
         if (positionLookedAt.getType() == HitResult.Type.BLOCK) {
@@ -121,7 +118,7 @@ public class CanteenItem extends DrinkItem {
         if (player.isCrouching() && player.getViewXRot(1.0f) < -60.0f && canDrink(canteen) && Config.Baked.selfWateringCanteenEnabled) {
             player.playSound(SoundRegistry.SELF_WATERING.get(), 1.0f, 1.0f);
             if (player.isOnFire())
-                player.setSecondsOnFire(0);
+                player.clearFire();
             if (Config.Baked.selfWateringCanteenWetnessIncrease > 0)
                 WetnessUtil.addWetness(player, Config.Baked.selfWateringCanteenWetnessIncrease);
             player.swing(InteractionHand.MAIN_HAND);

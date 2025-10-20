@@ -1,6 +1,9 @@
 package sfiomn.legendarysurvivaloverhaul.data.loot;
 
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.loot.LootTableSubProvider;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.storage.loot.BuiltInLootTables;
@@ -23,7 +26,7 @@ import static java.util.Map.entry;
 
 public class ModChestLootTables implements LootTableSubProvider {
 
-    public static Map<ResourceLocation, List<Item>> chestInjectedLootTables = Map.ofEntries(
+    public static Map<ResourceKey<LootTable>, List<Item>> chestInjectedLootTables = Map.ofEntries(
             entry(BuiltInLootTables.BURIED_TREASURE, List.of(ItemRegistry.HEART_FRAGMENT.get())),
             entry(BuiltInLootTables.JUNGLE_TEMPLE, List.of(ItemRegistry.HEART_FRAGMENT.get())),
             entry(BuiltInLootTables.ABANDONED_MINESHAFT, List.of(ItemRegistry.HEART_FRAGMENT.get())),
@@ -32,11 +35,11 @@ public class ModChestLootTables implements LootTableSubProvider {
             entry(BuiltInLootTables.PILLAGER_OUTPOST, List.of(ItemRegistry.FIRST_AID_SUPPLIES.get()))
     );
 
-    public ModChestLootTables() {
+    public ModChestLootTables(HolderLookup.Provider provider) {
     }
 
     @Override
-    public void generate(@NotNull BiConsumer<ResourceLocation, LootTable.Builder> biConsumer) {
+    public void generate(@NotNull BiConsumer<ResourceKey<LootTable>, LootTable.Builder> biConsumer) {
 
         LootPool.Builder heartFragmentLoot = LootPool.lootPool()
                 .setRolls(UniformGenerator.between(1.0F, 1.0F))
@@ -60,7 +63,7 @@ public class ModChestLootTables implements LootTableSubProvider {
                 .add(LootItem.lootTableItem(ItemRegistry.FIRST_AID_SUPPLIES.get()).setWeight(1))
                 .add(EmptyLootItem.emptyItem().setWeight(99));
 
-        for (Map.Entry<ResourceLocation, List<Item>> entry : chestInjectedLootTables.entrySet()) {
+        for (Map.Entry<ResourceKey<LootTable>, List<Item>> entry : chestInjectedLootTables.entrySet()) {
             LootTable.Builder lootTable = LootTable.lootTable();
             if (entry.getValue().contains(ItemRegistry.HEART_FRAGMENT.get())) {
                 lootTable.withPool(heartFragmentLoot);
@@ -75,7 +78,7 @@ public class ModChestLootTables implements LootTableSubProvider {
                 lootTable.withPool(firstAidSupplies);
             }
             biConsumer.accept(
-                    new ResourceLocation(LegendarySurvivalOverhaul.MOD_ID, "inject/" + entry.getKey().getPath()),
+                    ResourceKey.create(Registries.LOOT_TABLE, ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "inject/" + entry.getKey().location().getPath())),
                     lootTable);
         }
     }

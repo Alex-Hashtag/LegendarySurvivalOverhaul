@@ -15,7 +15,7 @@ public abstract class BottledDrinkItem extends DrinkItem {
     }
 
     @Override
-    public int getUseDuration(@NotNull ItemStack stack)
+    public int getUseDuration(@NotNull ItemStack stack, LivingEntity entity)
     {
         return 32;
     }

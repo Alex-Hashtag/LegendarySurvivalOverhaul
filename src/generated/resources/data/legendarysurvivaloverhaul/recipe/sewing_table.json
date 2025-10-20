@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "i": {
+      "item": "minecraft:iron_ingot"
+    },
+    "p": {
+      "tag": "minecraft:planks"
+    },
+    "r": {
+      "item": "minecraft:redstone"
+    }
+  },
+  "pattern": [
+    "iii",
+    "r i",
+    "ppp"
+  ],
+  "result": {
+    "count": 1,
+    "id": "legendarysurvivaloverhaul:sewing_table"
+  }
+}

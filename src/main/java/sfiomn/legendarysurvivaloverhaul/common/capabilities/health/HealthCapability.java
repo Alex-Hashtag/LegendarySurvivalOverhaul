@@ -1,11 +1,13 @@
 package sfiomn.legendarysurvivaloverhaul.common.capabilities.health;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
+import net.neoforged.neoforge.common.util.INBTSerializable;
 import sfiomn.legendarysurvivaloverhaul.api.health.IHealthCapability;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
 
-public class HealthCapability implements IHealthCapability
+public class HealthCapability implements IHealthCapability, INBTSerializable<CompoundTag>
 {
 	private float additionalHealth;
 	private float shieldHealth;
@@ -100,4 +102,14 @@ public class HealthCapability implements IHealthCapability
 		if (compound.contains("shieldHealth"))
 			this.setShieldHealth(compound.getFloat("shieldHealth"));
 	}
+
+    @Override
+    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
+        return writeNBT();
+    }
+
+    @Override
+    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
+        readNBT(nbt);
+    }
 }

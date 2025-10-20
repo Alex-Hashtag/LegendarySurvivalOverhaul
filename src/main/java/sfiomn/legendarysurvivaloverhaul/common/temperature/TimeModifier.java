@@ -48,7 +48,7 @@ public class TimeModifier extends ModifierBase
 		float timeTemperature = (float) Math.sin(timeAngle) * (float) Config.Baked.timeModifier;
 
 		// Biome Multiplier will increase the diff between noon and midnight based on extremity of biome temp
-		float biomeMultiplier = 1.0f + (Math.abs(normalizeToPositiveNegative(getNormalizedTempForBiome(level, level.getBiome(pos).get()))) * ((float)Config.Baked.biomeTimeMultiplier - 1.0f));
+		float biomeMultiplier = 1.0f + (Math.abs(normalizeToPositiveNegative(getNormalizedTempForBiome(level, level.getBiome(pos).value()))) * ((float)Config.Baked.biomeTimeMultiplier - 1.0f));
 		timeTemperature *= biomeMultiplier;
 
 		// LegendarySurvivalOverhaul.LOGGER.debug("Time temp influence : " + timeTemperature);

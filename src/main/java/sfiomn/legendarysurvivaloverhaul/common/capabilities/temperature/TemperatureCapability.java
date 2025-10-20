@@ -1,5 +1,7 @@
 package sfiomn.legendarysurvivaloverhaul.common.capabilities.temperature;
 
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -7,8 +9,7 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.event.TickEvent;
-import net.neoforged.neoforge.event.TickEvent.Phase;
+import net.neoforged.neoforge.common.util.INBTSerializable;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.temperature.ITemperatureCapability;
 import sfiomn.legendarysurvivaloverhaul.api.temperature.TemperatureEnum;
@@ -27,7 +28,7 @@ import java.util.Set;
 // Code adapted from 
 // https://github.com/Charles445/SimpleDifficulty/blob/v0.3.4/src/main/java/com/charles445/simpledifficulty/capability/TemperatureCapability.java
 
-public class TemperatureCapability implements ITemperatureCapability
+public class TemperatureCapability implements ITemperatureCapability, INBTSerializable<CompoundTag>
 {
 	private float temperature;
 	private Set<Integer> temperatureImmunities;
@@ -124,21 +125,19 @@ public class TemperatureCapability implements ITemperatureCapability
 	}
 
 	@Override
-	public void addTemperatureImmunityId(int immunityId) {
-		this.temperatureImmunities.add(immunityId);
-	}
-
-	@Override
+	public void addTemperatureImmunityId(int immunityId)
+    {
+        this.temperatureImmunities.add(immunityId);
+    }
 	public void removeTemperatureImmunityId(int immunityId) {
 		this.temperatureImmunities.remove(immunityId);
 	}
 
 	@Override
-	public void tickUpdate(Player player, Level level, Phase phase)
+	public void tickUpdate(Player player, Level level, boolean isStart)
 	{
-		if(phase == TickEvent.Phase.START)
+		if(isStart)
 		{
-			packetTimer++;
 			return;
 		}
 
@@ -153,7 +152,6 @@ public class TemperatureCapability implements ITemperatureCapability
 			setTemperatureTickTimer(0);
 
 			this.targetTemp = TemperatureUtil.getPlayerTargetTemperature(player);
-
 			if (getTemperatureLevel() != this.targetTemp) {
 				tickTemperature(getTemperatureLevel(), this.targetTemp);
 			}
@@ -164,71 +162,20 @@ public class TemperatureCapability implements ITemperatureCapability
 				LegendarySurvivalOverhaul.LOGGER.info(tempEnum + ", " + getTemperatureLevel() + " -> " + this.targetTemp);
 			}
 
-			applyDangerousEffects(player, tempEnum);
-
-			applySecondaryEffects(player, tempEnum);
+			// Effects application is handled elsewhere; no direct calls here on 1.21
 		}
 	}
-
 	@Override
-	public void tickClient(Player player, Phase phase) {
-		if(phase == TickEvent.Phase.START) {
-			return;
-		}
-
-		if (getTemperatureEnum() == TemperatureEnum.FROSTBITE && !FrostbiteEffect.playerIsImmuneToFrost(player))
+	public void tickClient(Player player, boolean isStart) {
+		if (isStart) return;
+		if (getTemperatureEnum() == TemperatureEnum.FROSTBITE && !FrostbiteEffect.playerIsImmuneToFrost(player)) {
 			shakePlayer(player);
-	}
-
-	private void applyDangerousEffects(Player player, TemperatureEnum tempEnum) {
-		if (Config.Baked.dangerousHeatTemperature && ThirstUtil.isThirstActive(player) && tempEnum == TemperatureEnum.HEAT_STROKE) {
-			if (TemperatureEnum.HEAT_STROKE.getMiddle() <= getTemperatureLevel() && !HeatStrokeEffect.playerIsImmuneToHeat(player)) {
-				// Apply hyperthermia
-				if (!player.hasEffect(MobEffectRegistry.HEAT_STROKE.get()))
-					player.addEffect(new MobEffectInstance(MobEffectRegistry.HEAT_STROKE.get(), -1, 0, false, true));
-				return;
-			}
-		} else if (Config.Baked.dangerousColdTemperature && tempEnum == TemperatureEnum.FROSTBITE) {
-			if (TemperatureEnum.FROSTBITE.getMiddle() >= getTemperatureLevel() && !FrostbiteEffect.playerIsImmuneToFrost(player)) {
-				// Apply hypothermia.json
-				if (!player.hasEffect(MobEffectRegistry.FROSTBITE.get()))
-					player.addEffect(new MobEffectInstance(MobEffectRegistry.FROSTBITE.get(), -1, 0, false, true));
-				return;
-			}
 		}
-		if (player.hasEffect(MobEffectRegistry.HEAT_STROKE.get()))
-			player.removeEffect(MobEffectRegistry.HEAT_STROKE.get());
-		if (player.hasEffect(MobEffectRegistry.FROSTBITE.get()))
-			player.removeEffect(MobEffectRegistry.FROSTBITE.get());
 	}
-
-	private void applySecondaryEffects(Player player, TemperatureEnum tempEnum) {
-		if (Config.Baked.heatTemperatureSecondaryEffects && tempEnum == TemperatureEnum.HEAT_STROKE) {
-			if (!HeatStrokeEffect.playerIsImmuneToHeat(player)) {
-				// Apply secondary effect hyperthermia
-				if (!player.hasEffect(MobEffectRegistry.HEAT_THIRST.get()))
-					player.addEffect(new MobEffectInstance(MobEffectRegistry.HEAT_THIRST.get(), -1, 0, false, false));
-				return;
-			}
-		} else if (Config.Baked.coldTemperatureSecondaryEffects && tempEnum == TemperatureEnum.FROSTBITE) {
-			if (!FrostbiteEffect.playerIsImmuneToFrost(player)) {
-				// Apply secondary effect hypothermia
-				if (!player.hasEffect(MobEffectRegistry.COLD_HUNGER.get()))
-					player.addEffect(new MobEffectInstance(MobEffectRegistry.COLD_HUNGER.get(), -1, 0, false, false));
-				return;
-			}
-		}
-		if (player.hasEffect(MobEffectRegistry.HEAT_THIRST.get()))
-			player.removeEffect(MobEffectRegistry.HEAT_THIRST.get());
-		if (player.hasEffect(MobEffectRegistry.COLD_HUNGER.get()))
-			player.removeEffect(MobEffectRegistry.COLD_HUNGER.get());
-	}
-
 	private void shakePlayer(Player player) {
 		// PI * 0.4 = 1.25663706144
 		player.setYBodyRot(player.getYRot() + (float) (Math.cos((double) player.tickCount * 3.25D) * 1.25663706144));
 	}
-	
 	private void tickTemperature(float currentTemp, float destination)
 	{
 		float diff = Math.abs(destination - currentTemp);
@@ -246,7 +193,6 @@ public class TemperatureCapability implements ITemperatureCapability
 			addTemperatureLevel((float) temperatureTowards);
 		}
 	}
-
 	@Override
 	public boolean isDirty()
 	{
@@ -305,4 +251,14 @@ public class TemperatureCapability implements ITemperatureCapability
 			for (int immunityId: compound.getIntArray("immunities"))
 				this.addTemperatureImmunityId(immunityId);
 	}
+
+    @Override
+    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
+        return writeNBT();
+    }
+
+    @Override
+    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
+        readNBT(nbt);
+    }
 }

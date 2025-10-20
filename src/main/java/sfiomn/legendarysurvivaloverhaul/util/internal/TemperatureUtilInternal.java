@@ -3,16 +3,19 @@ package sfiomn.legendarysurvivaloverhaul.util.internal;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.core.Holder;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonTemperatureConsumable;
 import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonTemperatureConsumableBlock;
@@ -41,11 +44,11 @@ public class TemperatureUtilInternal implements ITemperatureUtil
 {
     public static final String COAT_TAG = "Coat";
 
-    public static final AttributeBuilder HEATING_TEMPERATURE = new AttributeBuilder(AttributeRegistry.HEATING_TEMPERATURE.get(), "attribute." + LegendarySurvivalOverhaul.MOD_ID + ".heating_temperature");
-    public static final AttributeBuilder COOLING_TEMPERATURE = new AttributeBuilder(AttributeRegistry.COOLING_TEMPERATURE.get(), "attribute." + LegendarySurvivalOverhaul.MOD_ID + ".cooling_temperature");
-    public static final AttributeBuilder HEAT_RESISTANCE = new AttributeBuilder(AttributeRegistry.HEAT_RESISTANCE.get(), "attribute." + LegendarySurvivalOverhaul.MOD_ID + ".heat_resistance");
-    public static final AttributeBuilder COLD_RESISTANCE = new AttributeBuilder(AttributeRegistry.COLD_RESISTANCE.get(), "attribute." + LegendarySurvivalOverhaul.MOD_ID + ".cold_resistance");
-    public static final AttributeBuilder THERMAL_RESISTANCE = new AttributeBuilder(AttributeRegistry.THERMAL_RESISTANCE.get(), "attribute." + LegendarySurvivalOverhaul.MOD_ID + ".thermal_resistance");
+    public static final AttributeBuilder HEATING_TEMPERATURE = new AttributeBuilder(AttributeRegistry.HEATING_TEMPERATURE, ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "heating_temperature"));
+    public static final AttributeBuilder COOLING_TEMPERATURE = new AttributeBuilder(AttributeRegistry.COOLING_TEMPERATURE, ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "cooling_temperature"));
+    public static final AttributeBuilder HEAT_RESISTANCE = new AttributeBuilder(AttributeRegistry.HEAT_RESISTANCE, ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "heat_resistance"));
+    public static final AttributeBuilder COLD_RESISTANCE = new AttributeBuilder(AttributeRegistry.COLD_RESISTANCE, ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "cold_resistance"));
+    public static final AttributeBuilder THERMAL_RESISTANCE = new AttributeBuilder(AttributeRegistry.THERMAL_RESISTANCE, ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "thermal_resistance"));
 
     public static final Map<EquipmentSlot, UUID> equipmentSlotTemperatureUuid = new HashMap<>();
     static {
@@ -144,7 +147,6 @@ public class TemperatureUtilInternal implements ITemperatureUtil
 		TemperatureCapability cap = CapabilityUtil.getTempCapability(player);
 		cap.removeTemperatureImmunityId(immunity.id);
 	}
-
 	@Override
 	public void applyConsumableTemperature(Player player, ResourceLocation itemRegistryName) {
 		if (Config.Baked.temperatureEnabled) {
@@ -153,8 +155,9 @@ public class TemperatureUtilInternal implements ITemperatureUtil
 			if (jsonConsumableTemperatures != null) {
 				for (JsonTemperatureConsumable jtc : jsonConsumableTemperatures) {
 					if (jtc.getEffect() != null) {
-						player.addEffect(new MobEffectInstance(jtc.getEffect(), jtc.duration, (Math.abs(jtc.temperatureLevel) - 1), false, false, true));
-						player.removeEffect(jtc.getOppositeEffect());
+						player.addEffect(new MobEffectInstance(jtc.getEffectHolder(), jtc.duration, (Math.abs(jtc.temperatureLevel) - 1), false, false, true));
+						if (jtc.getOppositeEffectHolder() != null)
+							player.removeEffect(jtc.getOppositeEffectHolder());
 					}
 				}
 			}
@@ -170,8 +173,9 @@ public class TemperatureUtilInternal implements ITemperatureUtil
 			if (jsonConsumableBlockTemperatures != null) {
 				for (JsonTemperatureConsumableBlock jtcb : jsonConsumableBlockTemperatures) {
 					if (jtcb.getEffect() != null && jtcb.matchesState(blockState)) {
-						player.addEffect(new MobEffectInstance(jtcb.getEffect(), jtcb.duration, (Math.abs(jtcb.temperatureLevel) - 1), false, false, true));
-						player.removeEffect(jtcb.getOppositeEffect());
+						player.addEffect(new MobEffectInstance(jtcb.getEffectHolder(), jtcb.duration, (Math.abs(jtcb.temperatureLevel) - 1), false, false, true));
+						if (jtcb.getOppositeEffectHolder() != null)
+							player.removeEffect(jtcb.getOppositeEffectHolder());
 					}
 				}
 			}
@@ -194,25 +198,18 @@ public class TemperatureUtilInternal implements ITemperatureUtil
 		COLD_RESISTANCE.addModifier(player, uuid, resistance);
 	}
 
-	@Override
 	public void addThermalResistanceModifier(Player player, double resistance, UUID uuid) {
 		THERMAL_RESISTANCE.addModifier(player, uuid, resistance);
 	}
 
-	@Override
-	public void setArmorCoatTag(ItemStack stack, String coatId)
-	{
-		if (!stack.hasTag())
-		{
-			stack.setTag(new CompoundTag());
-		}
-
-		final CompoundTag compound = stack.getTag();
-
-		if (compound != null) {
-			compound.putString(COAT_TAG, coatId);
-		}
-	}
+	    @Override
+    public void setArmorCoatTag(ItemStack stack, String coatId)
+    {
+        CustomData custom = stack.get(DataComponents.CUSTOM_DATA);
+        CompoundTag compound = custom != null ? custom.copyTag() : new CompoundTag();
+        compound.putString(COAT_TAG, coatId);
+        stack.set(DataComponents.CUSTOM_DATA, CustomData.of(compound));
+    }
 
 
     @Override
@@ -221,36 +218,34 @@ public class TemperatureUtilInternal implements ITemperatureUtil
         return Mth.clamp(temperature, TemperatureEnum.FROSTBITE.getLowerBound(), TemperatureEnum.HEAT_STROKE.getUpperBound());
     }
 	@Override
-	public String getArmorCoatTag(ItemStack stack)
-	{
-		if (stack.hasTag())
-		{
-			final CompoundTag compound = stack.getTag();
-
-			// TODO: remove this temporary transfer to new coat tag name
-			if (compound != null && compound.contains("ArmorPadding")) {
-				compound.putString(COAT_TAG, compound.getString("ArmorPadding"));
-				compound.remove("ArmorPadding");
-			}
-
-			if (compound != null && compound.contains(COAT_TAG))
-			{
+	    public String getArmorCoatTag(ItemStack stack)
+    {
+        CustomData custom = stack.get(DataComponents.CUSTOM_DATA);
+        if (custom != null) {
+            final CompoundTag compound = custom.copyTag();
+            // TODO: remove this temporary transfer to new coat tag name
+            if (compound.contains("ArmorPadding")) {
+                compound.putString(COAT_TAG, compound.getString("ArmorPadding"));
+                compound.remove("ArmorPadding");
+                stack.set(DataComponents.CUSTOM_DATA, CustomData.of(compound));
+            }
+            if (compound.contains(COAT_TAG)) {
                 return compound.getString(COAT_TAG);
-			}
-		}
-		return "";
-	}
+            }
+        }
+        return "";
+    }
 
 	@Override
-	public void removeArmorCoatTag(ItemStack stack)
-	{
-		if(stack.hasTag())
-		{
-			final CompoundTag compound = stack.getTag();
-			if (compound != null && compound.contains(COAT_TAG))
-			{
-				compound.remove(COAT_TAG);
-			}
-		}
-	}
+	    public void removeArmorCoatTag(ItemStack stack)
+    {
+        CustomData custom = stack.get(DataComponents.CUSTOM_DATA);
+        if (custom != null) {
+            final CompoundTag compound = custom.copyTag();
+            if (compound.contains(COAT_TAG)) {
+                compound.remove(COAT_TAG);
+                stack.set(DataComponents.CUSTOM_DATA, CustomData.of(compound));
+            }
+        }
+    }
 }

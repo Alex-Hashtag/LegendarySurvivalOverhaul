@@ -14,6 +14,6 @@ public class AttributeModifier extends ModifierBase
     @Override
     public float getPlayerInfluence(Player player)
     {
-        return (float) (player.getAttributeValue(AttributeRegistry.HEATING_TEMPERATURE.get()) + player.getAttributeValue(AttributeRegistry.COOLING_TEMPERATURE.get()));
+        return (float) (player.getAttributeValue(AttributeRegistry.HEATING_TEMPERATURE) + player.getAttributeValue(AttributeRegistry.COOLING_TEMPERATURE));
     }
 }

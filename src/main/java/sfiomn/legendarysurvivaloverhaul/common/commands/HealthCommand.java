@@ -93,7 +93,7 @@ public class HealthCommand extends CommandBase {
             for (Entity entity : entities) {
                 if (entity instanceof Player player && src.getEntity() instanceof Player) {
                     reply.append("Player ").append(player.getName().getString()).append(" ");
-                    float brokenHearts = (int) player.getAttributeValue(AttributeRegistry.BROKEN_HEART.get());
+                    float brokenHearts = (int) player.getAttributeValue(AttributeRegistry.BROKEN_HEART);
 
                     reply.append("Broken Hearts: ")
                             .append(brokenHearts)

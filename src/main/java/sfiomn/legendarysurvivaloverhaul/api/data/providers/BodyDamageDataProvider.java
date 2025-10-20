@@ -54,16 +54,16 @@ public abstract class BodyDamageDataProvider implements DataProvider {
             this.generate(p_255484_, this.fileHelper);
             this.consumablesBuilders.forEach((consumable, builder) -> {
                 ResourceLocation jsonKey = consumable.split(":").length == 1 ?
-                        new ResourceLocation(this.modId, consumable.toLowerCase()) : new ResourceLocation(consumable);
+                        ResourceLocation.fromNamespaceAndPath(this.modId, consumable.toLowerCase()) : ResourceLocation.parse(consumable);
                 list.add(DataProvider.saveStable(pOutput, builder.build(), this.consumablesPathProvider.json(jsonKey)));
             });
             this.bodyPartsDamageSourceBuilders.forEach((damageSource, builder) -> {
-                Path path = this.bodyPartsDamageSourcePathProvider.json(new ResourceLocation(this.modId, damageSource.toLowerCase()));
+                Path path = this.bodyPartsDamageSourcePathProvider.json(ResourceLocation.fromNamespaceAndPath(this.modId, damageSource.toLowerCase()));
                 list.add(DataProvider.saveStable(pOutput, builder.build(), path));
             });
             this.bodyPartResistanceBuilders.forEach((bodyResistance, builder) -> {
                 ResourceLocation jsonKey = bodyResistance.split(":").length == 1 ?
-                        new ResourceLocation(this.modId, bodyResistance.toLowerCase()) : new ResourceLocation(bodyResistance);
+                        ResourceLocation.fromNamespaceAndPath(this.modId, bodyResistance.toLowerCase()) : ResourceLocation.parse(bodyResistance);
                 list.add(DataProvider.saveStable(pOutput, builder.build(), this.bodyPartResistancePathProvider.json(jsonKey)));
             });
             return CompletableFuture.allOf(list.toArray(CompletableFuture[]::new));

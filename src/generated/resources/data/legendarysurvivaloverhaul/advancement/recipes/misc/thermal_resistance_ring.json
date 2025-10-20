@@ -1,0 +1,43 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_cold_resistance_ring": {
+      "conditions": {
+        "items": [
+          {
+            "items": "legendarysurvivaloverhaul:cold_resistance_ring"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_heat_resistance_ring": {
+      "conditions": {
+        "items": [
+          {
+            "items": "legendarysurvivaloverhaul:heat_resistance_ring"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "legendarysurvivaloverhaul:thermal_resistance_ring"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_heat_resistance_ring",
+      "has_cold_resistance_ring"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "legendarysurvivaloverhaul:thermal_resistance_ring"
+    ]
+  }
+}

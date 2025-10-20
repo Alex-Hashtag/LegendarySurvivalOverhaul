@@ -1,6 +1,7 @@
 package sfiomn.legendarysurvivaloverhaul.common.integration.vampirism;
 
 import de.teamlapen.vampirism.api.event.PlayerFactionEvent;
+import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.bus.api.SubscribeEvent;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
@@ -13,10 +14,11 @@ public class VampirismEvents {
 
     @SubscribeEvent
     public static void onFactionChanged(PlayerFactionEvent.FactionLevelChanged.FactionLevelChangePre event) {
-        if (LegendarySurvivalOverhaul.vampirismLoaded && event.getNewFaction() == VAMPIRE_FACTION && !Config.Baked.thirstEnabledIfVampire)
-            ThirstUtil.deactivateThirst(event.getPlayer().getPlayer());
+        Player player = event.getPlayer().asEntity();
+        if (LegendarySurvivalOverhaul.vampirismLoaded && event.getCurrentFaction() == VAMPIRE_FACTION && !Config.Baked.thirstEnabledIfVampire)
+            ThirstUtil.deactivateThirst(player);
         else
-            ThirstUtil.activateThirst(event.getPlayer().getPlayer());
+            ThirstUtil.activateThirst(player);
     }
 
     @SubscribeEvent

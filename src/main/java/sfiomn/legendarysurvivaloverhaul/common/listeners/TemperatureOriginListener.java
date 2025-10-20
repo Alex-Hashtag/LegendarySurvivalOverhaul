@@ -12,6 +12,8 @@ import net.minecraft.util.profiling.ProfilerFiller;
 import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import net.minecraft.server.level.ServerPlayer;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonTemperatureResistance;
 import sfiomn.legendarysurvivaloverhaul.api.data.manager.ITemperatureOriginManager;
@@ -36,19 +38,23 @@ public class TemperatureOriginListener extends SimpleJsonResourceReloadListener 
         resourceLocationJsonElementMap.forEach((key, json) -> {
             try {
                 var parsedJson = JsonTemperatureResistance.CODEC.parse(JsonOps.INSTANCE, json);
-                JsonTemperatureResistance temperatures = parsedJson.getOrThrow(false, error -> LegendarySurvivalOverhaul.LOGGER.error("Failed parsing temperature origin : {}", error));
+                JsonTemperatureResistance temperatures = parsedJson.getOrThrow(err -> new IllegalStateException("Failed parsing temperature origin: " + err));
                 if (ModList.get().isLoaded(key.getNamespace()))
                     TEMPERATURE_ORIGINS.put(key, temperatures);
-            } catch (JsonParseException error) {
-                LegendarySurvivalOverhaul.LOGGER.error("Failed to parse temperature origin json {}", key);
+            } catch (JsonParseException | IllegalStateException error) {
+                LegendarySurvivalOverhaul.LOGGER.error("Failed to parse temperature origin json {}", key, error);
             }
         });
 
         LegendarySurvivalOverhaul.LOGGER.info("Loaded {} temperature origins", TEMPERATURE_ORIGINS.size());
     }
 
-    public static void sendDataToClient(PacketDistributor.PacketTarget packetTarget) {
-        SyncTemperatureOriginsPacket.sendTo(packetTarget, TEMPERATURE_ORIGINS);
+    public static void sendDataToClient(@Nullable ServerPlayer player) {
+        if (player == null) {
+            PacketDistributor.sendToAllPlayers(new SyncTemperatureOriginsPacket(TEMPERATURE_ORIGINS));
+        } else {
+            PacketDistributor.sendToPlayer(player, new SyncTemperatureOriginsPacket(TEMPERATURE_ORIGINS));
+        }
     }
 
     public static void acceptServerTemperatureOrigins(Map<ResourceLocation, JsonTemperatureResistance> temperatureOrigins) {

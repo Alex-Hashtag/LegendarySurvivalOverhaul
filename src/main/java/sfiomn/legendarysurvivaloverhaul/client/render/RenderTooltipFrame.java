@@ -1,18 +1,18 @@
 package sfiomn.legendarysurvivaloverhaul.client.render;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.decoration.ItemFrame;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
-import net.neoforged.neoforge.client.gui.overlay.ExtendedGui;
-import net.neoforged.neoforge.client.gui.overlay.IGuiOverlay;
-import net.neoforged.neoforge.common.NeoForgeMod;
-import sereneseasons.api.SSItems;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.temperature.TemperatureItemCapability;
 import sfiomn.legendarysurvivaloverhaul.common.integration.eclipticseasons.EclipticSeasonsUtil;
@@ -26,7 +26,7 @@ import static sfiomn.legendarysurvivaloverhaul.util.ItemUtil.compassLocation;
 import static sfiomn.legendarysurvivaloverhaul.util.WorldUtil.timeInGame;
 
 public class RenderTooltipFrame {
-    public static final ResourceLocation ICONS = new ResourceLocation(LegendarySurvivalOverhaul.MOD_ID, "textures/gui/overlay.png");
+    public static final ResourceLocation ICONS = ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "textures/gui/overlay.png");
 
     private static final int FRAME_HEIGHT = 20;
     private static final int FRAME_WIDTH = 122;
@@ -40,13 +40,13 @@ public class RenderTooltipFrame {
 
     private static Entity ENTITY_LOOKED_AT = null;
 
-    public static IGuiOverlay TOOLTIP_ITEM_FRAME = (forgeGui, guiGraphics, partialTicks, width, height) -> {
+    public static void render(Gui gui, GuiGraphics guiGraphics, float partialTicks, int width, int height) {
         Player player = Minecraft.getInstance().player;
         if (player != null) {
             if (ENTITY_LOOKED_AT == null || player.tickCount % 4 == 0) {
                 ENTITY_LOOKED_AT = WorldUtil.getEntityLookedAt(
                         player,
-                        player.getAttributeValue(NeoForgeMod.ENTITY_REACH)
+                        player.getAttributeValue(Attributes.ENTITY_INTERACTION_RANGE)
                 );
             }
         }
@@ -54,36 +54,37 @@ public class RenderTooltipFrame {
         if (ENTITY_LOOKED_AT instanceof ItemFrame && !((ItemFrame) ENTITY_LOOKED_AT).getItem().isEmpty()) {
             Item itemInFrame = ((ItemFrame) ENTITY_LOOKED_AT).getItem().getItem();
 
-            if (LegendarySurvivalOverhaul.sereneSeasonsLoaded && (itemInFrame == SSItems.CALENDAR || itemInFrame == ItemRegistry.SEASONAL_CALENDAR.get())) {
-                render(forgeGui, guiGraphics, width, height, SereneSeasonsUtil.seasonTooltip(ENTITY_LOOKED_AT.blockPosition(), ENTITY_LOOKED_AT.level()));
+            Component text = null;
+            if (LegendarySurvivalOverhaul.sereneSeasonsLoaded &&
+                    (java.util.Objects.equals(BuiltInRegistries.ITEM.getKey(itemInFrame), ResourceLocation.fromNamespaceAndPath("sereneseasons", "calendar"))
+                            || itemInFrame == ItemRegistry.SEASONAL_CALENDAR.get())) {
+                text = SereneSeasonsUtil.seasonTooltip(ENTITY_LOOKED_AT.blockPosition(), ENTITY_LOOKED_AT.level());
             } else if (LegendarySurvivalOverhaul.eclipticSeasonsLoaded && itemInFrame == ItemRegistry.SEASONAL_CALENDAR.get()) {
-                render(forgeGui, guiGraphics, width, height, EclipticSeasonsUtil.seasonTooltip(ENTITY_LOOKED_AT.level()));
+                text = EclipticSeasonsUtil.seasonTooltip(ENTITY_LOOKED_AT.level());
             } else if (itemInFrame == ItemRegistry.THERMOMETER.get()) {
                 TemperatureItemCapability tempItemCap = CapabilityUtil.getTempItemCapability(((ItemFrame) ENTITY_LOOKED_AT).getItem());
                 float temperature = tempItemCap.getWorldTemperatureLevel();
-                Component temperatureComponent;
                 if (Config.Baked.renderTemperatureInFahrenheit) {
-                    temperatureComponent = Component.literal(WorldUtil.toFahrenheit(temperature) + "\u00B0F");
+                    text = Component.literal(WorldUtil.toFahrenheit(temperature) + "\u00B0F");
                 } else {
-                    temperatureComponent = Component.literal(temperature + "\u00B0C");
+                    text = Component.literal(temperature + "\u00B0C");
                 }
-                render(forgeGui, guiGraphics, width, height, temperatureComponent);
             } else if (itemInFrame == Items.COMPASS) {
-                String compassLocation = compassLocation(ENTITY_LOOKED_AT);
-                if (!compassLocation.isEmpty())
-                    render(forgeGui, guiGraphics, width, height, Component.literal(compassLocation));
+                String loc = compassLocation(ENTITY_LOOKED_AT);
+                if (!loc.isEmpty()) text = Component.literal(loc);
             } else if (itemInFrame == Items.CLOCK) {
-                render(forgeGui, guiGraphics, width, height, Component.literal(timeInGame(Minecraft.getInstance())));
+                text = Component.literal(timeInGame(Minecraft.getInstance()));
+            }
+
+            if (text != null) {
+                RenderSystem.enableBlend();
+                RenderSystem.defaultBlendFunc();
+                Minecraft.getInstance().getProfiler().push("tooltip_frame");
+                drawTooltipInFrame(guiGraphics, width, height, text);
+                Minecraft.getInstance().getProfiler().pop();
+                RenderSystem.disableBlend();
             }
         }
-    };
-
-    public static void render(ExtendedGui forgeGui, GuiGraphics guiGraphics, int width, int height, Component text) {
-        forgeGui.setupOverlayRenderState(true, false);
-
-        Minecraft.getInstance().getProfiler().push("tooltip_frame");
-        drawTooltipInFrame(guiGraphics, width, height, text);
-        Minecraft.getInstance().getProfiler().pop();
     }
 
     public static void drawTooltipInFrame(GuiGraphics gui, int width, int height, Component text) {

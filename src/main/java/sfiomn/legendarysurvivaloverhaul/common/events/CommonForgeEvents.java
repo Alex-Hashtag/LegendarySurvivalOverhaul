@@ -14,21 +14,25 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.core.Holder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.LevelData;
 import net.minecraft.world.level.storage.PrimaryLevelData;
 import net.neoforged.api.distmarker.Dist;
 //import net.neoforged.neoforge.common.ForgeMod;
+import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import net.neoforged.bus.api.Event;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.loading.FMLEnvironment;
-import net.neoforged.neoforge.common.NeoForgeMod;
 import net.neoforged.neoforge.event.ItemAttributeModifierEvent;
 import net.neoforged.neoforge.event.OnDatapackSyncEvent;
 import net.neoforged.neoforge.event.entity.living.*;
@@ -40,6 +44,7 @@ import net.neoforged.neoforge.event.level.SleepFinishedTimeEvent;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.fml.common.Mod;
 //import net.neoforged.neoforge.fml.loading.FMLEnvironment;
+import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.minecraft.core.registries.Registries;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
@@ -79,7 +84,10 @@ import static sfiomn.legendarysurvivaloverhaul.util.internal.TemperatureUtilInte
 import static sfiomn.legendarysurvivaloverhaul.util.internal.TemperatureUtilInternal.equipmentSlotTemperatureUuid;
 
 
-@Mod.EventBusSubscriber(modid = LegendarySurvivalOverhaul.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
+@EventBusSubscriber(
+        modid = LegendarySurvivalOverhaul.MOD_ID,
+        bus = EventBusSubscriber.Bus.GAME
+)
 public class CommonForgeEvents {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
@@ -99,7 +107,7 @@ public class CommonForgeEvents {
 
         if (LegendarySurvivalOverhaul.medsandherbsLoaded
                 && itemRegistryName != null && itemRegistryName.getNamespace().equals("meds_and_herbs")) {
-            if(itemRegistryName.equals(new ResourceLocation("meds_and_herbs", "syringe_morphine"))) {
+            if(itemRegistryName.equals(ResourceLocation.fromNamespaceAndPath("meds_and_herbs", "syringe_morphine"))) {
                 if (!MedsAndHerbsUtil.triggerMorphineBehavior(player)) {
                     event.setCanceled(true);
                     event.setCancellationResult(InteractionResult.CONSUME);
@@ -152,8 +160,8 @@ public class CommonForgeEvents {
                     if (hasMenu)
                         return;
 
-                    JsonThirstBlock jsonBlockThirst = ThirstUtil.getBlockThirstLookedAt(player, player.getAttributeValue(NeoForgeMod.BLOCK_REACH) / 2);
-                    JsonThirstBlock jsonFluidThirst = ThirstUtil.getFluidThirstLookedAt(player, player.getAttributeValue(NeoForgeMod.BLOCK_REACH) / 2);
+                    JsonThirstBlock jsonBlockThirst = ThirstUtil.getBlockThirstLookedAt(player, (float)(player.getAttributeValue(Attributes.BLOCK_INTERACTION_RANGE) / 2));
+                    JsonThirstBlock jsonFluidThirst = ThirstUtil.getFluidThirstLookedAt(player, (float)(player.getAttributeValue(Attributes.BLOCK_INTERACTION_RANGE) / 2));
 
                     //  If we can drink on a block, cancel its use except if crouching
                     if (jsonBlockThirst != null && (jsonBlockThirst.hydration != 0 || jsonBlockThirst.saturation != 0) && !event.getEntity().isCrouching()) {
@@ -193,13 +201,13 @@ public class CommonForgeEvents {
 
     @SubscribeEvent
     public static void onAttributeModifier(ItemAttributeModifierEvent event) {
-        if (!Config.Baked.temperatureEnabled)
+        if (!Config.Baked.temperatureEnabled && !Config.Baked.localizedBodyDamageEnabled)
             return;
 
         if (FMLEnvironment.dist == Dist.CLIENT)
             if(Minecraft.getInstance().level == null) return;
 
-        if (ItemUtil.canBeEquippedInSlot(event.getItemStack(), event.getSlotType())) {
+        if (ItemUtil.canBeEquippedInSlot(event.getItemStack(), ItemUtil.getEquippableSlot(event.getItemStack()))) {
 
             if (Config.Baked.temperatureEnabled) {
                 JsonTemperatureResistance config = new JsonTemperatureResistance();
@@ -210,7 +218,7 @@ public class CommonForgeEvents {
                     config.add(attributeModifier.getItemAttributes(event.getItemStack()));
                 }
 
-                UUID modifierUuid = equipmentSlotTemperatureUuid.get(event.getSlotType());
+                UUID modifierUuid = equipmentSlotTemperatureUuid.get(ItemUtil.getEquippableSlot(event.getItemStack()));
 
                 if (config.temperature != 0) {
                     HEATING_TEMPERATURE.addModifier(event, modifierUuid, Math.max(config.temperature, 0));
@@ -234,7 +242,7 @@ public class CommonForgeEvents {
                 if (itemRegistryName == null || config == null)
                     return;
 
-                UUID modifierUuid = equipmentSlotBodyResistanceUuid.get(event.getSlotType());
+                UUID modifierUuid = equipmentSlotBodyResistanceUuid.get(ItemUtil.getEquippableSlot(event.getItemStack()));
 
                 if (config.bodyResistance != 0)
                     BODY_RESISTANCE.addModifier(event, modifierUuid, config.bodyResistance);
@@ -264,7 +272,7 @@ public class CommonForgeEvents {
     public static void onJump(LivingEvent.LivingJumpEvent event) {
         LivingEntity entity = event.getEntity();
         if (entity instanceof Player && shouldApplyThirst((Player) entity) && !entity.level().isClientSide) {
-            ThirstUtil.addExhaustion((Player) entity, (float) Config.Baked.onJumpThirstExhaustion);
+            ThirstUtil.addExhaustion((Player) entity, (float) Config.Baked.onJumpHydrationExhaustion);
         }
     }
 
@@ -272,7 +280,7 @@ public class CommonForgeEvents {
     public static void onBlockBreak(BlockEvent.BreakEvent event) {
         Player player = event.getPlayer();
         if (shouldApplyThirst(player) && !player.level().isClientSide && event.getState().getDestroySpeed(event.getLevel(), event.getPos()) > 0.0f) {
-            ThirstUtil.addExhaustion(player, (float) Config.Baked.onBlockBreakThirstExhaustion);
+            ThirstUtil.addExhaustion(player, (float) Config.Baked.onBlockBreakHydrationExhaustion);
         }
     }
 
@@ -282,33 +290,33 @@ public class CommonForgeEvents {
         if (shouldApplyThirst(player) && !player.level().isClientSide) {
             Entity monster = event.getTarget();
             if(monster.isAttackable()) {
-                ThirstUtil.addExhaustion(player, (float) Config.Baked.onAttackThirstExhaustion);
+                ThirstUtil.addExhaustion(player, (float) Config.Baked.onAttackHydrationExhaustion);
                 player.causeFoodExhaustion((float) Config.Baked.onAttackFoodExhaustion);
             }
         }
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public static void onEntityHurt(LivingHurtEvent event) {
+    public static void onEntityHurt(LivingIncomingDamageEvent event) {
         if (!event.getSource().is(DamageTypes.FALL) &&
             !event.getSource().is(DamageTypes.STARVE) &&
             !event.getSource().is(DamageTypes.FREEZE) &&
             !event.getSource().is(DamageTypes.DROWN) &&
             !event.getSource().is(ModDamageTypes.DEHYDRATION) &&
             !event.getSource().is(ModDamageTypes.HYPOTHERMIA) &&
-            !event.getSource().is(ModDamageTypes.HYPERTHERMIA) && event.getEntity().hasEffect(MobEffectRegistry.VULNERABILITY.get())) {
+            !event.getSource().is(ModDamageTypes.HYPERTHERMIA) && event.getEntity().hasEffect(MobEffectRegistry.VULNERABILITY)) {
 
-            event.setAmount(event.getAmount() * (1 + 0.2f * Objects.requireNonNull(event.getEntity().getEffect(MobEffectRegistry.VULNERABILITY.get())).getAmplifier() + 1));
+            event.setAmount(event.getAmount() * (1 + 0.2f * Objects.requireNonNull(event.getEntity().getEffect(MobEffectRegistry.VULNERABILITY)).getAmplifier() + 1));
 
-        } else if (event.getSource().is(DamageTypes.FALL) && event.getEntity().hasEffect(MobEffectRegistry.HARD_FALLING.get())) {
+        } else if (event.getSource().is(DamageTypes.FALL) && event.getEntity().hasEffect(MobEffectRegistry.HARD_FALLING)) {
 
-            event.setAmount(event.getAmount() * (1 + 0.2f * Objects.requireNonNull(event.getEntity().getEffect(MobEffectRegistry.HARD_FALLING.get())).getAmplifier() + 1));
+            event.setAmount(event.getAmount() * (1 + 0.2f * Objects.requireNonNull(event.getEntity().getEffect(MobEffectRegistry.HARD_FALLING)).getAmplifier() + 1));
             event.getEntity().level().playSound(null, event.getEntity(), SoundRegistry.HARD_FALLING_HURT.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
         }
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public static void onEntityHurtDamage(LivingDamageEvent event) {
+    public static void onEntityHurtDamage(LivingIncomingDamageEvent event) {
         Player player;
         if (event.getEntity() instanceof Player)
             player = (Player) event.getEntity();
@@ -393,12 +401,11 @@ public class CommonForgeEvents {
 
                 HealthCapability healthCapability = CapabilityUtil.getHealthCapability(player);
                 healthCapability.addShieldHealth(2);
-
-                event.setResult(Event.Result.DENY);
+                event.setResult(MobEffectEvent.Applicable.Result.DO_NOT_APPLY);
             }
             if (event.getEffectInstance().getEffect() == MobEffectRegistry.THIRST.get() &&
                     CuriosUtil.isCurioItemEquipped(player, ItemRegistry.WATER_PURIFIER.get())) {
-                event.setResult(Event.Result.DENY);
+                event.setResult(MobEffectEvent.Applicable.Result.DO_NOT_APPLY);
             }
         }
     }
@@ -409,7 +416,7 @@ public class CommonForgeEvents {
             return;
 
         if (Config.Baked.temperatureImmunityOnDeathEnabled && Config.Baked.temperatureEnabled) {
-            event.getEntity().addEffect(new MobEffectInstance(MobEffectRegistry.TEMPERATURE_IMMUNITY.get(), Config.Baked.temperatureImmunityOnDeathTime, 0, false, false, true));
+            event.getEntity().addEffect(new MobEffectInstance(MobEffectRegistry.TEMPERATURE_IMMUNITY, Config.Baked.temperatureImmunityOnDeathTime, 0, false, false, true));
         }
     }
 
@@ -417,7 +424,7 @@ public class CommonForgeEvents {
     public static void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
         if (Config.Baked.temperatureImmunityOnFirstSpawnEnabled && Config.Baked.temperatureEnabled && !event.getEntity().getPersistentData().getBoolean("tempImmuneOnSpawn")) {
             event.getEntity().getPersistentData().putBoolean("tempImmuneOnSpawn", true);
-            event.getEntity().addEffect(new MobEffectInstance(MobEffectRegistry.TEMPERATURE_IMMUNITY.get(), Config.Baked.temperatureImmunityOnFirstSpawnTime, 0, false, false, true));
+            event.getEntity().addEffect(new MobEffectInstance(MobEffectRegistry.TEMPERATURE_IMMUNITY, Config.Baked.temperatureImmunityOnFirstSpawnTime, 0, false, false, true));
         }
 
         if (Config.Baked.healthOverhaulEnabled) {
@@ -426,6 +433,40 @@ public class CommonForgeEvents {
 
         HealthUtil.updatePlayerMaxHealthAttribute(event.getEntity());
         BodyDamageUtil.updatePlayerBrokenHeartAttribute(event.getEntity());
+
+        // Sync all capabilities to client on login
+        if (event.getEntity() instanceof net.minecraft.server.level.ServerPlayer serverPlayer) {
+            if (Config.Baked.temperatureEnabled) {
+                var tempCap = CapabilityUtil.getTempCapability(serverPlayer);
+                sfiomn.legendarysurvivaloverhaul.network.packets.UpdateTemperaturesPacket.sendToPlayer(
+                    serverPlayer, tempCap.writeNBT()
+                );
+            }
+            if (Config.Baked.thirstEnabled) {
+                var thirstCap = CapabilityUtil.getThirstCapability(serverPlayer);
+                sfiomn.legendarysurvivaloverhaul.network.packets.UpdateThirstPacket.sendToPlayer(
+                    serverPlayer, thirstCap.writeNBT()
+                );
+            }
+            if (Config.Baked.wetnessEnabled) {
+                var wetnessCap = CapabilityUtil.getWetnessCapability(serverPlayer);
+                sfiomn.legendarysurvivaloverhaul.network.packets.UpdateWetnessPacket.sendToPlayer(
+                    serverPlayer, wetnessCap.writeNBT()
+                );
+            }
+            if (Config.Baked.localizedBodyDamageEnabled) {
+                var bodyCap = CapabilityUtil.getBodyDamageCapability(serverPlayer);
+                sfiomn.legendarysurvivaloverhaul.network.packets.UpdateBodyDamagePacket.sendToPlayer(
+                    serverPlayer, bodyCap.writeNBT()
+                );
+            }
+            if (Config.Baked.healthOverhaulEnabled) {
+                var healthCap = CapabilityUtil.getHealthCapability(serverPlayer);
+                sfiomn.legendarysurvivaloverhaul.network.packets.UpdateHeartsPacket.sendToPlayer(
+                    serverPlayer, healthCap.writeNBT()
+                );
+            }
+        }
     }
 
     @SubscribeEvent
@@ -441,25 +482,96 @@ public class CommonForgeEvents {
     @SubscribeEvent
     public static void onDataPackSyncEvent(OnDatapackSyncEvent event) {
         final ServerPlayer player = event.getPlayer();
-        final PacketDistributor.PacketTarget target =
-                player == null ? PacketDistributor.ALL.noArg() : PacketDistributor.PLAYER.with(player);
+        
+        ThirstBlockListener.sendDataToClient(player);
+        ThirstConsumableListener.sendDataToClient(player);
 
+        TemperatureBiomeListener.sendDataToClient(player);
+        TemperatureBlockListener.sendDataToClient(player);
+        TemperatureConsumableListener.sendDataToClient(player);
+        TemperatureDimensionListener.sendDataToClient(player);
+        TemperatureFuelItemListener.sendDataToClient(player);
+        TemperatureItemListener.sendDataToClient(player);
+        TemperatureMountListener.sendDataToClient(player);
+        TemperatureOriginListener.sendDataToClient(player);
 
-        ThirstBlockListener.sendDataToClient(target);
-        ThirstConsumableListener.sendDataToClient(target);
+        BodyDamageHealingConsumableListener.sendDataToClient(player);
+        BodyPartsDamageSourceListener.sendDataToClient(player);
+        BodyPartResistanceItemListener.sendDataToClient(player);
+    }
 
-        TemperatureBiomeListener.sendDataToClient(target);
-        TemperatureBlockListener.sendDataToClient(target);
-        TemperatureConsumableListener.sendDataToClient(target);
-        TemperatureDimensionListener.sendDataToClient(target);
-        TemperatureFuelItemListener.sendDataToClient(target);
-        TemperatureItemListener.sendDataToClient(target);
-        TemperatureMountListener.sendDataToClient(target);
-        TemperatureOriginListener.sendDataToClient(target);
+    @SubscribeEvent
+    public static void onPlayerTick(PlayerTickEvent.Post event) {
+        Player player = event.getEntity();
+        if (player.level().isClientSide || !(player instanceof net.minecraft.server.level.ServerPlayer serverPlayer))
+            return;
 
-        BodyDamageHealingConsumableListener.sendDataToClient(target);
-        BodyPartsDamageSourceListener.sendDataToClient(target);
-        BodyPartResistanceItemListener.sendDataToClient(target);
+        Level level = player.level();
+        boolean isStart = player.tickCount < 20;
+
+        // Update Temperature
+        if (Config.Baked.temperatureEnabled) {
+            var tempCap = CapabilityUtil.getTempCapability(player);
+            tempCap.tickUpdate(player, level, isStart);
+            if (tempCap.isDirty()) {
+                sfiomn.legendarysurvivaloverhaul.network.packets.UpdateTemperaturesPacket.sendToPlayer(
+                    serverPlayer, tempCap.writeNBT()
+                );
+                tempCap.setClean();
+            }
+        }
+
+        // Update Thirst
+        if (Config.Baked.thirstEnabled) {
+            var thirstCap = CapabilityUtil.getThirstCapability(player);
+            thirstCap.tickUpdate(player, level, isStart);
+            if (thirstCap.isDirty()) {
+                sfiomn.legendarysurvivaloverhaul.network.packets.UpdateThirstPacket.sendToPlayer(
+                    serverPlayer, thirstCap.writeNBT()
+                );
+                thirstCap.setClean();
+            }
+        }
+
+        // Update Wetness
+        if (Config.Baked.wetnessEnabled) {
+            var wetnessCap = CapabilityUtil.getWetnessCapability(player);
+            wetnessCap.tickUpdate(player, level, isStart);
+            if (wetnessCap.isDirty()) {
+                sfiomn.legendarysurvivaloverhaul.network.packets.UpdateWetnessPacket.sendToPlayer(
+                    serverPlayer, wetnessCap.writeNBT()
+                );
+                wetnessCap.setClean();
+            }
+        }
+
+        // Update Food (temperature effects on hunger)
+        if (Config.Baked.temperatureEnabled) {
+            CapabilityUtil.getFoodCapability(player).tickUpdate(player, level, isStart);
+        }
+
+        // Update Body Damage
+        if (Config.Baked.localizedBodyDamageEnabled) {
+            var bodyCap = CapabilityUtil.getBodyDamageCapability(player);
+            bodyCap.tickUpdate(player, level, isStart);
+            if (bodyCap.isDirty()) {
+                sfiomn.legendarysurvivaloverhaul.network.packets.UpdateBodyDamagePacket.sendToPlayer(
+                    serverPlayer, bodyCap.writeNBT()
+                );
+                bodyCap.setClean();
+            }
+        }
+
+        // Update Health
+        if (Config.Baked.healthOverhaulEnabled) {
+            var healthCap = CapabilityUtil.getHealthCapability(player);
+            if (healthCap.isDirty()) {
+                sfiomn.legendarysurvivaloverhaul.network.packets.UpdateHeartsPacket.sendToPlayer(
+                    serverPlayer, healthCap.writeNBT()
+                );
+                healthCap.setClean();
+            }
+        }
     }
 
     private static boolean shouldApplyThirst(Player player)

@@ -15,6 +15,8 @@ import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.minecraft.core.registries.Registries;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import net.minecraft.server.level.ServerPlayer;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonThirstBlock;
 import sfiomn.legendarysurvivaloverhaul.api.data.manager.IThirstBlockManager;
@@ -39,7 +41,7 @@ public class ThirstBlockListener extends SimpleJsonResourceReloadListener implem
         resourceLocationJsonElementMap.forEach((key, json) -> {
             try {
                 var parsedJson = JsonThirstBlock.LIST_CODEC.parse(JsonOps.INSTANCE, json);
-                List<JsonThirstBlock> parsedThirstBlocks = parsedJson.getOrThrow(false, error -> LegendarySurvivalOverhaul.LOGGER.error("Failed parsing thirst block : {}", error));
+                List<JsonThirstBlock> parsedThirstBlocks = parsedJson.getOrThrow(err -> new IllegalStateException("Failed parsing thirst block: " + err));
                 if (ModList.get().isLoaded(key.getNamespace()))
                     THIRST_BLOCKS.put(key, parsedThirstBlocks);
             } catch (Exception error) {
@@ -50,8 +52,12 @@ public class ThirstBlockListener extends SimpleJsonResourceReloadListener implem
         LegendarySurvivalOverhaul.LOGGER.info("Loaded {} thirst blocks", THIRST_BLOCKS.size());
     }
 
-    public static void sendDataToClient(PacketDistributor.PacketTarget packetTarget) {
-        SyncThirstBlocksPacket.sendTo(packetTarget, THIRST_BLOCKS);
+    public static void sendDataToClient(@Nullable ServerPlayer player) {
+        if (player == null) {
+            PacketDistributor.sendToAllPlayers(new SyncThirstBlocksPacket(THIRST_BLOCKS));
+        } else {
+            PacketDistributor.sendToPlayer(player, new SyncThirstBlocksPacket(THIRST_BLOCKS));
+        }
     }
 
     public static void acceptServerThirstBlocks(Map<ResourceLocation, List<JsonThirstBlock>> thirstBlocks) {
@@ -90,7 +96,7 @@ public class ThirstBlockListener extends SimpleJsonResourceReloadListener implem
         List<JsonThirstBlock> jsonThirstBlocks = null;
         JsonThirstBlock defaultJct = null;
 
-        ResourceLocation fluidRegistryName = Registries.FLUIDS.getKey(fluid.getType());
+        ResourceLocation fluidRegistryName = BuiltInRegistries.FLUID.getKey(fluid.getType());
 
         if (fluidRegistryName != null)
             jsonThirstBlocks = THIRST_BLOCKS.get(fluidRegistryName);

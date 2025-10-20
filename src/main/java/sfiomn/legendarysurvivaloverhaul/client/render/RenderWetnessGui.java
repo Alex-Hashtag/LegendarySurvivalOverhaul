@@ -1,10 +1,11 @@
 package sfiomn.legendarysurvivaloverhaul.client.render;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.neoforge.client.gui.overlay.IGuiOverlay;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.wetness.WetnessCapability;
 import sfiomn.legendarysurvivaloverhaul.common.integration.curios.CuriosUtil;
@@ -18,7 +19,7 @@ public class RenderWetnessGui
 	private static WetnessCapability WETNESS_CAP = null;
 	private static final Random rand = new Random();
 
-	private static final ResourceLocation ICONS = new ResourceLocation(LegendarySurvivalOverhaul.MOD_ID, "textures/gui/overlay.png");
+    private static final ResourceLocation ICONS = ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "textures/gui/overlay.png");
 	
 	private static final int WETNESS_TEXTURE_POS_Y = 96;
 	
@@ -30,23 +31,22 @@ public class RenderWetnessGui
 	private static WetnessIcon lastWetnessIcon;
 	private static int flashCounter = -1;
 	
-	public static IGuiOverlay WETNESS_GUI = (forgeGui, guiGraphics, partialTicks, width, height) -> {
-		if (Config.Baked.wetnessEnabled
-				&& !Minecraft.getInstance().options.hideGui
-				&& forgeGui.shouldDrawSurvivalElements()) {
-			Player player = forgeGui.getMinecraft().player;
-
-			if (player != null) {
+	public static void render(Gui gui, GuiGraphics guiGraphics, float partialTicks, int width, int height) {
+		if (Config.Baked.wetnessEnabled && !Minecraft.getInstance().options.hideGui) {
+			Player player = Minecraft.getInstance().player;
+			if (player != null && !player.isCreative() && !player.isSpectator()) {
 				rand.setSeed(player.tickCount * 445L);
-
-				forgeGui.setupOverlayRenderState(true, false);
+				RenderSystem.enableBlend();
+				RenderSystem.defaultBlendFunc();
 
 				Minecraft.getInstance().getProfiler().push("wetness_gui");
 				drawWetness(guiGraphics, player, width, height);
 				Minecraft.getInstance().getProfiler().pop();
+
+				RenderSystem.disableBlend();
 			}
 		}
-	};
+	}
 	
 	public static void drawWetness(GuiGraphics gui, Player player, int width, int height)
 	{

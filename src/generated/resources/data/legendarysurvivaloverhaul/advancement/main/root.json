@@ -1,0 +1,28 @@
+{
+  "criteria": {
+    "main": {
+      "trigger": "minecraft:tick"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "background": "minecraft:textures/block/ice.png",
+    "description": {
+      "translate": "advancement.legendarysurvivaloverhaul.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "legendarysurvivaloverhaul:thermometer"
+    },
+    "show_toast": false,
+    "title": {
+      "translate": "advancement.legendarysurvivaloverhaul"
+    }
+  },
+  "requirements": [
+    [
+      "main"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

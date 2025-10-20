@@ -15,12 +15,13 @@ public class ColdHungerEffect extends IncurableMobEffect {
     }
 
     @Override
-    public void applyEffectTick(@NotNull LivingEntity entity, int amplifier)
+    public boolean applyEffectTick(@NotNull LivingEntity entity, int amplifier)
     {
         if(entity instanceof Player)
         {
             ((Player)entity).causeFoodExhaustion((float) (Config.Baked.coldHungerEffectModifier * (amplifier + 1)));
         }
+        return true;
     }
 
     @Override

@@ -12,6 +12,8 @@ import net.minecraft.util.profiling.ProfilerFiller;
 import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import net.minecraft.server.level.ServerPlayer;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonTemperatureFuelItem;
 import sfiomn.legendarysurvivaloverhaul.api.data.manager.ITemperatureFuelItemManager;
@@ -36,19 +38,23 @@ public class TemperatureFuelItemListener extends SimpleJsonResourceReloadListene
         resourceLocationJsonElementMap.forEach((key, json) -> {
             try {
                 var parsedJson = JsonTemperatureFuelItem.CODEC.parse(JsonOps.INSTANCE, json);
-                JsonTemperatureFuelItem temperatures = parsedJson.getOrThrow(false, error -> LegendarySurvivalOverhaul.LOGGER.error("Failed parsing temperature fuel item : {}", error));
+                JsonTemperatureFuelItem temperatures = parsedJson.getOrThrow(err -> new IllegalStateException("Failed parsing temperature fuel item: " + err));
                 if (ModList.get().isLoaded(key.getNamespace()))
                     TEMPERATURE_FUEL_ITEMS.put(key, temperatures);
-            } catch (JsonParseException error) {
-                LegendarySurvivalOverhaul.LOGGER.error("Failed to parse temperature fuel item json {}", key);
+            } catch (JsonParseException | IllegalStateException error) {
+                LegendarySurvivalOverhaul.LOGGER.error("Failed to parse temperature fuel item json {}", key, error);
             }
         });
 
         LegendarySurvivalOverhaul.LOGGER.info("Loaded {} temperature fuel items", TEMPERATURE_FUEL_ITEMS.size());
     }
 
-    public static void sendDataToClient(PacketDistributor.PacketTarget packetTarget) {
-        SyncTemperatureFuelItemsPacket.sendTo(packetTarget, TEMPERATURE_FUEL_ITEMS);
+    public static void sendDataToClient(@Nullable ServerPlayer player) {
+        if (player == null) {
+            PacketDistributor.sendToAllPlayers(new SyncTemperatureFuelItemsPacket(TEMPERATURE_FUEL_ITEMS));
+        } else {
+            PacketDistributor.sendToPlayer(player, new SyncTemperatureFuelItemsPacket(TEMPERATURE_FUEL_ITEMS));
+        }
     }
 
     public static void acceptServerTemperatureFuelItems(Map<ResourceLocation, JsonTemperatureFuelItem> temperatureFuelItems) {
@@ -59,5 +65,5 @@ public class TemperatureFuelItemListener extends SimpleJsonResourceReloadListene
     @Override
     public JsonTemperatureFuelItem get(ResourceLocation itemRegistryName) {
         return TEMPERATURE_FUEL_ITEMS.get(itemRegistryName);
-    }
+    }   
 }

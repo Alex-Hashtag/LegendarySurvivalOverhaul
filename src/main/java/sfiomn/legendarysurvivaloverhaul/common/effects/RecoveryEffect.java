@@ -12,8 +12,9 @@ public class RecoveryEffect extends MobEffect {
     }
 
     @Override
-    public void applyEffectTick(@NotNull LivingEntity entity, int amplifier) {
+    public boolean applyEffectTick(@NotNull LivingEntity entity, int amplifier) {
         entity.heal((float) Config.Baked.recoveryEffectHealingValue);
+        return true;
     }
 
     @Override

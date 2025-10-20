@@ -13,11 +13,9 @@ import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.neoforge.common.IPlantable;
-import net.neoforged.neoforge.common.PlantType;
 import sfiomn.legendarysurvivaloverhaul.registry.ParticleTypeRegistry;
 
-public class IceFernGoldBlock extends BushBlock implements IPlantable {
+public class IceFernGoldBlock extends BushBlock {
 
     // 1) Required for 1.20.3+ block serialization
     public static final MapCodec<IceFernGoldBlock> CODEC = simpleCodec(IceFernGoldBlock::new);
@@ -60,15 +58,5 @@ public class IceFernGoldBlock extends BushBlock implements IPlantable {
         if (level.getGameTime() % 3 == 0) {
             level.addParticle(ParticleTypeRegistry.ICE_FERN_BLOSSOM.get(), x, y, z, 0.04D, 0.01D, 0.04D);
         }
-    }
-
-    @Override
-    public PlantType getPlantType(BlockGetter level, BlockPos pos) {
-        return PlantType.PLAINS;
-    }
-
-    @Override
-    public BlockState getPlant(BlockGetter world, BlockPos pos) {
-        return defaultBlockState();
     }
 }

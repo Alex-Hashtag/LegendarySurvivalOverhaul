@@ -5,7 +5,6 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerLevelAccess;
@@ -58,15 +57,23 @@ public class SewingTableContainer extends ItemCombinerMenu {
 
     @Override
     public void createResult() {
-        SimpleContainer simpleContainerInputSlots = new SimpleContainer(this.inputSlots.getContainerSize());
-        for (int i = 0; i < this.inputSlots.getContainerSize(); i++) {
-            simpleContainerInputSlots.addItem(this.inputSlots.getItem(i));
-        }
+        // Adapt menu input slots to RecipeInput (1.21 API)
+        net.minecraft.world.item.crafting.RecipeInput recipeInput = new net.minecraft.world.item.crafting.RecipeInput() {
+            @Override
+            public ItemStack getItem(int index) {
+                return inputSlots.getItem(index);
+            }
+
+            @Override
+            public int size() {
+                return inputSlots.getContainerSize();
+            }
+        };
 
         // Now returns RecipeHolder<SewingRecipe>
         List<RecipeHolder<SewingRecipe>> sewingRecipes =
                 this.player.level().getRecipeManager()
-                        .getRecipesFor(SewingRecipe.Type.INSTANCE, simpleContainerInputSlots, this.player.level());
+                        .getRecipesFor(SewingRecipe.Type.INSTANCE, recipeInput, this.player.level());
 
         ItemStack itemStack = ItemStack.EMPTY;
 
@@ -75,7 +82,7 @@ public class SewingTableContainer extends ItemCombinerMenu {
             if (!sewingRecipes.isEmpty()) {
                 this.selectedRecipe = sewingRecipes.get(0);
                 itemStack = this.selectedRecipe.value().assemble(
-                        simpleContainerInputSlots, this.player.level().registryAccess());
+                        recipeInput, this.player.level().registryAccess());
                 // set the holder, not the recipe
                 this.resultSlots.setRecipeUsed(this.selectedRecipe);
             }
@@ -88,7 +95,7 @@ public class SewingTableContainer extends ItemCombinerMenu {
                 if (!sewingRecipes.isEmpty()) {
                     this.selectedRecipe = sewingRecipes.get(0);
                     itemStack = this.selectedRecipe.value().assemble(
-                            simpleContainerInputSlots, this.player.level().registryAccess());
+                            recipeInput, this.player.level().registryAccess());
                     this.resultSlots.setRecipeUsed(this.selectedRecipe);
                 } else {
                     // Fallback: apply coat tag directly
@@ -99,7 +106,7 @@ public class SewingTableContainer extends ItemCombinerMenu {
                     if (player instanceof ServerPlayer serverPlayer) {
                         // Advancements now use AdvancementHolder
                         AdvancementHolder sewCoatAdvancement =
-                                serverPlayer.server.getAdvancements().get(new ResourceLocation(SEW_A_COAT_ADVANCEMENT));
+                                serverPlayer.server.getAdvancements().get(ResourceLocation.parse(SEW_A_COAT_ADVANCEMENT));
                         if (sewCoatAdvancement != null) {
                             for (String criteria : serverPlayer.getAdvancements()
                                     .getOrStartProgress(sewCoatAdvancement)

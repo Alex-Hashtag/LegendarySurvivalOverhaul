@@ -13,8 +13,8 @@ import java.lang.reflect.Field;
 import java.util.List;
 
 public class FocusShader {
-    public static final ResourceLocation BLUR_SHADER = new ResourceLocation("shaders/post/blobs2.json");
-    private static final Field shaders = ObfuscationReflectionHelper.findField(PostChain.class, "f_110009_");
+    public static final ResourceLocation BLUR_SHADER = ResourceLocation.parse("shaders/post/blobs2.json");
+    private static final Field shaders = ObfuscationReflectionHelper.findField(PostChain.class, "passes");
 
     public FocusShader() {}
 

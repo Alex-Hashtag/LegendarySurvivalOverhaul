@@ -10,14 +10,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.neoforge.capabilities.Capabilities; // <— NEW
-import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.SlotItemHandler;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import sfiomn.legendarysurvivaloverhaul.api.block.ThermalTypeEnum;
 import sfiomn.legendarysurvivaloverhaul.common.blockentities.AbstractThermalBlockEntity;
-
-import java.util.function.Supplier; // <— use Supplier instead of RegistryObject
 
 public abstract class AbstractThermalContainer extends AbstractContainerMenu {
 
@@ -40,25 +35,23 @@ public abstract class AbstractThermalContainer extends AbstractContainerMenu {
         this.level = playerInventory.player.level();
         this.dataAccess = dataAccess;
 
-        layoutPlayerInventorySlots(playerInventory, 8, 84);
+        // Add thermal slots FIRST (slots 0-3) so quickMoveStack works correctly
+        addSlot(addThermalSlot(be, 0, 14, 32));
+        addSlot(addThermalSlot(be, 1, 34, 32));
+        addSlot(addThermalSlot(be, 2, 14, 52));
+        addSlot(addThermalSlot(be, 3, 34, 52));
 
-        // NEW: query the ItemHandler capability from the level (block capability API)
-        IItemHandler handler = this.level.getCapability(Capabilities.ItemHandler.BLOCK, be.getBlockPos(), null);
-        if (handler != null) {
-            addSlot(addThermalSlot(handler, 0, 14, 32));
-            addSlot(addThermalSlot(handler, 1, 34, 32));
-            addSlot(addThermalSlot(handler, 2, 14, 52));
-            addSlot(addThermalSlot(handler, 3, 34, 52));
-        }
+        // Then add player inventory (slots 4+)
+        layoutPlayerInventorySlots(playerInventory, 8, 84);
 
         addDataSlots(dataAccess);
     }
 
-    private SlotItemHandler addThermalSlot(IItemHandler ih, int index, int posX, int posY) {
-        return new SlotItemHandler(ih, index, posX, posY) {
+    private Slot addThermalSlot(AbstractThermalBlockEntity be, int index, int posX, int posY) {
+        return new Slot(be, index, posX, posY) {
             @Override
             public boolean mayPlace(ItemStack stack) {
-                return ih.isItemValid(index, stack);
+                return be.isItemValid(stack.getItem());
             }
         };
     }

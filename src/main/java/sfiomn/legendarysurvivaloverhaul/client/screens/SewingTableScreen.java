@@ -18,7 +18,7 @@ import sfiomn.legendarysurvivaloverhaul.common.containers.SewingTableContainer;
 
 @OnlyIn(Dist.CLIENT)
 public class SewingTableScreen extends AbstractContainerScreen<SewingTableContainer> {
-    public static final ResourceLocation SEWING_TABLE_SCREEN = new ResourceLocation(LegendarySurvivalOverhaul.MOD_ID, "textures/gui/sewing_table_screen.png");
+    public static final ResourceLocation SEWING_TABLE_SCREEN = ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "textures/gui/sewing_table_screen.png");
     Rect2i craftDisabledArea;
 
     public SewingTableScreen(SewingTableContainer screenContainer, Inventory playerInventory, Component titleIn) {

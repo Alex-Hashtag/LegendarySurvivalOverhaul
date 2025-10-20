@@ -1,10 +1,12 @@
 package sfiomn.legendarysurvivaloverhaul.client.render;
 
+import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.neoforge.client.gui.overlay.IGuiOverlay;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.temperature.TemperatureEnum;
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.temperature.TemperatureCapability;
@@ -20,23 +22,23 @@ import static sfiomn.legendarysurvivaloverhaul.util.RenderUtil.renderTextureOver
 @OnlyIn(Dist.CLIENT)
 public class RenderTemperatureOverlay {
     private static TemperatureCapability TEMPERATURE_CAP = null;
-    private static final ResourceLocation FROSTBITE_EFFECT = new ResourceLocation(LegendarySurvivalOverhaul.MOD_ID, "textures/gui/freeze_effect.png");
-    private static final ResourceLocation HEAT_STROKE_EFFECT = new ResourceLocation(LegendarySurvivalOverhaul.MOD_ID, "textures/gui/heat_effect.png");
+    private static final ResourceLocation FROSTBITE_EFFECT = ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "textures/gui/freeze_effect.png");
+    private static final ResourceLocation HEAT_STROKE_EFFECT = ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "textures/gui/heat_effect.png");
     private static ResourceLocation temperatureEffect = null;
     private static float fadeLevel = 0;
     private static boolean triggerTemperatureSoundEffect;
 
-    public static IGuiOverlay TEMPERATURE_OVERLAY = (forgeGui, guiGraphics, partialTicks, width, height) -> {
+    public static void render(Gui gui, GuiGraphics guiGraphics, float partialTicks, int width, int height) {
         if (Config.Baked.temperatureEnabled && temperatureEffect != null) {
-            Player player = forgeGui.getMinecraft().player;
+            Player player = net.minecraft.client.Minecraft.getInstance().player;
             if (player != null && temperatureEffect != null && !player.isCreative() && !player.isSpectator()) {
-
-                forgeGui.setupOverlayRenderState(true, false);
-
+                RenderSystem.enableBlend();
+                RenderSystem.defaultBlendFunc();
                 renderTextureOverlay(guiGraphics, temperatureEffect, width, height, fadeLevel);
+                RenderSystem.disableBlend();
             }
         }
-    };
+    }
 
     public static void updateTemperatureEffect(Player player) {
         if (player != null && player.isAlive()) {

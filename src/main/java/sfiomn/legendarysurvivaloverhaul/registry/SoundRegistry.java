@@ -12,7 +12,7 @@ import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 public class SoundRegistry
 {
     public static final DeferredRegister<SoundEvent> SOUND_EVENTS =
-            DeferredRegister.create(Registries.SOUND_EVENTS, LegendarySurvivalOverhaul.MOD_ID);
+            DeferredRegister.create(Registries.SOUND_EVENT, LegendarySurvivalOverhaul.MOD_ID);
 
     public static final DeferredHolder<SoundEvent, ? extends SoundEvent> HEAT_STROKE_EARLY = registerSoundEvent("heat_stroke_early");
     public static final DeferredHolder<SoundEvent, ? extends SoundEvent> HEAT_STROKE = registerSoundEvent("heat_stroke");
@@ -35,7 +35,7 @@ public class SoundRegistry
     private static DeferredHolder<SoundEvent, SoundEvent> registerSoundEvent(String name)
     {
         return SOUND_EVENTS.register(name, () -> SoundEvent.createVariableRangeEvent(
-                new ResourceLocation(LegendarySurvivalOverhaul.MOD_ID, name)
+                ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, name)
         ));
     }
 

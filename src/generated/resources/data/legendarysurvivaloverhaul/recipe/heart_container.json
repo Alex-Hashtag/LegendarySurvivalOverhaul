@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "h": {
+      "item": "legendarysurvivaloverhaul:heart_fragment"
+    }
+  },
+  "pattern": [
+    "hhh",
+    "hhh",
+    "hhh"
+  ],
+  "result": {
+    "count": 1,
+    "id": "legendarysurvivaloverhaul:heart_container"
+  }
+}

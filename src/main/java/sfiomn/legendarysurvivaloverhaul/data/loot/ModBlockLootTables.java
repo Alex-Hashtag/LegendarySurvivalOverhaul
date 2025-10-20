@@ -1,6 +1,7 @@
     package sfiomn.legendarysurvivaloverhaul.data.loot;
 
     import net.minecraft.advancements.critereon.StatePropertiesPredicate;
+    import net.minecraft.core.HolderLookup;
     import net.minecraft.data.loot.BlockLootSubProvider;
     import net.minecraft.world.flag.FeatureFlags;
     import net.minecraft.world.level.block.Block;
@@ -22,8 +23,8 @@
     import java.util.Set;
 
     public class ModBlockLootTables extends BlockLootSubProvider {
-        public ModBlockLootTables() {
-            super(Set.of(), FeatureFlags.REGISTRY.allFlags());
+        public ModBlockLootTables(HolderLookup.Provider provider) {
+            super(Set.of(), FeatureFlags.REGISTRY.allFlags(), provider);
         }
 
         @Override

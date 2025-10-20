@@ -20,12 +20,12 @@ import static sfiomn.legendarysurvivaloverhaul.common.blocks.ThermalBlock.FACING
 
 public class ModBlockStateProvider extends BlockStateProvider {
 
-    public static final ResourceLocation COOLER_OFF = new ResourceLocation(LegendarySurvivalOverhaul.MOD_ID, "block/cooler_off");
-    public static final ResourceLocation COOLER_ON = new ResourceLocation(LegendarySurvivalOverhaul.MOD_ID, "block/cooler_on");
-    public static final ResourceLocation HEATER_BASE_OFF = new ResourceLocation(LegendarySurvivalOverhaul.MOD_ID, "block/heater_base_off");
-    public static final ResourceLocation HEATER_BASE_ON = new ResourceLocation(LegendarySurvivalOverhaul.MOD_ID, "block/heater_base_on");
-    public static final ResourceLocation HEATER_TOP = new ResourceLocation(LegendarySurvivalOverhaul.MOD_ID, "block/heater_top");
-    public static final ResourceLocation SEWING_TABLE = new ResourceLocation(LegendarySurvivalOverhaul.MOD_ID, "block/sewing_table");
+    public static final ResourceLocation COOLER_OFF = ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "block/cooler_off");
+    public static final ResourceLocation COOLER_ON = ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "block/cooler_on");
+    public static final ResourceLocation HEATER_BASE_OFF = ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "block/heater_base_off");
+    public static final ResourceLocation HEATER_BASE_ON = ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "block/heater_base_on");
+    public static final ResourceLocation HEATER_TOP = ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "block/heater_top");
+    public static final ResourceLocation SEWING_TABLE = ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "block/sewing_table");
 
     public ModBlockStateProvider(PackOutput output, ExistingFileHelper exFileHelper) {
         super(output, LegendarySurvivalOverhaul.MOD_ID, exFileHelper);

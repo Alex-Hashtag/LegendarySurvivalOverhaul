@@ -12,6 +12,8 @@ import net.minecraft.util.profiling.ProfilerFiller;
 import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import net.minecraft.server.level.ServerPlayer;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonTemperatureConsumable;
 import sfiomn.legendarysurvivaloverhaul.api.data.manager.ITemperatureConsumableManager;
@@ -37,19 +39,23 @@ public class TemperatureConsumableListener extends SimpleJsonResourceReloadListe
         resourceLocationJsonElementMap.forEach((key, json) -> {
             try {
                 var parsedJson = JsonTemperatureConsumable.LIST_CODEC.parse(JsonOps.INSTANCE, json);
-                List<JsonTemperatureConsumable> temperatures = parsedJson.getOrThrow(false, error -> LegendarySurvivalOverhaul.LOGGER.error("Failed parsing temperature consumable : {}", error));
+                List<JsonTemperatureConsumable> temperatures = parsedJson.getOrThrow(err -> new IllegalStateException("Failed parsing temperature consumable: " + err));
                 if (ModList.get().isLoaded(key.getNamespace()))
                     TEMPERATURE_CONSUMABLES.put(key, temperatures);
-            } catch (JsonParseException error) {
-                LegendarySurvivalOverhaul.LOGGER.error("Failed to parse temperature consumable json {}", key);
+            } catch (JsonParseException | IllegalStateException error) {
+                LegendarySurvivalOverhaul.LOGGER.error("Failed to parse temperature consumable json {}", key, error);
             }
         });
 
         LegendarySurvivalOverhaul.LOGGER.info("Loaded {} temperature consumables", TEMPERATURE_CONSUMABLES.size());
     }
 
-    public static void sendDataToClient(PacketDistributor.PacketTarget packetTarget) {
-        SyncTemperatureConsumablesPacket.sendTo(packetTarget, TEMPERATURE_CONSUMABLES);
+    public static void sendDataToClient(@Nullable ServerPlayer player) {
+        if (player == null) {
+            PacketDistributor.sendToAllPlayers(new SyncTemperatureConsumablesPacket(TEMPERATURE_CONSUMABLES));
+        } else {
+            PacketDistributor.sendToPlayer(player, new SyncTemperatureConsumablesPacket(TEMPERATURE_CONSUMABLES));
+        }
     }
 
     public static void acceptServerTemperatureConsumables(Map<ResourceLocation, List<JsonTemperatureConsumable>> temperatureConsumables) {

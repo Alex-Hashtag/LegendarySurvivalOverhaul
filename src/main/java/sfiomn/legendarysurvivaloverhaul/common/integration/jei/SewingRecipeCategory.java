@@ -16,8 +16,8 @@ import sfiomn.legendarysurvivaloverhaul.common.recipe.SewingRecipe;
 import sfiomn.legendarysurvivaloverhaul.registry.BlockRegistry;
 
 public class SewingRecipeCategory implements IRecipeCategory<SewingRecipe> {
-    public final static ResourceLocation UID = new ResourceLocation(LegendarySurvivalOverhaul.MOD_ID, "sewing");
-    public final static ResourceLocation TEXTURE = new ResourceLocation(LegendarySurvivalOverhaul.MOD_ID, "textures/gui/sewing_table_screen.png");
+    public final static ResourceLocation UID = ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "sewing");
+    public final static ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "textures/gui/sewing_table_screen.png");
 
     public final static RecipeType<SewingRecipe> SEWING_RECIPE_TYPE = new RecipeType<>(UID, SewingRecipe.class);
 

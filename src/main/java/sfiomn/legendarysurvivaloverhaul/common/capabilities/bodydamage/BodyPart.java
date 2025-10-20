@@ -20,6 +20,12 @@ public class BodyPart {
     public BodyPart(BodyPartEnum bodyPart, float healthMultiplier) {
         this.bodyPartEnum = bodyPart;
         this.healthMultiplier = healthMultiplier;
+        // Don't set maxHealth here - it will be set by init() based on STATIC/DYNAMIC mode
+        this.maxHealth = 0;
+        this.damage = 0;
+        this.remainingHealingTicks = 0;
+        this.healingPerTicks = 0;
+        // Set oldMaxHealth to 0 so first update won't apply damage adjustment
         this.oldMaxHealth = 0;
         this.oldDamage = 0;
     }
@@ -95,13 +101,33 @@ public class BodyPart {
         nbt.putFloat(this.bodyPartEnum.name() + "_maxHealth", this.maxHealth);
         nbt.putFloat(this.bodyPartEnum.name() + "_healingPerTicks", this.healingPerTicks);
         nbt.putInt(this.bodyPartEnum.name() + "_remainingHealingTicks", this.remainingHealingTicks);
+
+        
         return nbt;
     }
 
     public void readNBT(CompoundTag compound) {
-        this.setMaxHealth(compound.getFloat(this.bodyPartEnum.name() + "_maxHealth"));
-        this.setDamage(compound.getFloat(this.bodyPartEnum.name() + "_damage"));
-        this.remainingHealingTicks = compound.getInt(this.bodyPartEnum.name() + "_remainingHealingTicks");
-        this.healingPerTicks = compound.getFloat(this.bodyPartEnum.name() + "_healingPerTicks");
+        float oldMaxHealth = this.maxHealth;
+        float oldDamage = this.damage;
+        
+        // Only override maxHealth if it's saved in NBT (backward compatibility with existing saves)
+        if (compound.contains(this.bodyPartEnum.name() + "_maxHealth")) {
+            float savedMaxHealth = compound.getFloat(this.bodyPartEnum.name() + "_maxHealth");
+            // Only set maxHealth if it's valid (> 0)
+            // If it's 0, keep current value (will be set properly on next tick in DYNAMIC mode)
+            if (savedMaxHealth > 0.0f) {
+                this.setMaxHealth(savedMaxHealth);
+            }
+        }
+        if (compound.contains(this.bodyPartEnum.name() + "_damage")) {
+            this.setDamage(compound.getFloat(this.bodyPartEnum.name() + "_damage"));
+        }
+        if (compound.contains(this.bodyPartEnum.name() + "_remainingHealingTicks")) {
+            this.remainingHealingTicks = compound.getInt(this.bodyPartEnum.name() + "_remainingHealingTicks");
+        }
+        if (compound.contains(this.bodyPartEnum.name() + "_healingPerTicks")) {
+            this.healingPerTicks = compound.getFloat(this.bodyPartEnum.name() + "_healingPerTicks");
+        }
+        
     }
 }

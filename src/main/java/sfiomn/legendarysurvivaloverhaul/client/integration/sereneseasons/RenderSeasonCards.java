@@ -9,7 +9,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.neoforge.client.gui.overlay.IGuiOverlay;
+import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.GuiGraphics;
 import sereneseasons.api.season.Season;
 import sereneseasons.api.season.SeasonHelper;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
@@ -19,12 +20,12 @@ import sfiomn.legendarysurvivaloverhaul.util.RenderUtil;
 
 @OnlyIn(Dist.CLIENT)
 public class RenderSeasonCards {
-    private static final ResourceLocation SPRING_CARD = new ResourceLocation(LegendarySurvivalOverhaul.MOD_ID, "textures/cards/spring.png");
-    private static final ResourceLocation AUTUMN_CARD = new ResourceLocation(LegendarySurvivalOverhaul.MOD_ID, "textures/cards/autumn.png");
-    private static final ResourceLocation SUMMER_CARD = new ResourceLocation(LegendarySurvivalOverhaul.MOD_ID, "textures/cards/summer.png");
-    private static final ResourceLocation WINTER_CARD = new ResourceLocation(LegendarySurvivalOverhaul.MOD_ID, "textures/cards/winter.png");
-    private static final ResourceLocation DRY_CARD = new ResourceLocation(LegendarySurvivalOverhaul.MOD_ID, "textures/cards/dry.png");
-    private static final ResourceLocation WET_CARD = new ResourceLocation(LegendarySurvivalOverhaul.MOD_ID, "textures/cards/wet.png");
+    private static final ResourceLocation SPRING_CARD = ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "textures/cards/spring.png");
+    private static final ResourceLocation AUTUMN_CARD = ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "textures/cards/autumn.png");
+    private static final ResourceLocation SUMMER_CARD = ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "textures/cards/summer.png");
+    private static final ResourceLocation WINTER_CARD = ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "textures/cards/winter.png");
+    private static final ResourceLocation DRY_CARD = ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "textures/cards/dry.png");
+    private static final ResourceLocation WET_CARD = ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "textures/cards/wet.png");
     private static final int CARD_WIDTH = 128;
     private	static final int CARD_HEIGHT = 128;
     private static ResourceLocation seasonCard = null;
@@ -37,20 +38,30 @@ public class RenderSeasonCards {
     private static int delayTimer = 0;
     private static int cardTimer = 0;
 
-    public static IGuiOverlay SEASON_CARD_GUI = (forgeGui, guiGraphics, partialTicks, width, height) -> {
+
+    public static void render(Gui gui, GuiGraphics guiGraphics, float partialTicks, int width, int height) {
         if (LegendarySurvivalOverhaul.sereneSeasonsLoaded && Config.Baked.ssSeasonCardsEnabled &&
                 seasonCard != null) {
             int x = Mth.floor(width / 2.0f - CARD_WIDTH / 2.0f);
             int y = Mth.floor(height / 4.0f - CARD_HEIGHT / 2.0f);
 
-            forgeGui.setupOverlayRenderState(true, false);
+            // ExtendedGui#setupOverlayRenderState is gone; do minimal blend setup instead
+            RenderSystem.enableBlend();
+            RenderSystem.defaultBlendFunc();
 
             Minecraft.getInstance().getProfiler().push("season_card");
             RenderSystem.setShaderTexture(0, seasonCard);
-            RenderUtil.drawTexturedModelRectWithAlpha(guiGraphics.pose().last().pose(), x + Config.Baked.seasonCardsDisplayOffsetX, y + Config.Baked.seasonCardsDisplayOffsetY, 128, 128, 0, 0, 256, 256, fadeLevel);
+            RenderUtil.drawTexturedModelRectWithAlpha(
+                    guiGraphics.pose().last().pose(),
+                    x + Config.Baked.seasonCardsDisplayOffsetX,
+                    y + Config.Baked.seasonCardsDisplayOffsetY,
+                    128, 128, 0, 0, 256, 256, fadeLevel
+            );
             Minecraft.getInstance().getProfiler().pop();
+
+            RenderSystem.disableBlend();
         }
-    };
+    }
 
     public static void updateSeasonCardFading(Player player) {
         if (player == null || !player.isAlive())

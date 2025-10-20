@@ -11,15 +11,15 @@ import static sfiomn.legendarysurvivaloverhaul.registry.MobEffectRegistry.PAINKI
 public class MedsAndHerbsUtil {
 
     public static boolean triggerMorphineBehavior(Player player) {
-        if (player.hasEffect(PAINKILLER_ADDICTION.get())) {
+        if (player.hasEffect(PAINKILLER_ADDICTION)) {
             player.displayClientMessage(Component.translatable("message.legendarysurvivaloverhaul.morphine_use_under_painkiller_addiction"), true);
 
             return false;
         }
 
-        player.addEffect(new MobEffectInstance(PAINKILLER.get(), Config.Baked.morphinePainkillerTickDuration, 0, false, false, true));
+        player.addEffect(new MobEffectInstance(PAINKILLER, Config.Baked.morphinePainkillerTickDuration, 0, false, false, true));
         if (Config.Baked.morphineSyringeApplyPainkillerAddiction)
-            player.addEffect(new MobEffectInstance(PAINKILLER_ADDICTION.get(), Config.Baked.painkillerAddictionDuration, 0, false, false, true));
+            player.addEffect(new MobEffectInstance(PAINKILLER_ADDICTION, Config.Baked.painkillerAddictionDuration, 0, false, false, true));
         return true;
     }
 }

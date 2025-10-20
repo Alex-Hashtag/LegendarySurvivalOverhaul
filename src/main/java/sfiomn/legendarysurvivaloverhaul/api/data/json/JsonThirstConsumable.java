@@ -2,8 +2,10 @@ package sfiomn.legendarysurvivaloverhaul.api.data.json;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.CustomData;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 
 import java.util.ArrayList;
@@ -43,10 +45,12 @@ public class JsonThirstConsumable {
     }
 
     public boolean matchesNbt(ItemStack itemStack) {
-        if (itemStack.hasTag() == properties.isEmpty())
+        boolean hasCustom = itemStack.has(DataComponents.CUSTOM_DATA);
+        if (hasCustom == properties.isEmpty())
             return false;
 
-        CompoundTag itemStackTag = itemStack.getTag();
+        CustomData custom = itemStack.get(DataComponents.CUSTOM_DATA);
+        CompoundTag itemStackTag = custom != null ? custom.copyTag() : null;
 
         if (itemStackTag == null && properties.isEmpty())
             return true;

@@ -1,93 +1,74 @@
 package sfiomn.legendarysurvivaloverhaul.network;
 
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.Mod;
-import net.neoforged.neoforge.network.event.RegisterPayloadHandlerEvent;
-import net.neoforged.neoforge.network.registration.IPayloadRegistrar;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
+import net.neoforged.neoforge.network.registration.PayloadRegistrar;
+import net.neoforged.neoforge.network.handling.DirectionalPayloadHandler;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.network.packets.*;
 
-@Mod.EventBusSubscriber(modid = LegendarySurvivalOverhaul.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(modid = LegendarySurvivalOverhaul.MOD_ID, bus = EventBusSubscriber.Bus.MOD)
 public class NetworkHandler {
 
     public NetworkHandler() {
     }
 
     @SubscribeEvent
-    public static void register(final RegisterPayloadHandlerEvent event) {
-        IPayloadRegistrar reg = event.registrar(LegendarySurvivalOverhaul.MOD_ID).versioned("1");
+    public static void register(final RegisterPayloadHandlersEvent event) {
+        PayloadRegistrar reg = event.registrar(LegendarySurvivalOverhaul.MOD_ID).versioned("1");
 
-        reg.play(UpdateTemperaturesPacket.ID, UpdateTemperaturesPacket::new,
-                h -> h.client(UpdateTemperaturesPacket::handle)
-                        .server(UpdateTemperaturesPacket::handle));
+        reg.playBidirectional(UpdateTemperaturesPacket.TYPE, UpdateTemperaturesPacket.STREAM_CODEC,
+                new DirectionalPayloadHandler<>(UpdateTemperaturesPacket::handle, UpdateTemperaturesPacket::handle));
 
-        reg.play(UpdateWetnessPacket.ID, UpdateWetnessPacket::new,
-                h -> h.client(UpdateWetnessPacket::handle)
-                        .server(UpdateWetnessPacket::handle));
+        reg.playBidirectional(UpdateWetnessPacket.TYPE, UpdateWetnessPacket.STREAM_CODEC,
+                new DirectionalPayloadHandler<>(UpdateWetnessPacket::handle, UpdateWetnessPacket::handle));
 
-        reg.play(UpdateThirstPacket.ID, UpdateThirstPacket::new,
-                h -> h.client(UpdateThirstPacket::handle)
-                        .server(UpdateThirstPacket::handle));
+        reg.playBidirectional(UpdateThirstPacket.TYPE, UpdateThirstPacket.STREAM_CODEC,
+                new DirectionalPayloadHandler<>(UpdateThirstPacket::handle, UpdateThirstPacket::handle));
 
-        reg.play(UpdateHeartsPacket.ID, UpdateHeartsPacket::new,
-                h -> h.client(UpdateHeartsPacket::handle)
-                        .server(UpdateHeartsPacket::handle));
+        reg.playBidirectional(UpdateHeartsPacket.TYPE, UpdateHeartsPacket.STREAM_CODEC,
+                new DirectionalPayloadHandler<>(UpdateHeartsPacket::handle, UpdateHeartsPacket::handle));
 
-        reg.play(UpdateBodyDamagePacket.ID, UpdateBodyDamagePacket::new,
-                h -> h.client(UpdateBodyDamagePacket::handle)
-                        .server(UpdateBodyDamagePacket::handle));
+        reg.playBidirectional(UpdateBodyDamagePacket.TYPE, UpdateBodyDamagePacket.STREAM_CODEC,
+                new DirectionalPayloadHandler<>(UpdateBodyDamagePacket::handle, UpdateBodyDamagePacket::handle));
 
-        reg.play(DrinkBlockFluidMessage.ID, DrinkBlockFluidMessage::new,
-                h -> h.client(DrinkBlockFluidMessage::handle)
-                        .server(DrinkBlockFluidMessage::handle));
+        reg.playBidirectional(DrinkBlockFluidMessage.TYPE, DrinkBlockFluidMessage.STREAM_CODEC,
+                new DirectionalPayloadHandler<>(DrinkBlockFluidMessage::handle, DrinkBlockFluidMessage::handle));
 
-        reg.play(BodyPartHealingTimeMessage.ID, BodyPartHealingTimeMessage::new,
-                h -> h.client(BodyPartHealingTimeMessage::handle)
-                        .server(BodyPartHealingTimeMessage::handle));
+        reg.playBidirectional(BodyPartHealingTimeMessage.TYPE, BodyPartHealingTimeMessage.STREAM_CODEC,
+                new DirectionalPayloadHandler<>(BodyPartHealingTimeMessage::handle, BodyPartHealingTimeMessage::handle));
 
-        reg.play(SyncTemperatureConsumablesPacket.ID, SyncTemperatureConsumablesPacket::new,
-                h -> h.client(SyncTemperatureConsumablesPacket::handle)
-                        .server(SyncTemperatureConsumablesPacket::handle));
-        reg.play(SyncTemperatureConsumableBlocksPacket.ID, SyncTemperatureConsumableBlocksPacket::new,
-                h -> h.client(SyncTemperatureConsumableBlocksPacket::handle)
-                        .server(SyncTemperatureConsumableBlocksPacket::handle));
-        reg.play(SyncTemperatureBlocksPacket.ID, SyncTemperatureBlocksPacket::new,
-                h -> h.client(SyncTemperatureBlocksPacket::handle)
-                        .server(SyncTemperatureBlocksPacket::handle));
-        reg.play(SyncTemperatureItemsPacket.ID, SyncTemperatureItemsPacket::new,
-                h -> h.client(SyncTemperatureItemsPacket::handle)
-                        .server(SyncTemperatureItemsPacket::handle));
-        reg.play(SyncTemperatureBiomesPacket.ID, SyncTemperatureBiomesPacket::new,
-                h -> h.client(SyncTemperatureBiomesPacket::handle)
-                        .server(SyncTemperatureBiomesPacket::handle));
-        reg.play(SyncTemperatureFuelItemsPacket.ID, SyncTemperatureFuelItemsPacket::new,
-                h -> h.client(SyncTemperatureFuelItemsPacket::handle)
-                        .server(SyncTemperatureFuelItemsPacket::handle));
-        reg.play(SyncTemperatureMountsPacket.ID, SyncTemperatureMountsPacket::new,
-                h -> h.client(SyncTemperatureMountsPacket::handle)
-                        .server(SyncTemperatureMountsPacket::handle));
-        reg.play(SyncTemperatureDimensionsPacket.ID, SyncTemperatureDimensionsPacket::new,
-                h -> h.client(SyncTemperatureDimensionsPacket::handle)
-                        .server(SyncTemperatureDimensionsPacket::handle));
-        reg.play(SyncTemperatureOriginsPacket.ID, SyncTemperatureOriginsPacket::new,
-                h -> h.client(SyncTemperatureOriginsPacket::handle)
-                        .server(SyncTemperatureOriginsPacket::handle));
+        reg.playBidirectional(SyncTemperatureConsumablesPacket.TYPE, SyncTemperatureConsumablesPacket.STREAM_CODEC,
+                new DirectionalPayloadHandler<>(SyncTemperatureConsumablesPacket::handle, SyncTemperatureConsumablesPacket::handle));
+        reg.playBidirectional(SyncTemperatureConsumableBlocksPacket.TYPE, SyncTemperatureConsumableBlocksPacket.STREAM_CODEC,
+                new DirectionalPayloadHandler<>(SyncTemperatureConsumableBlocksPacket::handle, SyncTemperatureConsumableBlocksPacket::handle));
+        reg.playBidirectional(SyncTemperatureBlocksPacket.TYPE, SyncTemperatureBlocksPacket.STREAM_CODEC,
+                new DirectionalPayloadHandler<>(SyncTemperatureBlocksPacket::handle, SyncTemperatureBlocksPacket::handle));
+        reg.playBidirectional(SyncTemperatureItemsPacket.TYPE, SyncTemperatureItemsPacket.STREAM_CODEC,
+                new DirectionalPayloadHandler<>(SyncTemperatureItemsPacket::handle, SyncTemperatureItemsPacket::handle));
+        reg.playBidirectional(SyncTemperatureBiomesPacket.TYPE, SyncTemperatureBiomesPacket.STREAM_CODEC,
+                new DirectionalPayloadHandler<>(SyncTemperatureBiomesPacket::handle, SyncTemperatureBiomesPacket::handle));
+        reg.playBidirectional(SyncTemperatureFuelItemsPacket.TYPE, SyncTemperatureFuelItemsPacket.STREAM_CODEC,
+                new DirectionalPayloadHandler<>(SyncTemperatureFuelItemsPacket::handle, SyncTemperatureFuelItemsPacket::handle));
+        reg.playBidirectional(SyncTemperatureMountsPacket.TYPE, SyncTemperatureMountsPacket.STREAM_CODEC,
+                new DirectionalPayloadHandler<>(SyncTemperatureMountsPacket::handle, SyncTemperatureMountsPacket::handle));
+        reg.playBidirectional(SyncTemperatureDimensionsPacket.TYPE, SyncTemperatureDimensionsPacket.STREAM_CODEC,
+                new DirectionalPayloadHandler<>(SyncTemperatureDimensionsPacket::handle, SyncTemperatureDimensionsPacket::handle));
+        reg.playBidirectional(SyncTemperatureOriginsPacket.TYPE, SyncTemperatureOriginsPacket.STREAM_CODEC,
+                new DirectionalPayloadHandler<>(SyncTemperatureOriginsPacket::handle, SyncTemperatureOriginsPacket::handle));
 
-        reg.play(SyncThirstBlocksPacket.ID, SyncThirstBlocksPacket::new,
-                h -> h.client(SyncThirstBlocksPacket::handle)
-                        .server(SyncThirstBlocksPacket::handle));
-        reg.play(SyncThirstConsumablesPacket.ID, SyncThirstConsumablesPacket::new,
-                h -> h.client(SyncThirstConsumablesPacket::handle)
-                        .server(SyncThirstConsumablesPacket::handle));
+        reg.playBidirectional(SyncThirstBlocksPacket.TYPE, SyncThirstBlocksPacket.STREAM_CODEC,
+                new DirectionalPayloadHandler<>(SyncThirstBlocksPacket::handle, SyncThirstBlocksPacket::handle));
+        reg.playBidirectional(SyncThirstConsumablesPacket.TYPE, SyncThirstConsumablesPacket.STREAM_CODEC,
+                new DirectionalPayloadHandler<>(SyncThirstConsumablesPacket::handle, SyncThirstConsumablesPacket::handle));
 
-        reg.play(SyncBodyDamageHealingConsumablesPacket.ID, SyncBodyDamageHealingConsumablesPacket::new,
-                h -> h.client(SyncBodyDamageHealingConsumablesPacket::handle)
-                        .server(SyncBodyDamageHealingConsumablesPacket::handle));
-        reg.play(SyncBodyPartsDamageSourcesPacket.ID, SyncBodyPartsDamageSourcesPacket::new,
-                h -> h.client(SyncBodyPartsDamageSourcesPacket::handle)
-                        .server(SyncBodyPartsDamageSourcesPacket::handle));
-        reg.play(SyncBodyPartResistanceItemsPacket.ID, SyncBodyPartResistanceItemsPacket::new,
-                h -> h.client(SyncBodyPartResistanceItemsPacket::handle)
-                        .server(SyncBodyPartResistanceItemsPacket::handle));
+        reg.playBidirectional(SyncBodyDamageHealingConsumablesPacket.TYPE, SyncBodyDamageHealingConsumablesPacket.STREAM_CODEC,
+                new DirectionalPayloadHandler<>(SyncBodyDamageHealingConsumablesPacket::handle, SyncBodyDamageHealingConsumablesPacket::handle));
+        reg.playBidirectional(SyncBodyPartsDamageSourcesPacket.TYPE, SyncBodyPartsDamageSourcesPacket.STREAM_CODEC,
+                new DirectionalPayloadHandler<>(SyncBodyPartsDamageSourcesPacket::handle, SyncBodyPartsDamageSourcesPacket::handle));
+        reg.playBidirectional(SyncBodyPartResistanceItemsPacket.TYPE, SyncBodyPartResistanceItemsPacket.STREAM_CODEC,
+                new DirectionalPayloadHandler<>(SyncBodyPartResistanceItemsPacket::handle, SyncBodyPartResistanceItemsPacket::handle));
     }
 }

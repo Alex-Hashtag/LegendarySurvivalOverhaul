@@ -15,12 +15,12 @@ import sfiomn.legendarysurvivaloverhaul.registry.ItemRegistry;
 import java.util.concurrent.CompletableFuture;
 
 public class CuriosItemTagProvider extends ItemTagsProvider {
-    public static final TagKey<Item> BELT_TAG = TagKey.create(Registries.ITEM, new ResourceLocation("curios", "belt"));
-    public static final TagKey<Item> NECKLACE_TAG = TagKey.create(Registries.ITEM, new ResourceLocation("curios", "necklace"));
-    public static final TagKey<Item> HEAD_TAG = TagKey.create(Registries.ITEM, new ResourceLocation("curios", "head"));
-    public static final TagKey<Item> BODY_TAG = TagKey.create(Registries.ITEM, new ResourceLocation("curios", "body"));
-    public static final TagKey<Item> CHARM_TAG = TagKey.create(Registries.ITEM, new ResourceLocation("curios", "charm"));
-    public static final TagKey<Item> RING_TAG = TagKey.create(Registries.ITEM, new ResourceLocation("curios", "ring"));
+    public static final TagKey<Item> BELT_TAG = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("curios", "belt"));
+    public static final TagKey<Item> NECKLACE_TAG = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("curios", "necklace"));
+    public static final TagKey<Item> HEAD_TAG = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("curios", "head"));
+    public static final TagKey<Item> BODY_TAG = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("curios", "body"));
+    public static final TagKey<Item> CHARM_TAG = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("curios", "charm"));
+    public static final TagKey<Item> RING_TAG = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("curios", "ring"));
 
     public CuriosItemTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, CompletableFuture<TagLookup<Block>> p_275322_, @Nullable ExistingFileHelper existingFileHelper) {
         super(output, lookupProvider, p_275322_, "curios", existingFileHelper);

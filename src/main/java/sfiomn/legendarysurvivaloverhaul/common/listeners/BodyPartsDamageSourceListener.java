@@ -12,6 +12,8 @@ import net.minecraft.util.profiling.ProfilerFiller;
 import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import net.minecraft.server.level.ServerPlayer;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonBodyPartsDamageSource;
 import sfiomn.legendarysurvivaloverhaul.api.data.manager.IBodyPartsDamageSourceManager;
@@ -36,19 +38,23 @@ public class BodyPartsDamageSourceListener extends SimpleJsonResourceReloadListe
         resourceLocationJsonElementMap.forEach((key, json) -> {
             try {
                 var parsedJson = JsonBodyPartsDamageSource.CODEC.parse(JsonOps.INSTANCE, json);
-                JsonBodyPartsDamageSource temperatures = parsedJson.getOrThrow(false, error -> LegendarySurvivalOverhaul.LOGGER.error("Failed parsing body parts damage source : {}", error));
+                JsonBodyPartsDamageSource temperatures = parsedJson.getOrThrow(err -> new IllegalStateException("Failed parsing body parts damage source: " + err));
                 if (ModList.get().isLoaded(key.getNamespace()))
                     DAMAGE_SOURCES.put(key, temperatures);
-            } catch (JsonParseException error) {
-                LegendarySurvivalOverhaul.LOGGER.error("Failed to parse body parts damage source json {}", key);
+            } catch (JsonParseException | IllegalStateException error) {
+                LegendarySurvivalOverhaul.LOGGER.error("Failed to parse body parts damage source json {}", key, error);
             }
         });
 
         LegendarySurvivalOverhaul.LOGGER.info("Loaded {} body parts damage sources", DAMAGE_SOURCES.size());
     }
 
-    public static void sendDataToClient(PacketDistributor.PacketTarget packetTarget) {
-        SyncBodyPartsDamageSourcesPacket.sendTo(packetTarget, DAMAGE_SOURCES);
+    public static void sendDataToClient(@Nullable ServerPlayer player) {
+        if (player == null) {
+            PacketDistributor.sendToAllPlayers(new SyncBodyPartsDamageSourcesPacket(DAMAGE_SOURCES));
+        } else {
+            PacketDistributor.sendToPlayer(player, new SyncBodyPartsDamageSourcesPacket(DAMAGE_SOURCES));
+        }
     }
 
     public static void acceptServerDamageSources(Map<ResourceLocation, JsonBodyPartsDamageSource> damageSources) {

@@ -2,7 +2,6 @@ package sfiomn.legendarysurvivaloverhaul.api.wetness;
 
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.event.TickEvent;
 
 public interface IWetnessCapability
 {
@@ -39,9 +38,9 @@ public interface IWetnessCapability
 	 * Runs a tick update for the player's thirst capability
 	 * @param player
 	 * @param world
-	 * @param phase
+	 * @param isStart
 	 */
-	public void tickUpdate(Player player, Level world, TickEvent.Phase phase);
+	public void tickUpdate(Player player, Level world, boolean isStart);
 
 
 	/**

@@ -1,6 +1,7 @@
 package sfiomn.legendarysurvivaloverhaul.data.providers;
 
 import com.google.gson.JsonObject;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.*;
 import net.minecraft.nbt.CompoundTag;
@@ -21,12 +22,14 @@ import sfiomn.legendarysurvivaloverhaul.registry.ItemRegistry;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 
+import java.util.concurrent.CompletableFuture;
+
 import static sfiomn.legendarysurvivaloverhaul.util.internal.ThirstUtilInternal.HYDRATION_ENUM_TAG;
 
 public class ModRecipeProvider extends RecipeProvider {
 
-    public ModRecipeProvider(PackOutput generator) {
-        super(generator);
+    public ModRecipeProvider(PackOutput generator, CompletableFuture<HolderLookup.Provider> lookupProvider) {
+        super(generator, lookupProvider);
     }
 
     @Override
@@ -240,11 +243,11 @@ public class ModRecipeProvider extends RecipeProvider {
                 .pattern("#g#")
                 .pattern("#r#")
                 .pattern("i#i")
-                .define('#', Tags.Items.GLASS)
+                .define('#', Items.GLASS)
                 .define('g', Items.GOLD_INGOT)
                 .define('i', Items.IRON_INGOT)
                 .define('r', Items.REDSTONE)
-                .unlockedBy("has_glass", has(Tags.Items.GLASS))
+                .unlockedBy("has_glass", has(Items.GLASS))
                 .unlockedBy("has_iron", has(Items.IRON_INGOT))
                 .unlockedBy("has_redstone", has(Items.REDSTONE))
                 .unlockedBy("has_gold_ingot", has(Items.GOLD_INGOT))
@@ -357,7 +360,7 @@ public class ModRecipeProvider extends RecipeProvider {
                 .pattern("g  ")
                 .define('n', Items.IRON_NUGGET)
                 .define('t', ItemRegistry.TONIC.get())
-                .define('g', Tags.Items.GLASS)
+                .define('g', Items.GLASS)
                 .group("healing")
                 .unlockedBy(getHasName(ItemRegistry.PLASTER.get()), has(ItemRegistry.PLASTER.get()))
                 .save(output);
@@ -430,18 +433,7 @@ public class ModRecipeProvider extends RecipeProvider {
     }
 
     protected static void sewing(@NotNull RecipeOutput output, Ingredient input, Ingredient addition, ItemStack result, String recipeName) {
-        String additionName = "";
-        var additionJson = addition.toJson();
-        if (additionJson.isJsonObject() && additionJson.getAsJsonObject().has("nbt")) {
-            String nbt = additionJson.getAsJsonObject().get("nbt").getAsString();
-            if (nbt.contains("Potion")) {
-                additionName = nbt.split("Potion:")[1].split(":")[1];
-                additionName = additionName.substring(0, additionName.length() - 2);
-            }
-        }
-        if (additionName.isEmpty()) {
-            additionName = getItemName(addition.getItems()[0].getItem());
-        }
+        String additionName = getItemName(addition.getItems()[0].getItem());
 
         SewingRecipeBuilder
                 .sewingRecipe(input, addition, result, RecipeCategory.MISC)
@@ -463,10 +455,7 @@ public class ModRecipeProvider extends RecipeProvider {
     }
 
     private static Ingredient partialNbtIngredient(ItemLike item, CompoundTag nbt) {
-        JsonObject obj = new JsonObject();
-        obj.addProperty("type", "forge:partial_nbt");
-        obj.addProperty("item", BuiltInRegistries.ITEM.getKey(item.asItem()).toString());
-        obj.addProperty("nbt", nbt.toString());
-        return Ingredient.fromJson(obj);
+        // For 1.21.1, we'll use a simple ingredient and handle NBT in the recipe logic
+        return Ingredient.of(item);
     }
 }

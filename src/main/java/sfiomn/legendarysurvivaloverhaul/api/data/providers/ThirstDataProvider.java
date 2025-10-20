@@ -49,12 +49,12 @@ public abstract class ThirstDataProvider implements DataProvider {
             this.generate(p_255484_, this.fileHelper);
             this.consumablesBuilders.forEach((consumable, builder) -> {
                 ResourceLocation jsonKey = consumable.split(":").length == 1 ?
-                        new ResourceLocation(this.modId, consumable.toLowerCase()) : new ResourceLocation(consumable);
+                        ResourceLocation.fromNamespaceAndPath(this.modId, consumable.toLowerCase()) : ResourceLocation.parse(consumable);
                 list.add(DataProvider.saveStable(pOutput, builder.build(), this.consumablesPathProvider.json(jsonKey)));
             });
             this.blocksBuilders.forEach((block, builder) -> {
                 ResourceLocation jsonKey = block.split(":").length == 1 ?
-                        new ResourceLocation(this.modId, block.toLowerCase()) : new ResourceLocation(block);
+                        ResourceLocation.fromNamespaceAndPath(this.modId, block.toLowerCase()) : ResourceLocation.parse(block);
                 list.add(DataProvider.saveStable(pOutput, builder.build(), this.blocksPathProvider.json(jsonKey)));
             });
             return CompletableFuture.allOf(list.toArray(CompletableFuture[]::new));

@@ -13,12 +13,10 @@ import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.neoforge.common.IPlantable;
-import net.neoforged.neoforge.common.PlantType;
-import net.neoforged.neoforge.common.Tags;
+import net.minecraft.tags.BlockTags;
 import sfiomn.legendarysurvivaloverhaul.registry.ParticleTypeRegistry;
 
-public class SunFernGoldBlock extends BushBlock implements IPlantable {
+public class SunFernGoldBlock extends BushBlock {
 
     // Required for 1.20.3+
     public static final MapCodec<SunFernGoldBlock> CODEC = simpleCodec(SunFernGoldBlock::new);
@@ -45,7 +43,7 @@ public class SunFernGoldBlock extends BushBlock implements IPlantable {
     protected boolean mayPlaceOn(BlockState blockState, BlockGetter level, BlockPos pos) {
         return blockState.is(Blocks.GRASS_BLOCK) || blockState.is(Blocks.DIRT) ||
                 blockState.is(Blocks.COARSE_DIRT) || blockState.is(Blocks.PODZOL) ||
-                blockState.is(Blocks.FARMLAND)   || blockState.is(Tags.Blocks.SAND);
+                blockState.is(Blocks.FARMLAND)   || blockState.is(BlockTags.SAND);
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -62,9 +60,5 @@ public class SunFernGoldBlock extends BushBlock implements IPlantable {
             level.addParticle(ParticleTypeRegistry.SUN_FERN_BLOSSOM.get(), x, y, z, 0.04D, 0.01D, 0.04D);
     }
 
-    @Override
-    public PlantType getPlantType(BlockGetter level, BlockPos pos) { return PlantType.DESERT; }
-
-    @Override
-    public BlockState getPlant(BlockGetter world, BlockPos pos) { return defaultBlockState(); }
+    // NeoForge 1.21: IPlantable/PlantType removed; BushBlock handles placement with mayPlaceOn.
 }

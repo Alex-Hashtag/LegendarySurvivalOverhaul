@@ -12,6 +12,8 @@ import net.minecraft.util.profiling.ProfilerFiller;
 import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import net.minecraft.server.level.ServerPlayer;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonTemperatureDimension;
 import sfiomn.legendarysurvivaloverhaul.api.data.manager.ITemperatureDimensionManager;
@@ -36,19 +38,23 @@ public class TemperatureDimensionListener extends SimpleJsonResourceReloadListen
         resourceLocationJsonElementMap.forEach((key, json) -> {
             try {
                 var parsedJson = JsonTemperatureDimension.CODEC.parse(JsonOps.INSTANCE, json);
-                JsonTemperatureDimension temperatureDimension = parsedJson.getOrThrow(false, error -> LegendarySurvivalOverhaul.LOGGER.error("Failed parsing temperature dimension : {}", error));
+                JsonTemperatureDimension temperatureDimension = parsedJson.getOrThrow(err -> new IllegalStateException("Failed parsing temperature dimension: " + err));
                 if (ModList.get().isLoaded(key.getNamespace()))
                     TEMPERATURE_DIMENSIONS.put(key, temperatureDimension);
-            } catch (JsonParseException error) {
-                LegendarySurvivalOverhaul.LOGGER.error("Failed to parse temperature dimension json {}", key);
+            } catch (JsonParseException | IllegalStateException error) {
+                LegendarySurvivalOverhaul.LOGGER.error("Failed to parse temperature dimension json {}", key, error);
             }
         });
 
         LegendarySurvivalOverhaul.LOGGER.info("Loaded {} temperature dimensions", TEMPERATURE_DIMENSIONS.size());
     }
 
-    public static void sendDataToClient(PacketDistributor.PacketTarget packetTarget) {
-        SyncTemperatureDimensionsPacket.sendTo(packetTarget, TEMPERATURE_DIMENSIONS);
+    public static void sendDataToClient(@Nullable ServerPlayer player) {
+        if (player == null) {
+            PacketDistributor.sendToAllPlayers(new SyncTemperatureDimensionsPacket(TEMPERATURE_DIMENSIONS));
+        } else {
+            PacketDistributor.sendToPlayer(player, new SyncTemperatureDimensionsPacket(TEMPERATURE_DIMENSIONS));
+        }
     }
 
     public static void acceptServerTemperatureDimensions(Map<ResourceLocation, JsonTemperatureDimension> temperatureDimensions) {

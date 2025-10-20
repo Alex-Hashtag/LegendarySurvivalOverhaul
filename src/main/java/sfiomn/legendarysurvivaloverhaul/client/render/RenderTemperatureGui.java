@@ -1,12 +1,14 @@
 package sfiomn.legendarysurvivaloverhaul.client.render;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.neoforge.client.gui.overlay.IGuiOverlay;
+import net.minecraft.core.Holder;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.temperature.TemperatureEnum;
 import sfiomn.legendarysurvivaloverhaul.api.temperature.TemperatureUtil;
@@ -27,7 +29,7 @@ public class RenderTemperatureGui
 	private static TemperatureCapability TEMPERATURE_CAP = null;
 	private static final Random rand = new Random();
 
-	private static final ResourceLocation ICONS = new ResourceLocation(LegendarySurvivalOverhaul.MOD_ID, "textures/gui/overlay.png");
+    private static final ResourceLocation ICONS = ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "textures/gui/overlay.png");
 
 	private static final int TEMPERATURE_TEXTURE_POS_Y = 48;
 	private static final int TEMPERATURE_TEXTURE_WIDTH = 16;
@@ -47,55 +49,53 @@ public class RenderTemperatureGui
 	private static final int HUNGER_TEXTURE_HEIGHT = 9;
 
 	private static int frameCounter = -1;
-	private static int delay = 0;
 	private static boolean risingTemperature = false;
 	private static boolean startAnimation = false;
 	private static int flashCounter = -1;
 	private static boolean shakeSide = false;
+	private static int delay = 0;
 	
-	public static IGuiOverlay TEMPERATURE_GUI = (forgeGui, guiGraphics, partialTicks, width, height) -> {
-		if (Config.Baked.temperatureEnabled
-				&& !Minecraft.getInstance().options.hideGui
-				&& forgeGui.shouldDrawSurvivalElements()) {
-			Player player = forgeGui.getMinecraft().player;
-
-			if (player != null) {
-				rand.setSeed(player.tickCount * 445L);
-
-				forgeGui.setupOverlayRenderState(true, false);
+	public static void renderTemperature(Gui gui, GuiGraphics guiGraphics, float partialTicks, int width, int height) {
+        if (Config.Baked.temperatureEnabled && !Minecraft.getInstance().options.hideGui) {
+            Player player = Minecraft.getInstance().player;
+            if (player != null && !player.isCreative() && !player.isSpectator()) {
+                rand.setSeed(player.tickCount * 445L);
+                RenderSystem.enableBlend();
+                RenderSystem.defaultBlendFunc();
 
                 if (Objects.requireNonNull(Config.Baked.temperatureDisplayMode) == EnumUtil.temperatureDisplayMode.SYMBOL
-						&& !CuriosUtil.isThermometerEquipped) {
-					Minecraft.getInstance().getProfiler().push("temperature_gui");
+                        && !CuriosUtil.isThermometerEquipped) {
+                    Minecraft.getInstance().getProfiler().push("temperature_gui");
                     drawTemperatureAsSymbol(guiGraphics, player, width, height);
-					Minecraft.getInstance().getProfiler().pop();
+                    Minecraft.getInstance().getProfiler().pop();
                 }
 
-				if (LegendarySurvivalOverhaul.curiosLoaded && CuriosUtil.isThermometerEquipped) {
-					Minecraft.getInstance().getProfiler().push("body_temperature_gui");
-					drawBodyTemperature(guiGraphics, player, width, height);
-					Minecraft.getInstance().getProfiler().pop();
-				}
-			}
-		}
-	};
+                if (LegendarySurvivalOverhaul.curiosLoaded && CuriosUtil.isThermometerEquipped) {
+                    Minecraft.getInstance().getProfiler().push("body_temperature_gui");
+                    drawBodyTemperature(guiGraphics, player, width, height);
+                    Minecraft.getInstance().getProfiler().pop();
+                }
 
-	public static IGuiOverlay FOOD_BAR_COLD_EFFECT_GUI = (forgeGui, guiGraphics, partialTicks, width, height) -> {
-		if (!Minecraft.getInstance().options.hideGui
-				&& forgeGui.shouldDrawSurvivalElements()) {
-			Player player = forgeGui.getMinecraft().player;
+                RenderSystem.disableBlend();
+            }
+        }
+    }
 
-			if (player != null && player.hasEffect(MobEffectRegistry.COLD_HUNGER.get())) {
-				forgeGui.setupOverlayRenderState(true, false);
+	public static void renderColdHunger(Gui gui, GuiGraphics guiGraphics, float partialTicks, int width, int height) {
+        if (!Minecraft.getInstance().options.hideGui) {
+            Player player = Minecraft.getInstance().player;
+            if (player != null && player.hasEffect(MobEffectRegistry.COLD_HUNGER)) {
+                RenderSystem.enableBlend();
+                RenderSystem.defaultBlendFunc();
 
-				Minecraft.getInstance().getProfiler().push("temperature_gui");
-				drawFoodBarColdEffect(guiGraphics, player, width, height);
-				Minecraft.getInstance().getProfiler().pop();
+                Minecraft.getInstance().getProfiler().push("temperature_gui");
+                drawFoodBarColdEffect(guiGraphics, player, width, height);
+                Minecraft.getInstance().getProfiler().pop();
 
-				forgeGui.rightHeight += 10;
-			}
-		}
-	};
+                RenderSystem.disableBlend();
+            }
+        }
+    }
 	
 	public static void drawTemperatureAsSymbol(GuiGraphics gui, Player player, int width, int height) {
 
@@ -314,15 +314,12 @@ public class RenderTemperatureGui
 			else
 				gui.blit(ICONS, x, y + yOffset, xTextureOffset, yTextureOffset, HUNGER_TEXTURE_WIDTH, HUNGER_TEXTURE_HEIGHT);
 
-
 			// Reassign texture offset for saturation
 			xTextureOffset = HUNGER_TEXTURE_WIDTH * 12;
-			if(saturationLevelInt > 0 && Config.Baked.foodSaturationDisplayed)
-			{
+			if (saturationLevelInt > 0 && Config.Baked.foodSaturationDisplayed) {
 				if (halfIcon < saturationLevelInt) { // Full saturation icon
 					gui.blit(ICONS, x, y + yOffset, xTextureOffset, yTextureOffset, HUNGER_TEXTURE_WIDTH, HUNGER_TEXTURE_HEIGHT);
-				}
-				else if (halfIcon == saturationLevelInt) { // Half saturation icon
+				} else if (halfIcon == saturationLevelInt) { // Half saturation icon
 					gui.blit(ICONS, x, y + yOffset, xTextureOffset + HUNGER_TEXTURE_WIDTH, yTextureOffset, HUNGER_TEXTURE_WIDTH, HUNGER_TEXTURE_HEIGHT);
 				}
 			}
@@ -333,7 +330,6 @@ public class RenderTemperatureGui
 	{
 		if (frameCounter >= 0)
 			frameCounter--;
-		if (flashCounter >= 0)
 			flashCounter--;
 
 		if (startAnimation)

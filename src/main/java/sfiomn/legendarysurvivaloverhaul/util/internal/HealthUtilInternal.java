@@ -1,5 +1,7 @@
 package sfiomn.legendarysurvivaloverhaul.util.internal;
 
+import net.minecraft.core.Holder;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -21,10 +23,10 @@ public class HealthUtilInternal implements IHealthUtil {
     public static final UUID INITIAL_PERMANENT_HEART_ATTRIBUTE_UUID = UUID.fromString("81e7fd2b-90d2-4673-84f6-8bd343fd7c5e");
     public static final UUID INITIAL_BROKEN_HEART_RESILIENCE_ATTRIBUTE_UUID = UUID.fromString("eb13fc3b-cc33-4716-a0b0-9f4cdd7704ba");
 
-    public static final AttributeBuilder HEALTH_ATTRIBUTE = new AttributeBuilder(Attributes.MAX_HEALTH, "attribute." + LegendarySurvivalOverhaul.MOD_ID + ".max_health");
-    public static final AttributeBuilder BROKEN_HEART_ATTRIBUTE = new AttributeBuilder(AttributeRegistry.BROKEN_HEART.get(), "attribute." + LegendarySurvivalOverhaul.MOD_ID + ".broken_heart");
-    public static final AttributeBuilder PERMANENT_HEART_ATTRIBUTE = new AttributeBuilder(AttributeRegistry.PERMANENT_HEART.get(), "attribute." + LegendarySurvivalOverhaul.MOD_ID + ".permanent_heart");
-    public static final AttributeBuilder BROKEN_HEART_RESILIENCE_ATTRIBUTE = new AttributeBuilder(AttributeRegistry.BROKEN_HEART_RESILIENCE.get(), "attribute." + LegendarySurvivalOverhaul.MOD_ID + ".broken_heart_resilience");
+    public static final AttributeBuilder HEALTH_ATTRIBUTE = new AttributeBuilder(Attributes.MAX_HEALTH, ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "max_health"));
+    public static final AttributeBuilder BROKEN_HEART_ATTRIBUTE = new AttributeBuilder(Holder.direct(AttributeRegistry.BROKEN_HEART.get()), ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "broken_heart"));
+    public static final AttributeBuilder PERMANENT_HEART_ATTRIBUTE = new AttributeBuilder(Holder.direct(AttributeRegistry.PERMANENT_HEART.get()), ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "permanent_heart"));
+    public static final AttributeBuilder BROKEN_HEART_RESILIENCE_ATTRIBUTE = new AttributeBuilder(Holder.direct(AttributeRegistry.BROKEN_HEART_RESILIENCE.get()), ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "broken_heart_resilience"));
 
     @Override
     public void updatePlayerMaxHealthAttribute(Player player)
@@ -45,9 +47,9 @@ public class HealthUtilInternal implements IHealthUtil {
         if (Config.Baked.healthOverhaulEnabled) {
             HealthCapability healthCapability = CapabilityUtil.getHealthCapability(player);
             float additionalHealth = healthCapability.getAdditionalHealth();
-            int minhHearthLimitWithBrokenHearth = (int) player.getAttributeValue(AttributeRegistry.BROKEN_HEART_RESILIENCE.get());
+            int minhHearthLimitWithBrokenHearth = (int) player.getAttributeValue(AttributeRegistry.BROKEN_HEART_RESILIENCE);
 
-            maxHealth += additionalHealth - Mth.clamp(((int) player.getAttributeValue(AttributeRegistry.BROKEN_HEART.get())) * 2, 0, maxHealth + additionalHealth - minhHearthLimitWithBrokenHearth * 2);
+            maxHealth += additionalHealth - Mth.clamp(((int) player.getAttributeValue(AttributeRegistry.BROKEN_HEART)) * 2, 0, maxHealth + additionalHealth - minhHearthLimitWithBrokenHearth * 2);
         }
         return maxHealth;
     }
@@ -70,8 +72,8 @@ public class HealthUtilInternal implements IHealthUtil {
             return 0;
 
         double maxHealth = getPlayerStableMaxHealth(player);
-        int brokenHearts = (int) player.getAttributeValue(AttributeRegistry.BROKEN_HEART.get());
-        int resilientHearts = (int) player.getAttributeValue(AttributeRegistry.BROKEN_HEART_RESILIENCE.get());
+        int brokenHearts = (int) player.getAttributeValue(AttributeRegistry.BROKEN_HEART);
+        int resilientHearts = (int) player.getAttributeValue(AttributeRegistry.BROKEN_HEART_RESILIENCE);
         return Mth.clamp(brokenHearts, 0, (int) Math.ceil(maxHealth / 2.0) - resilientHearts);
     }
 
@@ -95,7 +97,7 @@ public class HealthUtilInternal implements IHealthUtil {
     public void loseHearth(Player player, int amountLost) {
         HealthCapability healthCapability = CapabilityUtil.getHealthCapability(player);
 
-        int minhHearthLimit = (int) player.getAttributeValue(AttributeRegistry.PERMANENT_HEART.get());
+        int minhHearthLimit = (int) player.getAttributeValue(Holder.direct(AttributeRegistry.PERMANENT_HEART.get()));
         // max losable heart amount = max player health - minhHearthLimit
         int actuallyLostHearts = Math.min((int) Math.ceil(getPlayerStableMaxHealth(player) / 2.0) - minhHearthLimit, amountLost);
 
@@ -118,8 +120,8 @@ public class HealthUtilInternal implements IHealthUtil {
         double defaultMaxHealth = Objects.requireNonNull(player.getAttribute(Attributes.MAX_HEALTH)).getBaseValue();
 
         for (AttributeModifier attributeModifier: Objects.requireNonNull(player.getAttribute(Attributes.MAX_HEALTH)).getModifiers()) {
-            if (!attributeModifier.getId().equals(HEALTH_ATTRIBUTE_UUID))
-                defaultMaxHealth += attributeModifier.getAmount();
+            if (!attributeModifier.id().equals(HEALTH_ATTRIBUTE_UUID))
+                defaultMaxHealth += attributeModifier.amount();
         }
 
         return defaultMaxHealth;

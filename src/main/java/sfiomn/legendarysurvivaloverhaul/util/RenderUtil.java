@@ -1,11 +1,9 @@
 package sfiomn.legendarysurvivaloverhaul.util;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.Tesselator;
-import com.mojang.blaze3d.vertex.VertexFormat;
+import com.mojang.blaze3d.vertex.*;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
 import org.joml.Matrix4f;
 
@@ -31,19 +29,18 @@ public final class RenderUtil
 		float f1 = 0.00390625f;
 		float z = 0.0f;
 
-		Tesselator tesselator = Tesselator.getInstance();
-		BufferBuilder bufferBuilder = tesselator.getBuilder();
+		RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
+		BufferBuilder bufferBuilder = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
 		
-		bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
-		bufferBuilder.vertex(matrix, x, y + height, z)
-				.uv((texX * f), (texY + texHeight) * f1).color(255, 255, 255, 122).endVertex();
-		bufferBuilder.vertex(matrix, (x + width), y + height, z)
-				.uv((texX + texWidth) * f, (texY + texHeight) * f1).color(255, 255, 255, 122).endVertex();
-		bufferBuilder.vertex(matrix, (x + width), y, z)
-				.uv((texX + texWidth) * f,(texY * f1)).color(255, 255, 255, 122).endVertex();
-		bufferBuilder.vertex(matrix, x, y, z)
-				.uv((texX * f), (texY * f1)).color(255, 255, 255, 255).endVertex();
-		tesselator.end();
+		bufferBuilder.addVertex(matrix, x, y + height, z)
+				.setUv((texX * f), (texY + texHeight) * f1).setColor(255, 255, 255, 122);
+		bufferBuilder.addVertex(matrix, (x + width), y + height, z)
+				.setUv((texX + texWidth) * f, (texY + texHeight) * f1).setColor(255, 255, 255, 122);
+		bufferBuilder.addVertex(matrix, (x + width), y, z)
+				.setUv((texX + texWidth) * f,(texY * f1)).setColor(255, 255, 255, 122);
+		bufferBuilder.addVertex(matrix, x, y, z)
+				.setUv((texX * f), (texY * f1)).setColor(255, 255, 255, 255);
+		BufferUploader.drawWithShader(bufferBuilder.buildOrThrow());
 	}
 
 	public static void drawTexturedModelRectWithAlpha(Matrix4f matrix, float x, float y, int width, int height, int texX, int texY, int texWidth, int texHeight, float alpha) {

@@ -15,6 +15,7 @@ import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
+import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.RenderTooltipEvent;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 import net.neoforged.bus.api.EventPriority;
@@ -42,7 +43,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-@Mod.EventBusSubscriber(modid = LegendarySurvivalOverhaul.MOD_ID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.FORGE)
+@EventBusSubscriber(
+        modid = LegendarySurvivalOverhaul.MOD_ID,
+        bus = EventBusSubscriber.Bus.GAME,
+        value = Dist.CLIENT
+)
 public class TooltipHandler
 {
 	
@@ -148,7 +153,7 @@ public class TooltipHandler
 
 		if (jtcs != null) {
 			for (JsonTemperatureConsumable jtc: jtcs) {
-				MobEffectInstance effectInstance = new MobEffectInstance(jtc.getEffect(), jtc.duration, Math.abs(jtc.temperatureLevel));
+				MobEffectInstance effectInstance = new MobEffectInstance(net.minecraft.core.Holder.direct(jtc.getEffect()), jtc.duration, Math.abs(jtc.temperatureLevel));
 				MutableComponent mutableComponent = Component.translatable(effectInstance.getDescriptionId());
 
 				if (Math.abs(jtc.temperatureLevel) > 1) {
@@ -156,13 +161,13 @@ public class TooltipHandler
 				}
 
 				if (jtc.duration > 20) {
-					mutableComponent = Component.translatable("potion.withDuration", mutableComponent, MobEffectUtil.formatDuration(effectInstance, 1.0f));
+					mutableComponent = Component.translatable("potion.withDuration", mutableComponent, MobEffectUtil.formatDuration(effectInstance, 1.0f, 20.0f));
 				}
 
 				if (jtc.getEffect() == MobEffectRegistry.COLD_FOOD.get() || jtc.getEffect() == MobEffectRegistry.COLD_DRINK.get())
 					tooltips.add(mutableComponent.withStyle(Style.EMPTY.withColor(TextColor.fromRgb(6466303))));
 
-				if (jtc.getEffect() == MobEffectRegistry.HOT_FOOD.get() || jtc.getEffect() == MobEffectRegistry.HOT_DRINk.get())
+				if (jtc.getEffect() == MobEffectRegistry.HOT_FOOD.get())
 					tooltips.add(mutableComponent.withStyle(Style.EMPTY.withColor(TextColor.fromRgb(16420407))));
 			}
 		}
@@ -191,8 +196,8 @@ public class TooltipHandler
 					mutableComponent = Component.translatable("potion.withAmplifier", mutableComponent, Component.translatable("potion.potency." + jsonConsumableHeal.recoveryEffectAmplifier));
 				}
 
-				MobEffectInstance mei = new MobEffectInstance(MobEffectRegistry.RECOVERY.get(), jsonConsumableHeal.recoveryEffectDuration, jsonConsumableHeal.recoveryEffectAmplifier);
-				mutableComponent = Component.translatable("potion.withDuration", mutableComponent, MobEffectUtil.formatDuration(mei, 1.0f));
+					MobEffectInstance mei = new MobEffectInstance(MobEffectRegistry.RECOVERY, jsonConsumableHeal.recoveryEffectDuration, jsonConsumableHeal.recoveryEffectAmplifier);
+				mutableComponent = Component.translatable("potion.withDuration", mutableComponent, MobEffectUtil.formatDuration(mei, 1.0f, 20.0f));
 
 				tooltips.add(mutableComponent.withStyle(Style.EMPTY.withColor(ChatFormatting.BLUE)));
 			}
@@ -239,12 +244,12 @@ public class TooltipHandler
 	private static MutableComponent getHydrationEffectTooltip(double effectChance, String effectName, int amplifier, int duration) {
 		MobEffect effect = null;
 		if (effectName != null && !effectName.isEmpty() && effectChance > 0)
-			effect = Registries.MOB_EFFECT.getValue(new ResourceLocation(effectName));
+			effect = BuiltInRegistries.MOB_EFFECT.get(ResourceLocation.parse(effectName));
 
 		if (effect == null)
 			return null;
 
-		MobEffectInstance effectInstance = new MobEffectInstance(effect, duration, amplifier, false, true);
+		MobEffectInstance effectInstance = new MobEffectInstance(net.minecraft.core.Holder.direct(effect), duration, amplifier, false, true);
 		MutableComponent mutableComponent = Component.translatable(effectInstance.getDescriptionId());
 
 		if (effectInstance.getAmplifier() > 1) {
@@ -252,7 +257,7 @@ public class TooltipHandler
 		}
 
 		if (effectInstance.getDuration() > 20) {
-			mutableComponent = Component.translatable("potion.withDuration", mutableComponent, MobEffectUtil.formatDuration(effectInstance, 1.0f));
+			mutableComponent = Component.translatable("potion.withDuration", mutableComponent, MobEffectUtil.formatDuration(effectInstance, 1.0f, 20.0f));
 		}
 
 		if (effectChance < 1)

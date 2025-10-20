@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "c": {
+      "item": "legendarysurvivaloverhaul:cold_resistance_ring"
+    },
+    "h": {
+      "item": "legendarysurvivaloverhaul:heat_resistance_ring"
+    },
+    "s": {
+      "item": "legendarysurvivaloverhaul:cold_string"
+    },
+    "t": {
+      "item": "minecraft:potion"
+    },
+    "w": {
+      "item": "legendarysurvivaloverhaul:warm_string"
+    }
+  },
+  "pattern": [
+    " wh",
+    "stw",
+    "cs "
+  ],
+  "result": {
+    "count": 1,
+    "id": "legendarysurvivaloverhaul:thermal_resistance_ring"
+  }
+}

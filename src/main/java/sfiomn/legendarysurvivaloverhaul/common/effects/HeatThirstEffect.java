@@ -16,7 +16,7 @@ public class HeatThirstEffect extends IncurableMobEffect
 	}
 	
 	@Override
-	public void applyEffectTick(@NotNull LivingEntity entity, int amplifier)
+	public boolean applyEffectTick(@NotNull LivingEntity entity, int amplifier)
 	{
 		if(entity instanceof Player)
 		{
@@ -25,6 +25,7 @@ public class HeatThirstEffect extends IncurableMobEffect
 			// Twice strength of Hunger effect
 			thirstCapability.addThirstExhaustion((float) (Config.Baked.heatThirstEffectModifier * (amplifier + 1)));
 		}
+		return true;
 	}
 
 	@Override

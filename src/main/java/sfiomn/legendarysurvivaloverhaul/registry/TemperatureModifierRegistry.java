@@ -12,8 +12,8 @@ import sfiomn.legendarysurvivaloverhaul.api.temperature.AttributeModifierBase;
 import sfiomn.legendarysurvivaloverhaul.api.temperature.DynamicModifierBase;
 import sfiomn.legendarysurvivaloverhaul.api.temperature.ModifierBase;
 import sfiomn.legendarysurvivaloverhaul.common.integration.eclipticseasons.EclipticSeasonsModifier;
-import sfiomn.legendarysurvivaloverhaul.common.integration.origins.OriginsDynamicModifier;
-import sfiomn.legendarysurvivaloverhaul.common.integration.origins.OriginsModifier;
+//import sfiomn.legendarysurvivaloverhaul.common.integration.origins.OriginsDynamicModifier;
+//import sfiomn.legendarysurvivaloverhaul.common.integration.origins.OriginsModifier;
 import sfiomn.legendarysurvivaloverhaul.common.integration.sereneseasons.SereneSeasonsModifier;
 import sfiomn.legendarysurvivaloverhaul.common.integration.terrafirmacraft.TerraFirmaCraftHeatItemModifier;
 import sfiomn.legendarysurvivaloverhaul.common.integration.terrafirmacraft.TerraFirmaCraftModifier;
@@ -26,11 +26,11 @@ import sfiomn.legendarysurvivaloverhaul.common.temperature.dynamic.TemperatureRe
 public class TemperatureModifierRegistry
 {
     public static final ResourceKey<Registry<ModifierBase>> MODIFIERS_KEY =
-            ResourceKey.createRegistryKey(new ResourceLocation(LegendarySurvivalOverhaul.MOD_ID, "temperature_modifiers"));
+            ResourceKey.createRegistryKey(ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "temperature_modifiers"));
     public static final ResourceKey<Registry<DynamicModifierBase>> DYNAMIC_MODIFIERS_KEY =
-            ResourceKey.createRegistryKey(new ResourceLocation(LegendarySurvivalOverhaul.MOD_ID, "dynamic_temperature_modifiers"));
+            ResourceKey.createRegistryKey(ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "dynamic_temperature_modifiers"));
     public static final ResourceKey<Registry<AttributeModifierBase>> ITEM_ATTRIBUTE_MODIFIERS_KEY =
-            ResourceKey.createRegistryKey(new ResourceLocation(LegendarySurvivalOverhaul.MOD_ID, "item_attribute_temperature_modifiers"));
+            ResourceKey.createRegistryKey(ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "item_attribute_temperature_modifiers"));
 
     public static final DeferredRegister<ModifierBase> MODIFIERS =
             DeferredRegister.create(MODIFIERS_KEY, LegendarySurvivalOverhaul.MOD_ID);
@@ -73,8 +73,8 @@ public class TemperatureModifierRegistry
     public static final DeferredHolder<ModifierBase, ModifierBase> WORLD_TEMPERATURE_TERRA_FIRMA_CRAFT = MODIFIERS.register("integration/world_temp_tfc", TerraFirmaCraftModifier::new);
     public static final DeferredHolder<AttributeModifierBase, AttributeModifierBase> ITEM_TEMPERATURE_TERRA_FIRMA_CRAFT = ITEM_ATTRIBUTE_MODIFIERS.register("integration/item_temp_tfc", TerraFirmaCraftHeatItemModifier::new);
 
-    public static final DeferredHolder<ModifierBase, ModifierBase> ORIGINS = MODIFIERS.register("integration/origins", OriginsModifier::new);
-    public static final DeferredHolder<DynamicModifierBase, DynamicModifierBase> ORIGINS_RESISTANCE = DYNAMIC_MODIFIERS.register("integration/origins_resistance", OriginsDynamicModifier::new);
+//    public static final DeferredHolder<ModifierBase, ModifierBase> ORIGINS = MODIFIERS.register("integration/origins", OriginsModifier::new);
+//    public static final DeferredHolder<DynamicModifierBase, DynamicModifierBase> ORIGINS_RESISTANCE = DYNAMIC_MODIFIERS.register("integration/origins_resistance", OriginsDynamicModifier::new);
 
 
     public static void register(IEventBus eventBus){

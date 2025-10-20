@@ -14,6 +14,8 @@ import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.minecraft.core.registries.Registries;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import net.minecraft.server.level.ServerPlayer;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonThirstConsumable;
 import sfiomn.legendarysurvivaloverhaul.api.data.manager.IThirstConsumableManager;
@@ -38,7 +40,7 @@ public class ThirstConsumableListener extends SimpleJsonResourceReloadListener i
         resourceLocationJsonElementMap.forEach((key, json) -> {
             try {
                 var parsedJson = JsonThirstConsumable.LIST_CODEC.parse(JsonOps.INSTANCE, json);
-                List<JsonThirstConsumable> parsedThirstConsumables = parsedJson.getOrThrow(false, error -> LegendarySurvivalOverhaul.LOGGER.error("Failed parsing thirst consumable : {}", error));
+                List<JsonThirstConsumable> parsedThirstConsumables = parsedJson.getOrThrow(err -> new IllegalStateException("Failed parsing thirst consumable: " + err));
                 if (ModList.get().isLoaded(key.getNamespace()))
                     THIRST_CONSUMABLES.put(key, parsedThirstConsumables);
             } catch (Exception error) {
@@ -49,8 +51,12 @@ public class ThirstConsumableListener extends SimpleJsonResourceReloadListener i
         LegendarySurvivalOverhaul.LOGGER.info("Loaded {} thirst consumables", THIRST_CONSUMABLES.size());
     }
 
-    public static void sendDataToClient(PacketDistributor.PacketTarget packetTarget) {
-        SyncThirstConsumablesPacket.sendTo(packetTarget, THIRST_CONSUMABLES);
+    public static void sendDataToClient(@Nullable ServerPlayer player) {
+        if (player == null) {
+            PacketDistributor.sendToAllPlayers(new SyncThirstConsumablesPacket(THIRST_CONSUMABLES));
+        } else {
+            PacketDistributor.sendToPlayer(player, new SyncThirstConsumablesPacket(THIRST_CONSUMABLES));
+        }
     }
 
     public static void acceptServerThirstConsumables(Map<ResourceLocation, List<JsonThirstConsumable>> thirstConsumables) {

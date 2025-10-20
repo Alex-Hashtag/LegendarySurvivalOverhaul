@@ -1,0 +1,33 @@
+{
+  "parent": "legendarysurvivaloverhaul:main/root",
+  "criteria": {
+    "inventory_changed": {
+      "conditions": {
+        "items": [
+          {
+            "items": "legendarysurvivaloverhaul:thermometer"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.legendarysurvivaloverhaul.get_a_thermometer.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "legendarysurvivaloverhaul:thermometer"
+    },
+    "title": {
+      "translate": "advancement.legendarysurvivaloverhaul.get_a_thermometer"
+    }
+  },
+  "requirements": [
+    [
+      "inventory_changed"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

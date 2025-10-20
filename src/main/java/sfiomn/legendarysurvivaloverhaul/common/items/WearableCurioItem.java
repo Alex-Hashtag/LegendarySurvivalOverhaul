@@ -22,7 +22,7 @@ public class WearableCurioItem extends Item {
 
         boolean isWorn = CuriosUtil.equipCurio(player, itemstack, hand);
         if (isWorn)
-            level.playSound(null, player.blockPosition(), SoundEvents.ARMOR_EQUIP_GENERIC, player.getSoundSource(), 1.0f, 1.0f);
+            level.playSound(null, player.blockPosition(), SoundEvents.ARMOR_EQUIP_GENERIC.value(), player.getSoundSource(), 1.0f, 1.0f);
 
         return isWorn ? InteractionResultHolder.success(itemstack): InteractionResultHolder.fail(itemstack);
     }

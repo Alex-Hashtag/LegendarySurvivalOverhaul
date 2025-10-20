@@ -3,6 +3,7 @@ package sfiomn.legendarysurvivaloverhaul.data;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
+import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 import net.neoforged.bus.api.EventPriority;
@@ -14,7 +15,7 @@ import sfiomn.legendarysurvivaloverhaul.data.providers.*;
 
 import java.util.concurrent.CompletableFuture;
 
-@Mod.EventBusSubscriber(modid = LegendarySurvivalOverhaul.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(modid = LegendarySurvivalOverhaul.MOD_ID, bus = EventBusSubscriber.Bus.MOD)
 public final class DataGenerators
 {
 	@SubscribeEvent(priority = EventPriority.LOWEST)
@@ -32,15 +33,15 @@ public final class DataGenerators
 		gen.addProvider(event.includeServer(), new ModDatapackBuiltinEntriesProvider(packOutput, lookupProvider));
 		gen.addProvider(event.includeServer(), new ModEntityTypesTagProvider(packOutput, lookupProvider, existingFileHelper));
 		gen.addProvider(event.includeServer(), new ModDamageTypeTagsProvider(packOutput, lookupProvider, existingFileHelper));
-		gen.addProvider(event.includeServer(), new ModRecipeProvider(packOutput));
-		gen.addProvider(event.includeServer(), ModLootTableProvider.createLootTables(packOutput));
+		gen.addProvider(event.includeServer(), new ModRecipeProvider(packOutput, lookupProvider));
+		gen.addProvider(event.includeServer(), ModLootTableProvider.createLootTables(packOutput, lookupProvider));
 		gen.addProvider(event.includeServer(), new ModAdvancementProvider(packOutput, lookupProvider, existingFileHelper));
 
 		ModBlockTagProvider blockTagProvider = gen.addProvider(event.includeServer(),
 				new ModBlockTagProvider(packOutput, lookupProvider, existingFileHelper));
 		gen.addProvider(event.includeServer(), new ModItemTagProvider(packOutput, lookupProvider, blockTagProvider.contentsGetter(), existingFileHelper));
 
-		gen.addProvider(event.includeServer(), new ModGlobalLootModifierProvider(packOutput));
+		gen.addProvider(event.includeServer(), new ModGlobalLootModifierProvider(packOutput, lookupProvider));
 		gen.addProvider(event.includeServer(), new ModTemperatureProvider(packOutput, lookupProvider, existingFileHelper));
 		gen.addProvider(event.includeServer(), new ModThirstProvider(packOutput, lookupProvider, existingFileHelper));
 		gen.addProvider(event.includeServer(), new ModBodyDamageProvider(packOutput, lookupProvider, existingFileHelper));

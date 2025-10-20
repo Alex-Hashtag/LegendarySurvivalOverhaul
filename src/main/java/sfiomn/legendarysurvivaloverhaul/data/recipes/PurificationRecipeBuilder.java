@@ -1,8 +1,10 @@
 package sfiomn.legendarysurvivaloverhaul.data.recipes;
 
 import com.google.gson.JsonObject;
+import com.mojang.serialization.JsonOps;
 import net.minecraft.advancements.Advancement;
-import net.minecraft.advancements.CriterionTriggerInstance;
+import net.minecraft.advancements.AdvancementHolder;
+import net.minecraft.advancements.Criterion;
 import net.minecraft.advancements.critereon.RecipeUnlockedTrigger;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -30,6 +32,7 @@ public class PurificationRecipeBuilder {
     private final float experience;
     private final int cookingTime;
     private final Advancement.Builder advancement = Advancement.Builder.advancement();
+    private boolean hasCriterion = false;
     @Nullable
     private String group;
     private final RecipeSerializer<? extends AbstractCookingRecipe> serializer;
@@ -52,8 +55,9 @@ public class PurificationRecipeBuilder {
         return new PurificationRecipeBuilder(pCategory, determineSmeltingRecipeCategory(pResult), pResult, pIngredient, pExperience, pCookingTime, RecipeRegistry.PURIFICATION_SMELTING_SERIALIZER.get());
     }
 
-    public PurificationRecipeBuilder unlockedBy(String pCriterionName, CriterionTriggerInstance pCriterionTrigger) {
+    public PurificationRecipeBuilder unlockedBy(String pCriterionName, Criterion<?> pCriterionTrigger) {
         this.advancement.addCriterion(pCriterionName, pCriterionTrigger);
+        this.hasCriterion = true;
         return this;
     }
 
@@ -67,32 +71,28 @@ public class PurificationRecipeBuilder {
     }
 
     public void save(@NotNull RecipeOutput output, @NotNull String id) {
-        this.save(output, new ResourceLocation(id));
+        this.save(output, ResourceLocation.parse(id));
     }
 
     public void save(RecipeOutput output, @NotNull ResourceLocation recipeId) {
         this.ensureValid(recipeId);
-        this.advancement.parent(RecipeBuilder.ROOT_RECIPE_ADVANCEMENT)
-                .addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(recipeId));
+        AdvancementHolder advancementHolder = this.advancement.parent(RecipeBuilder.ROOT_RECIPE_ADVANCEMENT)
+                .addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(recipeId))
+                .build(recipeId.withPrefix("recipes/" + this.category.getFolderName() + "/"));
 
-        JsonObject json = new JsonObject();
-        if (this.group != null && !this.group.isEmpty()) {
-            json.addProperty("group", this.group);
-        }
-        var resultRegistryName = BuiltInRegistries.ITEM.getKey(this.result);
-        json.addProperty("category", this.bookCategory.getSerializedName());
-        json.add("ingredient", this.ingredient.toJson());
-        if (resultRegistryName != null) {
-            json.addProperty("result", resultRegistryName.toString());
-        }
-        json.addProperty("experience", this.experience);
-        json.addProperty("cookingtime", this.cookingTime);
+        AbstractCookingRecipe recipe = this.serializer.getClass().getSimpleName().contains("Smelting")
+                ? new sfiomn.legendarysurvivaloverhaul.common.recipe.PurificationSmeltingRecipe(
+                        this.group == null ? "" : this.group, this.bookCategory, this.ingredient,
+                        new net.minecraft.world.item.ItemStack(this.result), this.experience, this.cookingTime)
+                : new sfiomn.legendarysurvivaloverhaul.common.recipe.PurificationBlastingRecipe(
+                        this.group == null ? "" : this.group, this.bookCategory, this.ingredient,
+                        new net.minecraft.world.item.ItemStack(this.result), this.experience, this.cookingTime);
 
-        output.accept(recipeId, this.serializer, json, this.advancement, recipeId.withPrefix("recipes/" + this.category.getFolderName() + "/"));
+        output.accept(recipeId, recipe, advancementHolder);
     }
 
     private static CookingBookCategory determineSmeltingRecipeCategory(ItemLike pResult) {
-        if (pResult.asItem().isEdible()) {
+        if (pResult.asItem().components().has(net.minecraft.core.component.DataComponents.FOOD)) {
             return CookingBookCategory.FOOD;
         } else {
             return pResult.asItem() instanceof BlockItem ? CookingBookCategory.BLOCKS : CookingBookCategory.MISC;
@@ -104,7 +104,7 @@ public class PurificationRecipeBuilder {
     }
 
     private void ensureValid(ResourceLocation pId) {
-        if (this.advancement.getCriteria().isEmpty()) {
+        if (!this.hasCriterion) {
             throw new IllegalStateException("No way of obtaining recipe " + pId);
         }
     }

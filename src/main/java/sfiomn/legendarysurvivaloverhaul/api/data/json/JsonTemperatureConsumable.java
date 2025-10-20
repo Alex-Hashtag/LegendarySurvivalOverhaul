@@ -46,4 +46,12 @@ public class JsonTemperatureConsumable {
     public MobEffect getOppositeEffect() {
         return this.oppositeEffect.get();
     }
+
+    public DeferredHolder<MobEffect, MobEffect> getEffectHolder() {
+        return this.effect;
+    }
+
+    public DeferredHolder<MobEffect, MobEffect> getOppositeEffectHolder() {
+        return this.oppositeEffect;
+    }
 }

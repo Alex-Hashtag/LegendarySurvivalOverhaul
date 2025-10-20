@@ -1,14 +1,14 @@
 package sfiomn.legendarysurvivaloverhaul.network.packets;
 
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtOps;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.PacketFlow;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload.Type;
 import net.minecraft.resources.ResourceLocation;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.fml.DistExecutor;
 import net.neoforged.neoforge.network.PacketDistributor;
-import net.neoforged.neoforge.network.handling.PlayPayloadContext;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonBodyPartsDamageSource;
 import sfiomn.legendarysurvivaloverhaul.common.listeners.BodyPartsDamageSourceListener;
@@ -21,65 +21,47 @@ public record SyncBodyPartsDamageSourcesPacket(
 ) implements CustomPacketPayload {
 
     public static final ResourceLocation ID =
-            new ResourceLocation(LegendarySurvivalOverhaul.MOD_ID, "sync_body_parts_damage_sources");
+            ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "sync_body_parts_damage_sources");
 
-    // Buffer ctor (was decode)
-    public SyncBodyPartsDamageSourcesPacket(FriendlyByteBuf buf) {
-        this(readMap(buf));
-    }
+    public static final Type<SyncBodyPartsDamageSourcesPacket> TYPE = new Type<>(ID);
 
-    private static Map<ResourceLocation, JsonBodyPartsDamageSource> readMap(FriendlyByteBuf buf) {
-        int size = buf.readInt();
-        Map<ResourceLocation, JsonBodyPartsDamageSource> map = new HashMap<>(size);
-        for (int i = 0; i < size; i++) {
-            ResourceLocation key = buf.readResourceLocation();
-            CompoundTag tag = buf.readNbt();
-            if (tag != null) {
-                JsonBodyPartsDamageSource.CODEC.parse(NbtOps.INSTANCE, tag)
-                        .result().ifPresent(v -> map.put(key, v));
-            }
-        }
-        return Map.copyOf(map);
-    }
-
-    // Writer (was encode)
-    @Override
-    public void write(FriendlyByteBuf buf) {
-        buf.writeInt(damageSources.size());
-        for (var e : damageSources.entrySet()) {
-            buf.writeResourceLocation(e.getKey());
-            JsonBodyPartsDamageSource.CODEC.encodeStart(NbtOps.INSTANCE, e.getValue())
-                    .result().ifPresent(j -> buf.writeNbt((CompoundTag) j));
-        }
-    }
+    public static final StreamCodec<RegistryFriendlyByteBuf, SyncBodyPartsDamageSourcesPacket> STREAM_CODEC =
+            StreamCodec.composite(
+                    ByteBufCodecs.map(
+                            HashMap::new,
+                            ResourceLocation.STREAM_CODEC,
+                            ByteBufCodecs.fromCodecTrusted(JsonBodyPartsDamageSource.CODEC)
+                    ),
+                    SyncBodyPartsDamageSourcesPacket::damageSources,
+                    SyncBodyPartsDamageSourcesPacket::new
+            );
 
     @Override
-    public ResourceLocation id() { return ID; }
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
+    }
 
-    // Handler (replaces Supplier<NetworkEvent.Context>)
-    public static void handle(SyncBodyPartsDamageSourcesPacket pkt, PlayPayloadContext ctx) {
-        ctx.workHandler().submitAsync(() ->
-                DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () ->
-                        BodyPartsDamageSourceListener.acceptServerDamageSources(pkt.damageSources())
-                )
-        );
+    // Handler (client-only)
+    public static void handle(SyncBodyPartsDamageSourcesPacket pkt, IPayloadContext ctx) {
+        if (ctx.flow() != PacketFlow.CLIENTBOUND) return;
+        ctx.enqueueWork(() -> BodyPartsDamageSourceListener.acceptServerDamageSources(pkt.damageSources()));
     }
 
     /* -------- Convenience send helpers -------- */
 
     // Client -> Server
     public static void sendToServer(Map<ResourceLocation, JsonBodyPartsDamageSource> data) {
-        PacketDistributor.SERVER.noArg().send(new SyncBodyPartsDamageSourcesPacket(data));
+        PacketDistributor.sendToServer(new SyncBodyPartsDamageSourcesPacket(data));
     }
 
     // Server -> one player
     public static void sendToPlayer(net.minecraft.server.level.ServerPlayer player,
                                     Map<ResourceLocation, JsonBodyPartsDamageSource> data) {
-        PacketDistributor.PLAYER.with(player).send(new SyncBodyPartsDamageSourcesPacket(data));
+        PacketDistributor.sendToPlayer(player, new SyncBodyPartsDamageSourcesPacket(data));
     }
 
     // Server -> all
     public static void sendToAll(Map<ResourceLocation, JsonBodyPartsDamageSource> data) {
-        PacketDistributor.ALL.noArg().send(new SyncBodyPartsDamageSourcesPacket(data));
+        PacketDistributor.sendToAllPlayers(new SyncBodyPartsDamageSourcesPacket(data));
     }
 }

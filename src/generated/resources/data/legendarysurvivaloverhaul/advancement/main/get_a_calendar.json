@@ -1,0 +1,33 @@
+{
+  "parent": "legendarysurvivaloverhaul:main/root",
+  "criteria": {
+    "inventory_changed": {
+      "conditions": {
+        "items": [
+          {
+            "items": "legendarysurvivaloverhaul:seasonal_calendar"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.legendarysurvivaloverhaul.get_a_calendar.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "legendarysurvivaloverhaul:seasonal_calendar"
+    },
+    "title": {
+      "translate": "advancement.legendarysurvivaloverhaul.get_a_calendar"
+    }
+  },
+  "requirements": [
+    [
+      "inventory_changed"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

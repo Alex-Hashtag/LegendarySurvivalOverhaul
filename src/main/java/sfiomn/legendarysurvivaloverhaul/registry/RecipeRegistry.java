@@ -15,15 +15,15 @@ import sfiomn.legendarysurvivaloverhaul.common.recipe.SewingRecipe;
 public class RecipeRegistry
 {
 
-    public static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS = DeferredRegister.create(Registries.RECIPE_SERIALIZERS, LegendarySurvivalOverhaul.MOD_ID);
+    public static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS = DeferredRegister.create(Registries.RECIPE_SERIALIZER, LegendarySurvivalOverhaul.MOD_ID);
 
-    public static final DeferredHolder<RecipeSerializer<SewingRecipe>, ? extends RecipeSerializer<SewingRecipe>> SEWING_SERIALIZER = RECIPE_SERIALIZERS.register("sewing", () -> SewingRecipe.Serializer.INSTANCE);
-    public static final DeferredHolder<RecipeSerializer<PurificationSmeltingRecipe>, ? extends RecipeSerializer<PurificationSmeltingRecipe>> PURIFICATION_SMELTING_SERIALIZER = RECIPE_SERIALIZERS.register("purification_smelting", () -> PurificationSmeltingRecipe.Serializer.INSTANCE);
-    public static final DeferredHolder<RecipeSerializer<PurificationBlastingRecipe>, ? extends RecipeSerializer<PurificationBlastingRecipe>> PURIFICATION_BLASTING_SERIALIZER = RECIPE_SERIALIZERS.register("purification_blasting", () -> PurificationBlastingRecipe.Serializer.INSTANCE);
+    public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<SewingRecipe>> SEWING_SERIALIZER = RECIPE_SERIALIZERS.register("sewing", () -> SewingRecipe.Serializer.INSTANCE);
+    public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<PurificationSmeltingRecipe>> PURIFICATION_SMELTING_SERIALIZER = RECIPE_SERIALIZERS.register("purification_smelting", () -> PurificationSmeltingRecipe.Serializer.INSTANCE);
+    public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<PurificationBlastingRecipe>> PURIFICATION_BLASTING_SERIALIZER = RECIPE_SERIALIZERS.register("purification_blasting", () -> PurificationBlastingRecipe.Serializer.INSTANCE);
 
-    public static final DeferredRegister<RecipeType<?>> RECIPE_TYPE = DeferredRegister.create(Registries.RECIPE_TYPES, LegendarySurvivalOverhaul.MOD_ID);
+    public static final DeferredRegister<RecipeType<?>> RECIPE_TYPE = DeferredRegister.create(Registries.RECIPE_TYPE, LegendarySurvivalOverhaul.MOD_ID);
 
-    public static final DeferredHolder<RecipeType<SewingRecipe>, ? extends RecipeType<SewingRecipe>> SEWING_RECIPE = RECIPE_TYPE.register("sewing", () -> RecipeType.simple(SewingRecipe.Type.ID));
+    public static final DeferredHolder<RecipeType<?>, RecipeType<SewingRecipe>> SEWING_RECIPE = RECIPE_TYPE.register("sewing", () -> RecipeType.simple(SewingRecipe.Type.ID));
 
     public static void register(IEventBus eventBus)
     {

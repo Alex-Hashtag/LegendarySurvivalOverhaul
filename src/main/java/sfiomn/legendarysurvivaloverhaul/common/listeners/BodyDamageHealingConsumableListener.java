@@ -12,6 +12,8 @@ import net.minecraft.util.profiling.ProfilerFiller;
 import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import net.minecraft.server.level.ServerPlayer;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonHealingConsumable;
 import sfiomn.legendarysurvivaloverhaul.api.data.manager.IHealingConsumableManager;
@@ -36,19 +38,23 @@ public class BodyDamageHealingConsumableListener extends SimpleJsonResourceReloa
         resourceLocationJsonElementMap.forEach((key, json) -> {
             try {
                 var parsedJson = JsonHealingConsumable.CODEC.parse(JsonOps.INSTANCE, json);
-                JsonHealingConsumable temperatures = parsedJson.getOrThrow(false, error -> LegendarySurvivalOverhaul.LOGGER.error("Failed parsing body healing consumable : {}", error));
+                JsonHealingConsumable temperatures = parsedJson.getOrThrow(err -> new IllegalStateException("Failed parsing body healing consumable: " + err));
                 if (ModList.get().isLoaded(key.getNamespace()))
                     HEALING_CONSUMABLES.put(key, temperatures);
-            } catch (JsonParseException error) {
-                LegendarySurvivalOverhaul.LOGGER.error("Failed to parse body healing consumable json {}", key);
+            } catch (JsonParseException | IllegalStateException error) {
+                LegendarySurvivalOverhaul.LOGGER.error("Failed to parse body healing consumable json {}", key, error);
             }
         });
 
         LegendarySurvivalOverhaul.LOGGER.info("Loaded {} body healing consumables", HEALING_CONSUMABLES.size());
     }
 
-    public static void sendDataToClient(PacketDistributor.PacketTarget packetTarget) {
-        SyncBodyDamageHealingConsumablesPacket.sendTo(packetTarget, HEALING_CONSUMABLES);
+    public static void sendDataToClient(@Nullable ServerPlayer player) {
+        if (player == null) {
+            PacketDistributor.sendToAllPlayers(new SyncBodyDamageHealingConsumablesPacket(HEALING_CONSUMABLES));
+        } else {
+            PacketDistributor.sendToPlayer(player, new SyncBodyDamageHealingConsumablesPacket(HEALING_CONSUMABLES));
+        }
     }
 
     public static void acceptServerHealingConsumables(Map<ResourceLocation, JsonHealingConsumable> healingConsumables) {

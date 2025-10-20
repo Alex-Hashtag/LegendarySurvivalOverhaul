@@ -5,7 +5,9 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -19,6 +21,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jetbrains.annotations.NotNull;
 import sfiomn.legendarysurvivaloverhaul.registry.BlockRegistry;
 
 public class HeaterTopBlock extends HorizontalDirectionalBlock {
@@ -59,13 +62,34 @@ public class HeaterTopBlock extends HorizontalDirectionalBlock {
     }
 
     @Override
-    @SuppressWarnings("deprecation")
-    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult rayTraceResult) {
+    public @NotNull InteractionResult useWithoutItem(BlockState state,
+                                                     Level level,
+                                                     BlockPos pos,
+                                                     Player player,
+                                                     BlockHitResult hit) {
         BlockState bottomState = level.getBlockState(pos.below());
-        if (bottomState.is(BlockRegistry.HEATER.get())) {
-            ((HeaterBaseBlock) bottomState.getBlock()).use(bottomState, level, pos.below(), player, hand, rayTraceResult);
+        if (bottomState.is(BlockRegistry.HEATER.get()) && bottomState.getBlock() instanceof HeaterBaseBlock heater) {
+            // Delegate empty-hand interaction to the bottom block
+            return heater.useWithoutItem(bottomState, level, pos.below(), player, hit);
         }
-        return InteractionResult.SUCCESS;
+        // Let vanilla/other handlers try
+        return InteractionResult.PASS;
+    }
+
+    public @NotNull ItemInteractionResult useItemOn(ItemStack stack,
+                                                    BlockState state,
+                                                    Level level,
+                                                    BlockPos pos,
+                                                    Player player,
+                                                    InteractionHand hand,
+                                                    BlockHitResult hit) {
+        BlockState bottomState = level.getBlockState(pos.below());
+        if (bottomState.is(BlockRegistry.HEATER.get()) && bottomState.getBlock() instanceof HeaterBaseBlock heater) {
+            // Delegate item-in-hand interaction to the bottom block
+            return heater.onTopUseItem(stack, bottomState, level, pos.below(), player, hand, hit);
+        }
+        // Tell Minecraft to continue with default item/block behavior
+        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
     }
 
     @Override

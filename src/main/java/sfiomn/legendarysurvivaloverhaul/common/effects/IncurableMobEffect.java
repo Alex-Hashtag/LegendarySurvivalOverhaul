@@ -2,18 +2,18 @@ package sfiomn.legendarysurvivaloverhaul.common.effects;
 
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.neoforged.neoforge.common.EffectCure;
 
-import java.util.Collections;
-import java.util.List;
+import java.util.Set;
 
 public class IncurableMobEffect extends MobEffect {
-    protected IncurableMobEffect(MobEffectCategory mobEffectCategory, int color) {
-        super(mobEffectCategory, color);
+    protected IncurableMobEffect(MobEffectCategory category, int color) {
+        super(category, color);
     }
 
-    @Override
-    public List<ItemStack> getCurativeItems() {
-        return Collections.emptyList();
+    // NeoForge 1.21: override the extension hook; use NeoForge EffectCure entries (1.21); leave empty to make effect incurable
+    public void fillEffectCures(Set<EffectCure> cures, MobEffectInstance effectInstance) {
+        // No cures
     }
 }

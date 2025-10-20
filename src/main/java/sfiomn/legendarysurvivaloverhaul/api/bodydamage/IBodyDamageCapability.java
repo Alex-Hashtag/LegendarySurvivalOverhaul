@@ -2,9 +2,10 @@ package sfiomn.legendarysurvivaloverhaul.api.bodydamage;
 
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.event.TickEvent;
 
-
+/**
+ * Capability for handling localized body damage
+ */
 public interface IBodyDamageCapability
 {
 	public int getExpectedBrokenHearts();
@@ -75,7 +76,7 @@ public interface IBodyDamageCapability
 	 * Runs a tick update for the player's localized body damage capability
 	 * @param player
 	 * @param world
-	 * @param phase
+	 * @param isStart
 	 */
-	public void tickUpdate(Player player, Level world, TickEvent.Phase phase);
+	public void tickUpdate(Player player, Level world, boolean isStart);
 }

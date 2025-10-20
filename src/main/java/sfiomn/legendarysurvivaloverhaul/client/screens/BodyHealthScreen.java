@@ -25,7 +25,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 public class BodyHealthScreen extends Screen {
-    public static final ResourceLocation BODY_HEALTH_SCREEN = new ResourceLocation(LegendarySurvivalOverhaul.MOD_ID, "textures/gui/body_health_screen.png");
+    public static final ResourceLocation BODY_HEALTH_SCREEN = ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "textures/gui/body_health_screen.png");
     public static final int HEALTH_SCREEN_WIDTH = 176;
     public static final int HEALTH_SCREEN_HEIGHT = 183;
     public static final int HEALTH_BAR_WIDTH = 30;
@@ -160,11 +160,19 @@ public class BodyHealthScreen extends Screen {
     public void render(@NotNull GuiGraphics gui, int mouseX, int mouseY, float partialTicks) {
         checkAutoCloseWhenHealing();
 
-        this.renderBackground(gui, mouseX, mouseY, partialTicks);
+        // Draw vanilla background blur/dim behind our screen contents
+        super.renderBackground(gui, mouseX, mouseY, partialTicks);
 
+        // Render the screen texture
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShaderColor(1, 1, 1, 1);
+        gui.blit(BODY_HEALTH_SCREEN, leftPos, topPos, 0, 0, HEALTH_SCREEN_WIDTH, HEALTH_SCREEN_HEIGHT);
+
+        // Render health bars on top
         for (BodyPartEnum bodyPart: BodyPartEnum.values())
             renderBodyPartHealth(gui, bodyPart, mouseX, mouseY, partialTicks);
 
+        // Render buttons and widgets on top
         super.render(gui, mouseX, mouseY, partialTicks);
     }
 
@@ -177,14 +185,7 @@ public class BodyHealthScreen extends Screen {
 
     @Override
     public void renderBackground(@NotNull GuiGraphics gui, int mouseX, int mouseY, float partialTick) {
-        if (minecraft == null) return;
-
-        super.renderBackground(gui, mouseX, mouseY, partialTick);
-
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderColor(1, 1, 1, 1);
-
-        gui.blit(BODY_HEALTH_SCREEN, leftPos, topPos, 0, 0, HEALTH_SCREEN_WIDTH, HEALTH_SCREEN_HEIGHT);
+        // Don't render background blur - we handle rendering in render() method
     }
 
     private void renderBodyPartHealth(GuiGraphics gui, BodyPartEnum bodyPart, int mouseX, int mouseY, float partialTicks) {
@@ -240,13 +241,25 @@ public class BodyHealthScreen extends Screen {
 
         int healthBarWidth = (int) Math.ceil(HEALTH_BAR_WIDTH * healthRatio);
         int healthBarPreviewWidth = (int) Math.min(Math.ceil(HEALTH_BAR_WIDTH * totalRemainingHealingRatio), HEALTH_BAR_WIDTH - healthBarWidth);
+        
+        int texX = TEX_HEALTH_BAR_X + HEALTH_BAR_WIDTH * healthBarCondition.iconIndexX;
+        int texY = TEX_HEALTH_BAR_Y + HEALTH_BAR_HEIGHT * healthBarCondition.iconIndexY;
+        
+        sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul.LOGGER.info(
+            "[drawHealthBar] {}: ratio={}, barWidth={}/{}, condition={}, texCoords=({},{})",
+            bodyPart.name(), healthRatio, healthBarWidth, HEALTH_BAR_WIDTH, healthBarCondition.name(), texX, texY
+        );
 
         // Draw current health bar
-        if (healthBarWidth > 0)
+        if (healthBarWidth > 0) {
+            sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul.LOGGER.info(
+                "[drawHealthBar] Drawing filled bar at screen({},{}) from tex({},{}) size({},{})",
+                this.leftPos + healthBarIcon.x, this.topPos + healthBarIcon.y,
+                texX, texY, healthBarWidth, HEALTH_BAR_HEIGHT
+            );
             gui.blit(BODY_HEALTH_SCREEN, this.leftPos + healthBarIcon.x, this.topPos + healthBarIcon.y,
-                    TEX_HEALTH_BAR_X + HEALTH_BAR_WIDTH * healthBarCondition.iconIndexX,
-                    TEX_HEALTH_BAR_Y + HEALTH_BAR_HEIGHT * healthBarCondition.iconIndexY,
-                    healthBarWidth, HEALTH_BAR_HEIGHT);
+                    texX, texY, healthBarWidth, HEALTH_BAR_HEIGHT);
+        }
 
         // Draw healing bar
         if (healthBarPreviewWidth > 0)

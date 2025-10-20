@@ -2,92 +2,93 @@ package sfiomn.legendarysurvivaloverhaul.common.events;
 
 
 import net.minecraft.world.entity.EntityType;
+import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.EntityAttributeModificationEvent;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.Mod;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.registry.AttributeRegistry;
 
-@Mod.EventBusSubscriber(modid = LegendarySurvivalOverhaul.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(modid = LegendarySurvivalOverhaul.MOD_ID, bus = EventBusSubscriber.Bus.MOD)
 public class CommonModBusEvents {
 
     @SubscribeEvent
     public static void onEntityAttributesChange(EntityAttributeModificationEvent event) {
-        if (!event.has(EntityType.PLAYER, AttributeRegistry.HEATING_TEMPERATURE.get())) {
+        if (!event.has(EntityType.PLAYER, AttributeRegistry.HEATING_TEMPERATURE.getDelegate())) {
             event.add(EntityType.PLAYER,
-                    AttributeRegistry.HEATING_TEMPERATURE.get()
+                    AttributeRegistry.HEATING_TEMPERATURE.getDelegate()
             );
         }
-        if (!event.has(EntityType.PLAYER, AttributeRegistry.COOLING_TEMPERATURE.get())) {
+        if (!event.has(EntityType.PLAYER, AttributeRegistry.COOLING_TEMPERATURE.getDelegate())) {
             event.add(EntityType.PLAYER,
-                    AttributeRegistry.COOLING_TEMPERATURE.get()
+                    AttributeRegistry.COOLING_TEMPERATURE.getDelegate()
             );
         }
-        if (!event.has(EntityType.PLAYER, AttributeRegistry.HEAT_RESISTANCE.get())) {
+        if (!event.has(EntityType.PLAYER, AttributeRegistry.HEAT_RESISTANCE.getDelegate())) {
             event.add(EntityType.PLAYER,
-                    AttributeRegistry.HEAT_RESISTANCE.get()
+                    AttributeRegistry.HEAT_RESISTANCE.getDelegate()
             );
         }
-        if (!event.has(EntityType.PLAYER, AttributeRegistry.COLD_RESISTANCE.get())) {
+        if (!event.has(EntityType.PLAYER, AttributeRegistry.COLD_RESISTANCE.getDelegate())) {
             event.add(EntityType.PLAYER,
-                    AttributeRegistry.COLD_RESISTANCE.get()
+                    AttributeRegistry.COLD_RESISTANCE.getDelegate()
             );
         }
-        if (!event.has(EntityType.PLAYER, AttributeRegistry.THERMAL_RESISTANCE.get())) {
+        if (!event.has(EntityType.PLAYER, AttributeRegistry.THERMAL_RESISTANCE.getDelegate())) {
             event.add(EntityType.PLAYER,
-                    AttributeRegistry.THERMAL_RESISTANCE.get()
-            );
-        }
-
-        if (!event.has(EntityType.PLAYER, AttributeRegistry.BODY_RESISTANCE.get())) {
-            event.add(EntityType.PLAYER,
-                    AttributeRegistry.BODY_RESISTANCE.get()
-            );
-        }
-        if (!event.has(EntityType.PLAYER, AttributeRegistry.HEAD_RESISTANCE.get())) {
-            event.add(EntityType.PLAYER,
-                    AttributeRegistry.HEAD_RESISTANCE.get()
-            );
-        }
-        if (!event.has(EntityType.PLAYER, AttributeRegistry.CHEST_RESISTANCE.get())) {
-            event.add(EntityType.PLAYER,
-                    AttributeRegistry.CHEST_RESISTANCE.get()
-            );
-        }
-        if (!event.has(EntityType.PLAYER, AttributeRegistry.RIGHT_ARM_RESISTANCE.get())) {
-            event.add(EntityType.PLAYER,
-                    AttributeRegistry.RIGHT_ARM_RESISTANCE.get()
-            );
-        }
-        if (!event.has(EntityType.PLAYER, AttributeRegistry.LEFT_ARM_RESISTANCE.get())) {
-            event.add(EntityType.PLAYER,
-                    AttributeRegistry.LEFT_ARM_RESISTANCE.get()
-            );
-        }
-        if (!event.has(EntityType.PLAYER, AttributeRegistry.LEGS_RESISTANCE.get())) {
-            event.add(EntityType.PLAYER,
-                    AttributeRegistry.LEGS_RESISTANCE.get()
-            );
-        }
-        if (!event.has(EntityType.PLAYER, AttributeRegistry.FEET_RESISTANCE.get())) {
-            event.add(EntityType.PLAYER,
-                    AttributeRegistry.FEET_RESISTANCE.get()
+                    AttributeRegistry.THERMAL_RESISTANCE.getDelegate()
             );
         }
 
-        if (!event.has(EntityType.PLAYER, AttributeRegistry.BROKEN_HEART.get())) {
+        if (!event.has(EntityType.PLAYER, AttributeRegistry.BODY_RESISTANCE.getDelegate())) {
             event.add(EntityType.PLAYER,
-                    AttributeRegistry.BROKEN_HEART.get()
+                    AttributeRegistry.BODY_RESISTANCE.getDelegate()
             );
         }
-        if (!event.has(EntityType.PLAYER, AttributeRegistry.PERMANENT_HEART.get())) {
+        if (!event.has(EntityType.PLAYER, AttributeRegistry.HEAD_RESISTANCE.getDelegate())) {
             event.add(EntityType.PLAYER,
-                    AttributeRegistry.PERMANENT_HEART.get()
+                    AttributeRegistry.HEAD_RESISTANCE.getDelegate()
             );
         }
-        if (!event.has(EntityType.PLAYER, AttributeRegistry.BROKEN_HEART_RESILIENCE.get())) {
+        if (!event.has(EntityType.PLAYER, AttributeRegistry.CHEST_RESISTANCE.getDelegate())) {
             event.add(EntityType.PLAYER,
-                    AttributeRegistry.BROKEN_HEART_RESILIENCE.get()
+                    AttributeRegistry.CHEST_RESISTANCE.getDelegate()
+            );
+        }
+        if (!event.has(EntityType.PLAYER, AttributeRegistry.RIGHT_ARM_RESISTANCE.getDelegate())) {
+            event.add(EntityType.PLAYER,
+                    AttributeRegistry.RIGHT_ARM_RESISTANCE.getDelegate()
+            );
+        }
+        if (!event.has(EntityType.PLAYER, AttributeRegistry.LEFT_ARM_RESISTANCE.getDelegate())) {
+            event.add(EntityType.PLAYER,
+                    AttributeRegistry.LEFT_ARM_RESISTANCE.getDelegate()
+            );
+        }
+        if (!event.has(EntityType.PLAYER, AttributeRegistry.LEGS_RESISTANCE.getDelegate())) {
+            event.add(EntityType.PLAYER,
+                    AttributeRegistry.LEGS_RESISTANCE.getDelegate()
+            );
+        }
+        if (!event.has(EntityType.PLAYER, AttributeRegistry.FEET_RESISTANCE.getDelegate())) {
+            event.add(EntityType.PLAYER,
+                    AttributeRegistry.FEET_RESISTANCE.getDelegate()
+            );
+        }
+
+        if (!event.has(EntityType.PLAYER, AttributeRegistry.BROKEN_HEART.getDelegate())) {
+            event.add(EntityType.PLAYER,
+                    AttributeRegistry.BROKEN_HEART.getDelegate()
+            );
+        }
+        if (!event.has(EntityType.PLAYER, AttributeRegistry.PERMANENT_HEART.getDelegate())) {
+            event.add(EntityType.PLAYER,
+                    AttributeRegistry.PERMANENT_HEART.getDelegate()
+            );
+        }
+        if (!event.has(EntityType.PLAYER, AttributeRegistry.BROKEN_HEART_RESILIENCE.getDelegate())) {
+            event.add(EntityType.PLAYER,
+                    AttributeRegistry.BROKEN_HEART_RESILIENCE.getDelegate()
             );
         }
     }

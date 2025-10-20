@@ -1,5 +1,7 @@
 package sfiomn.legendarysurvivaloverhaul.common.capabilities.bodydamage;
 
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.effect.MobEffect;
@@ -7,8 +9,9 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.event.TickEvent;
+import net.neoforged.neoforge.common.util.INBTSerializable;
 import org.apache.commons.lang3.tuple.Pair;
+import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.bodydamage.BodyDamageUtil;
 import sfiomn.legendarysurvivaloverhaul.api.bodydamage.BodyPartEnum;
 import sfiomn.legendarysurvivaloverhaul.api.bodydamage.IBodyDamageCapability;
@@ -25,8 +28,10 @@ import sfiomn.legendarysurvivaloverhaul.util.MathUtil;
 import java.util.*;
 import java.util.function.BiConsumer;
 
-
-public class BodyDamageCapability implements IBodyDamageCapability
+/**
+ * Capability that handles body damage for a player.
+ */
+public class BodyDamageCapability implements IBodyDamageCapability, INBTSerializable<CompoundTag>
 {
     // Saved data
     private Map<BodyPartEnum, BodyPart> bodyParts;
@@ -77,21 +82,28 @@ public class BodyDamageCapability implements IBodyDamageCapability
         this.bodyParts.put(BodyPartEnum.LEFT_LEG, new BodyPart(BodyPartEnum.LEFT_LEG, (float) Config.Baked.legsPartHealth));
         this.bodyParts.put(BodyPartEnum.LEFT_FOOT, new BodyPart(BodyPartEnum.LEFT_FOOT, (float) Config.Baked.feetPartHealth));
 
-        if (Config.Baked.bodyPartHealthMode != EnumUtil.bodyPartHealthMode.DYNAMIC) {
-            for (BodyPart part: this.bodyParts.values()) {
+        // Initialize maxHealth for STATIC mode only
+        // DYNAMIC mode will initialize on first tick when player max health is known
+        if (Config.Baked.bodyPartHealthMode != EnumUtil.bodyPartHealthMode.DYNAMIC)
+        {
+            for (BodyPart part : this.bodyParts.values())
+            {
                 part.setMaxHealth(part.getHealthMultiplier());
             }
         }
     }
 
     @Override
-    public void setManualDirty() {
+    public void setManualDirty()
+    {
         this.manualDirty = true;
     }
 
     @Override
-    public boolean isDirty() {
-        for (BodyPart bodyPart: this.bodyParts.values()) {
+    public boolean isDirty()
+    {
+        for (BodyPart bodyPart : this.bodyParts.values())
+        {
             if (bodyPart.isDirty())
                 return true;
         }
@@ -99,8 +111,10 @@ public class BodyDamageCapability implements IBodyDamageCapability
     }
 
     @Override
-    public void setClean() {
-        for (BodyPart bodyPart: this.bodyParts.values()) {
+    public void setClean()
+    {
+        for (BodyPart bodyPart : this.bodyParts.values())
+        {
             bodyPart.setClean();
         }
         this.manualDirty = false;
@@ -108,35 +122,44 @@ public class BodyDamageCapability implements IBodyDamageCapability
     }
 
     @Override
-    public int getPacketTimer() {
+    public int getPacketTimer()
+    {
         return this.packetTimer;
     }
 
     @Override
-    public void tickUpdate(Player player, Level level, TickEvent.Phase phase)
+    public void tickUpdate(Player player, Level level, boolean isStart)
     {
-        if(phase == TickEvent.Phase.START) {
+        if (isStart)
+        {
             this.packetTimer++;
             return;
-        };
+        }
+        ;
 
-        if (updateTickTimer++ >= 19) {
+        if (updateTickTimer++ >= 19)
+        {
             updateTickTimer = 0;
             double playerMaxHealthCheckUpdate = HealthUtil.getPlayerStableMaxHealth(player);
 
-            if (Config.Baked.bodyPartHealthMode == EnumUtil.bodyPartHealthMode.DYNAMIC && playerMaxHealth != playerMaxHealthCheckUpdate) {
+            if (Config.Baked.bodyPartHealthMode == EnumUtil.bodyPartHealthMode.DYNAMIC && 
+                playerMaxHealth != playerMaxHealthCheckUpdate &&
+                playerMaxHealthCheckUpdate > 0)  // Don't update if player health is invalid
+            {
                 playerMaxHealth = (float) playerMaxHealthCheckUpdate;
                 updateBodyPartDynamicMaxHealth(playerMaxHealth);
             }
 
             // Refresh all the malus a player should have
             Map<MobEffect, Integer> newMalus = new HashMap<>();
-            for (MalusBodyPartEnum malusBodyPart: MalusBodyPartEnum.values()) {
+            for (MalusBodyPartEnum malusBodyPart : MalusBodyPartEnum.values())
+            {
                 List<Pair<MobEffect, Integer>> malusEffects = new ArrayList<>();
-                if (!player.hasEffect(MobEffectRegistry.PAINKILLER.get()))
+                if (!player.hasEffect(MobEffectRegistry.PAINKILLER))
                     malusEffects = BodyDamageUtil.getEffects(malusBodyPart, getHealthRatioForMalusBodyPart(malusBodyPart));
 
-                for (Pair<MobEffect, Integer> malusEffect: malusEffects) {
+                for (Pair<MobEffect, Integer> malusEffect : malusEffects)
+                {
                     Integer alreadyAppliedEffectAmplifier = newMalus.get(malusEffect.getLeft());
                     if (alreadyAppliedEffectAmplifier == null || alreadyAppliedEffectAmplifier < malusEffect.getRight())
                         newMalus.put(malusEffect.getLeft(), malusEffect.getRight());
@@ -144,11 +167,14 @@ public class BodyDamageCapability implements IBodyDamageCapability
             }
 
             // Clean old effects that shouldn't be applied anymore
-            for (Map.Entry<MobEffect, Integer> bodyPartMalusEffect: this.malus.entrySet()) {
+            for (Map.Entry<MobEffect, Integer> bodyPartMalusEffect : this.malus.entrySet())
+            {
                 MobEffect oldEffect = bodyPartMalusEffect.getKey();
-                MobEffectInstance playerOldEffect = player.getEffect(oldEffect);
-                if (playerOldEffect != null && (!newMalus.containsKey(oldEffect) || playerOldEffect.getAmplifier() > bodyPartMalusEffect.getValue())) {
-                    player.removeEffect(oldEffect);
+                Holder<MobEffect> effectHolder = net.minecraft.core.registries.BuiltInRegistries.MOB_EFFECT.wrapAsHolder(oldEffect);
+                MobEffectInstance playerOldEffect = player.getEffect(effectHolder);
+                if (playerOldEffect != null && (!newMalus.containsKey(oldEffect) || playerOldEffect.getAmplifier() > bodyPartMalusEffect.getValue()))
+                {
+                    player.removeEffect(effectHolder);
                     if (oldEffect == MobEffectRegistry.HEADACHE.get())
                         player.removeEffect(MobEffects.BLINDNESS);
                 }
@@ -157,14 +183,18 @@ public class BodyDamageCapability implements IBodyDamageCapability
             this.malus = newMalus;
 
             // Assign all malus effect to the player
-            for (Map.Entry<MobEffect, Integer> malusEffect: this.malus.entrySet()) {
-                player.addEffect(new MobEffectInstance(malusEffect.getKey(), -1, malusEffect.getValue(), false, false, true));
+            for (Map.Entry<MobEffect, Integer> malusEffect : this.malus.entrySet())
+            {
+                Holder<MobEffect> effectHolder = net.minecraft.core.registries.BuiltInRegistries.MOB_EFFECT.wrapAsHolder(malusEffect.getKey());
+                player.addEffect(new MobEffectInstance(effectHolder, -1, malusEffect.getValue(), false, false, true));
             }
 
             // Heal each body limb of the player
-            for (Map.Entry<BodyPartEnum, BodyPart> bodyPartPair: this.bodyParts.entrySet()) {
+            for (Map.Entry<BodyPartEnum, BodyPart> bodyPartPair : this.bodyParts.entrySet())
+            {
                 BodyPart bodyPart = bodyPartPair.getValue();
-                if (bodyPart.getRemainingHealingTicks() > 0) {
+                if (bodyPart.getRemainingHealingTicks() > 0)
+                {
                     int healingTick = Math.min(20, bodyPart.getRemainingHealingTicks());
                     healWithFoodExhaustion(player, bodyPartPair.getKey(), healingTick * bodyPart.getHealingPerTicks());
                     if (bodyPart.isMaxHealth())
@@ -177,33 +207,42 @@ public class BodyDamageCapability implements IBodyDamageCapability
             updateBrokenHearts(player);
         }
 
-        if (updateTickTimer % 10 == 0) {
-            this.headacheEffect = player.getEffect(MobEffectRegistry.HEADACHE.get());
+        if (updateTickTimer % 10 == 0)
+        {
+            this.headacheEffect = player.getEffect(MobEffectRegistry.HEADACHE);
             this.hasFirstAidSupplies = CuriosUtil.isCurioItemEquipped(player, ItemRegistry.FIRST_AID_SUPPLIES.get());
-            if (hasFirstAidSupplies) {
+            if (hasFirstAidSupplies)
+            {
                 this.hasFirstAidSuppliesBoosted = BodyDamageUtil.hasPlayerFirstAidSuppliesBoostingEffect(player);
-            } else {
+            } else
+            {
                 this.passiveLimbRegenerationEffects = BodyDamageUtil.getPlayerPassiveLimbRegenerationEffect(player);
                 this.passiveLimbRegenerationEnabled = this.passiveLimbRegenerationEffects != null ||
                         (Config.Baked.passiveLimbRegenerationOnFullHealth && HealthUtil.getPlayerStableMaxHealth(player) == player.getHealth());
             }
         }
 
-        if (this.headacheEffect != null) {
-            if (this.headacheTimer-- < 0) {
+        if (this.headacheEffect != null)
+        {
+            if (this.headacheTimer-- < 0)
+            {
                 applyHeadache(player, this.headacheEffect.getAmplifier());
             }
-        } else {
+        } else
+        {
             this.headacheTimer = 0;
         }
 
-        if (this.hasFirstAidSupplies) {
+        if (this.hasFirstAidSupplies)
+        {
             boolean boostedHealingTickTimer = false;
-            if (Config.Baked.firstAidSuppliesBoostedTickTimerMultiplier < 1) {
+            if (Config.Baked.firstAidSuppliesBoostedTickTimerMultiplier < 1)
+            {
                 boostedHealingTickTimer = this.hasFirstAidSuppliesBoosted;
             }
             healingTickTimer += boostedHealingTickTimer ? MathUtil.round((float) (1 / Config.Baked.firstAidSuppliesBoostedTickTimerMultiplier), 2) : 1;
-            if (healingTickTimer >= Config.Baked.firstAidSuppliesTickTimer) {
+            if (healingTickTimer >= Config.Baked.firstAidSuppliesTickTimer)
+            {
                 healingTickTimer = 0;
 
                 healMostDamaged(player,
@@ -212,12 +251,14 @@ public class BodyDamageCapability implements IBodyDamageCapability
                         Config.Baked.firstAidSuppliesHealingOverflow,
                         Config.Baked.firstAidSuppliesExhaustsFood);
             }
-        } else if (this.passiveLimbRegenerationEnabled) {
+        } else if (this.passiveLimbRegenerationEnabled)
+        {
             int passiveTickTimer = Config.Baked.passiveLimbRegenerationTickTimer;
             if (this.passiveLimbRegenerationEffects != null && Config.Baked.passiveLimbRegenerationAmplificationEnabled)
                 passiveTickTimer = Config.Baked.passiveLimbRegenerationTickTimer >> this.passiveLimbRegenerationEffects.getAmplifier();
 
-            if (healingTickTimer++ >= passiveTickTimer) {
+            if (healingTickTimer++ >= passiveTickTimer)
+            {
                 healingTickTimer = 0;
 
                 healMostDamaged(player,
@@ -226,12 +267,14 @@ public class BodyDamageCapability implements IBodyDamageCapability
                         true,
                         true);
             }
-        } else {
+        } else
+        {
             healingTickTimer = 0;
         }
     }
 
-    private void applyHeadache(Player player, int amplifier) {
+    private void applyHeadache(Player player, int amplifier)
+    {
         player.level().playLocalSound(player.blockPosition(), SoundRegistry.HEADACHE_HEARTBEAT.get(), SoundSource.PLAYERS, 1.f, 1.0f, false);
 
         int blindnessTime = (40 + player.getRandom().nextInt(100)) * Math.min(amplifier + 1, 4);
@@ -239,23 +282,30 @@ public class BodyDamageCapability implements IBodyDamageCapability
         player.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, blindnessTime, 0, false, false, true));
     }
 
-    private void healMostDamaged(Player player, EnumUtil.limbRegenerationMode healingMode, float healingValue, boolean overflow, boolean exhaustFood) {
+    private void healMostDamaged(Player player, EnumUtil.limbRegenerationMode healingMode, float healingValue, boolean overflow, boolean exhaustFood)
+    {
         BodyPart mostDamaged = getLowestHealthBodyPart();
         float damage = mostDamaged.getDamage();
 
         float actualHealingValue;
-        if (healingMode == EnumUtil.limbRegenerationMode.PLAYER_DYNAMIC) {
+        if (healingMode == EnumUtil.limbRegenerationMode.PLAYER_DYNAMIC)
+        {
             actualHealingValue = MathUtil.ceil(healingValue * player.getMaxHealth(), 2);
-        } else if (healingMode == EnumUtil.limbRegenerationMode.LIMB_DYNAMIC) {
+        } else if (healingMode == EnumUtil.limbRegenerationMode.LIMB_DYNAMIC)
+        {
             actualHealingValue = MathUtil.ceil(healingValue * mostDamaged.getMaxHealth(), 2);
-        } else {
+        } else
+        {
             actualHealingValue = healingValue;
         }
 
-        BiConsumer<BodyPartEnum, Float> healingFunction = (part, amount) -> {
-            if (exhaustFood) {
+        BiConsumer<BodyPartEnum, Float> healingFunction = (part, amount) ->
+        {
+            if (exhaustFood)
+            {
                 healWithFoodExhaustion(player, part, amount);
-            } else {
+            } else
+            {
                 heal(part, amount);
             }
         };
@@ -263,13 +313,15 @@ public class BodyDamageCapability implements IBodyDamageCapability
         healingFunction.accept(mostDamaged.getBodyPartEnum(), actualHealingValue);
         float overflowHealing = actualHealingValue - damage;
 
-        if (overflow && overflowHealing > 0.0f && healingMode != EnumUtil.limbRegenerationMode.LIMB_DYNAMIC) {
+        if (overflow && overflowHealing > 0.0f && healingMode != EnumUtil.limbRegenerationMode.LIMB_DYNAMIC)
+        {
             mostDamaged = getLowestHealthBodyPart();
             healingFunction.accept(mostDamaged.getBodyPartEnum(), overflowHealing);
         }
     }
 
-    private BodyPart getLowestHealthBodyPart() {
+    private BodyPart getLowestHealthBodyPart()
+    {
         return bodyParts.entrySet()
                 .stream()
                 .min((entry1, entry2) -> Float.compare(getBodyPartHealthRatio(entry1.getKey()), getBodyPartHealthRatio(entry2.getKey())))
@@ -278,15 +330,19 @@ public class BodyDamageCapability implements IBodyDamageCapability
     }
 
     @Override
-    public void updateBrokenHearts(Player player) {
+    public void updateBrokenHearts(Player player)
+    {
         if (Config.Baked.brokenHeartsPerInjuredLimb == 0)
             return;
 
         double expectedBrokenHearts = 0;
-        for (Map.Entry<BodyPartEnum, BodyPart> bodyPartPair: this.bodyParts.entrySet()) {
+        for (Map.Entry<BodyPartEnum, BodyPart> bodyPartPair : this.bodyParts.entrySet())
+        {
             BodyPart bodyPart = bodyPartPair.getValue();
-            if (Config.Baked.healthOverhaulEnabled && bodyPart.getDamage() >= bodyPart.getMaxHealth()) {
-                expectedBrokenHearts += switch (Config.Baked.brokenHeartsPerInjuredLimbMode) {
+            if (Config.Baked.healthOverhaulEnabled && bodyPart.getDamage() >= bodyPart.getMaxHealth())
+            {
+                expectedBrokenHearts += switch (Config.Baked.brokenHeartsPerInjuredLimbMode)
+                {
                     case PLAYER_DYNAMIC:
                         yield Config.Baked.brokenHeartsPerInjuredLimb * this.playerMaxHealth;
                     case LIMB_DYNAMIC:
@@ -302,8 +358,10 @@ public class BodyDamageCapability implements IBodyDamageCapability
     }
 
     @Override
-    public boolean isWoundedBelow(float healthPercent) {
-        for (BodyPart part: this.bodyParts.values()) {
+    public boolean isWoundedBelow(float healthPercent)
+    {
+        for (BodyPart part : this.bodyParts.values())
+        {
             if (getBodyPartHealthRatio(part.getBodyPartEnum()) < healthPercent)
                 return true;
         }
@@ -311,73 +369,99 @@ public class BodyDamageCapability implements IBodyDamageCapability
     }
 
     @Override
-    public int getExpectedBrokenHearts() {
+    public int getExpectedBrokenHearts()
+    {
         return this.expectedBrokenHearts;
     }
 
     @Override
-    public float getBodyPartDamage(BodyPartEnum part) {
+    public float getBodyPartDamage(BodyPartEnum part)
+    {
         return this.bodyParts.get(part).getDamage();
     }
 
     @Override
-    public float getBodyPartMaxHealth(BodyPartEnum part) {
+    public float getBodyPartMaxHealth(BodyPartEnum part)
+    {
         return this.bodyParts.get(part).getMaxHealth();
     }
 
     @Override
-    public void setBodyPartDamage(BodyPartEnum part, float damageValue) {
+    public void setBodyPartDamage(BodyPartEnum part, float damageValue)
+    {
         this.bodyParts.get(part).setDamage(damageValue);
     }
 
     @Override
-    public void setBodyPartMaxHealth(BodyPartEnum part, float maxHealthValue) {
+    public void setBodyPartMaxHealth(BodyPartEnum part, float maxHealthValue)
+    {
         this.bodyParts.get(part).setMaxHealth(maxHealthValue);
     }
 
     @Override
-    public void healWithFoodExhaustion(Player player, BodyPartEnum part, float healingValue) {
+    public void healWithFoodExhaustion(Player player, BodyPartEnum part, float healingValue)
+    {
         float exceedHeal = Math.max(healingValue - this.bodyParts.get(part).getDamage(), 0);
         this.heal(part, healingValue);
-        if (Config.Baked.bodyHealingFoodExhaustion > 0 && player.getFoodData().getFoodLevel() > Config.Baked.minFoodOnBodyHealing) {
+        if (Config.Baked.bodyHealingFoodExhaustion > 0 && player.getFoodData().getFoodLevel() > Config.Baked.minFoodOnBodyHealing)
+        {
             player.getFoodData().addExhaustion((float) ((healingValue - exceedHeal) * Config.Baked.bodyHealingFoodExhaustion));
         }
     }
 
     @Override
-    public void heal(BodyPartEnum part, float healingValue) {
+    public void heal(BodyPartEnum part, float healingValue)
+    {
         this.bodyParts.get(part).heal(healingValue);
     }
 
     @Override
-    public void hurt(BodyPartEnum part, float damageValue) {
+    public void hurt(BodyPartEnum part, float damageValue)
+    {
         this.bodyParts.get(part).hurt(damageValue);
     }
 
     @Override
-    public void applyHealingTime(BodyPartEnum part, int healingTicks, float healingPerTick) {
+    public void applyHealingTime(BodyPartEnum part, int healingTicks, float healingPerTick)
+    {
         this.bodyParts.get(part).setHealing(healingTicks, healingPerTick);
     }
 
     @Override
-    public float getBodyPartHealthRatio(BodyPartEnum part) {
+    public float getBodyPartHealthRatio(BodyPartEnum part)
+    {
         BodyPart bodyPart = this.bodyParts.get(part);
-        return MathUtil.round((bodyPart.getMaxHealth() - bodyPart.getDamage()) / bodyPart.getMaxHealth(), 2);
+        float maxHealth = bodyPart.getMaxHealth();
+        float damage = bodyPart.getDamage();
+        
+        // Safety check: if maxHealth is 0 (uninitialized), assume healthy
+        if (maxHealth <= 0) {
+            return 1.0f;
+        }
+        
+        float ratio = MathUtil.round((maxHealth - damage) / maxHealth, 2);
+        
+
+        return ratio;
     }
 
     @Override
-    public int getRemainingHealingTicks(BodyPartEnum part) {
+    public int getRemainingHealingTicks(BodyPartEnum part)
+    {
         return this.bodyParts.get(part).getRemainingHealingTicks();
     }
 
     @Override
-    public float getHealingPerTicks(BodyPartEnum part) {
+    public float getHealingPerTicks(BodyPartEnum part)
+    {
         return this.bodyParts.get(part).getHealingPerTicks();
     }
 
     @Override
-    public float getHealthRatioForMalusBodyPart(MalusBodyPartEnum part) {
-        return switch (part) {
+    public float getHealthRatioForMalusBodyPart(MalusBodyPartEnum part)
+    {
+        return switch (part)
+        {
             case HEAD -> this.getBodyPartHealthRatio(BodyPartEnum.HEAD);
             case ARMS ->
                     Math.min(this.getBodyPartHealthRatio(BodyPartEnum.RIGHT_ARM), this.getBodyPartHealthRatio(BodyPartEnum.LEFT_ARM));
@@ -395,12 +479,16 @@ public class BodyDamageCapability implements IBodyDamageCapability
         };
     }
 
-    private void updateBodyPartDynamicMaxHealth(float maxHealth) {
-        for (BodyPart bodyPart: this.bodyParts.values()) {
+    private void updateBodyPartDynamicMaxHealth(float maxHealth)
+    {
+        if (maxHealth <= 0) return;  // Safety check: don't update with invalid health values
+        
+        for (BodyPart bodyPart : this.bodyParts.values())
+        {
             float newMaxHealth = Math.round(bodyPart.getHealthMultiplier() * maxHealth * 100) / 100.0f;
             float oldMaxHealth = bodyPart.getMaxHealth();
             bodyPart.setMaxHealth(newMaxHealth);
-            if (oldMaxHealth != 0)
+            if (oldMaxHealth != 0 && oldMaxHealth != newMaxHealth)
                 bodyPart.setDamage(bodyPart.getDamage() + newMaxHealth - oldMaxHealth);
         }
     }
@@ -408,7 +496,8 @@ public class BodyDamageCapability implements IBodyDamageCapability
     public CompoundTag writeNBT()
     {
         CompoundTag compound = new CompoundTag();
-        for (BodyPart bodyPart: this.bodyParts.values()) {
+        for (BodyPart bodyPart : this.bodyParts.values())
+        {
             compound = bodyPart.writeNbt(compound);
         }
         compound.putInt("headacheTimer", this.headacheTimer);
@@ -421,7 +510,8 @@ public class BodyDamageCapability implements IBodyDamageCapability
     public void readNBT(CompoundTag compound)
     {
         this.init();
-        for (BodyPart bodyPart: this.bodyParts.values()) {
+        for (BodyPart bodyPart : this.bodyParts.values())
+        {
             bodyPart.readNBT(compound);
         }
 
@@ -429,4 +519,17 @@ public class BodyDamageCapability implements IBodyDamageCapability
         this.expectedBrokenHearts = compound.getInt("expectedBrokenHearts");
         this.healingTickTimer = compound.getFloat("healingTickTimer");
     }
+
+    @Override
+    public CompoundTag serializeNBT(HolderLookup.Provider provider)
+    {
+        return writeNBT();
+    }
+
+    @Override
+    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt)
+    {
+        readNBT(nbt);
+    }
 }
+

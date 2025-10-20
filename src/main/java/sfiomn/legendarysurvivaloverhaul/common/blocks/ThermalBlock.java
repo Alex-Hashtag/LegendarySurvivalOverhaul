@@ -1,5 +1,6 @@
 package sfiomn.legendarysurvivaloverhaul.common.blocks;
 
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -77,22 +78,27 @@ public class ThermalBlock extends BaseEntityBlock implements EntityBlock
 		return SHAPES[state.getValue(FACING).get3DDataValue()];
 	}
 
-	@Override
-	public @NotNull InteractionResult use(@NotNull BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult rayTrace) {
-		if (level.isClientSide) {
-			return InteractionResult.PASS;
-		}
-		this.interactWith(level, pos, player);
-		return InteractionResult.CONSUME;
-	}
+    @Override
+    public @NotNull InteractionResult useWithoutItem(@NotNull BlockState state,
+                                                     Level level,
+                                                     BlockPos pos,
+                                                     Player player,
+                                                     BlockHitResult hit) {
+        if (level.isClientSide) {
+            // client acknowledges the interaction (plays hand swing, etc.)
+            return InteractionResult.SUCCESS;
+        }
+        this.interactWith(level, pos, player);
+        return InteractionResult.CONSUME;
+    }
 
 	private void interactWith(Level level, BlockPos pos, Player player) {
 		BlockEntity blockEntity = level.getBlockEntity(pos);
 
 		if (blockEntity instanceof HeaterBlockEntity be && player instanceof ServerPlayer) {
-            NetworkHooks.openScreen((ServerPlayer) player, be, pos);
+            player.openMenu(be, pos);
 		} else if (blockEntity instanceof CoolerBlockEntity be && player instanceof ServerPlayer) {
-            NetworkHooks.openScreen((ServerPlayer) player, be, pos);
+            player.openMenu(be, pos);
 		} else {
 			throw new IllegalStateException("Tile entity container is missing!");
 		}
@@ -120,5 +126,10 @@ public class ThermalBlock extends BaseEntityBlock implements EntityBlock
 		} else {
 			return new HeaterBlockEntity(blockPos, blockState);
 		}
+	}
+
+	@Override
+	protected MapCodec<? extends BaseEntityBlock> codec() {
+		throw new UnsupportedOperationException("ThermalBlock does not support codec serialization");
 	}
 }

@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "p": {
+      "tag": "minecraft:planks"
+    },
+    "r": {
+      "item": "minecraft:redstone"
+    },
+    "s": {
+      "item": "minecraft:snow_block"
+    }
+  },
+  "pattern": [
+    "psp",
+    "prp",
+    "ppp"
+  ],
+  "result": {
+    "count": 1,
+    "id": "legendarysurvivaloverhaul:cooler"
+  }
+}

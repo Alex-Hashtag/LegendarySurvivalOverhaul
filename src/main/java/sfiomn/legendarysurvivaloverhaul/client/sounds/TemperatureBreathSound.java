@@ -2,6 +2,7 @@ package sfiomn.legendarysurvivaloverhaul.client.sounds;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.world.entity.player.Player;
 import org.apache.commons.lang3.RandomUtils;
 import sfiomn.legendarysurvivaloverhaul.api.temperature.TemperatureEnum;
@@ -26,8 +27,8 @@ public class TemperatureBreathSound {
 
         TemperatureEnum temperatureEnum = CapabilityUtil.getTempCapability(player).getTemperatureEnum();
 
-        if ((temperatureEnum != TemperatureEnum.FROSTBITE || player.hasEffect(MobEffectRegistry.COLD_IMMUNITY.get())) &&
-                (temperatureEnum != TemperatureEnum.HEAT_STROKE || player.hasEffect(MobEffectRegistry.HEAT_IMMUNITY.get()))) {
+        if ((temperatureEnum != TemperatureEnum.FROSTBITE || player.hasEffect(MobEffectRegistry.COLD_IMMUNITY)) &&
+                (temperatureEnum != TemperatureEnum.HEAT_STROKE || player.hasEffect(MobEffectRegistry.HEAT_IMMUNITY))) {
             reset(player);
             return;
         }

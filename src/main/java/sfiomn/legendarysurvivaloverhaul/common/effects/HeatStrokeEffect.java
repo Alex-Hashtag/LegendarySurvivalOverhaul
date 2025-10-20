@@ -16,15 +16,16 @@ public class HeatStrokeEffect extends IncurableMobEffect
 	}
 	
 	@Override
-	public void applyEffectTick(@NotNull LivingEntity entity, int amplifier)
+	public boolean applyEffectTick(@NotNull LivingEntity entity, int amplifier)
 	{
-		if(entity instanceof Player player && !entity.hasEffect(MobEffectRegistry.HEAT_IMMUNITY.get()))
+		if(entity instanceof Player player && !entity.hasEffect(MobEffectRegistry.HEAT_IMMUNITY))
 		{
             if (DifficultyUtil.isModDangerous() && DifficultyUtil.healthAboveDifficulty(player) && !player.isSleeping())
 			{
 				ModDamageTypes.hyperthermia(player, 1.0f);
 			}
 		}
+		return true;
 	}
 	
 	@Override
@@ -36,6 +37,6 @@ public class HeatStrokeEffect extends IncurableMobEffect
 
 	public static boolean playerIsImmuneToHeat(Player player)
 	{
-		return player.hasEffect(MobEffectRegistry.HEAT_IMMUNITY.get()) || player.hasEffect(MobEffectRegistry.TEMPERATURE_IMMUNITY.get());
+		return player.hasEffect(MobEffectRegistry.HEAT_IMMUNITY) || player.hasEffect(MobEffectRegistry.TEMPERATURE_IMMUNITY);
 	}
 }

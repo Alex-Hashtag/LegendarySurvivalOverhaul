@@ -12,6 +12,8 @@ import net.minecraft.util.profiling.ProfilerFiller;
 import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import net.minecraft.server.level.ServerPlayer;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonBodyPartResistance;
 import sfiomn.legendarysurvivaloverhaul.api.data.manager.IBodyResistanceItemManager;
@@ -36,19 +38,23 @@ public class BodyPartResistanceItemListener extends SimpleJsonResourceReloadList
         resourceLocationJsonElementMap.forEach((key, json) -> {
             try {
                 var parsedJson = JsonBodyPartResistance.CODEC.parse(JsonOps.INSTANCE, json);
-                JsonBodyPartResistance bodyPartResistance = parsedJson.getOrThrow(false, error -> LegendarySurvivalOverhaul.LOGGER.error("Failed parsing body part resistance item : {}", error));
+                JsonBodyPartResistance bodyPartResistance = parsedJson.getOrThrow(err -> new IllegalStateException("Failed parsing body part resistance item: " + err));
                 if (ModList.get().isLoaded(key.getNamespace()))
                     BODY_PART_RESISTANCE_ITEMS.put(key, bodyPartResistance);
-            } catch (JsonParseException error) {
-                LegendarySurvivalOverhaul.LOGGER.error("Failed to parse body part resistance item json {}", key);
+            } catch (JsonParseException | IllegalStateException error) {
+                LegendarySurvivalOverhaul.LOGGER.error("Failed to parse body part resistance item json {}", key, error);
             }
         });
 
         LegendarySurvivalOverhaul.LOGGER.info("Loaded {} body part resistance items", BODY_PART_RESISTANCE_ITEMS.size());
     }
 
-    public static void sendDataToClient(PacketDistributor.PacketTarget packetTarget) {
-        SyncBodyPartResistanceItemsPacket.sendTo(packetTarget, BODY_PART_RESISTANCE_ITEMS);
+    public static void sendDataToClient(@Nullable ServerPlayer player) {
+        if (player == null) {
+            PacketDistributor.sendToAllPlayers(new SyncBodyPartResistanceItemsPacket(BODY_PART_RESISTANCE_ITEMS));
+        } else {
+            PacketDistributor.sendToPlayer(player, new SyncBodyPartResistanceItemsPacket(BODY_PART_RESISTANCE_ITEMS));
+        }
     }
 
     public static void acceptServerBodyPartResistanceItems(Map<ResourceLocation, JsonBodyPartResistance> temperatureItems) {

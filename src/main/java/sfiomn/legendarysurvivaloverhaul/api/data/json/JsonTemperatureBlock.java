@@ -36,7 +36,7 @@ public class JsonTemperatureBlock {
     }
 
     public boolean matchesBlockEntity(BlockEntity blockEntity) {
-        CompoundTag blockEntityTag = blockEntity.saveWithFullMetadata();
+        CompoundTag blockEntityTag = blockEntity.saveWithFullMetadata(blockEntity.getLevel().registryAccess());
         for(Map.Entry<String, String> property: properties.entrySet()) {
             String name = property.getKey();
 

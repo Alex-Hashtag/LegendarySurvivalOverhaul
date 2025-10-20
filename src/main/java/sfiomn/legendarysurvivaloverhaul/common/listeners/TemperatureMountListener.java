@@ -12,6 +12,8 @@ import net.minecraft.util.profiling.ProfilerFiller;
 import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import net.minecraft.server.level.ServerPlayer;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonTemperatureResistance;
 import sfiomn.legendarysurvivaloverhaul.api.data.manager.ITemperatureMountManager;
@@ -36,19 +38,23 @@ public class TemperatureMountListener extends SimpleJsonResourceReloadListener i
         resourceLocationJsonElementMap.forEach((key, json) -> {
             try {
                 var parsedJson = JsonTemperatureResistance.CODEC.parse(JsonOps.INSTANCE, json);
-                JsonTemperatureResistance temperature = parsedJson.getOrThrow(false, error -> LegendarySurvivalOverhaul.LOGGER.error("Failed parsing temperature mount : {}", error));
+                JsonTemperatureResistance temperature = parsedJson.getOrThrow(err -> new IllegalStateException("Failed parsing temperature mount: " + err));
                 if (ModList.get().isLoaded(key.getNamespace()))
                     TEMPERATURE_MOUNTS.put(key, temperature);
-            } catch (JsonParseException error) {
-                LegendarySurvivalOverhaul.LOGGER.error("Failed to parse temperature mount json {}", key);
+            } catch (JsonParseException | IllegalStateException error) {
+                LegendarySurvivalOverhaul.LOGGER.error("Failed to parse temperature mount json {}", key, error);
             }
         });
 
         LegendarySurvivalOverhaul.LOGGER.info("Loaded {} temperature mounts", TEMPERATURE_MOUNTS.size());
     }
 
-    public static void sendDataToClient(PacketDistributor.PacketTarget packetTarget) {
-        SyncTemperatureMountsPacket.sendTo(packetTarget, TEMPERATURE_MOUNTS);
+    public static void sendDataToClient(@Nullable ServerPlayer player) {
+        if (player == null) {
+            PacketDistributor.sendToAllPlayers(new SyncTemperatureMountsPacket(TEMPERATURE_MOUNTS));
+        } else {
+            PacketDistributor.sendToPlayer(player, new SyncTemperatureMountsPacket(TEMPERATURE_MOUNTS));
+        }
     }
 
     public static void acceptServerTemperatureMounts(Map<ResourceLocation, JsonTemperatureResistance> temperatureMounts) {

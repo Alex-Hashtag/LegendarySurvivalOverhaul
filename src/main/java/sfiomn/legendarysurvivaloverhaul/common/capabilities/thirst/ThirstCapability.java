@@ -1,33 +1,34 @@
 package sfiomn.legendarysurvivaloverhaul.common.capabilities.thirst;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.event.TickEvent;
+import net.neoforged.neoforge.common.util.INBTSerializable;
 import sfiomn.legendarysurvivaloverhaul.api.ModDamageTypes;
 import sfiomn.legendarysurvivaloverhaul.api.thirst.IThirstCapability;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
 import sfiomn.legendarysurvivaloverhaul.registry.MobEffectRegistry;
 import sfiomn.legendarysurvivaloverhaul.util.DifficultyUtil;
 
-
-public class ThirstCapability implements IThirstCapability
+public class ThirstCapability implements IThirstCapability, INBTSerializable<CompoundTag>
 {
 	public static int MAX_HYDRATION = 20;
 	public static float MAX_SATURATION = 20.0f;
 
 	private float exhaustion = 0.0f;
 	private int thirst;
-	private float thirstSaturation;
-	private int thirstTickTimer;
+	private float saturation;
+	private int tickTimer;
 	private int damageTickTimer; // Update immediately first time around
 	private int damageCounter;
 
 	//Unsaved data
-	private int oldThirst;
-	private float oldThirstSaturation;
+	private int oldHydration;
+	private float oldSaturation;
+	private float oldExhaustion;
 	private boolean wasSprinting;
 	private Vec3 oldPos;
 	private boolean dirty;
@@ -41,12 +42,13 @@ public class ThirstCapability implements IThirstCapability
 	public void init()
 	{
 		this.thirst = 20;
-		this.thirstSaturation = 5.0f;
-		this.thirstTickTimer = 0;
+		this.saturation = 5.0f;
+		this.tickTimer = 0;
 		this.damageCounter = 0;
 
-		this.oldThirst = 0;
-		this.oldThirstSaturation = 0.0f;
+		this.oldHydration = 0;
+		this.oldSaturation = 0.0f;
+		this.oldExhaustion = 0.0f;
 		this.wasSprinting = false;
 		this.oldPos = null;
 		this.dirty = false;
@@ -55,12 +57,12 @@ public class ThirstCapability implements IThirstCapability
 	}
 
 	@Override
-	public void tickUpdate(Player player, Level level, TickEvent.Phase phase)
+	public void tickUpdate(Player player, Level level, boolean isStart)
 	{
-		if (getThirstTickTimer() == -1)
+		if (getTickTimer() == -1)
 			return;
 
-		if(phase == TickEvent.Phase.START)
+		if (isStart)
 		{
 			packetTimer++;
 			return;
@@ -69,12 +71,12 @@ public class ThirstCapability implements IThirstCapability
 		if (oldPos == null)
 			oldPos = player.position();
 
-		this.addThirstTickTimer(1);
-		if(getThirstTickTimer() >= 10)
+		this.addTickTimer(1);
+		if(getTickTimer() >= 10)
 		{
-			this.setThirstTickTimer(0);
+			this.setTickTimer(0);
 
-			if (player.hasEffect(MobEffectRegistry.HYDRATION_FILL.get())) {
+			if (player.hasEffect(MobEffectRegistry.HYDRATION_FILL)) {
 				if (getHydrationLevel() < MAX_HYDRATION) {
 					addHydrationLevel(1);
 				}
@@ -85,11 +87,11 @@ public class ThirstCapability implements IThirstCapability
 			if (oldPos.distanceTo(player.position()) > 1) {
 				float thirstExhausted;
 				if (player.isSprinting() && this.wasSprinting)
-					thirstExhausted = (float) Config.Baked.sprintingThirstExhaustion;
+					thirstExhausted = (float) Config.Baked.sprintingHydrationExhaustion;
 				else if (player.isSprinting() || this.wasSprinting)
-					thirstExhausted = (float) ((Config.Baked.sprintingThirstExhaustion + Config.Baked.baseThirstExhaustion) / 2.0d);
+					thirstExhausted = (float) ((Config.Baked.sprintingHydrationExhaustion + Config.Baked.baseHydrationExhaustion) / 2.0d);
 				else
-					thirstExhausted = (float) Config.Baked.baseThirstExhaustion;
+					thirstExhausted = (float) Config.Baked.baseHydrationExhaustion;
 
 				this.addThirstExhaustion(thirstExhausted);
 				this.oldPos = player.position();
@@ -136,7 +138,7 @@ public class ThirstCapability implements IThirstCapability
 		}
 		else
 		{
-			//Reset the timer if not dying of thirst
+			// Reset the timer if not dying of thirst
 			this.setThirstDamageTickTimer(0);
 			this.setThirstDamageCounter(0);
 		}
@@ -152,16 +154,18 @@ public class ThirstCapability implements IThirstCapability
 	@Override
 	public boolean isDirty()
 	{
-		return this.thirst != this.oldThirst ||
-				this.thirstSaturation != this.oldThirstSaturation ||
+		return this.thirst != this.oldHydration ||
+				this.saturation != this.oldSaturation ||
+				this.exhaustion != this.oldExhaustion ||
 				this.dirty;
 	}
 
 	@Override
 	public void setClean()
 	{
-		this.oldThirst = this.thirst;
-		this.oldThirstSaturation = this.thirstSaturation;
+		this.oldHydration = this.thirst;
+		this.oldSaturation = this.saturation;
+		this.oldExhaustion = this.exhaustion;
 		this.dirty = false;
 	}
 
@@ -185,13 +189,18 @@ public class ThirstCapability implements IThirstCapability
 	@Override
 	public float getSaturationLevel()
 	{
-		return thirstSaturation;
+		return saturation;
+	}
+
+	public int getTickTimer()
+	{
+		return tickTimer;
 	}
 
 	@Override
 	public int getThirstTickTimer()
 	{
-		return thirstTickTimer;
+		return getTickTimer();
 	}
 
 	@Override
@@ -206,13 +215,18 @@ public class ThirstCapability implements IThirstCapability
 		return damageCounter;
 	}
 
-	@Override
-	public void setThirstExhaustion(float exhaustion)
+	public void setExhaustion(float exhaustion)
 	{
 		this.exhaustion = Math.max(exhaustion,0.0f);
 
 		if(!Float.isFinite(this.exhaustion))
 			this.exhaustion = 0.0f;
+	}
+
+	@Override
+	public void setThirstExhaustion(float exhaustion)
+	{
+		setExhaustion(exhaustion);
 	}
 
 	@Override
@@ -222,19 +236,29 @@ public class ThirstCapability implements IThirstCapability
 
 	}
 
+	public void setSaturation(float saturation)
+	{
+		this.saturation = Mth.clamp(saturation, 0.0f, MAX_SATURATION);
+
+		if (!Float.isFinite(this.saturation))
+			this.saturation = 0.0f;
+	}
+
 	@Override
 	public void setThirstSaturation(float saturation)
 	{
-		this.thirstSaturation = Mth.clamp(saturation, 0.0f, MAX_SATURATION);
+		setSaturation(saturation);
+	}
 
-		if (!Float.isFinite(this.thirstSaturation))
-			this.thirstSaturation = 0.0f;
+	public void setTickTimer(int ticktimer)
+	{
+		this.tickTimer = ticktimer;
 	}
 
 	@Override
 	public void setThirstTickTimer(int ticktimer)
 	{
-		this.thirstTickTimer = ticktimer;
+		setTickTimer(ticktimer);
 	}
 
 	@Override
@@ -252,7 +276,7 @@ public class ThirstCapability implements IThirstCapability
 	@Override
 	public void addThirstExhaustion(float exhaustion)
 	{
-		this.setThirstExhaustion(this.getThirstExhaustion() + exhaustion);
+		this.setExhaustion(this.getThirstExhaustion() + exhaustion);
 	}
 
 	@Override
@@ -265,13 +289,18 @@ public class ThirstCapability implements IThirstCapability
 	public void addSaturationLevel(float saturation)
 	{
 		// Never allow thirst saturation lower than 0
-		this.setThirstSaturation(Math.max(Math.round((this.getSaturationLevel() + saturation) * 100.0f) / 100.0f, 0.0f));
+		this.setSaturation(Math.max(Math.round((this.getSaturationLevel() + saturation) * 100.0f) / 100.0f, 0.0f));
+	}
+
+	public void addTickTimer(int ticktimer)
+	{
+		this.setTickTimer(this.getTickTimer() + ticktimer);
 	}
 
 	@Override
 	public void addThirstTickTimer(int ticktimer)
 	{
-		this.setThirstTickTimer(this.getThirstTickTimer() + ticktimer);
+		addTickTimer(ticktimer);
 	}
 
 	@Override
@@ -301,10 +330,10 @@ public class ThirstCapability implements IThirstCapability
 	public CompoundTag writeNBT()
 	{
 		CompoundTag compound = new CompoundTag();
-		compound.putFloat("thirstExhaustion", this.getThirstExhaustion());
-		compound.putInt("thirstLevel", this.getHydrationLevel());
-		compound.putFloat("thirstSaturation", this.getSaturationLevel());
-		compound.putInt("thirstTickTimer", this.getThirstTickTimer());
+		compound.putFloat("exhaustion", this.getThirstExhaustion());
+		compound.putInt("hydrationLevel", this.getHydrationLevel());
+		compound.putFloat("saturation", this.getSaturationLevel());
+		compound.putInt("tickTimer", this.getTickTimer());
 		compound.putInt("thirstDamageTickTimer", this.getThirstDamageTickTimer());
 		compound.putInt("thirstDamageCounter", this.getThirstDamageCounter());
 		return compound;
@@ -313,17 +342,27 @@ public class ThirstCapability implements IThirstCapability
 	public void readNBT(CompoundTag nbt)
 	{
 		this.init();
-		if(nbt.contains("thirstExhaustion"))
-			this.setThirstExhaustion(nbt.getFloat("thirstExhaustion"));
-		if(nbt.contains("thirstLevel"))
-			this.setHydrationLevel(nbt.getInt("thirstLevel"));
-		if(nbt.contains("thirstSaturation"))
-			this.setThirstSaturation(nbt.getFloat("thirstSaturation"));
-		if(nbt.contains("thirstTickTimer"))
-			this.setThirstTickTimer(nbt.getInt("thirstTickTimer"));
+		if(nbt.contains("exhaustion"))
+			this.setExhaustion(nbt.getFloat("exhaustion"));
+		if(nbt.contains("hydrationLevel"))
+			this.setHydrationLevel(nbt.getInt("hydrationLevel"));
+		if(nbt.contains("saturation"))
+			this.setSaturation(nbt.getFloat("saturation"));
+		if(nbt.contains("tickTimer"))
+			this.setTickTimer(nbt.getInt("tickTimer"));
 		if(nbt.contains("thirstDamageTickTimer"))
 			this.setThirstDamageTickTimer(nbt.getInt("thirstDamageTickTimer"));
 		if(nbt.contains("thirstDamageCounter"))
 			this.setThirstDamageCounter(nbt.getInt("thirstDamageCounter"));
 	}
+
+    @Override
+    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
+        return writeNBT();
+    }
+
+    @Override
+    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
+        readNBT(nbt);
+    }
 }
