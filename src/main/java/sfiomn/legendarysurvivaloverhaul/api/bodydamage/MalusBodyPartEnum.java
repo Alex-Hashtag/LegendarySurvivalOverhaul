@@ -4,7 +4,8 @@ import sfiomn.legendarysurvivaloverhaul.config.Config;
 
 import java.util.List;
 
-public enum MalusBodyPartEnum {
+public enum MalusBodyPartEnum
+{
     HEAD(Config.Baked.headPartEffects, Config.Baked.headPartEffectAmplifiers, Config.Baked.headPartEffectThresholds),
     ARMS(Config.Baked.armsPartEffects, Config.Baked.armsPartEffectAmplifiers, Config.Baked.armsPartEffectThresholds),
     BOTH_ARMS(Config.Baked.bothArmsPartEffects, Config.Baked.bothArmsPartEffectAmplifiers, Config.Baked.bothArmsPartEffectThresholds),
@@ -18,7 +19,8 @@ public enum MalusBodyPartEnum {
     public final List<? extends Integer> amplifiers;
     public final List<? extends Double> thresholds;
 
-    MalusBodyPartEnum(List<? extends String> effects, List<? extends Integer> amplifiers, List<? extends Double> thresholds) {
+    MalusBodyPartEnum(List<? extends String> effects, List<? extends Integer> amplifiers, List<? extends Double> thresholds)
+    {
         this.effects = effects;
         this.amplifiers = amplifiers;
         this.thresholds = thresholds;

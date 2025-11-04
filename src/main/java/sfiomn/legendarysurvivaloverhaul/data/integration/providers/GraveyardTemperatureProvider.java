@@ -8,14 +8,17 @@ import sfiomn.legendarysurvivaloverhaul.api.data.providers.TemperatureDataProvid
 import java.util.concurrent.CompletableFuture;
 
 
-public class GraveyardTemperatureProvider extends TemperatureDataProvider {
+public class GraveyardTemperatureProvider extends TemperatureDataProvider
+{
 
-    public GraveyardTemperatureProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper fileHelper) {
+    public GraveyardTemperatureProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper fileHelper)
+    {
         super("graveyard", output, lookupProvider, fileHelper);
     }
 
     @Override
-    public void generate(HolderLookup.Provider provider, ExistingFileHelper existingFileHelper) {
+    public void generate(HolderLookup.Provider provider, ExistingFileHelper existingFileHelper)
+    {
         block("fire_brazier")
                 .addTemperature(temperatureBlock(12.5f).addProperty("lit", "true"))
                 .addTemperature(temperatureBlock(0).addProperty("lit", "false"));

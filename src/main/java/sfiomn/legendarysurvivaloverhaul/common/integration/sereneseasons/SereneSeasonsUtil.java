@@ -8,7 +8,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.core.registries.Registries;
 import sereneseasons.api.season.ISeasonState;
 import sereneseasons.api.season.Season;
 import sereneseasons.api.season.SeasonHelper;
@@ -22,11 +21,13 @@ import sfiomn.legendarysurvivaloverhaul.util.MathUtil;
 import static sereneseasons.init.ModTags.Biomes.BLACKLISTED_BIOMES;
 import static sereneseasons.init.ModTags.Biomes.TROPICAL_BIOMES;
 
-public class SereneSeasonsUtil {
+public class SereneSeasonsUtil
+{
     public static double averageSeasonTemperature;
     public static double averageTropicalSeasonTemperature;
 
-    public static Component seasonTooltip(BlockPos blockPos, Level level) {
+    public static Component seasonTooltip(BlockPos blockPos, Level level)
+    {
         if (!hasSeasons(level))
             return Component.translatable("message.legendarysurvivaloverhaul.sereneseasons.no_season_dimension");
 
@@ -35,11 +36,14 @@ public class SereneSeasonsUtil {
         int subSeasonDuration = (int) ((double) season.getSubSeasonDuration() / (double) season.getDayDuration());
 
         StringBuilder subSeasonName = new StringBuilder();
-        if (seasonType == SeasonType.NO_SEASON) {
+        if (seasonType == SeasonType.NO_SEASON)
+        {
             return Component.translatable("message.legendarysurvivaloverhaul.sereneseasons.no_season_info");
 
-        } else if (seasonType == SeasonType.TROPICAL_SEASON) {
-            for(String word : season.getTropicalSeason().toString().split("_", 0)) {
+        } else if (seasonType == SeasonType.TROPICAL_SEASON)
+        {
+            for (String word : season.getTropicalSeason().toString().split("_", 0))
+            {
                 subSeasonName.append(word.charAt(0)).append(word.substring(1).toLowerCase()).append(" ");
             }
             return Component.translatable("message.legendarysurvivaloverhaul.sereneseasons.season_info",
@@ -47,8 +51,10 @@ public class SereneSeasonsUtil {
                     ((season.getDay() + subSeasonDuration) % (subSeasonDuration * 2)) + 1,
                     subSeasonDuration * 2);
 
-        } else {
-            for(String word : season.getSubSeason().toString().split("_", 0)) {
+        } else
+        {
+            for (String word : season.getSubSeason().toString().split("_", 0))
+            {
                 subSeasonName.append(word.charAt(0)).append(word.substring(1).toLowerCase()).append(" ");
             }
             return Component.translatable("message.legendarysurvivaloverhaul.sereneseasons.season_info",
@@ -58,7 +64,8 @@ public class SereneSeasonsUtil {
         }
     }
 
-    public static SeasonType getSeasonType(Holder<Biome> biome) {
+    public static SeasonType getSeasonType(Holder<Biome> biome)
+    {
         if (Config.Baked.ssTropicalSeasonsEnabled && biome.is(TROPICAL_BIOMES))
             return SeasonType.TROPICAL_SEASON;
         else if (!Config.Baked.ssDefaultSeasonEnabled && biome.is(BLACKLISTED_BIOMES))
@@ -66,9 +73,12 @@ public class SereneSeasonsUtil {
         return SeasonType.NORMAL_SEASON;
     }
 
-    public static boolean isGlassAboveBlock(Level world, BlockPos cropPos) {
-        for(int i = 0; i < 16; ++i) {
-            if (world.getBlockState(cropPos.offset(0, i + 1, 0)).is(ModTags.Blocks.GREENHOUSE_GLASS)) {
+    public static boolean isGlassAboveBlock(Level world, BlockPos cropPos)
+    {
+        for (int i = 0; i < 16; ++i)
+        {
+            if (world.getBlockState(cropPos.offset(0, i + 1, 0)).is(ModTags.Blocks.GREENHOUSE_GLASS))
+            {
                 return true;
             }
         }
@@ -76,40 +86,48 @@ public class SereneSeasonsUtil {
         return false;
     }
 
-    public static boolean plantCanGrow(Level level, BlockPos pos, BlockState plant) {
+    public static boolean plantCanGrow(Level level, BlockPos pos, BlockState plant)
+    {
         ResourceLocation resourceLocation = BuiltInRegistries.BLOCK.getKey(plant.getBlock());
-        if (resourceLocation != null) {
+        if (resourceLocation != null)
+        {
             boolean isFertile = ModFertility.isCropFertile(resourceLocation.getPath(), level, pos);
-            if (ModConfig.fertility.seasonalCrops && ModFertility.isCrop(plant) && !isFertile && !isGlassAboveBlock(level, pos)) {
+            if (ModConfig.fertility.seasonalCrops && ModFertility.isCrop(plant) && !isFertile && !isGlassAboveBlock(level, pos))
+            {
                 return ModConfig.fertility.outOfSeasonCropBehavior != 1 && ModConfig.fertility.outOfSeasonCropBehavior != 2;
             }
         }
         return true;
     }
 
-    public static double getTimeInSeasonCycle(Level level) {
+    public static double getTimeInSeasonCycle(Level level)
+    {
         int seasonCycleTicks = SeasonHelper.getSeasonState(level).getSeasonCycleTicks();
-        return (double)((float)seasonCycleTicks / (float) SeasonTime.ZERO.getCycleDuration());
+        return (float) seasonCycleTicks / (float) SeasonTime.ZERO.getCycleDuration();
     }
 
-    public static boolean hasSeasons(Level level) {
+    public static boolean hasSeasons(Level level)
+    {
         return ModConfig.seasons.isDimensionWhitelisted(level.dimension());
     }
 
-    public static float getSeasonModifier(double previousSeasonModifier, double currentSeasonModifier, double nextSeasonModifier, int time, int subSeasonDuration) {
+    public static float getSeasonModifier(double previousSeasonModifier, double currentSeasonModifier, double nextSeasonModifier, int time, int subSeasonDuration)
+    {
         return time < subSeasonDuration / 2 ?
-                calculateSinusoidalBetweenSeasons(previousSeasonModifier, currentSeasonModifier, time + (subSeasonDuration / 2), subSeasonDuration):
+                calculateSinusoidalBetweenSeasons(previousSeasonModifier, currentSeasonModifier, time + (subSeasonDuration / 2), subSeasonDuration) :
                 calculateSinusoidalBetweenSeasons(currentSeasonModifier, nextSeasonModifier, time - (subSeasonDuration / 2), subSeasonDuration);
     }
 
-    public static float calculateSinusoidalBetweenSeasons(double previousSeasonModifier, double nextSeasonModifier, int time, int subSeasonDuration) {
+    public static float calculateSinusoidalBetweenSeasons(double previousSeasonModifier, double nextSeasonModifier, int time, int subSeasonDuration)
+    {
         double tempDiff = nextSeasonModifier - previousSeasonModifier;
         // PI / 2 = 1.5707963267948966
         double seasonModifier = (Math.sin(((time * Math.PI) / subSeasonDuration) - 1.5707963267948966) + 1) * (tempDiff / 2) + previousSeasonModifier;
         return MathUtil.round((float) seasonModifier, 2);
     }
 
-    public static void initAverageTemperatures() {
+    public static void initAverageTemperatures()
+    {
         averageSeasonTemperature += Config.Baked.ssEarlyAutumnModifier;
         averageSeasonTemperature += Config.Baked.ssEarlySpringModifier;
         averageSeasonTemperature += Config.Baked.ssEarlySummerModifier;
@@ -133,7 +151,8 @@ public class SereneSeasonsUtil {
         averageTropicalSeasonTemperature /= 6;
     }
 
-    public enum TropicalSeason {
+    public enum TropicalSeason
+    {
         DRY(Season.TropicalSeason.EARLY_DRY, Season.TropicalSeason.MID_DRY, Season.TropicalSeason.LATE_DRY),
         WET(Season.TropicalSeason.EARLY_WET, Season.TropicalSeason.MID_WET, Season.TropicalSeason.LATE_WET);
 
@@ -141,17 +160,21 @@ public class SereneSeasonsUtil {
         public final Season.TropicalSeason midTropicalSeason;
         public final Season.TropicalSeason lateTropicalSeason;
 
-        TropicalSeason(Season.TropicalSeason earlyTropicalSeason, Season.TropicalSeason midTropicalSeason, Season.TropicalSeason lateTropicalSeason) {
+        TropicalSeason(Season.TropicalSeason earlyTropicalSeason, Season.TropicalSeason midTropicalSeason, Season.TropicalSeason lateTropicalSeason)
+        {
             this.earlyTropicalSeason = earlyTropicalSeason;
             this.midTropicalSeason = midTropicalSeason;
             this.lateTropicalSeason = lateTropicalSeason;
         }
 
-        public static TropicalSeason getTropicalSeason(Season.TropicalSeason subTropicalSeason) {
-            for (TropicalSeason season: values()) {
+        public static TropicalSeason getTropicalSeason(Season.TropicalSeason subTropicalSeason)
+        {
+            for (TropicalSeason season : values())
+            {
                 if (subTropicalSeason == season.earlyTropicalSeason ||
                         subTropicalSeason == season.midTropicalSeason ||
-                        subTropicalSeason == season.lateTropicalSeason) {
+                        subTropicalSeason == season.lateTropicalSeason)
+                {
                     return season;
                 }
             }
@@ -159,13 +182,16 @@ public class SereneSeasonsUtil {
         }
     }
 
-    public enum SeasonType {
+    public enum SeasonType
+    {
         NO_SEASON(0.9f),
         TROPICAL_SEASON(0.1f),
         NORMAL_SEASON(0.0f);
 
         public final float propertyValue;
-        SeasonType(float propertyValue) {
+
+        SeasonType(float propertyValue)
+        {
             this.propertyValue = propertyValue;
         }
     }

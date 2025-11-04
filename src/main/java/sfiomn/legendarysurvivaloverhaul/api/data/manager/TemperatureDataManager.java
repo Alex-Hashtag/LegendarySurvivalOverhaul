@@ -6,7 +6,8 @@ import sfiomn.legendarysurvivaloverhaul.api.data.json.*;
 
 import java.util.List;
 
-public class TemperatureDataManager {
+public class TemperatureDataManager
+{
 
     public static ITemperatureBlockManager internalBlock;
     public static ITemperatureConsumableManager internalConsumable;
@@ -20,6 +21,7 @@ public class TemperatureDataManager {
 
     /**
      * Retrieves the list of Temperature Information related to the provided block registry name
+     *
      * @param blockRegistryName resource location of the block
      * @return list of Temperature Information
      */
@@ -57,7 +59,8 @@ public class TemperatureDataManager {
      * @return Temperature Resistances
      */
     @Nullable
-    public static JsonTemperatureResistance getItem(ResourceLocation itemRegistryName) {
+    public static JsonTemperatureResistance getItem(ResourceLocation itemRegistryName)
+    {
         return internalItem.get(itemRegistryName);
     }
 
@@ -68,7 +71,8 @@ public class TemperatureDataManager {
      * @return Biome Temperature overriding Minecraft Biome Temperature
      */
     @Nullable
-    public static JsonTemperatureBiomeOverride getBiome(ResourceLocation biomeRegistryName) {
+    public static JsonTemperatureBiomeOverride getBiome(ResourceLocation biomeRegistryName)
+    {
         return internalBiome.get(biomeRegistryName);
     }
 
@@ -79,7 +83,8 @@ public class TemperatureDataManager {
      * @return Fuel values
      */
     @Nullable
-    public static JsonTemperatureFuelItem getFuelItem(ResourceLocation itemRegistryName) {
+    public static JsonTemperatureFuelItem getFuelItem(ResourceLocation itemRegistryName)
+    {
         return internalFuelItem.get(itemRegistryName);
     }
 
@@ -90,7 +95,8 @@ public class TemperatureDataManager {
      * @return Dimension Temperature
      */
     @Nullable
-    public static JsonTemperatureDimension getDimension(ResourceLocation dimensionRegistryName) {
+    public static JsonTemperatureDimension getDimension(ResourceLocation dimensionRegistryName)
+    {
         return internalDimension.get(dimensionRegistryName);
     }
 
@@ -101,7 +107,8 @@ public class TemperatureDataManager {
      * @return Entity Temperature
      */
     @Nullable
-    public static JsonTemperatureResistance getMount(ResourceLocation mountRegistryName) {
+    public static JsonTemperatureResistance getMount(ResourceLocation mountRegistryName)
+    {
         return internalMount.get(mountRegistryName);
     }
 
@@ -112,7 +119,8 @@ public class TemperatureDataManager {
      * @return Origin Temperature
      */
     @Nullable
-    public static JsonTemperatureResistance getOrigin(ResourceLocation originRegistryName) {
+    public static JsonTemperatureResistance getOrigin(ResourceLocation originRegistryName)
+    {
         return internalOrigin.get(originRegistryName);
     }
 }

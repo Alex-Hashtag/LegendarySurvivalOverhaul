@@ -9,14 +9,17 @@ import java.util.concurrent.CompletableFuture;
 
 import static sfiomn.legendarysurvivaloverhaul.api.block.ThermalTypeEnum.COOLING;
 
-public class IceAndFireTemperatureProvider extends TemperatureDataProvider {
+public class IceAndFireTemperatureProvider extends TemperatureDataProvider
+{
 
-    public IceAndFireTemperatureProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper fileHelper) {
+    public IceAndFireTemperatureProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper fileHelper)
+    {
         super("iceandfire", output, lookupProvider, fileHelper);
     }
 
     @Override
-    public void generate(HolderLookup.Provider provider, ExistingFileHelper existingFileHelper) {
+    public void generate(HolderLookup.Provider provider, ExistingFileHelper existingFileHelper)
+    {
 
         mount("hippocampus").coldResistance(4.0f);
         mount("ice_dragon").temperature(-7.0f);

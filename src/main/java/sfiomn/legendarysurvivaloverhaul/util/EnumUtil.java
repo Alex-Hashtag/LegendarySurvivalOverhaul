@@ -1,37 +1,44 @@
 package sfiomn.legendarysurvivaloverhaul.util;
 
-public class EnumUtil {
-    public enum CompassInfo {
+public class EnumUtil
+{
+    public enum CompassInfo
+    {
         FULL,
         HORIZONTAL,
         NONE
     }
 
-    public enum DifficultyMode {
+    public enum DifficultyMode
+    {
         PEACEFUL,
         EASY,
         NORMAL,
         HARD
     }
 
-    public enum brokenHeartsPerInjuredLimbMode {
+    public enum brokenHeartsPerInjuredLimbMode
+    {
         SIMPLE,
         PLAYER_DYNAMIC,
         LIMB_DYNAMIC
     }
 
-    public enum limbRegenerationMode {
+    public enum limbRegenerationMode
+    {
         SIMPLE,
         PLAYER_DYNAMIC,
         LIMB_DYNAMIC
     }
 
-    public enum bodyPartHealthMode {
+    public enum bodyPartHealthMode
+    {
         SIMPLE,
         DYNAMIC
     }
 
-    public enum temperatureDisplayMode {
+    public enum temperatureDisplayMode
+    {
         SYMBOL,
         NONE
     }

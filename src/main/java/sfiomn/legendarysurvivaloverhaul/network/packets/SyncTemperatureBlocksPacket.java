@@ -4,9 +4,8 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.PacketFlow;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload.Type;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
@@ -18,7 +17,8 @@ import java.util.Map;
 
 public record SyncTemperatureBlocksPacket(
         Map<ResourceLocation, List<JsonTemperatureBlock>> temperatureBlocks
-) implements CustomPacketPayload {
+) implements CustomPacketPayload
+{
 
     public static final ResourceLocation ID =
             ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "sync_temperature_blocks");
@@ -35,23 +35,30 @@ public record SyncTemperatureBlocksPacket(
                     SyncTemperatureBlocksPacket::new
             );
 
-    @Override
-    public Type<? extends CustomPacketPayload> type() { return TYPE; }
-
-    public static void handle(SyncTemperatureBlocksPacket pkt, IPayloadContext ctx) {
+    public static void handle(SyncTemperatureBlocksPacket pkt, IPayloadContext ctx)
+    {
         if (ctx.flow() != PacketFlow.CLIENTBOUND) return;
         ctx.enqueueWork(() -> TemperatureBlockListener.acceptServerTemperatureBlocks(pkt.temperatureBlocks()));
     }
 
-    public static void sendToServer(Map<ResourceLocation, List<JsonTemperatureBlock>> data) {
+    public static void sendToServer(Map<ResourceLocation, List<JsonTemperatureBlock>> data)
+    {
         PacketDistributor.sendToServer(new SyncTemperatureBlocksPacket(data));
     }
 
-    public static void sendToPlayer(net.minecraft.server.level.ServerPlayer player, Map<ResourceLocation, List<JsonTemperatureBlock>> data) {
+    public static void sendToPlayer(net.minecraft.server.level.ServerPlayer player, Map<ResourceLocation, List<JsonTemperatureBlock>> data)
+    {
         PacketDistributor.sendToPlayer(player, new SyncTemperatureBlocksPacket(data));
     }
 
-    public static void sendToAll(Map<ResourceLocation, List<JsonTemperatureBlock>> data) {
+    public static void sendToAll(Map<ResourceLocation, List<JsonTemperatureBlock>> data)
+    {
         PacketDistributor.sendToAllPlayers(new SyncTemperatureBlocksPacket(data));
+    }
+
+    @Override
+    public Type<? extends CustomPacketPayload> type()
+    {
+        return TYPE;
     }
 }

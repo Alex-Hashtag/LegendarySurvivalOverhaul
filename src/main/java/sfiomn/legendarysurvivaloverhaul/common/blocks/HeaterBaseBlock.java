@@ -33,7 +33,8 @@ import sfiomn.legendarysurvivaloverhaul.common.blockentities.AbstractThermalBloc
 import sfiomn.legendarysurvivaloverhaul.registry.BlockEntityRegistry;
 import sfiomn.legendarysurvivaloverhaul.registry.BlockRegistry;
 
-public class HeaterBaseBlock extends ThermalBlock {
+public class HeaterBaseBlock extends ThermalBlock
+{
 
     public static final Properties properties = getProperties();
 
@@ -42,7 +43,8 @@ public class HeaterBaseBlock extends ThermalBlock {
 
     private static final VoxelShape XZ_AXIS_AABB = Shapes.or(FEET, BASE);
 
-    public HeaterBaseBlock(ThermalTypeEnum thermalType) {
+    public HeaterBaseBlock(ThermalTypeEnum thermalType)
+    {
         super(thermalType, properties);
     }
 
@@ -65,7 +67,8 @@ public class HeaterBaseBlock extends ThermalBlock {
 
     @Nullable
     @Override
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState p_153213_, BlockEntityType<T> entityType) {
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState p_153213_, BlockEntityType<T> entityType)
+    {
         return level.isClientSide ? null : createTickerHelper(entityType, BlockEntityRegistry.HEATER_BLOCK_ENTITY.get(), AbstractThermalBlockEntity::serverTick);
     }
 
@@ -76,14 +79,16 @@ public class HeaterBaseBlock extends ThermalBlock {
                                               BlockPos pos,
                                               Player player,
                                               InteractionHand hand,
-                                              BlockHitResult hit) {
+                                              BlockHitResult hit)
+    {
         // Call the block’s own item interaction. This is allowed here because we’re inside the subclass.
         return this.useItemOn(stack, state, level, pos, player, hand, hit);
     }
 
 
     @Override
-    public BlockState getStateForPlacement(BlockPlaceContext context) {
+    public BlockState getStateForPlacement(BlockPlaceContext context)
+    {
 
         Level level = context.getLevel();
         BlockPos topPos = context.getClickedPos().above();
@@ -96,7 +101,7 @@ public class HeaterBaseBlock extends ThermalBlock {
     public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving)
     {
         super.onRemove(state, level, pos, newState, isMoving);
-        if(!state.is(newState.getBlock()) && level.getBlockState(pos.above()).getBlock() instanceof HeaterTopBlock)
+        if (!state.is(newState.getBlock()) && level.getBlockState(pos.above()).getBlock() instanceof HeaterTopBlock)
         {
             level.removeBlock(pos.above(), false);
         }
@@ -105,16 +110,20 @@ public class HeaterBaseBlock extends ThermalBlock {
 
     @SuppressWarnings("deprecation")
     @Override
-    public void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean isMoving) {
-        if (level.isEmptyBlock(pos.above())) {
+    public void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean isMoving)
+    {
+        if (level.isEmptyBlock(pos.above()))
+        {
             level.setBlock(pos.above(), BlockRegistry.HEATER_TOP.get().defaultBlockState().setValue(HeaterTopBlock.FACING, state.getValue(FACING)), 2);
         }
     }
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource rand) {
-        if (state.getValue(LIT)) {
+    public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource rand)
+    {
+        if (state.getValue(LIT))
+        {
             float chance = 0.5f;
             float chance_flame = 0.4f;
 
@@ -123,11 +132,13 @@ public class HeaterBaseBlock extends ThermalBlock {
             double posY = pos.getY();
             double posZ = pos.getZ();
 
-            if (rand.nextFloat() < chance) {
+            if (rand.nextFloat() < chance)
+            {
                 level.playLocalSound(posX + 0.5d, posY + 0.5d, posZ + 0.5d, SoundEvents.FURNACE_FIRE_CRACKLE, SoundSource.BLOCKS, 1.0F, 1.0F, false);
             }
 
-            if (rand.nextFloat() < chance) {
+            if (rand.nextFloat() < chance)
+            {
                 //  Particle spawns half block around the center of the block : [0.25 - 0.75]
                 float xr = rand.nextFloat() / 2 + 0.25f;
                 float zr = rand.nextFloat() / 2 + 0.25f;
@@ -142,28 +153,32 @@ public class HeaterBaseBlock extends ThermalBlock {
                 level.addParticle(ParticleTypes.CAMPFIRE_COSY_SMOKE, false, posX + xr, pos.above().getY() + 0.8d, posZ + zr, xm, ym, zm);
             }
 
-            if (rand.nextFloat() < chance_flame) {
+            if (rand.nextFloat() < chance_flame)
+            {
                 //  Particle spawns around the center of the block : [0.33 - 0.66]
                 float zr = rand.nextFloat() / 3 + 0.33f;
                 float yr = rand.nextFloat() / 6 + 0.5f;
                 level.addParticle(ParticleTypes.SMOKE, false, posX + 0.05, posY + yr, posZ + zr, 0, 0, 0);
                 level.addParticle(ParticleTypes.FLAME, false, posX + 0.05, posY + yr, posZ + zr, 0, 0, 0);
             }
-            if (rand.nextFloat() < chance_flame) {
+            if (rand.nextFloat() < chance_flame)
+            {
                 //  Particle spawns around the center of the block : [0.33 - 0.66]
                 float zr = rand.nextFloat() / 3 + 0.33f;
                 float yr = rand.nextFloat() / 6 + 0.5f;
                 level.addParticle(ParticleTypes.SMOKE, false, posX + 0.95, posY + yr, posZ + zr, 0, 0, 0);
                 level.addParticle(ParticleTypes.FLAME, false, posX + 0.95, posY + yr, posZ + zr, 0, 0, 0);
             }
-            if (rand.nextFloat() < chance_flame) {
+            if (rand.nextFloat() < chance_flame)
+            {
                 //  Particle spawns around the center of the block : [0.33 - 0.66]
                 float xr = rand.nextFloat() / 3 + 0.33f;
                 float yr = rand.nextFloat() / 6 + 0.5f;
                 level.addParticle(ParticleTypes.SMOKE, false, posX + xr, posY + yr, posZ + 0.05, 0, 0, 0);
                 level.addParticle(ParticleTypes.FLAME, false, posX + xr, posY + yr, posZ + 0.05, 0, 0, 0);
             }
-            if (rand.nextFloat() < chance_flame) {
+            if (rand.nextFloat() < chance_flame)
+            {
                 //  Particle spawns around the center of the block : [0.33 - 0.66]
                 float xr = rand.nextFloat() / 3 + 0.33f;
                 float yr = rand.nextFloat() / 6 + 0.5f;

@@ -7,14 +7,17 @@ import sfiomn.legendarysurvivaloverhaul.api.data.providers.ThirstDataProvider;
 
 import java.util.concurrent.CompletableFuture;
 
-public class UpgradeAquaticThirstProvider extends ThirstDataProvider {
+public class UpgradeAquaticThirstProvider extends ThirstDataProvider
+{
 
-    public UpgradeAquaticThirstProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper fileHelper) {
+    public UpgradeAquaticThirstProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper fileHelper)
+    {
         super("upgrade_aquatic", output, lookupProvider, fileHelper);
     }
 
     @Override
-    public void generate(HolderLookup.Provider provider, ExistingFileHelper existingFileHelper) {
+    public void generate(HolderLookup.Provider provider, ExistingFileHelper existingFileHelper)
+    {
 
         consumable("mulberry").addThirst(thirstData(4, 0.0f));
     }

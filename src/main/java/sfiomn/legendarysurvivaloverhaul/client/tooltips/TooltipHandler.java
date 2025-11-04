@@ -15,13 +15,11 @@ import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.EventPriority;
+import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.RenderTooltipEvent;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
-import net.neoforged.bus.api.EventPriority;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.Mod;
-import net.minecraft.core.registries.Registries;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonHealingConsumable;
 import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonMobEffect;
@@ -50,219 +48,253 @@ import java.util.List;
 )
 public class TooltipHandler
 {
-	
-	@SuppressWarnings("unused")
-	@SubscribeEvent(priority = EventPriority.LOWEST)
-	public static void onTooltip(ItemTooltipEvent event)
-	{
-		ItemStack stack = event.getItemStack();
+
+    @SuppressWarnings("unused")
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public static void onTooltip(ItemTooltipEvent event)
+    {
+        ItemStack stack = event.getItemStack();
 
         ResourceLocation itemRegistryName = BuiltInRegistries.ITEM.getKey(stack.getItem());
 
-		if (!stack.isEmpty() && itemRegistryName != null)
-		{
-			List<Component> tooltips = event.getToolTip();
+        if (!stack.isEmpty() && itemRegistryName != null)
+        {
+            List<Component> tooltips = event.getToolTip();
 
-			for (Component component: tooltips) {
-				if (component instanceof MutableComponent mutableComponent) {
-					if (componentHasOneOfKeys(component,
-							AttributeRegistry.HEATING_TEMPERATURE.get().getDescriptionId(),
-							AttributeRegistry.HEAT_RESISTANCE.get().getDescriptionId()))
-						mutableComponent.withStyle(Style.EMPTY.withColor(TextColor.fromRgb(16420407)));
-					if (componentHasOneOfKeys(component,
-							AttributeRegistry.COOLING_TEMPERATURE.get().getDescriptionId(),
-							AttributeRegistry.COLD_RESISTANCE.get().getDescriptionId()))
-						mutableComponent.withStyle(Style.EMPTY.withColor(TextColor.fromRgb(6466303)));
-					if (componentHasOneOfKeys(component, AttributeRegistry.THERMAL_RESISTANCE.get().getDescriptionId()))
-						mutableComponent.withStyle(Style.EMPTY.withColor(TextColor.fromRgb(10040319)));
-				}
-			}
+            for (Component component : tooltips)
+            {
+                if (component instanceof MutableComponent mutableComponent)
+                {
+                    if (componentHasOneOfKeys(component,
+                            AttributeRegistry.HEATING_TEMPERATURE.get().getDescriptionId(),
+                            AttributeRegistry.HEAT_RESISTANCE.get().getDescriptionId()))
+                        mutableComponent.withStyle(Style.EMPTY.withColor(TextColor.fromRgb(16420407)));
+                    if (componentHasOneOfKeys(component,
+                            AttributeRegistry.COOLING_TEMPERATURE.get().getDescriptionId(),
+                            AttributeRegistry.COLD_RESISTANCE.get().getDescriptionId()))
+                        mutableComponent.withStyle(Style.EMPTY.withColor(TextColor.fromRgb(6466303)));
+                    if (componentHasOneOfKeys(component, AttributeRegistry.THERMAL_RESISTANCE.get().getDescriptionId()))
+                        mutableComponent.withStyle(Style.EMPTY.withColor(TextColor.fromRgb(10040319)));
+                }
+            }
 
-			if (Config.Baked.temperatureEnabled) {
+            if (Config.Baked.temperatureEnabled)
+            {
 
-				if (stack.getItem() instanceof ArmorItem) {
-					addCoatTemperatureOnArmorText(stack, tooltips);
-				}
+                if (stack.getItem() instanceof ArmorItem)
+                {
+                    addCoatTemperatureOnArmorText(stack, tooltips);
+                }
 
-				addFoodEffectText(stack, tooltips);
-			}
+                addFoodEffectText(stack, tooltips);
+            }
 
-			if (Config.Baked.localizedBodyDamageEnabled)
-				addHealingText(stack, tooltips);
+            if (Config.Baked.localizedBodyDamageEnabled)
+                addHealingText(stack, tooltips);
 
-			if (LegendarySurvivalOverhaul.beachpartyLoaded)
-				addShadeText(stack, tooltips);
-		}
-	}
-
-	@SuppressWarnings("unused")
-	@SubscribeEvent
-	public static void onRenderTooltip(RenderTooltipEvent.GatherComponents event) {
-		if (event.isCanceled())
-			return;
-
-		Minecraft mc = Minecraft.getInstance();
-		Screen gui = mc.screen;
-		if (gui == null)
-			return;
-
-		if (Config.Baked.thirstEnabled && Config.Baked.showHydrationTooltip)
-			addHydrationTooltip(event.getItemStack(), event.getTooltipElements());
-	}
-
-	private static boolean componentHasOneOfKeys(Component component, String... keys) {
-		if (component != null && component.getContents() instanceof TranslatableContents translatableContents &&
-				translatableContents.getArgs() != null) {
-            return Arrays.stream(translatableContents.getArgs()).anyMatch(s -> {
-				if (s instanceof MutableComponent mutableComponent &&
-						mutableComponent.getContents() instanceof TranslatableContents translatableContents1) {
-					for (String key: keys) {
-						if (translatableContents1.getKey().equals(key))
-							return true;
-					}
-					return false;
-				} else
-					return false;
-			});
+            if (LegendarySurvivalOverhaul.beachpartyLoaded)
+                addShadeText(stack, tooltips);
         }
-		return false;
-	}
+    }
 
-	private static void addCoatTemperatureOnArmorText(ItemStack stack, List<Component> tooltips) {
-		String coatId = TemperatureUtil.getArmorCoatTag(stack);
-		CoatEnum coat = CoatEnum.getFromId(coatId);
+    @SuppressWarnings("unused")
+    @SubscribeEvent
+    public static void onRenderTooltip(RenderTooltipEvent.GatherComponents event)
+    {
+        if (event.isCanceled())
+            return;
 
-		Component text;
+        Minecraft mc = Minecraft.getInstance();
+        Screen gui = mc.screen;
+        if (gui == null)
+            return;
 
-		if (coat != null) {
-			text = Component.translatable("tooltip." + LegendarySurvivalOverhaul.MOD_ID + ".armor_coat." + coatId);
-		} else {
-			return;
-		}
+        if (Config.Baked.thirstEnabled && Config.Baked.showHydrationTooltip)
+            addHydrationTooltip(event.getItemStack(), event.getTooltipElements());
+    }
 
-		text = Component.literal("")
-				.withStyle(ChatFormatting.BLUE)
-				.append(text);
+    private static boolean componentHasOneOfKeys(Component component, String... keys)
+    {
+        if (component != null && component.getContents() instanceof TranslatableContents translatableContents &&
+                translatableContents.getArgs() != null)
+        {
+            return Arrays.stream(translatableContents.getArgs()).anyMatch(s -> {
+                if (s instanceof MutableComponent mutableComponent &&
+                        mutableComponent.getContents() instanceof TranslatableContents translatableContents1)
+                {
+                    for (String key : keys)
+                    {
+                        if (translatableContents1.getKey().equals(key))
+                            return true;
+                    }
+                    return false;
+                } else
+                    return false;
+            });
+        }
+        return false;
+    }
 
-		tooltips.add(text);
-	}
+    private static void addCoatTemperatureOnArmorText(ItemStack stack, List<Component> tooltips)
+    {
+        String coatId = TemperatureUtil.getArmorCoatTag(stack);
+        CoatEnum coat = CoatEnum.getFromId(coatId);
 
-	private static void addFoodEffectText(ItemStack stack, List<Component> tooltips) {
+        Component text;
+
+        if (coat != null)
+        {
+            text = Component.translatable("tooltip." + LegendarySurvivalOverhaul.MOD_ID + ".armor_coat." + coatId);
+        } else
+        {
+            return;
+        }
+
+        text = Component.literal("")
+                .withStyle(ChatFormatting.BLUE)
+                .append(text);
+
+        tooltips.add(text);
+    }
+
+    private static void addFoodEffectText(ItemStack stack, List<Component> tooltips)
+    {
         ResourceLocation itemRegistryName = BuiltInRegistries.ITEM.getKey(stack.getItem());
-		List<JsonTemperatureConsumable> jtcs = TemperatureDataManager.getConsumable(itemRegistryName);
+        List<JsonTemperatureConsumable> jtcs = TemperatureDataManager.getConsumable(itemRegistryName);
 
-		if (jtcs != null) {
-			for (JsonTemperatureConsumable jtc: jtcs) {
-				MobEffectInstance effectInstance = new MobEffectInstance(net.minecraft.core.Holder.direct(jtc.getEffect()), jtc.duration, Math.abs(jtc.temperatureLevel));
-				MutableComponent mutableComponent = Component.translatable(effectInstance.getDescriptionId());
+        if (jtcs != null)
+        {
+            for (JsonTemperatureConsumable jtc : jtcs)
+            {
+                MobEffectInstance effectInstance = new MobEffectInstance(net.minecraft.core.Holder.direct(jtc.getEffect()), jtc.duration, Math.abs(jtc.temperatureLevel));
+                MutableComponent mutableComponent = Component.translatable(effectInstance.getDescriptionId());
 
-				if (Math.abs(jtc.temperatureLevel) > 1) {
-					mutableComponent = Component.translatable("potion.withAmplifier", mutableComponent, Component.translatable("potion.potency." + (Math.abs(jtc.temperatureLevel) - 1)));
-				}
+                if (Math.abs(jtc.temperatureLevel) > 1)
+                {
+                    mutableComponent = Component.translatable("potion.withAmplifier", mutableComponent, Component.translatable("potion.potency." + (Math.abs(jtc.temperatureLevel) - 1)));
+                }
 
-				if (jtc.duration > 20) {
-					mutableComponent = Component.translatable("potion.withDuration", mutableComponent, MobEffectUtil.formatDuration(effectInstance, 1.0f, 20.0f));
-				}
+                if (jtc.duration > 20)
+                {
+                    mutableComponent = Component.translatable("potion.withDuration", mutableComponent, MobEffectUtil.formatDuration(effectInstance, 1.0f, 20.0f));
+                }
 
-				if (jtc.getEffect() == MobEffectRegistry.COLD_FOOD.get() || jtc.getEffect() == MobEffectRegistry.COLD_DRINK.get())
-					tooltips.add(mutableComponent.withStyle(Style.EMPTY.withColor(TextColor.fromRgb(6466303))));
+                if (jtc.getEffect() == MobEffectRegistry.COLD_FOOD.get() || jtc.getEffect() == MobEffectRegistry.COLD_DRINK.get())
+                    tooltips.add(mutableComponent.withStyle(Style.EMPTY.withColor(TextColor.fromRgb(6466303))));
 
-				if (jtc.getEffect() == MobEffectRegistry.HOT_FOOD.get())
-					tooltips.add(mutableComponent.withStyle(Style.EMPTY.withColor(TextColor.fromRgb(16420407))));
-			}
-		}
-	}
+                if (jtc.getEffect() == MobEffectRegistry.HOT_FOOD.get())
+                    tooltips.add(mutableComponent.withStyle(Style.EMPTY.withColor(TextColor.fromRgb(16420407))));
+            }
+        }
+    }
 
-	private static void addHealingText(ItemStack stack, List<Component> tooltips) {
-
-        ResourceLocation itemRegistryName = BuiltInRegistries.ITEM.getKey(stack.getItem());
-		JsonHealingConsumable jsonConsumableHeal = BodyDamageDataManager.getHealingItem(itemRegistryName);
-
-		if (jsonConsumableHeal != null) {
-			if (jsonConsumableHeal.healingCharges > 0) {
-				tooltips.add(Component.translatable("tooltip.legendarysurvivaloverhaul.body_heal_item.body_part", jsonConsumableHeal.healingCharges).withStyle(ChatFormatting.BLUE));
-			} else if (jsonConsumableHeal.healingCharges == 0) {
-				tooltips.add(Component.translatable("tooltip.legendarysurvivaloverhaul.body_heal_item.whole_body").withStyle(ChatFormatting.BLUE));
-			}
-			tooltips.add(
-					Component.translatable("tooltip.legendarysurvivaloverhaul.body_heal_item.healing_value",
-									jsonConsumableHeal.healingValue, MathUtil.round(jsonConsumableHeal.healingTime / 20.0f, 1))
-							.withStyle(ChatFormatting.BLUE));
-
-			MutableComponent mutableComponent = Component.translatable(MobEffectRegistry.RECOVERY.get().getDescriptionId());
-
-			if (jsonConsumableHeal.recoveryEffectDuration > 0) {
-				if (jsonConsumableHeal.recoveryEffectAmplifier > 0) {
-					mutableComponent = Component.translatable("potion.withAmplifier", mutableComponent, Component.translatable("potion.potency." + jsonConsumableHeal.recoveryEffectAmplifier));
-				}
-
-					MobEffectInstance mei = new MobEffectInstance(MobEffectRegistry.RECOVERY, jsonConsumableHeal.recoveryEffectDuration, jsonConsumableHeal.recoveryEffectAmplifier);
-				mutableComponent = Component.translatable("potion.withDuration", mutableComponent, MobEffectUtil.formatDuration(mei, 1.0f, 20.0f));
-
-				tooltips.add(mutableComponent.withStyle(Style.EMPTY.withColor(ChatFormatting.BLUE)));
-			}
-		}
-	}
-
-	private static void addShadeText(ItemStack stack, List<Component> tooltips) {
+    private static void addHealingText(ItemStack stack, List<Component> tooltips)
+    {
 
         ResourceLocation itemRegistryName = BuiltInRegistries.ITEM.getKey(stack.getItem());
+        JsonHealingConsumable jsonConsumableHeal = BodyDamageDataManager.getHealingItem(itemRegistryName);
 
-		if (itemRegistryName != null && (BeachpartyUtil.canProvideShade(itemRegistryName) || ArtifactsUtil.canProvideShade(itemRegistryName))) {
-			tooltips.add(
-					Component.translatable("tooltip.legendarysurvivaloverhaul.provides_shade")
-							.withStyle(ChatFormatting.WHITE));
-		}
-	}
+        if (jsonConsumableHeal != null)
+        {
+            if (jsonConsumableHeal.healingCharges > 0)
+            {
+                tooltips.add(Component.translatable("tooltip.legendarysurvivaloverhaul.body_heal_item.body_part", jsonConsumableHeal.healingCharges).withStyle(ChatFormatting.BLUE));
+            } else if (jsonConsumableHeal.healingCharges == 0)
+            {
+                tooltips.add(Component.translatable("tooltip.legendarysurvivaloverhaul.body_heal_item.whole_body").withStyle(ChatFormatting.BLUE));
+            }
+            tooltips.add(
+                    Component.translatable("tooltip.legendarysurvivaloverhaul.body_heal_item.healing_value",
+                                    jsonConsumableHeal.healingValue, MathUtil.round(jsonConsumableHeal.healingTime / 20.0f, 1))
+                            .withStyle(ChatFormatting.BLUE));
 
-	private static void addHydrationTooltip(ItemStack stack, List<Either<FormattedText, TooltipComponent>> tooltips) {
+            MutableComponent mutableComponent = Component.translatable(MobEffectRegistry.RECOVERY.get().getDescriptionId());
 
-		JsonThirstConsumable jsonThirstConsumable = ThirstDataManager.getConsumable(stack);
+            if (jsonConsumableHeal.recoveryEffectDuration > 0)
+            {
+                if (jsonConsumableHeal.recoveryEffectAmplifier > 0)
+                {
+                    mutableComponent = Component.translatable("potion.withAmplifier", mutableComponent, Component.translatable("potion.potency." + jsonConsumableHeal.recoveryEffectAmplifier));
+                }
 
-		HydrationTooltipComponent hydrationTooltipComponent = null;
-		List<MutableComponent> hydrationEffectComponents = new ArrayList<>();
+                MobEffectInstance mei = new MobEffectInstance(MobEffectRegistry.RECOVERY, jsonConsumableHeal.recoveryEffectDuration, jsonConsumableHeal.recoveryEffectAmplifier);
+                mutableComponent = Component.translatable("potion.withDuration", mutableComponent, MobEffectUtil.formatDuration(mei, 1.0f, 20.0f));
 
-		if (jsonThirstConsumable != null) {
-			hydrationTooltipComponent = new HydrationTooltipComponent(jsonThirstConsumable.hydration, jsonThirstConsumable.saturation);
-			for (JsonMobEffect effect: jsonThirstConsumable.effects) {
-				if (effect.chance > 0 && effect.duration > 0 && !effect.name.isEmpty()) {
-					hydrationEffectComponents.add(getHydrationEffectTooltip(effect.chance, effect.name, effect.amplifier, effect.duration));
-				}
-			}
-		}
+                tooltips.add(mutableComponent.withStyle(Style.EMPTY.withColor(ChatFormatting.BLUE)));
+            }
+        }
+    }
 
-		if (hydrationTooltipComponent != null) {
-			tooltips.add(Either.right(hydrationTooltipComponent));
-		}
+    private static void addShadeText(ItemStack stack, List<Component> tooltips)
+    {
 
-		for (MutableComponent hydrationEffectComponent: hydrationEffectComponents) {
-			if (hydrationEffectComponent != null)
-				tooltips.add(Either.left(hydrationEffectComponent));
-		}
-	}
+        ResourceLocation itemRegistryName = BuiltInRegistries.ITEM.getKey(stack.getItem());
 
-	private static MutableComponent getHydrationEffectTooltip(double effectChance, String effectName, int amplifier, int duration) {
-		MobEffect effect = null;
-		if (effectName != null && !effectName.isEmpty() && effectChance > 0)
-			effect = BuiltInRegistries.MOB_EFFECT.get(ResourceLocation.parse(effectName));
+        if (itemRegistryName != null && (BeachpartyUtil.canProvideShade(itemRegistryName) || ArtifactsUtil.canProvideShade(itemRegistryName)))
+        {
+            tooltips.add(
+                    Component.translatable("tooltip.legendarysurvivaloverhaul.provides_shade")
+                            .withStyle(ChatFormatting.WHITE));
+        }
+    }
 
-		if (effect == null)
-			return null;
+    private static void addHydrationTooltip(ItemStack stack, List<Either<FormattedText, TooltipComponent>> tooltips)
+    {
 
-		MobEffectInstance effectInstance = new MobEffectInstance(net.minecraft.core.Holder.direct(effect), duration, amplifier, false, true);
-		MutableComponent mutableComponent = Component.translatable(effectInstance.getDescriptionId());
+        JsonThirstConsumable jsonThirstConsumable = ThirstDataManager.getConsumable(stack);
 
-		if (effectInstance.getAmplifier() > 1) {
-			mutableComponent = Component.translatable("potion.withAmplifier", mutableComponent, Component.translatable("potion.potency." + effectInstance.getAmplifier()));
-		}
+        HydrationTooltipComponent hydrationTooltipComponent = null;
+        List<MutableComponent> hydrationEffectComponents = new ArrayList<>();
 
-		if (effectInstance.getDuration() > 20) {
-			mutableComponent = Component.translatable("potion.withDuration", mutableComponent, MobEffectUtil.formatDuration(effectInstance, 1.0f, 20.0f));
-		}
+        if (jsonThirstConsumable != null)
+        {
+            hydrationTooltipComponent = new HydrationTooltipComponent(jsonThirstConsumable.hydration, jsonThirstConsumable.saturation);
+            for (JsonMobEffect effect : jsonThirstConsumable.effects)
+            {
+                if (effect.chance > 0 && effect.duration > 0 && !effect.name.isEmpty())
+                {
+                    hydrationEffectComponents.add(getHydrationEffectTooltip(effect.chance, effect.name, effect.amplifier, effect.duration));
+                }
+            }
+        }
 
-		if (effectChance < 1)
-			mutableComponent = Component.translatable("tooltip.legendarysurvivaloverhaul.potion_with_effectChance", (int) (effectChance*100), mutableComponent);
+        if (hydrationTooltipComponent != null)
+        {
+            tooltips.add(Either.right(hydrationTooltipComponent));
+        }
 
-		return mutableComponent.withStyle(Style.EMPTY.withColor(ChatFormatting.BLUE));
-	}
+        for (MutableComponent hydrationEffectComponent : hydrationEffectComponents)
+        {
+            if (hydrationEffectComponent != null)
+                tooltips.add(Either.left(hydrationEffectComponent));
+        }
+    }
+
+    private static MutableComponent getHydrationEffectTooltip(double effectChance, String effectName, int amplifier, int duration)
+    {
+        MobEffect effect = null;
+        if (effectName != null && !effectName.isEmpty() && effectChance > 0)
+            effect = BuiltInRegistries.MOB_EFFECT.get(ResourceLocation.parse(effectName));
+
+        if (effect == null)
+            return null;
+
+        MobEffectInstance effectInstance = new MobEffectInstance(net.minecraft.core.Holder.direct(effect), duration, amplifier, false, true);
+        MutableComponent mutableComponent = Component.translatable(effectInstance.getDescriptionId());
+
+        if (effectInstance.getAmplifier() > 1)
+        {
+            mutableComponent = Component.translatable("potion.withAmplifier", mutableComponent, Component.translatable("potion.potency." + effectInstance.getAmplifier()));
+        }
+
+        if (effectInstance.getDuration() > 20)
+        {
+            mutableComponent = Component.translatable("potion.withDuration", mutableComponent, MobEffectUtil.formatDuration(effectInstance, 1.0f, 20.0f));
+        }
+
+        if (effectChance < 1)
+            mutableComponent = Component.translatable("tooltip.legendarysurvivaloverhaul.potion_with_effectChance", (int) (effectChance * 100), mutableComponent);
+
+        return mutableComponent.withStyle(Style.EMPTY.withColor(ChatFormatting.BLUE));
+    }
 }

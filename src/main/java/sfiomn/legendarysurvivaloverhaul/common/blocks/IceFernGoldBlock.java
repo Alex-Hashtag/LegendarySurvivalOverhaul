@@ -15,14 +15,20 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import sfiomn.legendarysurvivaloverhaul.registry.ParticleTypeRegistry;
 
-public class IceFernGoldBlock extends BushBlock {
+public class IceFernGoldBlock extends BushBlock
+{
 
     // 1) Required for 1.20.3+ block serialization
     public static final MapCodec<IceFernGoldBlock> CODEC = simpleCodec(IceFernGoldBlock::new);
-    @Override public MapCodec<IceFernGoldBlock> codec() { return CODEC; }
+
+    public IceFernGoldBlock(Properties properties)
+    {
+        super(properties);
+    }
 
     // 2) Properties + ctor used by codec & registry
-    public static Properties getProperties() {
+    public static Properties getProperties()
+    {
         return Properties
                 .of()
                 .mapColor(MapColor.PLANT)
@@ -34,12 +40,15 @@ public class IceFernGoldBlock extends BushBlock {
                 .pushReaction(PushReaction.DESTROY);
     }
 
-    public IceFernGoldBlock(Properties properties) {
-        super(properties);
+    @Override
+    public MapCodec<IceFernGoldBlock> codec()
+    {
+        return CODEC;
     }
 
     @Override
-    protected boolean mayPlaceOn(BlockState blockState, BlockGetter level, BlockPos pos) {
+    protected boolean mayPlaceOn(BlockState blockState, BlockGetter level, BlockPos pos)
+    {
         return blockState.is(Blocks.GRASS_BLOCK) || blockState.is(Blocks.DIRT) ||
                 blockState.is(Blocks.COARSE_DIRT) || blockState.is(Blocks.PODZOL) ||
                 blockState.is(Blocks.FARMLAND) || blockState.is(Blocks.SNOW_BLOCK);
@@ -47,7 +56,8 @@ public class IceFernGoldBlock extends BushBlock {
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource rand) {
+    public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource rand)
+    {
         double offsetX = (2 * rand.nextFloat() - 1) * 0.3F;
         double offsetZ = (2 * rand.nextFloat() - 1) * 0.3F;
 
@@ -55,7 +65,8 @@ public class IceFernGoldBlock extends BushBlock {
         double y = pos.getY() + 0.5D + (rand.nextFloat() * 0.05F);
         double z = pos.getZ() + 0.5D + offsetZ;
 
-        if (level.getGameTime() % 3 == 0) {
+        if (level.getGameTime() % 3 == 0)
+        {
             level.addParticle(ParticleTypeRegistry.ICE_FERN_BLOSSOM.get(), x, y, z, 0.04D, 0.01D, 0.04D);
         }
     }

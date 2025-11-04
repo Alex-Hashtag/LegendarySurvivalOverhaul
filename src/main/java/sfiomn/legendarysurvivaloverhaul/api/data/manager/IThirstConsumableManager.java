@@ -6,7 +6,8 @@ import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonThirstConsumable;
 
 import java.util.List;
 
-public interface IThirstConsumableManager {
+public interface IThirstConsumableManager
+{
     List<JsonThirstConsumable> get(ResourceLocation itemRegistryName);
 
     JsonThirstConsumable get(ItemStack itemStack);

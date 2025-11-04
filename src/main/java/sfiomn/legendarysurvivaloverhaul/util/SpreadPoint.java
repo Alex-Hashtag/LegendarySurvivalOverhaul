@@ -7,7 +7,8 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
 
-public class SpreadPoint {
+public class SpreadPoint
+{
     private final BlockPos pos;
     private final Direction originDirection;
     private final double spreadCapacity;
@@ -17,7 +18,8 @@ public class SpreadPoint {
     private boolean canSeeSky;
     private boolean isWater;
 
-    public SpreadPoint(BlockPos pos, Direction originDirection, double spreadCapacity, double influenceDistance, Level level) {
+    public SpreadPoint(BlockPos pos, Direction originDirection, double spreadCapacity, double influenceDistance, Level level)
+    {
         this.pos = pos;
         this.originDirection = originDirection;
         this.spreadCapacity = spreadCapacity;
@@ -28,34 +30,43 @@ public class SpreadPoint {
         this.isWater = false;
     }
 
-    public double influenceDistance() {
+    public double influenceDistance()
+    {
         return influenceDistance;
     }
 
-    public BlockPos position() {
+    public BlockPos position()
+    {
         return pos;
     }
 
-    public Direction originalDirection() {
+    public Direction originalDirection()
+    {
         return originDirection;
     }
 
-    public double spreadCapacity() {
+    public double spreadCapacity()
+    {
         return spreadCapacity;
     }
 
-    public SpreadPoint spreadTo(BlockPos newBlockPos, Direction originDirection, float distance) {
+    public SpreadPoint spreadTo(BlockPos newBlockPos, Direction originDirection, float distance)
+    {
         return new SpreadPoint(newBlockPos, originDirection, this.spreadCapacity - (distance * consumptionMultiplier(originDirection)), this.influenceDistance + distance, level);
     }
 
-    public boolean isValidSpreadPoint(Direction originDirection) {
+    public boolean isValidSpreadPoint(Direction originDirection)
+    {
         //  Check we can spread the temperature influence in the new position meaning either AIR or a block a player can pass through
-        if (spreadCapacity <= 0) {
+        if (spreadCapacity <= 0)
+        {
             return false;
-        } else {
+        } else
+        {
             if (blockState.isAir())
                 return true;
-            if (blockState.is(Blocks.WATER)) {
+            if (blockState.is(Blocks.WATER))
+            {
                 this.isWater = true;
                 return true;
             }
@@ -64,23 +75,29 @@ public class SpreadPoint {
         }
     }
 
-    public boolean isValidSpreadDirection(Direction direction) {
+    public boolean isValidSpreadDirection(Direction direction)
+    {
         return !blockState.isFaceSturdy(level, pos, direction);
     }
 
-    public void setCanSeeSky(boolean canSeeSky) {
+    public void setCanSeeSky(boolean canSeeSky)
+    {
         this.canSeeSky = canSeeSky;
     }
 
-    private double consumptionMultiplier(Direction originDirection) {
+    private double consumptionMultiplier(Direction originDirection)
+    {
         boolean upDirection = originDirection.getNormal().getY() > 0;
         double consumptionMultiplier = 1;
-        if (this.isWater) {
+        if (this.isWater)
+        {
             consumptionMultiplier *= Config.Baked.tempInfluenceInWaterDistMultiplier;
-        } else if (this.canSeeSky) {
+        } else if (this.canSeeSky)
+        {
             consumptionMultiplier *= Config.Baked.tempInfluenceOutsideDistMultiplier;
         }
-        if (upDirection) {
+        if (upDirection)
+        {
             consumptionMultiplier *= Config.Baked.tempInfluenceUpDistMultiplier;
         }
         return (1 / consumptionMultiplier);

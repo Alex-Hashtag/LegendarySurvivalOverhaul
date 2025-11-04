@@ -13,7 +13,8 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.temperature.TemperatureEnum;
 
-public class DataComponentRegistry {
+public class DataComponentRegistry
+{
 
     public static final DeferredRegister<DataComponentType<?>> DATA_COMPONENTS =
             DeferredRegister.create(Registries.DATA_COMPONENT_TYPE, LegendarySurvivalOverhaul.MOD_ID);
@@ -25,15 +26,17 @@ public class DataComponentRegistry {
                     .networkSynchronized(TemperatureData.STREAM_CODEC)
                     .build());
 
-    public static void init(IEventBus modBus) {
+    public static void init(IEventBus modBus)
+    {
         DATA_COMPONENTS.register(modBus);
     }
 
     /**
      * Record to hold temperature data for items like thermometers
      */
-    public record TemperatureData(float temperature, long updateTick) {
-        
+    public record TemperatureData(float temperature, long updateTick)
+    {
+
         public static final Codec<TemperatureData> CODEC = RecordCodecBuilder.create(instance ->
                 instance.group(
                         Codec.FLOAT.fieldOf("temperature").forGetter(TemperatureData::temperature),
@@ -47,19 +50,23 @@ public class DataComponentRegistry {
                 TemperatureData::new
         );
 
-        public TemperatureData() {
+        public TemperatureData()
+        {
             this(TemperatureEnum.NORMAL.getMiddle(), 0L);
         }
 
-        public TemperatureData withTemperature(float newTemperature) {
+        public TemperatureData withTemperature(float newTemperature)
+        {
             return new TemperatureData(newTemperature, this.updateTick);
         }
 
-        public TemperatureData withUpdateTick(long newUpdateTick) {
+        public TemperatureData withUpdateTick(long newUpdateTick)
+        {
             return new TemperatureData(this.temperature, newUpdateTick);
         }
 
-        public boolean shouldUpdate(long currentTick) {
+        public boolean shouldUpdate(long currentTick)
+        {
             return (currentTick - this.updateTick) > 10;
         }
     }

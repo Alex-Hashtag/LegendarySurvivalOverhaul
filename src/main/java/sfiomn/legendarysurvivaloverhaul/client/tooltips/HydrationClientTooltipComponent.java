@@ -9,36 +9,42 @@ import net.minecraft.resources.ResourceLocation;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
 
-public class HydrationClientTooltipComponent implements ClientTooltipComponent {
+public class HydrationClientTooltipComponent implements ClientTooltipComponent
+{
     public static final ResourceLocation ICONS = ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "textures/gui/overlay.png");
     public static final int THIRST_TEXTURE_WIDTH = 9;
     public static final int THIRST_TEXTURE_HEIGHT = 9;
-    
+
     public final int hydration;
     public final float saturation;
     public int hydrationIconNumber;
     public int saturationIconNumber;
 
-    public HydrationClientTooltipComponent(int hydration, float saturation) {
+    public HydrationClientTooltipComponent(int hydration, float saturation)
+    {
         this.hydration = hydration;
         this.saturation = saturation;
 
         this.hydrationIconNumber = Math.min((int) Math.ceil(Math.abs(hydration) / 2f), 10);
 
-        if (Config.Baked.hydrationSaturationDisplayed) {
+        if (Config.Baked.hydrationSaturationDisplayed)
+        {
             this.saturationIconNumber = Math.min((int) Math.ceil(Math.abs(saturation) / 2f), 10);
-        } else {
+        } else
+        {
             this.saturationIconNumber = 0;
         }
     }
 
     @Override
-    public int getHeight() {
+    public int getHeight()
+    {
         int height = 14;
 
         // Saturation bar
         // If merge thirst and saturation, left is kept from thirst alignment to align both the saturation bar and the thirst bar
-        if (saturationIconNumber > 0 && Config.Baked.hydrationSaturationDisplayed) {
+        if (saturationIconNumber > 0 && Config.Baked.hydrationSaturationDisplayed)
+        {
             if (hydrationIconNumber > 0 && !Config.Baked.mergeHydrationAndSaturationTooltip)
                 height += 10;
         }
@@ -47,12 +53,14 @@ public class HydrationClientTooltipComponent implements ClientTooltipComponent {
     }
 
     @Override
-    public int getWidth(Font font) {
+    public int getWidth(Font font)
+    {
         return Math.max(hydrationIconNumber, saturationIconNumber) * THIRST_TEXTURE_WIDTH;
     }
 
     @Override
-    public void renderImage(Font font, int tooltipX, int tooltipY, GuiGraphics gui) {
+    public void renderImage(Font font, int tooltipX, int tooltipY, GuiGraphics gui)
+    {
         RenderSystem.disableDepthTest();
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
@@ -78,7 +86,8 @@ public class HydrationClientTooltipComponent implements ClientTooltipComponent {
             xOffsetTexture = THIRST_TEXTURE_WIDTH + THIRST_TEXTURE_WIDTH * 3;
 
         // Draw the hydration bubbles
-        for (int i = 0; i < this.hydrationIconNumber; i++) {
+        for (int i = 0; i < this.hydrationIconNumber; i++)
+        {
             int halfIcon = i * 2 + 1;
             int x = left - i * THIRST_TEXTURE_WIDTH;
             int y = top;
@@ -90,7 +99,8 @@ public class HydrationClientTooltipComponent implements ClientTooltipComponent {
 
         // Saturation bar
         // If merge thirst and saturation, left is kept from thirst alignment to align both the saturation bar and the thirst bar
-        if (saturationIconNumber > 0 && Config.Baked.hydrationSaturationDisplayed) {
+        if (saturationIconNumber > 0 && Config.Baked.hydrationSaturationDisplayed)
+        {
             if (hydrationIconNumber > 0 && !Config.Baked.mergeHydrationAndSaturationTooltip)
                 top += 10;
             if (!Config.Baked.mergeHydrationAndSaturationTooltip)
@@ -99,13 +109,15 @@ public class HydrationClientTooltipComponent implements ClientTooltipComponent {
                 left = leftMax;
         }
 
-        if (this.saturation >= 0) {
+        if (this.saturation >= 0)
+        {
             xOffsetTexture = THIRST_TEXTURE_WIDTH * 6;
         } else
             xOffsetTexture = THIRST_TEXTURE_WIDTH * 14;
 
         // Draw the saturation bubbles
-        for (int i = 0; i < saturationIconNumber; i++) {
+        for (int i = 0; i < saturationIconNumber; i++)
+        {
             int halfIcon = i * 2 + 1;
             int x = left - i * THIRST_TEXTURE_WIDTH;
             int y = top;

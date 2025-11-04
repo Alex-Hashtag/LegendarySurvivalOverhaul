@@ -11,14 +11,17 @@ import java.util.concurrent.CompletableFuture;
 import static sfiomn.legendarysurvivaloverhaul.api.temperature.TemporaryModifierGroupEnum.DRINK;
 import static sfiomn.legendarysurvivaloverhaul.api.temperature.TemporaryModifierGroupEnum.FOOD;
 
-public class RusticDelightTemperatureProvider extends TemperatureDataProvider {
+public class RusticDelightTemperatureProvider extends TemperatureDataProvider
+{
 
-    public RusticDelightTemperatureProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper fileHelper) {
+    public RusticDelightTemperatureProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper fileHelper)
+    {
         super("rusticdelight", output, lookupProvider, fileHelper);
     }
 
     @Override
-    public void generate(HolderLookup.Provider provider, ExistingFileHelper existingFileHelper) {
+    public void generate(HolderLookup.Provider provider, ExistingFileHelper existingFileHelper)
+    {
 
         ITemperatureConsumableData coffee = temperatureConsumable(DRINK).temperatureLevel(2).duration(2400);
         consumable("dark_coffee").addTemperature(coffee);

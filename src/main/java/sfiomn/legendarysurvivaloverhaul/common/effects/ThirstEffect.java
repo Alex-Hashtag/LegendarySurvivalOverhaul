@@ -11,26 +11,27 @@ import sfiomn.legendarysurvivaloverhaul.util.CapabilityUtil;
 
 public class ThirstEffect extends MobEffect
 {
-	public ThirstEffect()
-	{
-		super(MobEffectCategory.HARMFUL, 10870382);
-	}
-	
-	@Override
-	public boolean applyEffectTick(@NotNull LivingEntity entity, int amplifier)
-	{
-		if(entity instanceof Player)
-		{
-			ThirstCapability thirstCapability = CapabilityUtil.getThirstCapability((Player) entity);
+    public ThirstEffect()
+    {
+        super(MobEffectCategory.HARMFUL, 10870382);
+    }
 
-			// By default, twice strength of Hunger effect (0.005F)
-			thirstCapability.addThirstExhaustion((float) (Config.Baked.thirstEffectModifier * amplifier + 1));
-		}
-		return true;
-	}
+    @Override
+    public boolean applyEffectTick(@NotNull LivingEntity entity, int amplifier)
+    {
+        if (entity instanceof Player)
+        {
+            ThirstCapability thirstCapability = CapabilityUtil.getThirstCapability((Player) entity);
 
-	@Override
-    public boolean shouldApplyEffectTickThisTick(int duration, int amplifier) {
+            // By default, twice strength of Hunger effect (0.005F)
+            thirstCapability.addThirstExhaustion((float) (Config.Baked.thirstEffectModifier * amplifier + 1));
+        }
+        return true;
+    }
+
+    @Override
+    public boolean shouldApplyEffectTickThisTick(int duration, int amplifier)
+    {
         int time = 50 >> amplifier;
         return time == 0 || duration % time == 0;
     }

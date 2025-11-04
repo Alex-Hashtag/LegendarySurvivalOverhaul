@@ -10,13 +10,11 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
-import net.minecraft.core.Holder;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonThirstConsumable;
 import sfiomn.legendarysurvivaloverhaul.api.data.manager.ThirstDataManager;
 import sfiomn.legendarysurvivaloverhaul.api.thirst.ThirstUtil;
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.thirst.ThirstCapability;
-import sfiomn.legendarysurvivaloverhaul.common.effects.ThirstEffect;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
 import sfiomn.legendarysurvivaloverhaul.registry.MobEffectRegistry;
 import sfiomn.legendarysurvivaloverhaul.util.CapabilityUtil;
@@ -25,49 +23,49 @@ import java.util.Random;
 
 public class RenderThirstGui
 {
-	private static ThirstCapability THIRST_CAP = null;
-	private static final Random rand = new Random();
-
     public static final ResourceLocation ICONS = ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "textures/gui/overlay.png");
+    private static final Random rand = new Random();
+    // Dimensions of the icon
+    private static final int THIRST_TEXTURE_WIDTH = 9;
+    private static final int THIRST_TEXTURE_HEIGHT = 9;
+    private static ThirstCapability THIRST_CAP = null;
+    @Nullable
+    private static Item heldItemOnPreview;
+    private static int heldItemHydration;
+    private static float heldItemSaturation;
+    private static boolean heldItemThirst;
+    private static float alphaPreview;
+    private static float unclampedAlphaPreview;
+    private static int alphaDirection = 1;
 
-	// Dimensions of the icon
-	private static final int THIRST_TEXTURE_WIDTH = 9;
-	private static final int THIRST_TEXTURE_HEIGHT = 9;
+    public static void render(Gui gui, GuiGraphics guiGraphics, float partialTicks, int width, int height)
+    {
+        if (Config.Baked.thirstEnabled && Config.Baked.showHydrationBar && !Minecraft.getInstance().options.hideGui)
+        {
+            Player player = Minecraft.getInstance().player;
+            if (player != null && !player.isCreative() && !player.isSpectator())
+            {
+                if (!ThirstUtil.isThirstActive(player)) return;
+                rand.setSeed(player.tickCount * 445L);
+                RenderSystem.enableBlend();
+                RenderSystem.defaultBlendFunc();
+                RenderSystem.disableDepthTest();
+                RenderSystem.depthMask(false);
 
-	@Nullable
-	private static Item heldItemOnPreview;
-	private static int heldItemHydration;
-	private static float heldItemSaturation;
-	private static boolean heldItemThirst;
-	private static float alphaPreview;
-	private static float unclampedAlphaPreview;
-	private static int alphaDirection = 1;
+                Minecraft.getInstance().getProfiler().push("thirst_gui");
+                int rightHeight = gui.rightHeight;
+                drawHydrationBar(guiGraphics, player, width, height, rightHeight);
+                gui.rightHeight += 10;
+                Minecraft.getInstance().getProfiler().pop();
 
-	public static void render(Gui gui, GuiGraphics guiGraphics, float partialTicks, int width, int height) {
-		if (Config.Baked.thirstEnabled && Config.Baked.showHydrationBar && !Minecraft.getInstance().options.hideGui) {
-			Player player = Minecraft.getInstance().player;
-			if (player != null && !player.isCreative() && !player.isSpectator()) {
-				if (!ThirstUtil.isThirstActive(player)) return;
-				rand.setSeed(player.tickCount * 445L);
-				RenderSystem.enableBlend();
-				RenderSystem.defaultBlendFunc();
-				RenderSystem.disableDepthTest();
-				RenderSystem.depthMask(false);
+                RenderSystem.depthMask(true);
+                RenderSystem.enableDepthTest();
+                RenderSystem.disableBlend();
+            }
+        }
+    }
 
-				Minecraft.getInstance().getProfiler().push("thirst_gui");
-				int rightHeight = gui.rightHeight;
-				drawHydrationBar(guiGraphics, player, width, height, rightHeight);
-				gui.rightHeight += 10;
-				Minecraft.getInstance().getProfiler().pop();
-
-				RenderSystem.depthMask(true);
-				RenderSystem.enableDepthTest();
-				RenderSystem.disableBlend();
-			}
-		}
-	}
-
-	public static void drawHydrationBar(GuiGraphics gui, Player player, int width, int height, int rightHeight)
+    public static void drawHydrationBar(GuiGraphics gui, Player player, int width, int height, int rightHeight)
     {
         // Update player's thirst capability every 20 ticks
         if (THIRST_CAP == null || player.tickCount % 20 == 0)
@@ -175,74 +173,89 @@ public class RenderThirstGui
         }
     }
 
-	public static void renderFading(GuiGraphics gui, int x, int y, ThirstIcon thirstIconFrom, ThirstIcon thirstIconTo) {
-		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1 - alphaPreview);
-		gui.blit(ICONS, x, y, thirstIconFrom.xTextureOffset, thirstIconFrom.yTextureOffset, THIRST_TEXTURE_WIDTH, THIRST_TEXTURE_HEIGHT);
-		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, alphaPreview);
-		gui.blit(ICONS, x, y, thirstIconTo.xTextureOffset, thirstIconTo.yTextureOffset, THIRST_TEXTURE_WIDTH, THIRST_TEXTURE_HEIGHT);
-		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-	}
+    public static void renderFading(GuiGraphics gui, int x, int y, ThirstIcon thirstIconFrom, ThirstIcon thirstIconTo)
+    {
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1 - alphaPreview);
+        gui.blit(ICONS, x, y, thirstIconFrom.xTextureOffset, thirstIconFrom.yTextureOffset, THIRST_TEXTURE_WIDTH, THIRST_TEXTURE_HEIGHT);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, alphaPreview);
+        gui.blit(ICONS, x, y, thirstIconTo.xTextureOffset, thirstIconTo.yTextureOffset, THIRST_TEXTURE_WIDTH, THIRST_TEXTURE_HEIGHT);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+    }
 
-	public static void updateTimer() {
-		// Same as Appleskin flash speed
-		unclampedAlphaPreview += alphaDirection * 0.125f;
-		if (unclampedAlphaPreview >= 1.5f) {
-			alphaDirection = -1;
-		} else if (unclampedAlphaPreview <= -0.5f) {
-			alphaDirection = 1;
-		}
-		alphaPreview = Mth.clamp(unclampedAlphaPreview, 0.0f, 1.0f);
-	}
+    public static void updateTimer()
+    {
+        // Same as Appleskin flash speed
+        unclampedAlphaPreview += alphaDirection * 0.125f;
+        if (unclampedAlphaPreview >= 1.5f)
+        {
+            alphaDirection = -1;
+        } else if (unclampedAlphaPreview <= -0.5f)
+        {
+            alphaDirection = 1;
+        }
+        alphaPreview = Mth.clamp(unclampedAlphaPreview, 0.0f, 1.0f);
+    }
 
-	public static void resetFlash()
-	{
-		unclampedAlphaPreview = alphaPreview = 0f;
-		alphaDirection = 1;
-	}
+    public static void resetFlash()
+    {
+        unclampedAlphaPreview = alphaPreview = 0f;
+        alphaDirection = 1;
+    }
 
-	public record ThirstIcon(int xTextureOffset, int yTextureOffset) {
+    public enum ThirstEffect
+    {
+        NONE(0, 0, THIRST_TEXTURE_WIDTH * 6),
+        THIRST(THIRST_TEXTURE_WIDTH * 3, 0, THIRST_TEXTURE_WIDTH * 8),
+        HEAT_THIRST(0, THIRST_TEXTURE_HEIGHT, THIRST_TEXTURE_WIDTH * 8),
+        BOTH(THIRST_TEXTURE_WIDTH * 3, THIRST_TEXTURE_HEIGHT, THIRST_TEXTURE_WIDTH * 14);
 
-	}
+        private final int xTextureOffset;
+        private final int yTextureOffset;
+        private final int xTextureOffsetSaturation;
 
-	public enum ThirstEffect {
-		NONE(0, 0, THIRST_TEXTURE_WIDTH * 6),
-		THIRST(THIRST_TEXTURE_WIDTH * 3, 0, THIRST_TEXTURE_WIDTH * 8),
-		HEAT_THIRST(0, THIRST_TEXTURE_HEIGHT, THIRST_TEXTURE_WIDTH * 8),
-		BOTH(THIRST_TEXTURE_WIDTH * 3, THIRST_TEXTURE_HEIGHT, THIRST_TEXTURE_WIDTH * 14);
+        ThirstEffect(int xTextureOffset, int yTextureOffset, int xTextureOffsetSaturation)
+        {
+            this.xTextureOffset = xTextureOffset;
+            this.yTextureOffset = yTextureOffset;
+            this.xTextureOffsetSaturation = xTextureOffsetSaturation;
+        }
 
-		private final int xTextureOffset;
-		private final int yTextureOffset;
-		private final int xTextureOffsetSaturation;
+        // Method to get the appropriate effect based on player's status
+        public static ThirstEffect getEffect(boolean hasThirstEffect, boolean hasHeatThirstEffect)
+        {
+            if (hasThirstEffect && hasHeatThirstEffect)
+            {
+                return BOTH;
+            } else if (hasThirstEffect)
+            {
+                return THIRST;
+            } else if (hasHeatThirstEffect)
+            {
+                return HEAT_THIRST;
+            } else
+            {
+                return NONE;
+            }
+        }
 
-		ThirstEffect(int xTextureOffset, int yTextureOffset, int xTextureOffsetSaturation) {
-			this.xTextureOffset = xTextureOffset;
-			this.yTextureOffset = yTextureOffset;
-			this.xTextureOffsetSaturation = xTextureOffsetSaturation;
-		}
+        public int getXTextureOffset(boolean isHalfIcon, boolean isContainer)
+        {
+            return isHalfIcon ? xTextureOffset + (THIRST_TEXTURE_WIDTH * 2) : isContainer ? xTextureOffset : xTextureOffset + THIRST_TEXTURE_WIDTH;
+        }
 
-		public int getXTextureOffset(boolean isHalfIcon, boolean isContainer) {
-			return isHalfIcon ? xTextureOffset + (THIRST_TEXTURE_WIDTH * 2) : isContainer ? xTextureOffset : xTextureOffset + THIRST_TEXTURE_WIDTH;
-		}
+        public int getYTextureOffset()
+        {
+            return yTextureOffset;
+        }
 
-		public int getYTextureOffset() {
-			return yTextureOffset;
-		}
+        public int getXTextureOffsetSaturation(boolean isHalfIcon)
+        {
+            return isHalfIcon ? xTextureOffsetSaturation + THIRST_TEXTURE_WIDTH : xTextureOffsetSaturation;
+        }
+    }
 
-		public int getXTextureOffsetSaturation(boolean isHalfIcon) {
-			return isHalfIcon ? xTextureOffsetSaturation + THIRST_TEXTURE_WIDTH : xTextureOffsetSaturation;
-		}
+    public record ThirstIcon(int xTextureOffset, int yTextureOffset)
+    {
 
-		// Method to get the appropriate effect based on player's status
-		public static ThirstEffect getEffect(boolean hasThirstEffect, boolean hasHeatThirstEffect) {
-			if (hasThirstEffect && hasHeatThirstEffect) {
-				return BOTH;
-			} else if (hasThirstEffect) {
-				return THIRST;
-			} else if (hasHeatThirstEffect) {
-				return HEAT_THIRST;
-			} else {
-				return NONE;
-			}
-		}
-	}
+    }
 }

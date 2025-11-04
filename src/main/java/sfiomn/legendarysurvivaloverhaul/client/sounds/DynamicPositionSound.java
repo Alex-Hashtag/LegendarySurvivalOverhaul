@@ -6,11 +6,13 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
 
-public class DynamicPositionSound extends AbstractTickableSoundInstance {
+public class DynamicPositionSound extends AbstractTickableSoundInstance
+{
     private final Player player;
     private int time;
 
-    public DynamicPositionSound(SoundEvent soundEvent, Player player) {
+    public DynamicPositionSound(SoundEvent soundEvent, Player player)
+    {
         super(soundEvent, SoundSource.PLAYERS, SoundInstance.createUnseededRandom());
         this.player = player;
         this.looping = false;
@@ -19,13 +21,16 @@ public class DynamicPositionSound extends AbstractTickableSoundInstance {
     }
 
     @Override
-    public void tick() {
-        if (this.player.isAlive() && (this.time-- >= 0)) {
+    public void tick()
+    {
+        if (this.player.isAlive() && (this.time-- >= 0))
+        {
             this.x = this.player.getX();
             this.y = this.player.getY();
             this.z = this.player.getZ();
 
-        } else {
+        } else
+        {
             this.stop();
         }
     }

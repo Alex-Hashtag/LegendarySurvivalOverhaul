@@ -4,20 +4,20 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import sfiomn.legendarysurvivaloverhaul.api.data.providers.BodyDamageDataProvider;
-import sfiomn.legendarysurvivaloverhaul.api.data.providers.TemperatureDataProvider;
 
 import java.util.concurrent.CompletableFuture;
 
-import static sfiomn.legendarysurvivaloverhaul.api.block.ThermalTypeEnum.COOLING;
+public class IceAndFireBodyDamageProvider extends BodyDamageDataProvider
+{
 
-public class IceAndFireBodyDamageProvider extends BodyDamageDataProvider {
-
-    public IceAndFireBodyDamageProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper fileHelper) {
+    public IceAndFireBodyDamageProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper fileHelper)
+    {
         super("iceandfire", output, lookupProvider, fileHelper);
     }
 
     @Override
-    public void generate(HolderLookup.Provider provider, ExistingFileHelper existingFileHelper) {
+    public void generate(HolderLookup.Provider provider, ExistingFileHelper existingFileHelper)
+    {
 
         item("dragonsteel_ice_helmet").headResistance(0.2f);
         item("dragonsteel_ice_chestplate").chestResistance(0.2f);

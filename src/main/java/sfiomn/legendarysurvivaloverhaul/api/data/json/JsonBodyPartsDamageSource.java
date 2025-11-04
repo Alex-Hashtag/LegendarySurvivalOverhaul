@@ -8,8 +8,9 @@ import sfiomn.legendarysurvivaloverhaul.api.bodydamage.DamageDistributionEnum;
 
 import java.util.List;
 
-public class JsonBodyPartsDamageSource {
-    public static final Codec<JsonBodyPartsDamageSource> CODEC = RecordCodecBuilder.<JsonBodyPartsDamageSource>create((inst) -> inst.group(
+public class JsonBodyPartsDamageSource
+{
+    public static final Codec<JsonBodyPartsDamageSource> CODEC = RecordCodecBuilder.create((inst) -> inst.group(
             Codec.STRING.fieldOf("damage_distribution").forGetter(d -> d.damageDistribution.name()),
             Codec.STRING.listOf().fieldOf("body_parts").forGetter(d -> d.bodyParts.stream().map(Enum::name).toList())
     ).apply(inst, JsonBodyPartsDamageSource::new));
@@ -17,12 +18,14 @@ public class JsonBodyPartsDamageSource {
     public List<BodyPartEnum> bodyParts;
     public DamageDistributionEnum damageDistribution;
 
-    public JsonBodyPartsDamageSource(String damageDistribution, List<String> bodyParts) {
+    public JsonBodyPartsDamageSource(String damageDistribution, List<String> bodyParts)
+    {
         this.damageDistribution = DamageDistributionEnum.get(damageDistribution);
         this.bodyParts = bodyParts.stream().map(BodyPartEnum::get).toList();
     }
 
-    public List<BodyPartEnum> getBodyParts(Player player) {
+    public List<BodyPartEnum> getBodyParts(Player player)
+    {
         return this.damageDistribution.getBodyParts(player, this.bodyParts);
     }
 }

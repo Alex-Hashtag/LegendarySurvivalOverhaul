@@ -5,7 +5,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.neoforge.common.ModConfigSpec;
-import net.minecraft.core.registries.Registries;
 import org.apache.commons.lang3.tuple.Pair;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.config.json_old.JsonConfigRegistration;
@@ -39,20 +38,49 @@ public class Config
 
     public static void register()
     {
-        for (Path configPath: new Path[]{LegendarySurvivalOverhaul.modConfigPath}) {
-            try {
+        for (Path configPath : new Path[]{LegendarySurvivalOverhaul.modConfigPath})
+        {
+            try
+            {
                 Files.createDirectory(configPath);
-            } catch (FileAlreadyExistsException ignored) {
-            } catch (IOException e) {
+            } catch (FileAlreadyExistsException ignored)
+            {
+            } catch (IOException e)
+            {
                 LegendarySurvivalOverhaul.LOGGER.error("Failed to create Legendary Survival Overhaul config directory " + configPath);
                 LegendarySurvivalOverhaul.LOGGER.error(e.getStackTrace());
             }
         }
 
-        ModLoadingContext.get().getActiveContainer().registerConfig(ModConfig.Type.CLIENT, CLIENT_SPEC, LegendarySurvivalOverhaul.MOD_ID +"-client.toml");
-        ModLoadingContext.get().getActiveContainer().registerConfig(ModConfig.Type.COMMON, COMMON_SPEC, LegendarySurvivalOverhaul.MOD_ID +"-common.toml");
+        ModLoadingContext.get().getActiveContainer().registerConfig(ModConfig.Type.CLIENT, CLIENT_SPEC, LegendarySurvivalOverhaul.MOD_ID + "-client.toml");
+        ModLoadingContext.get().getActiveContainer().registerConfig(ModConfig.Type.COMMON, COMMON_SPEC, LegendarySurvivalOverhaul.MOD_ID + "-common.toml");
 
         JsonConfigRegistration.init(LegendarySurvivalOverhaul.modConfigJsons.toFile());
+    }
+
+    private static boolean validateDouble(final Object obj)
+    {
+        return obj instanceof Double;
+    }
+
+    private static boolean validatePositiveInt(final Object obj)
+    {
+        return obj instanceof final Integer intValue && intValue >= 0;
+    }
+
+    private static boolean validatePercentDouble(final Object obj)
+    {
+        return obj instanceof final Double doubleValue && doubleValue >= 0 && doubleValue <= 1;
+    }
+
+    private static boolean validateEffectName(final Object obj)
+    {
+        return obj instanceof final String effectName && BuiltInRegistries.MOB_EFFECT.containsKey(ResourceLocation.parse(effectName));
+    }
+
+    private static boolean validateEntityType(final Object obj)
+    {
+        return obj instanceof final String entityName && BuiltInRegistries.ENTITY_TYPE.containsKey(ResourceLocation.parse(entityName));
     }
 
     public static class Common
@@ -290,7 +318,7 @@ public class Config
 
         Common(ModConfigSpec.Builder builder)
         {
-            builder.comment(new String [] {
+            builder.comment(new String[]{
                     " Options related to enabling/disabling specific features",
                     " See the data packs to customize the temperature of specific blocks, liquids, armors, etc."
             }).push("core");
@@ -567,7 +595,7 @@ public class Config
                             " The outside maximum distance is defined as the maximum distance * this value")
                     .defineInRange("Temperature Influence Outside Distance Multiplier", 0.5, 0.0, 1.0);
             builder
-                    .comment(" The player's temperature will be adjusted at each temperature tick time," ,
+                    .comment(" The player's temperature will be adjusted at each temperature tick time,",
                             " by an amount of temperature defined between the minimum and the maximum temperature modification adjusted linearly.")
                     .push("temperature-modification");
             tempTickTime = builder
@@ -1033,31 +1061,6 @@ public class Config
             builder.pop();
             builder.pop();
         }
-    }
-
-    private static boolean validateDouble(final Object obj)
-    {
-        return obj instanceof Double;
-    }
-
-    private static boolean validatePositiveInt(final Object obj)
-    {
-        return obj instanceof final Integer intValue && intValue >= 0;
-    }
-
-    private static boolean validatePercentDouble(final Object obj)
-    {
-        return obj instanceof final Double doubleValue && doubleValue >= 0 && doubleValue <= 1;
-    }
-
-    private static boolean validateEffectName(final Object obj)
-    {
-        return obj instanceof final String effectName && BuiltInRegistries.MOB_EFFECT.containsKey(ResourceLocation.parse(effectName));
-    }
-
-    private static boolean validateEntityType(final Object obj)
-    {
-        return obj instanceof final String entityName && BuiltInRegistries.ENTITY_TYPE.containsKey(ResourceLocation.parse(entityName));
     }
 
     public static class Client
@@ -1749,8 +1752,7 @@ public class Config
                 bothFeetPartEffectThresholds = COMMON.bothFeetPartEffectThresholds.get();
 
                 morphineSyringeApplyPainkillerAddiction = COMMON.morphineSyringeApplyPainkillerAddiction.get();
-            }
-            catch (Exception e)
+            } catch (Exception e)
             {
                 LegendarySurvivalOverhaul.LOGGER.warn("An exception was caused trying to load the common config for Legendary Survival Overhaul");
                 LegendarySurvivalOverhaul.LOGGER.warn(e.getStackTrace());
@@ -1801,8 +1803,7 @@ public class Config
                 hydrationBarOffsetY = CLIENT.hydrationBarOffsetY.get();
 
                 appendBrokenShieldHeartsToHealthBar = CLIENT.appendBrokenShieldHeartsToHealthBar.get();
-            }
-            catch (Exception e)
+            } catch (Exception e)
             {
                 LegendarySurvivalOverhaul.LOGGER.warn("An exception was caused trying to load the client config for Legendary Survival Overhaul.");
                 LegendarySurvivalOverhaul.LOGGER.warn(e.getStackTrace());

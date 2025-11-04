@@ -9,12 +9,16 @@ import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.common.blockentities.CoolerBlockEntity;
 import sfiomn.legendarysurvivaloverhaul.common.blockentities.HeaterBlockEntity;
 
-public class BlockEntityRegistry {
+public class BlockEntityRegistry
+{
 
     public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES =
             DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE, LegendarySurvivalOverhaul.MOD_ID);
 
-    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<HeaterBlockEntity>> HEATER_BLOCK_ENTITY =
+    public static void register(IEventBus eventBus)
+    {
+        BLOCK_ENTITIES.register(eventBus);
+    }    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<HeaterBlockEntity>> HEATER_BLOCK_ENTITY =
             BLOCK_ENTITIES.register("heater", () ->
                     BlockEntityType.Builder.of(HeaterBlockEntity::new, BlockRegistry.HEATER.get()).build(null));
 
@@ -22,7 +26,5 @@ public class BlockEntityRegistry {
             BLOCK_ENTITIES.register("cooler", () ->
                     BlockEntityType.Builder.of(CoolerBlockEntity::new, BlockRegistry.COOLER.get()).build(null));
 
-    public static void register(IEventBus eventBus) {
-        BLOCK_ENTITIES.register(eventBus);
-    }
+
 }

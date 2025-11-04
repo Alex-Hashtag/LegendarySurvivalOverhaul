@@ -8,75 +8,79 @@ import net.minecraft.world.level.Level;
  */
 public interface IBodyDamageCapability
 {
-	public int getExpectedBrokenHearts();
+    int getExpectedBrokenHearts();
 
-	public float getBodyPartDamage(BodyPartEnum part);
+    float getBodyPartDamage(BodyPartEnum part);
 
-	public float getBodyPartHealthRatio(BodyPartEnum part);
+    float getBodyPartHealthRatio(BodyPartEnum part);
 
-	public float getBodyPartMaxHealth(BodyPartEnum part);
+    float getBodyPartMaxHealth(BodyPartEnum part);
 
-	public void setBodyPartDamage(BodyPartEnum part, float healthValue);
+    void setBodyPartDamage(BodyPartEnum part, float healthValue);
 
-	public void setBodyPartMaxHealth(BodyPartEnum part, float maxHealthValue);
+    void setBodyPartMaxHealth(BodyPartEnum part, float maxHealthValue);
 
-	public void healWithFoodExhaustion(Player player, BodyPartEnum part, float healingValue);
+    void healWithFoodExhaustion(Player player, BodyPartEnum part, float healingValue);
 
-	public void heal(BodyPartEnum part, float healingValue);
+    void heal(BodyPartEnum part, float healingValue);
 
-	public void hurt(BodyPartEnum part, float damageValue);
+    void hurt(BodyPartEnum part, float damageValue);
 
-	public void applyHealingTime(BodyPartEnum part, int healingTicks, float healingPerTick);
+    void applyHealingTime(BodyPartEnum part, int healingTicks, float healingPerTick);
 
-	public int getRemainingHealingTicks(BodyPartEnum part);
+    int getRemainingHealingTicks(BodyPartEnum part);
 
-	public float getHealingPerTicks(BodyPartEnum part);
+    float getHealingPerTicks(BodyPartEnum part);
 
-	public void updateBrokenHearts(Player player);
+    void updateBrokenHearts(Player player);
 
-	/**
-	 * Check if at least one body part has health below provided health percent
-	 * @param healthPercent health percent of the limb
-	 * @return isWounded or not
-	 */
-	public boolean isWoundedBelow(float healthPercent);
+    /**
+     * Check if at least one body part has health below provided health percent
+     *
+     * @param healthPercent health percent of the limb
+     * @return isWounded or not
+     */
+    boolean isWoundedBelow(float healthPercent);
 
-	/**
-	 * Get the body part ratio related to the malus body part
-	 */
-	public float getHealthRatioForMalusBodyPart(MalusBodyPartEnum part);
+    /**
+     * Get the body part ratio related to the malus body part
+     */
+    float getHealthRatioForMalusBodyPart(MalusBodyPartEnum part);
 
-	/**
-	 * Force the health body damage sync server - client
-	 */
-	public void setManualDirty();
+    /**
+     * Force the health body damage sync server - client
+     */
+    void setManualDirty();
 
-	/**
-	 * (Don't use this!) <br>
-	 * Checks if the capability needs an update
-	 * @return boolean has localized body damage changed
-	 */
-	public boolean isDirty();
+    /**
+     * (Don't use this!) <br>
+     * Checks if the capability needs an update
+     *
+     * @return boolean has localized body damage changed
+     */
+    boolean isDirty();
 
-	/**
-	 * (Don't use this!) <br>
-	 * Sets the capability as updated
-	 */
-	public void setClean();
+    /**
+     * (Don't use this!) <br>
+     * Sets the capability as updated
+     */
+    void setClean();
 
-	/**
-	 * (Don't use this!) <br>
-	 * Gets the current tick of the packet timer
-	 * @return int packetTimer
-	 */
-	public int getPacketTimer();
+    /**
+     * (Don't use this!) <br>
+     * Gets the current tick of the packet timer
+     *
+     * @return int packetTimer
+     */
+    int getPacketTimer();
 
-	/**
-	 * (Don't use this!) <br>
-	 * Runs a tick update for the player's localized body damage capability
-	 * @param player
-	 * @param world
-	 * @param isStart
-	 */
-	public void tickUpdate(Player player, Level world, boolean isStart);
+    /**
+     * (Don't use this!) <br>
+     * Runs a tick update for the player's localized body damage capability
+     *
+     * @param player
+     * @param world
+     * @param isStart
+     */
+    void tickUpdate(Player player, Level world, boolean isStart);
 }

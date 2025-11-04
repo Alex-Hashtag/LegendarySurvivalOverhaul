@@ -7,27 +7,31 @@ import net.minecraft.resources.ResourceLocation;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.bodydamage.BodyPartEnum;
 
-public class BodyPartButton extends Button {
+public class BodyPartButton extends Button
+{
     public static final ResourceLocation BODY_PARTS_SCREEN = ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "textures/gui/body_parts_screen.png");
     public BodyPartEnum bodyPart;
     public boolean isPressed;
     private float healthRatio;
 
-    public BodyPartButton(BodyPartEnum bodyPart, int x, int y, int width, int height, OnPress press) {
+    public BodyPartButton(BodyPartEnum bodyPart, int x, int y, int width, int height, OnPress press)
+    {
         super(x, y, width, height, Component.literal(""), press, DEFAULT_NARRATION);
         this.bodyPart = bodyPart;
     }
 
-    public void setHealthRatio(float healthRatio) {
+    public void setHealthRatio(float healthRatio)
+    {
         this.healthRatio = healthRatio;
         sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul.LOGGER.info(
-            "[BodyPartButton] setHealthRatio {}: ratio={}",
-            this.bodyPart.name(), healthRatio
+                "[BodyPartButton] setHealthRatio {}: ratio={}",
+                this.bodyPart.name(), healthRatio
         );
     }
 
     @Override
-    public void renderWidget(GuiGraphics gui, int mouseX, int mouseY, float partial) {
+    public void renderWidget(GuiGraphics gui, int mouseX, int mouseY, float partial)
+    {
         BodyPartIcon bodyPartIcon = BodyPartIcon.getBodyPartIcon(this.bodyPart);
         BodyPartCondition bodyPartCondition = BodyPartCondition.get(this.healthRatio);
         if (bodyPartIcon == null)
@@ -50,12 +54,14 @@ public class BodyPartButton extends Button {
     }
 
     @Override
-    public void onPress() {
+    public void onPress()
+    {
         super.onPress();
         this.isPressed = true;
     }
 
-    public enum BodyPartCondition {
+    public enum BodyPartCondition
+    {
         HEALTHY(0, 0),
         WOUNDED(0, 1),
         DEAD(0, 2);
@@ -63,48 +69,55 @@ public class BodyPartButton extends Button {
         public final int iconIndexX;
         public final int iconIndexY;
 
-        BodyPartCondition(int iconIndexX, int iconIndexY) {
+        BodyPartCondition(int iconIndexX, int iconIndexY)
+        {
             this.iconIndexX = iconIndexX;
             this.iconIndexY = iconIndexY;
         }
 
-        public static BodyPartCondition get(float healthRatio) {
+        public static BodyPartCondition get(float healthRatio)
+        {
             BodyPartCondition result;
-            if (healthRatio <= 0) {
+            if (healthRatio <= 0)
+            {
                 result = DEAD;
-            } else if (healthRatio < 0.66) {
+            } else if (healthRatio < 0.66)
+            {
                 result = WOUNDED;
-            } else {
+            } else
+            {
                 result = HEALTHY;
             }
-            
+
             sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul.LOGGER.info(
-                "[BodyPartCondition] get({}): returning {}",
-                healthRatio, result.name()
+                    "[BodyPartCondition] get({}): returning {}",
+                    healthRatio, result.name()
             );
-            
+
             return result;
         }
     }
 
-    public enum BodyPartIcon {
+    public enum BodyPartIcon
+    {
         HEAD(5, 11, 0, 0, 28, 26),
         RIGHT_ARM(0, 4, 67, 0, 38, 34),
         LEFT_ARM(12, 4, 28, 0, 38, 34),
         CHEST(0, 4, 0, 80, 28, 34),
-        RIGHT_LEG(0, 0, 47, 107, 16,36),
+        RIGHT_LEG(0, 0, 47, 107, 16, 36),
         RIGHT_FOOT(1, 0, 77, 107, 14, 10),
         LEFT_LEG(34, 0, 31, 107, 16, 36),
         LEFT_FOOT(34, 0, 63, 107, 14, 10);
 
         public final int posBodyPartInButtonX;
         public final int posBodyPartInButtonY;
-        public int posTexX;
-        public int posTexY;;
         public final int width;
         public final int height;
+        public int posTexX;
+        public int posTexY;
 
-        BodyPartIcon(int posBodyPartInButtonX, int posBodyPartInButtonY, int posTexX, int posTexY, int width, int height) {
+        BodyPartIcon(int posBodyPartInButtonX, int posBodyPartInButtonY, int posTexX, int posTexY, int width, int height)
+        {
             this.posBodyPartInButtonX = posBodyPartInButtonX;
             this.posBodyPartInButtonY = posBodyPartInButtonY;
             this.posTexX = posTexX;
@@ -113,8 +126,10 @@ public class BodyPartButton extends Button {
             this.height = height;
         }
 
-        public static BodyPartIcon getBodyPartIcon(BodyPartEnum bodyPart) {
-            switch (bodyPart) {
+        public static BodyPartIcon getBodyPartIcon(BodyPartEnum bodyPart)
+        {
+            switch (bodyPart)
+            {
                 case HEAD:
                     return HEAD;
                 case RIGHT_ARM:

@@ -7,14 +7,17 @@ import sfiomn.legendarysurvivaloverhaul.api.data.providers.TemperatureDataProvid
 
 import java.util.concurrent.CompletableFuture;
 
-public class IronsSpellbooksTemperatureProvider extends TemperatureDataProvider {
+public class IronsSpellbooksTemperatureProvider extends TemperatureDataProvider
+{
 
-    public IronsSpellbooksTemperatureProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper fileHelper) {
+    public IronsSpellbooksTemperatureProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper fileHelper)
+    {
         super("irons_spellbooks", output, lookupProvider, fileHelper);
     }
 
     @Override
-    public void generate(HolderLookup.Provider provider, ExistingFileHelper existingFileHelper) {
+    public void generate(HolderLookup.Provider provider, ExistingFileHelper existingFileHelper)
+    {
         item("pyromancer_helmet").coldResistance(1.5f);
         item("pyromancer_chestplate").coldResistance(2.5f);
         item("pyromancer_leggings").coldResistance(2.0f);

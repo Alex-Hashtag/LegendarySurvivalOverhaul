@@ -10,10 +10,12 @@ import sfiomn.legendarysurvivaloverhaul.util.MathUtil;
 
 import java.util.List;
 
-public class EclipticSeasonsUtil {
+public class EclipticSeasonsUtil
+{
     public static double averageSeasonTemperature;
 
-    public static void initAverageTemperatures() {
+    public static void initAverageTemperatures()
+    {
         averageSeasonTemperature = 0;
         List<List<? extends Double>> seasonsValues = List.of(
                 Config.Baked.esAutumnModifier,
@@ -21,8 +23,9 @@ public class EclipticSeasonsUtil {
                 Config.Baked.esWinterModifier,
                 Config.Baked.esSummerModifier);
 
-        for (List<? extends Double> seasonValues : seasonsValues) {
-            for (Double seasonValue: seasonValues)
+        for (List<? extends Double> seasonValues : seasonsValues)
+        {
+            for (Double seasonValue : seasonValues)
                 averageSeasonTemperature += seasonValue;
         }
         averageSeasonTemperature /= (
@@ -32,9 +35,11 @@ public class EclipticSeasonsUtil {
                         Config.Baked.esSummerModifier.size());
     }
 
-    public static double getSeasonModifier(int index) {
+    public static double getSeasonModifier(int index)
+    {
         index = ((index + 24) % 24);
-        List<? extends Double> listConfigValue = switch (index / 6) {
+        List<? extends Double> listConfigValue = switch (index / 6)
+        {
             case 0 -> Config.Baked.esSpringModifier;
             case 1 -> Config.Baked.esSummerModifier;
             case 2 -> Config.Baked.esAutumnModifier;
@@ -44,53 +49,61 @@ public class EclipticSeasonsUtil {
         return listConfigValue.size() < 6 ? 0 : listConfigValue.get(index % 6);
     }
 
-    public static float getBlendedSeasonModifier(double previousSeasonModifier, double currentSeasonModifier, double nextSeasonModifier, int time, int subSeasonDuration) {
+    public static float getBlendedSeasonModifier(double previousSeasonModifier, double currentSeasonModifier, double nextSeasonModifier, int time, int subSeasonDuration)
+    {
         if (time < subSeasonDuration / 2)
             return calculateSinusoidalBetweenSeasons(previousSeasonModifier, currentSeasonModifier, time + (subSeasonDuration / 2), subSeasonDuration);
 
         return calculateSinusoidalBetweenSeasons(currentSeasonModifier, nextSeasonModifier, time - (subSeasonDuration / 2), subSeasonDuration);
     }
 
-    public static float calculateSinusoidalBetweenSeasons(double previousSeasonModifier, double nextSeasonModifier, int time, int subSeasonDuration) {
+    public static float calculateSinusoidalBetweenSeasons(double previousSeasonModifier, double nextSeasonModifier, int time, int subSeasonDuration)
+    {
         double tempDiff = nextSeasonModifier - previousSeasonModifier;
         // PI / 2 = 1.5707963267948966
         double seasonModifier = (Math.sin(((time * Math.PI) / subSeasonDuration) - 1.5707963267948966) + 1) * (tempDiff / 2) + previousSeasonModifier;
         return MathUtil.round((float) seasonModifier, 2);
     }
 
-    public static boolean hasDimensionSeason(Level level) {
+    public static boolean hasDimensionSeason(Level level)
+    {
         return LegendarySurvivalOverhaul.eclipticSeasonsLoaded && EclipticSeasonsCompat.isSeasonEnabled(level);
     }
 
-    public static long getSunRiseTime(Level level) {
+    public static long getSunRiseTime(Level level)
+    {
         if (!LegendarySurvivalOverhaul.eclipticSeasonsLoaded || !hasDimensionSeason(level))
             return 6000L;
 
         return (30000L - (EclipticSeasonsCompat.getSolarTermDayTime(level) / 2L)) % 24000;
     }
 
-    public static Biome.Precipitation getPrecipitation(Level level, BlockPos pos) {
+    public static Biome.Precipitation getPrecipitation(Level level, BlockPos pos)
+    {
         if (!LegendarySurvivalOverhaul.eclipticSeasonsLoaded)
             return Biome.Precipitation.NONE;
 
         return EclipticSeasonsCompat.getCurrentPrecipitationAt(level, pos);
     }
 
-    public static int getDayDuration(Level level) {
+    public static int getDayDuration(Level level)
+    {
         if (!LegendarySurvivalOverhaul.eclipticSeasonsLoaded)
             return 12000;
 
         return EclipticSeasonsCompat.getSolarTermDayTime(level);
     }
 
-    public static int getDaysInSolarTerm(Level level) {
+    public static int getDaysInSolarTerm(Level level)
+    {
         if (!LegendarySurvivalOverhaul.eclipticSeasonsLoaded)
             return 0;
 
         return EclipticSeasonsCompat.getLastingDaysOfEachTerm(level);
     }
 
-    public static double getDayInSeasonCycle(Level level) {
+    public static double getDayInSeasonCycle(Level level)
+    {
         if (!LegendarySurvivalOverhaul.eclipticSeasonsLoaded)
             return 0;
 
@@ -98,7 +111,8 @@ public class EclipticSeasonsUtil {
         return EclipticSeasonsCompat.getSolarDays(level) / (24.0f * getDaysInSolarTerm(level));
     }
 
-    public static Component seasonTooltip(Level level) {
+    public static Component seasonTooltip(Level level)
+    {
         if (!LegendarySurvivalOverhaul.eclipticSeasonsLoaded)
             return Component.empty();
         if (EclipticSeasonsCompat.isSolarTermNone(level) || !hasDimensionSeason(level))

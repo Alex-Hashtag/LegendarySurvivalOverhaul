@@ -17,30 +17,36 @@ import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.common.containers.SewingTableContainer;
 
 @OnlyIn(Dist.CLIENT)
-public class SewingTableScreen extends AbstractContainerScreen<SewingTableContainer> {
+public class SewingTableScreen extends AbstractContainerScreen<SewingTableContainer>
+{
     public static final ResourceLocation SEWING_TABLE_SCREEN = ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "textures/gui/sewing_table_screen.png");
     Rect2i craftDisabledArea;
 
-    public SewingTableScreen(SewingTableContainer screenContainer, Inventory playerInventory, Component titleIn) {
+    public SewingTableScreen(SewingTableContainer screenContainer, Inventory playerInventory, Component titleIn)
+    {
         super(screenContainer, playerInventory, titleIn);
     }
 
     @Override
-    protected void init() {
+    protected void init()
+    {
         super.init();
         craftDisabledArea = new Rect2i(this.leftPos + 93, this.topPos + 41, 13, 13);
     }
 
     @Override
-    public void render(GuiGraphics gui, int mouseX, int mouseY, float partialTicks) {
+    public void render(GuiGraphics gui, int mouseX, int mouseY, float partialTicks)
+    {
         this.renderBackground(gui, mouseX, mouseY, partialTicks);
         super.render(gui, mouseX, mouseY, partialTicks);
         this.renderTooltip(gui, mouseX, mouseY);
     }
 
     @Override
-    protected void renderBg(GuiGraphics gui, float partialTicks, int x, int y) {
-        if (minecraft == null) {
+    protected void renderBg(GuiGraphics gui, float partialTicks, int x, int y)
+    {
+        if (minecraft == null)
+        {
             return;
         }
 
@@ -51,22 +57,26 @@ public class SewingTableScreen extends AbstractContainerScreen<SewingTableContai
 
         if (this.menu.getSlot(0).getItem().getItem() instanceof ArmorItem &&
                 this.menu.getSlot(1).getItem().getItem() instanceof Item &&
-                !this.menu.getSlot(2).hasItem()) {
+                !this.menu.getSlot(2).hasItem())
+        {
             gui.blit(SEWING_TABLE_SCREEN, this.leftPos + 93, this.topPos + 41, 176, 0, 13, 13);
         }
     }
 
     @Override
-    protected void renderTooltip(GuiGraphics gui, int mouseX, int mouseY) {
+    protected void renderTooltip(GuiGraphics gui, int mouseX, int mouseY)
+    {
         super.renderTooltip(gui, mouseX, mouseY);
 
         if (Minecraft.getInstance().player == null) return;
         if (Minecraft.getInstance().screen == null) return;
 
-        if (craftDisabledArea.contains(mouseX, mouseY)) {
+        if (craftDisabledArea.contains(mouseX, mouseY))
+        {
             if (this.menu.getSlot(0).getItem().getItem() instanceof ArmorItem &&
                     this.menu.getSlot(1).getItem().getItem() instanceof Item &&
-                    !this.menu.getSlot(2).hasItem()) {
+                    !this.menu.getSlot(2).hasItem())
+            {
 
                 Component tooltipText = Component.translatable("tooltip." + LegendarySurvivalOverhaul.MOD_ID + ".sewing_table.disabled");
                 gui.renderTooltip(Minecraft.getInstance().font, tooltipText, mouseX, mouseY);

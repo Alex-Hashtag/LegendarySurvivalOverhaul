@@ -8,14 +8,17 @@ import sfiomn.legendarysurvivaloverhaul.api.temperature.TemporaryModifierGroupEn
 
 import java.util.concurrent.CompletableFuture;
 
-public class CrabbersDelightTemperatureProvider extends TemperatureDataProvider {
+public class CrabbersDelightTemperatureProvider extends TemperatureDataProvider
+{
 
-    public CrabbersDelightTemperatureProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper fileHelper) {
+    public CrabbersDelightTemperatureProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper fileHelper)
+    {
         super("crabbersdelight", output, lookupProvider, fileHelper);
     }
 
     @Override
-    public void generate(HolderLookup.Provider provider, ExistingFileHelper existingFileHelper) {
+    public void generate(HolderLookup.Provider provider, ExistingFileHelper existingFileHelper)
+    {
 
         consumable("kelp_shake").addTemperature(temperatureConsumable(TemporaryModifierGroupEnum.DRINK).temperatureLevel(-1).duration(2400));
         consumable("sea_pickle_juice").addTemperature(temperatureConsumable(TemporaryModifierGroupEnum.DRINK).temperatureLevel(-1).duration(2400));

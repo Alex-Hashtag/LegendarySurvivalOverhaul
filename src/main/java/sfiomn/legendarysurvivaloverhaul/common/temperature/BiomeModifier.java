@@ -12,69 +12,69 @@ import sfiomn.legendarysurvivaloverhaul.config.Config;
 
 public class BiomeModifier extends ModifierBase
 {
-	public BiomeModifier()
-	{
-		super();
-	}
-	
-	@Override
-	public float getWorldInfluence(@Nullable Player player, Level level, BlockPos pos)
-	{
-		if (TerraFirmaCraftUtil.shouldUseTerraFirmaCraftTemp())
-			return 0.0f;
+    public BiomeModifier()
+    {
+        super();
+    }
 
-		Vec3i[] posOffsets =
-			{
-					new Vec3i(0, 0, 0),
-					new Vec3i(10, 0, 0),
-					new Vec3i(-10, 0, 0),
-					new Vec3i(0, 0, 10),
-					new Vec3i(0, 0, -10),
-					new Vec3i(7, 0, 7),
-					new Vec3i(7, 0, -7),
-					new Vec3i(-7, 0, 7),
-					new Vec3i(-7, 0, -7)
-			};
-		
-		float biomeAverage = 0f;
-		float undergroundAverage = 0f;
-		
-		long worldTime = level.getLevelData().getDayTime() % 24000;
-		double drynessTimeMultiplier = 1;
-		double drynessAverageMultiplier = 1;
-		if (worldTime > 12000 && !level.dimensionType().hasCeiling() && Config.Baked.biomeDrynessMultiplier < 1) {
-			// PI / 12 000 = 0.00026179938
-			drynessTimeMultiplier = 1 + Math.sin(worldTime * 0.00026179938) * (1 - Config.Baked.biomeDrynessMultiplier);
-			drynessAverageMultiplier = (1 + Config.Baked.biomeDrynessMultiplier) / 2.0f;
-		}
+    @Override
+    public float getWorldInfluence(@Nullable Player player, Level level, BlockPos pos)
+    {
+        if (TerraFirmaCraftUtil.shouldUseTerraFirmaCraftTemp())
+            return 0.0f;
 
-		for (Vec3i offset : posOffsets)
-		{
-			Biome biome = level.getBiome(pos.offset(offset)).value();
-			float humidity = getHumidityForBiome(level, biome);
-			float biomeTemperature = getNormalizedTempForBiome(level, biome);
+        Vec3i[] posOffsets =
+                {
+                        new Vec3i(0, 0, 0),
+                        new Vec3i(10, 0, 0),
+                        new Vec3i(-10, 0, 0),
+                        new Vec3i(0, 0, 10),
+                        new Vec3i(0, 0, -10),
+                        new Vec3i(7, 0, 7),
+                        new Vec3i(7, 0, -7),
+                        new Vec3i(-7, 0, 7),
+                        new Vec3i(-7, 0, -7)
+                };
 
-			// Deserts are cold at night since heat isn't kept by moisture in the air
-			if (drynessTimeMultiplier < 1 && humidity < 0.2f && biomeTemperature > 0.80f)
-			{
-				// calculated average temp between day and night with the dryness effect
-				undergroundAverage += (float) (drynessAverageMultiplier * biomeTemperature);
-				biomeAverage += (float) (drynessTimeMultiplier * biomeTemperature);
-			}
-			else
-			{
-				undergroundAverage += biomeTemperature;
-				biomeAverage += biomeTemperature;
-			}
-		}
-		
-		biomeAverage /= (float)(posOffsets.length);
-		undergroundAverage /= (float)(posOffsets.length);
+        float biomeAverage = 0f;
+        float undergroundAverage = 0f;
 
-		return applyUndergroundEffect(
-				(float) (normalizeToPositiveNegative(biomeAverage) * Config.Baked.biomeTemperatureMultiplier),
-				level,
-				pos,
+        long worldTime = level.getLevelData().getDayTime() % 24000;
+        double drynessTimeMultiplier = 1;
+        double drynessAverageMultiplier = 1;
+        if (worldTime > 12000 && !level.dimensionType().hasCeiling() && Config.Baked.biomeDrynessMultiplier < 1)
+        {
+            // PI / 12 000 = 0.00026179938
+            drynessTimeMultiplier = 1 + Math.sin(worldTime * 0.00026179938) * (1 - Config.Baked.biomeDrynessMultiplier);
+            drynessAverageMultiplier = (1 + Config.Baked.biomeDrynessMultiplier) / 2.0f;
+        }
+
+        for (Vec3i offset : posOffsets)
+        {
+            Biome biome = level.getBiome(pos.offset(offset)).value();
+            float humidity = getHumidityForBiome(level, biome);
+            float biomeTemperature = getNormalizedTempForBiome(level, biome);
+
+            // Deserts are cold at night since heat isn't kept by moisture in the air
+            if (drynessTimeMultiplier < 1 && humidity < 0.2f && biomeTemperature > 0.80f)
+            {
+                // calculated average temp between day and night with the dryness effect
+                undergroundAverage += (float) (drynessAverageMultiplier * biomeTemperature);
+                biomeAverage += (float) (drynessTimeMultiplier * biomeTemperature);
+            } else
+            {
+                undergroundAverage += biomeTemperature;
+                biomeAverage += biomeTemperature;
+            }
+        }
+
+        biomeAverage /= (float) (posOffsets.length);
+        undergroundAverage /= (float) (posOffsets.length);
+
+        return applyUndergroundEffect(
+                (float) (normalizeToPositiveNegative(biomeAverage) * Config.Baked.biomeTemperatureMultiplier),
+                level,
+                pos,
                 (float) (normalizeToPositiveNegative(undergroundAverage) * Config.Baked.biomeTemperatureMultiplier * Config.Baked.undergroundBiomeTemperatureMultiplier));
-	}
+    }
 }

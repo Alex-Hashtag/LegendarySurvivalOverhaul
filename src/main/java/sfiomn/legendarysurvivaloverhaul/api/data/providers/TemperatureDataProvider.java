@@ -2,7 +2,6 @@ package sfiomn.legendarysurvivaloverhaul.api.data.providers;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
@@ -23,7 +22,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
-public abstract class TemperatureDataProvider implements DataProvider {
+public abstract class TemperatureDataProvider implements DataProvider
+{
     private final String modId;
     private final CompletableFuture<HolderLookup.Provider> lookupProvider;
     private final PackOutput.PathProvider consumablesPathProvider;
@@ -46,7 +46,8 @@ public abstract class TemperatureDataProvider implements DataProvider {
     private final Map<String, ITemperatureResistanceData> originBuilders = new HashMap<>();
     private final ExistingFileHelper fileHelper;
 
-    public TemperatureDataProvider(String modId, PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper fileHelper) {
+    public TemperatureDataProvider(String modId, PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper fileHelper)
+    {
         this.modId = modId;
         this.fileHelper = fileHelper;
         this.consumablesPathProvider = output.createPathProvider(PackOutput.Target.DATA_PACK, LegendarySurvivalOverhaul.MOD_ID + "/temperature/consumables");
@@ -64,7 +65,8 @@ public abstract class TemperatureDataProvider implements DataProvider {
     public abstract void generate(HolderLookup.Provider provider, ExistingFileHelper existingFileHelper);
 
     @Nonnull
-    public CompletableFuture<?> run(@Nonnull CachedOutput pOutput) {
+    public CompletableFuture<?> run(@Nonnull CachedOutput pOutput)
+    {
         return this.lookupProvider.thenCompose((p_255484_) -> {
             List<CompletableFuture<?>> list = new ArrayList<>();
             this.generate(p_255484_, this.fileHelper);
@@ -113,78 +115,95 @@ public abstract class TemperatureDataProvider implements DataProvider {
         });
     }
 
-    public final ITemperatureConsumableDataHolder consumable(String id) {
+    public final ITemperatureConsumableDataHolder consumable(String id)
+    {
         return this.consumableBuilders.computeIfAbsent(id, (k) -> new TemperatureConsumableDataHolder());
     }
 
-    public final ITemperatureConsumableDataHolder consumable(Item item) {
+    public final ITemperatureConsumableDataHolder consumable(Item item)
+    {
         ResourceLocation itemRegistryName = BuiltInRegistries.ITEM.getKey(item);
         return this.consumableBuilders.computeIfAbsent(itemRegistryName.toString(), (k) -> new TemperatureConsumableDataHolder());
     }
 
-    public final ITemperatureConsumableData temperatureConsumable(TemporaryModifierGroupEnum group) {
+    public final ITemperatureConsumableData temperatureConsumable(TemporaryModifierGroupEnum group)
+    {
         return new TemperatureConsumableData().group(group);
     }
 
-    public final ITemperatureConsumableBlockDataHolder consumableBlock(String id) {
+    public final ITemperatureConsumableBlockDataHolder consumableBlock(String id)
+    {
         return this.consumableBlockBuilders.computeIfAbsent(id, (k) -> new TemperatureConsumableBlockDataHolder());
     }
 
-    public final ITemperatureConsumableBlockDataHolder consumableAndConsumableBlock(String id, ITemperatureConsumableData data) {
+    public final ITemperatureConsumableBlockDataHolder consumableAndConsumableBlock(String id, ITemperatureConsumableData data)
+    {
         this.consumableBuilders.computeIfAbsent(id, (k) -> new TemperatureConsumableDataHolder().addTemperature(data));
         return this.consumableBlockBuilders.computeIfAbsent(id, (k) -> new TemperatureConsumableBlockDataHolder().addTemperature(data.asBlock()));
     }
 
-    public final ITemperatureConsumableBlockData temperatureConsumableBlock(TemporaryModifierGroupEnum group) {
+    public final ITemperatureConsumableBlockData temperatureConsumableBlock(TemporaryModifierGroupEnum group)
+    {
         return new TemperatureConsumableBlockData().group(group);
     }
 
-    public final ITemperatureBlockDataHolder block(String id) {
+    public final ITemperatureBlockDataHolder block(String id)
+    {
         return this.blockBuilders.computeIfAbsent(id, (k) -> new TemperatureBlockDataHolder());
     }
 
-    public final ITemperatureBlockDataHolder block(Block block) {
+    public final ITemperatureBlockDataHolder block(Block block)
+    {
         ResourceLocation blockRegistryName = BuiltInRegistries.BLOCK.getKey(block);
         assert blockRegistryName != null;
         return this.blockBuilders.computeIfAbsent(blockRegistryName.toString(), (k) -> new TemperatureBlockDataHolder());
     }
 
-    public final ITemperatureBlockData temperatureBlock(float temperatureValue) {
+    public final ITemperatureBlockData temperatureBlock(float temperatureValue)
+    {
         return new TemperatureBlockData().temperature(temperatureValue);
     }
 
-    public final ITemperatureResistanceData item(String id) {
+    public final ITemperatureResistanceData item(String id)
+    {
         return this.itemBuilders.computeIfAbsent(id, (k) -> new TemperatureResistanceData());
     }
 
-    public final ITemperatureResistanceData item(Item item) {
+    public final ITemperatureResistanceData item(Item item)
+    {
         ResourceLocation itemRegistryName = BuiltInRegistries.ITEM.getKey(item);
         assert itemRegistryName != null;
         return this.itemBuilders.computeIfAbsent(itemRegistryName.toString(), (k) -> new TemperatureResistanceData());
     }
 
-    public final ITemperatureBiomeOverrideData biome(String id) {
+    public final ITemperatureBiomeOverrideData biome(String id)
+    {
         return this.biomeBuilders.computeIfAbsent(id, (k) -> new TemperatureBiomeOverrideData());
     }
 
-    public final ITemperatureFuelItemData fuelItem(String id) {
+    public final ITemperatureFuelItemData fuelItem(String id)
+    {
         return this.fuelItemBuilders.computeIfAbsent(id, (k) -> new TemperatureFuelItemData());
     }
 
-    public final ITemperatureDimensionData dimension(String id) {
+    public final ITemperatureDimensionData dimension(String id)
+    {
         return this.dimensionBuilders.computeIfAbsent(id, (k) -> new TemperatureDimensionData());
     }
 
-    public final ITemperatureResistanceData mount(String id) {
+    public final ITemperatureResistanceData mount(String id)
+    {
         return this.mountBuilders.computeIfAbsent(id, (k) -> new TemperatureResistanceData());
     }
 
-    public final ITemperatureResistanceData origin(String id) {
+    public final ITemperatureResistanceData origin(String id)
+    {
         return this.originBuilders.computeIfAbsent(id, (k) -> new TemperatureResistanceData());
     }
 
     @Nonnull
-    public final String getName() {
+    public final String getName()
+    {
         return "Temperature for " + this.modId;
     }
 }

@@ -5,8 +5,8 @@ import net.minecraft.world.effect.MobEffectCategory;
 
 public class TemperatureImmunityEffect extends MobEffect
 {
-	public TemperatureImmunityEffect()
-	{
-		super(MobEffectCategory.BENEFICIAL, 8273610);
-	}
+    public TemperatureImmunityEffect()
+    {
+        super(MobEffectCategory.BENEFICIAL, 8273610);
+    }
 }

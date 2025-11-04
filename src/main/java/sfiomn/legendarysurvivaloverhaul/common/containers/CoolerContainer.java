@@ -12,9 +12,11 @@ import sfiomn.legendarysurvivaloverhaul.common.blockentities.AbstractThermalBloc
 import sfiomn.legendarysurvivaloverhaul.registry.BlockRegistry;
 import sfiomn.legendarysurvivaloverhaul.registry.ContainerRegistry;
 
-public class CoolerContainer extends AbstractThermalContainer {
+public class CoolerContainer extends AbstractThermalContainer
+{
 
-    public CoolerContainer(int windowId, Inventory playerInventory, BlockEntity be, ContainerData dataAccess) {
+    public CoolerContainer(int windowId, Inventory playerInventory, BlockEntity be, ContainerData dataAccess)
+    {
         super(windowId, playerInventory, (AbstractThermalBlockEntity) be, dataAccess, ContainerRegistry.COOLER_CONTAINER, ThermalTypeEnum.COOLING);
     }
 
@@ -24,7 +26,8 @@ public class CoolerContainer extends AbstractThermalContainer {
     }
 
     @Override
-    public boolean stillValid(Player player) {
+    public boolean stillValid(Player player)
+    {
         return stillValid(ContainerLevelAccess.create(this.level, this.blockEntity.getBlockPos()), player, BlockRegistry.COOLER.get());
     }
 }

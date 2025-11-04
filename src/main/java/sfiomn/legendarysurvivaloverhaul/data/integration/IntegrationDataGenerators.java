@@ -3,15 +3,17 @@ package sfiomn.legendarysurvivaloverhaul.data.integration;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
+import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
-import net.neoforged.fml.ModList;
 import sfiomn.legendarysurvivaloverhaul.data.integration.providers.*;
 
 import java.util.concurrent.CompletableFuture;
 
-public final class IntegrationDataGenerators {
-    public static void addIntegrationProviders(GatherDataEvent event, DataGenerator gen, PackOutput packOutput, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper existingFileHelper) {
+public final class IntegrationDataGenerators
+{
+    public static void addIntegrationProviders(GatherDataEvent event, DataGenerator gen, PackOutput packOutput, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper existingFileHelper)
+    {
 
         gen.addProvider(event.includeServer(), new AlexsMobsTemperatureProvider(packOutput, lookupProvider, existingFileHelper));
         gen.addProvider(event.includeServer(), new AquamiraeTemperatureProvider(packOutput, lookupProvider, existingFileHelper));
@@ -44,7 +46,8 @@ public final class IntegrationDataGenerators {
         gen.addProvider(event.includeServer(), new CrockpotTemperatureProvider(packOutput, lookupProvider, existingFileHelper));
         gen.addProvider(event.includeServer(), new CrockpotThirstProvider(packOutput, lookupProvider, existingFileHelper));
 
-        if (ModList.get().isLoaded("curios")) {
+        if (ModList.get().isLoaded("curios"))
+        {
             gen.addProvider(event.includeServer(), new CuriosProvider(packOutput, existingFileHelper, lookupProvider));
             CuriosBlockTagProvider blockTagProvider = gen.addProvider(event.includeServer(), new CuriosBlockTagProvider(packOutput, lookupProvider, existingFileHelper));
             gen.addProvider(event.includeServer(), new CuriosItemTagProvider(packOutput, lookupProvider, blockTagProvider.contentsGetter(), existingFileHelper));

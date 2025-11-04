@@ -8,26 +8,25 @@ import sfiomn.legendarysurvivaloverhaul.util.CapabilityUtil;
 
 public class FreezeModifier extends ModifierBase
 {
-	public FreezeModifier()
-	{
-		super();
-	}
-	
-	@Override
-	public float getPlayerInfluence(Player player)
-	{
-		if (Config.Baked.maxFreezeTemperatureModifier == 0)
-			return 0.0f;
+    public FreezeModifier()
+    {
+        super();
+    }
 
-		int freezeTickTimer = CapabilityUtil.getTempCapability(player).getFreezeTickTimer();
+    @Override
+    public float getPlayerInfluence(Player player)
+    {
+        if (Config.Baked.maxFreezeTemperatureModifier == 0)
+            return 0.0f;
 
-		if (freezeTickTimer > 0)
-		{
-			return (float) Mth.lerp(Math.min(freezeTickTimer / (double) Config.Baked.maxFreezeEffectTick, 1), 0, Config.Baked.maxFreezeTemperatureModifier);
-		}
-		else 
-		{
-			return 0.0f;
-		}
-	}
+        int freezeTickTimer = CapabilityUtil.getTempCapability(player).getFreezeTickTimer();
+
+        if (freezeTickTimer > 0)
+        {
+            return (float) Mth.lerp(Math.min(freezeTickTimer / (double) Config.Baked.maxFreezeEffectTick, 1), 0, Config.Baked.maxFreezeTemperatureModifier);
+        } else
+        {
+            return 0.0f;
+        }
+    }
 }

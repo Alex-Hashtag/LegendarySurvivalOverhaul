@@ -7,14 +7,17 @@ import sfiomn.legendarysurvivaloverhaul.api.data.providers.TemperatureDataProvid
 
 import java.util.concurrent.CompletableFuture;
 
-public class TerraFirmaCraftTemperatureProvider extends TemperatureDataProvider {
+public class TerraFirmaCraftTemperatureProvider extends TemperatureDataProvider
+{
 
-    public TerraFirmaCraftTemperatureProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper fileHelper) {
+    public TerraFirmaCraftTemperatureProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper fileHelper)
+    {
         super("tfc", output, lookupProvider, fileHelper);
     }
 
     @Override
-    public void generate(HolderLookup.Provider provider, ExistingFileHelper existingFileHelper) {
+    public void generate(HolderLookup.Provider provider, ExistingFileHelper existingFileHelper)
+    {
         block("firepit")
                 .addTemperature(temperatureBlock(8.0f).addProperty("lit", "true"))
                 .addTemperature(temperatureBlock(0.0f).addProperty("lit", "false"));

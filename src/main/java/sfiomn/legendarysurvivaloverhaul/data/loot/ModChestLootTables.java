@@ -24,7 +24,8 @@ import java.util.function.BiConsumer;
 
 import static java.util.Map.entry;
 
-public class ModChestLootTables implements LootTableSubProvider {
+public class ModChestLootTables implements LootTableSubProvider
+{
 
     public static Map<ResourceKey<LootTable>, List<Item>> chestInjectedLootTables = Map.ofEntries(
             entry(BuiltInLootTables.BURIED_TREASURE, List.of(ItemRegistry.HEART_FRAGMENT.get())),
@@ -35,11 +36,13 @@ public class ModChestLootTables implements LootTableSubProvider {
             entry(BuiltInLootTables.PILLAGER_OUTPOST, List.of(ItemRegistry.FIRST_AID_SUPPLIES.get()))
     );
 
-    public ModChestLootTables(HolderLookup.Provider provider) {
+    public ModChestLootTables(HolderLookup.Provider provider)
+    {
     }
 
     @Override
-    public void generate(@NotNull BiConsumer<ResourceKey<LootTable>, LootTable.Builder> biConsumer) {
+    public void generate(@NotNull BiConsumer<ResourceKey<LootTable>, LootTable.Builder> biConsumer)
+    {
 
         LootPool.Builder heartFragmentLoot = LootPool.lootPool()
                 .setRolls(UniformGenerator.between(1.0F, 1.0F))
@@ -63,18 +66,23 @@ public class ModChestLootTables implements LootTableSubProvider {
                 .add(LootItem.lootTableItem(ItemRegistry.FIRST_AID_SUPPLIES.get()).setWeight(1))
                 .add(EmptyLootItem.emptyItem().setWeight(99));
 
-        for (Map.Entry<ResourceKey<LootTable>, List<Item>> entry : chestInjectedLootTables.entrySet()) {
+        for (Map.Entry<ResourceKey<LootTable>, List<Item>> entry : chestInjectedLootTables.entrySet())
+        {
             LootTable.Builder lootTable = LootTable.lootTable();
-            if (entry.getValue().contains(ItemRegistry.HEART_FRAGMENT.get())) {
+            if (entry.getValue().contains(ItemRegistry.HEART_FRAGMENT.get()))
+            {
                 lootTable.withPool(heartFragmentLoot);
             }
-            if (entry.getValue().contains(ItemRegistry.HEAT_RESISTANCE_RING.get())) {
+            if (entry.getValue().contains(ItemRegistry.HEAT_RESISTANCE_RING.get()))
+            {
                 lootTable.withPool(heatResistanceRing);
             }
-            if (entry.getValue().contains(ItemRegistry.COLD_RESISTANCE_RING.get())) {
+            if (entry.getValue().contains(ItemRegistry.COLD_RESISTANCE_RING.get()))
+            {
                 lootTable.withPool(coldResistanceRing);
             }
-            if (entry.getValue().contains(ItemRegistry.FIRST_AID_SUPPLIES.get())) {
+            if (entry.getValue().contains(ItemRegistry.FIRST_AID_SUPPLIES.get()))
+            {
                 lootTable.withPool(firstAidSupplies);
             }
             biConsumer.accept(

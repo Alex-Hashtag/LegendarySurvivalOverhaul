@@ -13,22 +13,22 @@ import java.util.List;
 
 public class PlayerHuddlingModifier extends ModifierBase
 {
-	public PlayerHuddlingModifier()
-	{
-		super();
-	}
-	
+    public PlayerHuddlingModifier()
+    {
+        super();
+    }
 
-	@Override
-	public float getPlayerInfluence(Player player)
-	{
-		if (Config.Baked.playerHuddlingRadius == 0 || Config.Baked.playerHuddlingModifier == 0.0d)
-			return 0.0f;
-		
-		Level world = player.getCommandSenderWorld();
-		BlockPos pos = player.blockPosition();
-		
-		int huddleRadius = Config.Baked.playerHuddlingRadius;
+
+    @Override
+    public float getPlayerInfluence(Player player)
+    {
+        if (Config.Baked.playerHuddlingRadius == 0 || Config.Baked.playerHuddlingModifier == 0.0d)
+            return 0.0f;
+
+        Level world = player.getCommandSenderWorld();
+        BlockPos pos = player.blockPosition();
+
+        int huddleRadius = Config.Baked.playerHuddlingRadius;
 
 
         BlockPos minPos = pos.offset(-huddleRadius, -huddleRadius, -huddleRadius);
@@ -37,18 +37,18 @@ public class PlayerHuddlingModifier extends ModifierBase
         AABB bounds = new AABB(Vec3.atLowerCornerOf(minPos), Vec3.atLowerCornerOf(maxPos));
 
 
-		List<? extends Player> players = world.getNearbyPlayers(TargetingConditions.DEFAULT, player, bounds);
-		
-		int playerCount = 0;
-		
-		for (Player p : players)
-		{
-			if (!p.isCreative() && !p.isSpectator())
-			{
-				playerCount++;
-			}
-		}
-		
-		return (float)( ((double) playerCount) * Config.Baked.playerHuddlingModifier);
-	}
+        List<? extends Player> players = world.getNearbyPlayers(TargetingConditions.DEFAULT, player, bounds);
+
+        int playerCount = 0;
+
+        for (Player p : players)
+        {
+            if (!p.isCreative() && !p.isSpectator())
+            {
+                playerCount++;
+            }
+        }
+
+        return (float) (((double) playerCount) * Config.Baked.playerHuddlingModifier);
+    }
 }

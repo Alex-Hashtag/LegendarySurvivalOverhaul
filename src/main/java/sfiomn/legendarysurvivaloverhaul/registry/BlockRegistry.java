@@ -15,7 +15,8 @@ import sfiomn.legendarysurvivaloverhaul.common.blocks.*;
 
 import java.util.function.Supplier;
 
-public class BlockRegistry {
+public class BlockRegistry
+{
 
     public static final DeferredRegister<Block> BLOCKS =
             DeferredRegister.create(Registries.BLOCK, LegendarySurvivalOverhaul.MOD_ID);
@@ -53,17 +54,20 @@ public class BlockRegistry {
     public static final DeferredHolder<Block, WaterPlantBlock> WATER_PLANT_CROP =
             BLOCKS.register("water_plant_crop", WaterPlantBlock::new);
 
-    private static <T extends Block> DeferredHolder<Block, T> registerBlock(String name, Supplier<T> block) {
+    private static <T extends Block> DeferredHolder<Block, T> registerBlock(String name, Supplier<T> block)
+    {
         DeferredHolder<Block, T> holder = BLOCKS.register(name, block);
         registerBlockItem(name, holder);
         return holder;
     }
 
-    private static <T extends Block> void registerBlockItem(String name, DeferredHolder<Block, T> block) {
+    private static <T extends Block> void registerBlockItem(String name, DeferredHolder<Block, T> block)
+    {
         ItemRegistry.ITEMS.register(name, () -> new BlockItem(block.get(), new Item.Properties()));
     }
 
-    public static void register(IEventBus eventBus) {
+    public static void register(IEventBus eventBus)
+    {
         BLOCKS.register(eventBus);
     }
 }

@@ -10,14 +10,17 @@ import sfiomn.legendarysurvivaloverhaul.api.data.providers.BodyDamageDataProvide
 import java.util.Arrays;
 import java.util.concurrent.CompletableFuture;
 
-public class AtmosphericBodyDamageProvider extends BodyDamageDataProvider {
+public class AtmosphericBodyDamageProvider extends BodyDamageDataProvider
+{
 
-    public AtmosphericBodyDamageProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper fileHelper) {
+    public AtmosphericBodyDamageProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper fileHelper)
+    {
         super("atmospheric", output, lookupProvider, fileHelper);
     }
 
     @Override
-    public void generate(HolderLookup.Provider provider, ExistingFileHelper existingFileHelper) {
+    public void generate(HolderLookup.Provider provider, ExistingFileHelper existingFileHelper)
+    {
         damageSource("atmospheric.yuccaSapling")
                 .damageDistribution(DamageDistributionEnum.ONE_OF)
                 .addBodyParts(Arrays.asList(BodyPartEnum.LEFT_FOOT, BodyPartEnum.RIGHT_FOOT, BodyPartEnum.LEFT_LEG, BodyPartEnum.RIGHT_LEG));

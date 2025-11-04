@@ -17,11 +17,13 @@ import sfiomn.legendarysurvivaloverhaul.common.capabilities.temperature.Temperat
 import sfiomn.legendarysurvivaloverhaul.util.CapabilityUtil;
 
 
-public class ThermometerProperty implements ClampedItemPropertyFunction {
+public class ThermometerProperty implements ClampedItemPropertyFunction
+{
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public float unclampedCall(@NotNull ItemStack itemStack, @Nullable ClientLevel clientLevel, @Nullable LivingEntity entity, int i) {
+    public float unclampedCall(@NotNull ItemStack itemStack, @Nullable ClientLevel clientLevel, @Nullable LivingEntity entity, int i)
+    {
         Level level = clientLevel;
         Entity holder = (entity != null ? entity : itemStack.getFrame());
 
@@ -33,18 +35,17 @@ public class ThermometerProperty implements ClampedItemPropertyFunction {
         if (level == null)
         {
             return 0.5f;
-        }
-        else
+        } else
         {
             try
             {
                 TemperatureItemCapability tempItemCap = CapabilityUtil.getTempItemCapability(itemStack);
-                if (holder != null && tempItemCap.shouldUpdate(level.getGameTime())) {
+                if (holder != null && tempItemCap.shouldUpdate(level.getGameTime()))
+                {
                     tempItemCap.updateWorldTemperature(level, holder, level.getGameTime());
                 }
                 return Mth.positiveModulo(TemperatureUtil.clampTemperature((int) tempItemCap.getWorldTemperatureLevel()) / TemperatureEnum.HEAT_STROKE.getUpperBound(), 1.0333333f);
-            }
-            catch (NullPointerException e)
+            } catch (NullPointerException e)
             {
                 return 0.5f;
             }

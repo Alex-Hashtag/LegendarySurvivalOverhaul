@@ -3,7 +3,8 @@ package sfiomn.legendarysurvivaloverhaul.api.config.json_old.temperature;
 import com.google.gson.annotations.SerializedName;
 import sfiomn.legendarysurvivaloverhaul.api.block.ThermalTypeEnum;
 
-public class JsonFuelItem {
+public class JsonFuelItem
+{
     @SerializedName("thermalType")
     public ThermalTypeEnum thermalType;
 

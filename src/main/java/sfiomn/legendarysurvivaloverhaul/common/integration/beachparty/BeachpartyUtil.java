@@ -12,27 +12,34 @@ import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 
 import javax.annotation.Nonnull;
 
-public class BeachpartyUtil {
+public class BeachpartyUtil
+{
 
-    public static boolean isUnderParasol(Level level, Player player, BlockPos pos) {
-        if (LegendarySurvivalOverhaul.beachpartyLoaded) {
+    public static boolean isUnderParasol(Level level, Player player, BlockPos pos)
+    {
+        if (LegendarySurvivalOverhaul.beachpartyLoaded)
+        {
 
-            if (player != null && player.getVehicle() != null && player.getVehicle() instanceof ChairEntity) {
+            if (player != null && player.getVehicle() != null && player.getVehicle() instanceof ChairEntity)
+            {
                 BlockPos checkPos = player.blockPosition().offset(0, 1, 0);
-                    BlockState blockState = level.getBlockState(checkPos);
+                BlockState blockState = level.getBlockState(checkPos);
                 return blockState.getBlock() instanceof HoodedBeachChair;
-            } else {
+            } else
+            {
                 BlockPos checkPos = pos.offset(0, 1, 0);
                 BlockState blockState = level.getBlockState(checkPos);
-                if (blockState.getBlock() instanceof BeachParasolBlock) {
-                    return blockState.hasProperty(BeachParasolBlock.OPEN) ? blockState.getValue(BeachParasolBlock.OPEN): false;
+                if (blockState.getBlock() instanceof BeachParasolBlock)
+                {
+                    return blockState.hasProperty(BeachParasolBlock.OPEN) ? blockState.getValue(BeachParasolBlock.OPEN) : false;
                 }
             }
         }
         return false;
     }
 
-    public static boolean canProvideShade(@Nonnull ResourceLocation itemRegistryName) {
+    public static boolean canProvideShade(@Nonnull ResourceLocation itemRegistryName)
+    {
         return LegendarySurvivalOverhaul.beachpartyLoaded && (itemRegistryName.toString().equals("beachparty:hooded_beach_chair") || itemRegistryName.toString().equals("beachparty:beach_parasol"));
     }
 }

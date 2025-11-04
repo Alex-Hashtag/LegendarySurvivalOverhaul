@@ -7,14 +7,17 @@ import sfiomn.legendarysurvivaloverhaul.api.data.providers.TemperatureDataProvid
 
 import java.util.concurrent.CompletableFuture;
 
-public class ValhelsiaStructuresTemperatureProvider extends TemperatureDataProvider {
+public class ValhelsiaStructuresTemperatureProvider extends TemperatureDataProvider
+{
 
-    public ValhelsiaStructuresTemperatureProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper fileHelper) {
+    public ValhelsiaStructuresTemperatureProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper fileHelper)
+    {
         super("valhelsia_structures", output, lookupProvider, fileHelper);
     }
 
     @Override
-    public void generate(HolderLookup.Provider provider, ExistingFileHelper existingFileHelper) {
+    public void generate(HolderLookup.Provider provider, ExistingFileHelper existingFileHelper)
+    {
 
         block("brazier")
                 .addTemperature(temperatureBlock(12.5f).addProperty("lit", "true"))

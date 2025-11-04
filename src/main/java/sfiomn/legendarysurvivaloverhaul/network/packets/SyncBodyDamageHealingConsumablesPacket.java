@@ -5,7 +5,6 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.PacketFlow;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload.Type;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
@@ -18,7 +17,8 @@ import java.util.Map;
 
 public record SyncBodyDamageHealingConsumablesPacket(
         Map<ResourceLocation, JsonHealingConsumable> healingConsumables
-) implements CustomPacketPayload {
+) implements CustomPacketPayload
+{
 
     public static final ResourceLocation ID =
             ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "sync_body_damage_healing_consumables");
@@ -35,23 +35,29 @@ public record SyncBodyDamageHealingConsumablesPacket(
                     SyncBodyDamageHealingConsumablesPacket::new
             );
 
-    @Override
-    public Type<? extends CustomPacketPayload> type() { return TYPE; }
-
     // Handler (client-side; guard to avoid running on server)
-    public static void handle(SyncBodyDamageHealingConsumablesPacket pkt, IPayloadContext ctx) {
+    public static void handle(SyncBodyDamageHealingConsumablesPacket pkt, IPayloadContext ctx)
+    {
         if (ctx.flow() != PacketFlow.CLIENTBOUND) return;
         ctx.enqueueWork(() -> BodyDamageHealingConsumableListener.acceptServerHealingConsumables(pkt.healingConsumables()));
     }
 
     // Convenience senders (replace NetworkHandler.INSTANCE.send(...))
-    public static void sendToServer(Map<ResourceLocation, JsonHealingConsumable> data) {
+    public static void sendToServer(Map<ResourceLocation, JsonHealingConsumable> data)
+    {
         PacketDistributor.sendToServer(new SyncBodyDamageHealingConsumablesPacket(data));
     }
 
     // Example: server->one player
     public static void sendToPlayer(net.minecraft.server.level.ServerPlayer player,
-                                    Map<ResourceLocation, JsonHealingConsumable> data) {
+                                    Map<ResourceLocation, JsonHealingConsumable> data)
+    {
         PacketDistributor.sendToPlayer(player, new SyncBodyDamageHealingConsumablesPacket(data));
+    }
+
+    @Override
+    public Type<? extends CustomPacketPayload> type()
+    {
+        return TYPE;
     }
 }

@@ -8,14 +8,17 @@ import sfiomn.legendarysurvivaloverhaul.api.temperature.TemporaryModifierGroupEn
 
 import java.util.concurrent.CompletableFuture;
 
-public class CreateTemperatureProvider extends TemperatureDataProvider {
+public class CreateTemperatureProvider extends TemperatureDataProvider
+{
 
-    public CreateTemperatureProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper fileHelper) {
+    public CreateTemperatureProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper fileHelper)
+    {
         super("create", output, lookupProvider, fileHelper);
     }
 
     @Override
-    public void generate(HolderLookup.Provider provider, ExistingFileHelper existingFileHelper) {
+    public void generate(HolderLookup.Provider provider, ExistingFileHelper existingFileHelper)
+    {
 
         block("blaze_burner")
                 .addTemperature(temperatureBlock(2.5f).addProperty("blaze", "smouldering"))

@@ -6,9 +6,10 @@ import sfiomn.legendarysurvivaloverhaul.api.temperature.TemporaryModifierGroupEn
 
 /**
  * Code taken and adapted from Charles445's SimpleDifficulty mod
- * @see <a href="https://github.com/Charles445/SimpleDifficulty/tree/master/src/main/java/com/charles445/simpledifficulty/api/config/json">Github Link</a>
+ *
  * @author Charles445
  * @author Icey
+ * @see <a href="https://github.com/Charles445/SimpleDifficulty/tree/master/src/main/java/com/charles445/simpledifficulty/api/config/json">Github Link</a>
  */
 
 public class JsonConsumableTemperature
@@ -18,7 +19,7 @@ public class JsonConsumableTemperature
     public int duration;
     private DeferredHolder<MobEffect, MobEffect> effect;
     private DeferredHolder<MobEffect, MobEffect> oppositeEffect;
-    
+
     public JsonConsumableTemperature(TemporaryModifierGroupEnum group, int temperatureLevel, int duration)
     {
         this.temperatureLevel = temperatureLevel;
@@ -26,20 +27,24 @@ public class JsonConsumableTemperature
         this.group = group;
         this.effect = null;
         this.oppositeEffect = null;
-        if (temperatureLevel > 0) {
+        if (temperatureLevel > 0)
+        {
             this.effect = group.hotEffect;
             this.oppositeEffect = group.coldEffect;
-        } else if (temperatureLevel < 0) {
+        } else if (temperatureLevel < 0)
+        {
             this.effect = group.coldEffect;
             this.oppositeEffect = group.hotEffect;
         }
     }
 
-    public MobEffect getEffect() {
+    public MobEffect getEffect()
+    {
         return this.effect.get();
     }
 
-    public MobEffect getOppositeEffect() {
+    public MobEffect getOppositeEffect()
+    {
         return this.oppositeEffect.get();
     }
 }

@@ -5,9 +5,11 @@ import fuzs.overflowingbars.config.ClientConfig;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 
 
-public class OverflowingBarsUtil {
+public class OverflowingBarsUtil
+{
 
-    public static boolean isHealthBarOverflowing() {
+    public static boolean isHealthBarOverflowing()
+    {
         return LegendarySurvivalOverhaul.overflowingbarsLoaded && OverflowingBars.CONFIG.get(ClientConfig.class).health.allowLayers;
     }
 }

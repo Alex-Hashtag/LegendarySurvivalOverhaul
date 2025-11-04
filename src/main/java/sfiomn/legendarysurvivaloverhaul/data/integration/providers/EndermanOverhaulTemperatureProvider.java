@@ -7,14 +7,17 @@ import sfiomn.legendarysurvivaloverhaul.api.data.providers.TemperatureDataProvid
 
 import java.util.concurrent.CompletableFuture;
 
-public class EndermanOverhaulTemperatureProvider extends TemperatureDataProvider {
+public class EndermanOverhaulTemperatureProvider extends TemperatureDataProvider
+{
 
-    public EndermanOverhaulTemperatureProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper fileHelper) {
+    public EndermanOverhaulTemperatureProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper fileHelper)
+    {
         super("endermanoverhaul", output, lookupProvider, fileHelper);
     }
 
     @Override
-    public void generate(HolderLookup.Provider provider, ExistingFileHelper existingFileHelper) {
+    public void generate(HolderLookup.Provider provider, ExistingFileHelper existingFileHelper)
+    {
 
         item("badlands_hood").coldResistance(2.5f);
         item("savanna_hood").coldResistance(2.5f);

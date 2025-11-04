@@ -10,14 +10,17 @@ import java.util.concurrent.CompletableFuture;
 
 import static sfiomn.legendarysurvivaloverhaul.api.temperature.TemporaryModifierGroupEnum.DRINK;
 
-public class BrewinCompatDelightTemperatureProvider extends TemperatureDataProvider {
+public class BrewinCompatDelightTemperatureProvider extends TemperatureDataProvider
+{
 
-    public BrewinCompatDelightTemperatureProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper fileHelper) {
+    public BrewinCompatDelightTemperatureProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper fileHelper)
+    {
         super("brewincompatdelight", output, lookupProvider, fileHelper);
     }
 
     @Override
-    public void generate(HolderLookup.Provider provider, ExistingFileHelper existingFileHelper) {
+    public void generate(HolderLookup.Provider provider, ExistingFileHelper existingFileHelper)
+    {
 
         ITemperatureConsumableData beer = temperatureConsumable(DRINK).temperatureLevel(-1).duration(2400);
         consumable("beer_knees").addTemperature(beer);

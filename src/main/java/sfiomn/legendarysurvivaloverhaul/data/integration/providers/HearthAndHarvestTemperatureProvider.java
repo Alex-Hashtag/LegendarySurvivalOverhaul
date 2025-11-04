@@ -9,14 +9,17 @@ import java.util.concurrent.CompletableFuture;
 
 import static sfiomn.legendarysurvivaloverhaul.api.temperature.TemporaryModifierGroupEnum.DRINK;
 
-public class HearthAndHarvestTemperatureProvider extends TemperatureDataProvider {
+public class HearthAndHarvestTemperatureProvider extends TemperatureDataProvider
+{
 
-    public HearthAndHarvestTemperatureProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper fileHelper) {
+    public HearthAndHarvestTemperatureProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper fileHelper)
+    {
         super("hearthandharvest", output, lookupProvider, fileHelper);
     }
 
     @Override
-    public void generate(HolderLookup.Provider provider, ExistingFileHelper existingFileHelper) {
+    public void generate(HolderLookup.Provider provider, ExistingFileHelper existingFileHelper)
+    {
 
         consumable("blueberry_juice").addTemperature(temperatureConsumable(DRINK).temperatureLevel(-1).duration(1800));
         consumable("blueberry_wine").addTemperature(temperatureConsumable(DRINK).temperatureLevel(-1).duration(2400));

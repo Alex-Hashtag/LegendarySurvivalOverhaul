@@ -7,15 +7,20 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.level.Level;
 
-public class DamageSourceUtil {
+public class DamageSourceUtil
+{
 
-    private DamageSourceUtil() {}
+    private DamageSourceUtil()
+    {
+    }
 
-    private static Registry<DamageType> damageTypes(Level level) {
+    private static Registry<DamageType> damageTypes(Level level)
+    {
         return level.registryAccess().registryOrThrow(Registries.DAMAGE_TYPE);
     }
 
-    public static DamageSource getDamageSource(Level level, ResourceKey<DamageType> damageType) {
+    public static DamageSource getDamageSource(Level level, ResourceKey<DamageType> damageType)
+    {
         return new DamageSource(damageTypes(level).getHolderOrThrow(damageType));
     }
 }

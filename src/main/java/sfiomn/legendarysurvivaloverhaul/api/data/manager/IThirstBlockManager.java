@@ -7,7 +7,8 @@ import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonThirstBlock;
 
 import java.util.List;
 
-public interface IThirstBlockManager {
+public interface IThirstBlockManager
+{
     List<JsonThirstBlock> get(ResourceLocation blockRegistryName);
 
     JsonThirstBlock get(BlockState block);

@@ -7,9 +7,11 @@ import net.minecraft.client.gui.screens.ConfirmScreen;
 import net.minecraft.network.chat.Component;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 
-public class WarningDataPackScreen extends ConfirmScreen {
+public class WarningDataPackScreen extends ConfirmScreen
+{
 
-    public WarningDataPackScreen() {
+    public WarningDataPackScreen()
+    {
         super(getButtonEffect(),
                 Component.translatable("screen.legendarysurvivaloverhaul.datapack_transfer.title"),
                 Component.translatable("screen.legendarysurvivaloverhaul.datapack_transfer.text"),
@@ -17,11 +19,14 @@ public class WarningDataPackScreen extends ConfirmScreen {
                 Component.translatable("menu.returnToGame"));
     }
 
-    private static BooleanConsumer getButtonEffect() {
+    private static BooleanConsumer getButtonEffect()
+    {
         return (confirmButton) -> {
-            if (confirmButton) {
+            if (confirmButton)
+            {
                 Util.getPlatform().openFile(LegendarySurvivalOverhaul.modConfigPath.toFile());
-            } else {
+            } else
+            {
                 Minecraft.getInstance().setScreen(null);
             }
         };

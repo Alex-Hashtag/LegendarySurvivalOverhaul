@@ -10,28 +10,29 @@ import sfiomn.legendarysurvivaloverhaul.util.CapabilityUtil;
 
 public class HeatThirstEffect extends IncurableMobEffect
 {
-	public HeatThirstEffect()
-	{
-		super(MobEffectCategory.HARMFUL, 10870382);
-	}
-	
-	@Override
-	public boolean applyEffectTick(@NotNull LivingEntity entity, int amplifier)
-	{
-		if(entity instanceof Player)
-		{
-			ThirstCapability thirstCapability = CapabilityUtil.getThirstCapability((Player) entity);
+    public HeatThirstEffect()
+    {
+        super(MobEffectCategory.HARMFUL, 10870382);
+    }
 
-			// Twice strength of Hunger effect
-			thirstCapability.addThirstExhaustion((float) (Config.Baked.heatThirstEffectModifier * (amplifier + 1)));
-		}
-		return true;
-	}
+    @Override
+    public boolean applyEffectTick(@NotNull LivingEntity entity, int amplifier)
+    {
+        if (entity instanceof Player)
+        {
+            ThirstCapability thirstCapability = CapabilityUtil.getThirstCapability((Player) entity);
 
-	@Override
-	public boolean shouldApplyEffectTickThisTick(int duration, int amplifier) {
-		// Apply thirsty effect every 50 ticks for amplifier 0
-		int time = 50 >> amplifier;
-		return time == 0 || duration % time == 0;
-	}
+            // Twice strength of Hunger effect
+            thirstCapability.addThirstExhaustion((float) (Config.Baked.heatThirstEffectModifier * (amplifier + 1)));
+        }
+        return true;
+    }
+
+    @Override
+    public boolean shouldApplyEffectTickThisTick(int duration, int amplifier)
+    {
+        // Apply thirsty effect every 50 ticks for amplifier 0
+        int time = 50 >> amplifier;
+        return time == 0 || duration % time == 0;
+    }
 }

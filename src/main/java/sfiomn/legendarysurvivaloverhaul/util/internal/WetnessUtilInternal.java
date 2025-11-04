@@ -6,10 +6,12 @@ import sfiomn.legendarysurvivaloverhaul.common.capabilities.wetness.WetnessCapab
 import sfiomn.legendarysurvivaloverhaul.config.Config;
 import sfiomn.legendarysurvivaloverhaul.util.CapabilityUtil;
 
-public class WetnessUtilInternal implements IWetnessUtil {
+public class WetnessUtilInternal implements IWetnessUtil
+{
     @Override
-    public void addWetness(Player player, int wetness) {
-        if(!isWetnessActive(player))
+    public void addWetness(Player player, int wetness)
+    {
+        if (!isWetnessActive(player))
             return;
 
         WetnessCapability cap = CapabilityUtil.getWetnessCapability(player);
@@ -17,8 +19,9 @@ public class WetnessUtilInternal implements IWetnessUtil {
     }
 
     @Override
-    public void deactivateWetness(Player player) {
-        if(!Config.Baked.wetnessEnabled)
+    public void deactivateWetness(Player player)
+    {
+        if (!Config.Baked.wetnessEnabled)
             return;
 
         WetnessCapability cap = CapabilityUtil.getWetnessCapability(player);
@@ -27,20 +30,23 @@ public class WetnessUtilInternal implements IWetnessUtil {
     }
 
     @Override
-    public void activateWetness(Player player) {
-        if(!Config.Baked.wetnessEnabled)
+    public void activateWetness(Player player)
+    {
+        if (!Config.Baked.wetnessEnabled)
             return;
 
         WetnessCapability cap = CapabilityUtil.getWetnessCapability(player);
-        if (cap.getWetnessTickTimer() == -1) {
+        if (cap.getWetnessTickTimer() == -1)
+        {
             cap.setWetnessTickTimer(0);
             cap.setDirty();
         }
     }
 
     @Override
-    public boolean isWetnessActive(Player player) {
-        if(!Config.Baked.wetnessEnabled)
+    public boolean isWetnessActive(Player player)
+    {
+        if (!Config.Baked.wetnessEnabled)
             return false;
 
         return CapabilityUtil.getWetnessCapability(player).getWetnessTickTimer() != -1;

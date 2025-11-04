@@ -9,11 +9,13 @@ import javax.annotation.Nullable;
 
 //  Deeply inspired by the tall AloeVera from MinecraftAbnormals
 //  https://github.com/team-abnormals/atmospheric/blob/1.16.x/src/main/java/com/minecraftabnormals/atmospheric/client/particle/AloeBlossomParticle.java
-public class FernBlossomParticle extends TextureSheetParticle {
+public class FernBlossomParticle extends TextureSheetParticle
+{
     protected final SpriteSet animatedSprite;
     private float angle;
 
-    protected FernBlossomParticle(SpriteSet animatedSprite, ClientLevel level, double x, double y, double z, double xd, double yd, double zd) {
+    protected FernBlossomParticle(SpriteSet animatedSprite, ClientLevel level, double x, double y, double z, double xd, double yd, double zd)
+    {
         super(level, x, y, z, xd, yd, zd);
 
         this.setSpriteFromAge(animatedSprite);
@@ -40,9 +42,11 @@ public class FernBlossomParticle extends TextureSheetParticle {
     }
 
     @Override
-    public void tick() {
+    public void tick()
+    {
         super.tick();
-        if (this.age % 5 == 0) {
+        if (this.age % 5 == 0)
+        {
             // PI * 2 = 6.28318530718
             this.angle = (float) (Math.random() * 6.28318530718);
         }
@@ -52,44 +56,53 @@ public class FernBlossomParticle extends TextureSheetParticle {
         fadeOut();
     }
 
-    private void fadeOut() {
-        if (((float) age / lifetime) < 0.5f) {
+    private void fadeOut()
+    {
+        if (((float) age / lifetime) < 0.5f)
+        {
             this.alpha = 1;
-        } else {
+        } else
+        {
             this.alpha = 1 - (((float) age / lifetime - 0.5f) * 2.0f);
         }
     }
 
     @Override
-    protected int getLightColor(float partialTick) {
+    protected int getLightColor(float partialTick)
+    {
         float f = this.lifetime / (((this.age + (this.lifetime * 0.5F)) + partialTick));
         f = Mth.clamp(f, 0F, 0.5F);
         int i = super.getLightColor(partialTick);
         int j = i & 255;
         int k = i >> 16 & 255;
         j += (int) (f * 15f * 16f);
-        if (j > 240) {
+        if (j > 240)
+        {
             j = 240;
         }
         return j | k << 16;
     }
 
     @Override
-    public ParticleRenderType getRenderType() {
-        return ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT.PARTICLE_SHEET_TRANSLUCENT;
+    public ParticleRenderType getRenderType()
+    {
+        return ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
     }
 
-    public static class Factory implements ParticleProvider<SimpleParticleType> {
+    public static class Factory implements ParticleProvider<SimpleParticleType>
+    {
 
         private final SpriteSet animatedSprite;
 
-        public Factory(SpriteSet animatedSprite) {
+        public Factory(SpriteSet animatedSprite)
+        {
             this.animatedSprite = animatedSprite;
         }
 
         @Nullable
         @Override
-        public Particle createParticle(SimpleParticleType type, ClientLevel level, double x, double y, double z, double xd, double yd, double zd) {
+        public Particle createParticle(SimpleParticleType type, ClientLevel level, double x, double y, double z, double xd, double yd, double zd)
+        {
             return new FernBlossomParticle(this.animatedSprite, level, x, y, z, xd, yd, zd);
         }
     }

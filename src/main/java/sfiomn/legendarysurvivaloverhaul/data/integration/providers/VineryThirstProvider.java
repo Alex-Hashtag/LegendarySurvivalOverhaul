@@ -9,14 +9,17 @@ import sfiomn.legendarysurvivaloverhaul.registry.MobEffectRegistry;
 
 import java.util.concurrent.CompletableFuture;
 
-public class VineryThirstProvider extends ThirstDataProvider {
+public class VineryThirstProvider extends ThirstDataProvider
+{
 
-    public VineryThirstProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper fileHelper) {
+    public VineryThirstProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper fileHelper)
+    {
         super("vinery", output, lookupProvider, fileHelper);
     }
 
     @Override
-    public void generate(HolderLookup.Provider provider, ExistingFileHelper existingFileHelper) {
+    public void generate(HolderLookup.Provider provider, ExistingFileHelper existingFileHelper)
+    {
         consumable("rotten_cherry").addThirst(thirstData(-4, 0.0f));
 
         IThirstData grape_hydration = thirstData(4, 0.0f);

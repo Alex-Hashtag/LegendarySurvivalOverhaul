@@ -24,7 +24,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-public class BodyHealthScreen extends Screen {
+public class BodyHealthScreen extends Screen
+{
     public static final ResourceLocation BODY_HEALTH_SCREEN = ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "textures/gui/body_health_screen.png");
     public static final int HEALTH_SCREEN_WIDTH = 176;
     public static final int HEALTH_SCREEN_HEIGHT = 183;
@@ -37,18 +38,18 @@ public class BodyHealthScreen extends Screen {
 
     private final Map<BodyPartEnum, Integer> flashCounters = new HashMap<>();
     private final Map<BodyPartEnum, Float> bodyPartHealth = new HashMap<>();
-    private int leftPos;
-    private int topPos;
-
     private final Player player;
     private final InteractionHand hand;
-    private int healingCharges;
     private final float healingValue;
     private final int healingTime;
+    private int leftPos;
+    private int topPos;
+    private int healingCharges;
     private boolean consumeItem;
     private boolean applyEffect;
 
-    public BodyHealthScreen(Player player, InteractionHand hand, boolean alreadyConsumed, int healingCharges, float healingValue, int healingTime) {
+    public BodyHealthScreen(Player player, InteractionHand hand, boolean alreadyConsumed, int healingCharges, float healingValue, int healingTime)
+    {
         super(Component.translatable("screen." + LegendarySurvivalOverhaul.MOD_ID + ".body_health_screen"));
 
         this.player = player;
@@ -61,7 +62,8 @@ public class BodyHealthScreen extends Screen {
     }
 
     @Override
-    protected void init() {
+    protected void init()
+    {
         super.init();
         assert this.minecraft != null;
 
@@ -78,9 +80,12 @@ public class BodyHealthScreen extends Screen {
         addWidget(new BodyPartButton(BodyPartEnum.LEFT_FOOT, this.leftPos + 38, this.topPos + 153, 49, 10, button -> sendBodyPartHeal(BodyPartEnum.LEFT_FOOT)));
 
         bodyPartButtons.clear();
-        for (GuiEventListener button : this.children()) {
-            if (button instanceof BodyPartButton bodyPartButton) {
-                if (this.hand == null) {
+        for (GuiEventListener button : this.children())
+        {
+            if (button instanceof BodyPartButton bodyPartButton)
+            {
+                if (this.hand == null)
+                {
                     bodyPartButton.active = false;
                 }
                 bodyPartButtons.put(bodyPartButton.bodyPart, bodyPartButton);
@@ -91,13 +96,16 @@ public class BodyHealthScreen extends Screen {
 
         BodyDamageCapability cap = CapabilityUtil.getBodyDamageCapability(player);
         bodyPartHealth.clear();
-        for (BodyPartEnum bodyPart: BodyPartEnum.values()) {
+        for (BodyPartEnum bodyPart : BodyPartEnum.values())
+        {
             bodyPartHealth.put(bodyPart, cap.getBodyPartDamage(bodyPart));
         }
     }
 
-    public void sendBodyPartHeal(BodyPartEnum bodyPart) {
-        if (healingCharges > 0) {
+    public void sendBodyPartHeal(BodyPartEnum bodyPart)
+    {
+        if (healingCharges > 0)
+        {
             BodyPartHealingTimeMessage.sendToServer(bodyPart, this.hand, this.consumeItem, this.applyEffect);
             BodyDamageUtil.applyHealingTimeBodyPart(player, bodyPart, this.healingValue, this.healingTime);
             if (this.consumeItem)
@@ -109,9 +117,11 @@ public class BodyHealthScreen extends Screen {
     }
 
     @Override
-    public void tick() {
+    public void tick()
+    {
         Iterator<Map.Entry<BodyPartEnum, Integer>> iter = flashCounters.entrySet().iterator();
-        while (iter.hasNext()) {
+        while (iter.hasNext())
+        {
             Map.Entry<BodyPartEnum, Integer> flashBodyPart = iter.next();
             if (flashBodyPart.getValue() > 0)
                 flashBodyPart.setValue(flashBodyPart.getValue() - 1);
@@ -120,8 +130,10 @@ public class BodyHealthScreen extends Screen {
         }
 
         BodyDamageCapability cap = CapabilityUtil.getBodyDamageCapability(player);
-        for (BodyPartEnum bodyPart: BodyPartEnum.values()) {
-            if (bodyPartHealth.get(bodyPart) != cap.getBodyPartDamage(bodyPart)) {
+        for (BodyPartEnum bodyPart : BodyPartEnum.values())
+        {
+            if (bodyPartHealth.get(bodyPart) != cap.getBodyPartDamage(bodyPart))
+            {
                 flashCounters.put(bodyPart, 4);
                 bodyPartHealth.put(bodyPart, cap.getBodyPartDamage(bodyPart));
             }
@@ -130,14 +142,18 @@ public class BodyHealthScreen extends Screen {
     }
 
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (this.minecraft != null && this.minecraft.player != null) {
-            if (this.minecraft.options.keyInventory.matches(keyCode, scanCode)) {
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers)
+    {
+        if (this.minecraft != null && this.minecraft.player != null)
+        {
+            if (this.minecraft.options.keyInventory.matches(keyCode, scanCode))
+            {
                 this.minecraft.setScreen(new InventoryScreen(this.minecraft.player));
                 return true;
             }
 
-            if (KeyMappingRegistry.showBodyHealth.matches(keyCode, scanCode)) {
+            if (KeyMappingRegistry.showBodyHealth.matches(keyCode, scanCode))
+            {
                 this.onClose();
                 return true;
             }
@@ -147,17 +163,20 @@ public class BodyHealthScreen extends Screen {
     }
 
     @Override
-    public boolean isPauseScreen() {
+    public boolean isPauseScreen()
+    {
         return false;
     }
 
     @Override
-    public boolean shouldCloseOnEsc() {
+    public boolean shouldCloseOnEsc()
+    {
         return true;
     }
 
     @Override
-    public void render(@NotNull GuiGraphics gui, int mouseX, int mouseY, float partialTicks) {
+    public void render(@NotNull GuiGraphics gui, int mouseX, int mouseY, float partialTicks)
+    {
         checkAutoCloseWhenHealing();
 
         // Draw vanilla background blur/dim behind our screen contents
@@ -169,27 +188,32 @@ public class BodyHealthScreen extends Screen {
         gui.blit(BODY_HEALTH_SCREEN, leftPos, topPos, 0, 0, HEALTH_SCREEN_WIDTH, HEALTH_SCREEN_HEIGHT);
 
         // Render health bars on top
-        for (BodyPartEnum bodyPart: BodyPartEnum.values())
+        for (BodyPartEnum bodyPart : BodyPartEnum.values())
             renderBodyPartHealth(gui, bodyPart, mouseX, mouseY, partialTicks);
 
         // Render buttons and widgets on top
         super.render(gui, mouseX, mouseY, partialTicks);
     }
 
-    public void checkAutoCloseWhenHealing() {
-        if (hand != null && healingCharges == 0) {
+    public void checkAutoCloseWhenHealing()
+    {
+        if (hand != null && healingCharges == 0)
+        {
             assert this.minecraft != null;
             this.minecraft.setScreen(null);
         }
     }
 
     @Override
-    public void renderBackground(@NotNull GuiGraphics gui, int mouseX, int mouseY, float partialTick) {
+    public void renderBackground(@NotNull GuiGraphics gui, int mouseX, int mouseY, float partialTick)
+    {
         // Don't render background blur - we handle rendering in render() method
     }
 
-    private void renderBodyPartHealth(GuiGraphics gui, BodyPartEnum bodyPart, int mouseX, int mouseY, float partialTicks) {
-        if (minecraft == null) {
+    private void renderBodyPartHealth(GuiGraphics gui, BodyPartEnum bodyPart, int mouseX, int mouseY, float partialTicks)
+    {
+        if (minecraft == null)
+        {
             return;
         }
 
@@ -203,29 +227,35 @@ public class BodyHealthScreen extends Screen {
         bodyPartButton.setHealthRatio(healthRatio);
 
         // Define button inactive if full health, or pressed, or no healing items used
-        if (healthRatio >= 1 || bodyPartButton.isPressed || this.hand == null) {
-            if (bodyPartButton.active) {
+        if (healthRatio >= 1 || bodyPartButton.isPressed || this.hand == null)
+        {
+            if (bodyPartButton.active)
+            {
                 bodyPartButton.active = false;
             }
-            if (totalRemainingHealing > 0.0f) {
+            if (totalRemainingHealing > 0.0f)
+            {
                 bodyPartButton.isPressed = false;
             }
-        } else if (!bodyPartButton.active) {
+        } else if (!bodyPartButton.active)
+        {
             bodyPartButton.active = true;
         }
 
         bodyPartButton.render(gui, mouseX, mouseY, partialTicks);
 
-        if (bodyPartButton.isMouseOver(mouseX, mouseY) && this.hand != null) {
+        if (bodyPartButton.isMouseOver(mouseX, mouseY) && this.hand != null)
+        {
             totalRemainingHealing += this.healingValue;
         }
 
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1, 1, 1, 1);
-        drawHealthBar(gui, bodyPart, healthRatio,  MathUtil.round(totalRemainingHealing / maxHealth, 2));
+        drawHealthBar(gui, bodyPart, healthRatio, MathUtil.round(totalRemainingHealing / maxHealth, 2));
     }
 
-    private void drawHealthBar(GuiGraphics gui, BodyPartEnum bodyPart, float healthRatio, float totalRemainingHealingRatio) {
+    private void drawHealthBar(GuiGraphics gui, BodyPartEnum bodyPart, float healthRatio, float totalRemainingHealingRatio)
+    {
         HealthBarIcon healthBarIcon = HealthBarIcon.get(bodyPart);
         HealthBarCondition healthBarCondition = HealthBarCondition.get(healthRatio);
         if (healthBarIcon == null)
@@ -241,21 +271,22 @@ public class BodyHealthScreen extends Screen {
 
         int healthBarWidth = (int) Math.ceil(HEALTH_BAR_WIDTH * healthRatio);
         int healthBarPreviewWidth = (int) Math.min(Math.ceil(HEALTH_BAR_WIDTH * totalRemainingHealingRatio), HEALTH_BAR_WIDTH - healthBarWidth);
-        
+
         int texX = TEX_HEALTH_BAR_X + HEALTH_BAR_WIDTH * healthBarCondition.iconIndexX;
         int texY = TEX_HEALTH_BAR_Y + HEALTH_BAR_HEIGHT * healthBarCondition.iconIndexY;
-        
+
         sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul.LOGGER.info(
-            "[drawHealthBar] {}: ratio={}, barWidth={}/{}, condition={}, texCoords=({},{})",
-            bodyPart.name(), healthRatio, healthBarWidth, HEALTH_BAR_WIDTH, healthBarCondition.name(), texX, texY
+                "[drawHealthBar] {}: ratio={}, barWidth={}/{}, condition={}, texCoords=({},{})",
+                bodyPart.name(), healthRatio, healthBarWidth, HEALTH_BAR_WIDTH, healthBarCondition.name(), texX, texY
         );
 
         // Draw current health bar
-        if (healthBarWidth > 0) {
+        if (healthBarWidth > 0)
+        {
             sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul.LOGGER.info(
-                "[drawHealthBar] Drawing filled bar at screen({},{}) from tex({},{}) size({},{})",
-                this.leftPos + healthBarIcon.x, this.topPos + healthBarIcon.y,
-                texX, texY, healthBarWidth, HEALTH_BAR_HEIGHT
+                    "[drawHealthBar] Drawing filled bar at screen({},{}) from tex({},{}) size({},{})",
+                    this.leftPos + healthBarIcon.x, this.topPos + healthBarIcon.y,
+                    texX, texY, healthBarWidth, HEALTH_BAR_HEIGHT
             );
             gui.blit(BODY_HEALTH_SCREEN, this.leftPos + healthBarIcon.x, this.topPos + healthBarIcon.y,
                     texX, texY, healthBarWidth, HEALTH_BAR_HEIGHT);
@@ -275,7 +306,8 @@ public class BodyHealthScreen extends Screen {
                     HEALTH_BAR_WIDTH, HEALTH_BAR_HEIGHT);
     }
 
-    private enum HealthBarIcon {
+    private enum HealthBarIcon
+    {
         HEAD(72, 46),
         RIGHT_ARM(118, 80),
         LEFT_ARM(27, 80),
@@ -288,13 +320,16 @@ public class BodyHealthScreen extends Screen {
         public final int x;
         public final int y;
 
-        HealthBarIcon(int x, int y) {
+        HealthBarIcon(int x, int y)
+        {
             this.x = x;
             this.y = y;
         }
 
-        public static HealthBarIcon get(BodyPartEnum bodyPart) {
-            return switch (bodyPart) {
+        public static HealthBarIcon get(BodyPartEnum bodyPart)
+        {
+            return switch (bodyPart)
+            {
                 case HEAD -> HEAD;
                 case RIGHT_ARM -> RIGHT_ARM;
                 case LEFT_ARM -> LEFT_ARM;
@@ -308,7 +343,8 @@ public class BodyHealthScreen extends Screen {
         }
     }
 
-    private enum HealthBarCondition {
+    private enum HealthBarCondition
+    {
         HEALTHY(0, 0),
         WOUNDED(0, 1),
         HEAVILY_WOUNDED(0, 2),
@@ -328,20 +364,27 @@ public class BodyHealthScreen extends Screen {
             this.iconIndexY = iconIndexY;
         }
 
-        public static HealthBarCondition get(float healthRatio) {
-            if (healthRatio >= 0.66f) {
+        public static HealthBarCondition get(float healthRatio)
+        {
+            if (healthRatio >= 0.66f)
+            {
                 return HEALTHY;
-            } else if (healthRatio >= 0.33f) {
+            } else if (healthRatio >= 0.33f)
+            {
                 return WOUNDED;
-            } else if (healthRatio > 0) {
+            } else if (healthRatio > 0)
+            {
                 return HEAVILY_WOUNDED;
-            } else {
+            } else
+            {
                 return DEAD;
             }
         }
 
-        public HealthBarCondition getPreviewVariant() {
-            return switch (this) {
+        public HealthBarCondition getPreviewVariant()
+        {
+            return switch (this)
+            {
                 case HEALTHY -> HEALTHY_PREVIEW;
                 case WOUNDED -> WOUNDED_PREVIEW;
                 case HEAVILY_WOUNDED -> HEAVILY_WOUNDED_PREVIEW;

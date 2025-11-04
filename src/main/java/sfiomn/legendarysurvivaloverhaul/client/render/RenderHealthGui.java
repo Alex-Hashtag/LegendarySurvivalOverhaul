@@ -20,19 +20,21 @@ import java.util.Random;
 
 public class RenderHealthGui
 {
-    private static HealthCapability HEALTH_CAP = null;
-    private static final Random rand = new Random();
-
     public static final ResourceLocation ICONS = ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "textures/gui/overlay.png");
-    protected static final ResourceLocation MINECRAFT_GUI_ICONS_LOCATION = ResourceLocation.parse("textures/gui/icons.png");
-
+    private static final Random rand = new Random();
     private static final int HEART_TEXTURE_WIDTH = 9;
+    // Since 1.20.6+ vanilla GUI icons.png was split into individual sprites under hud/heart/*.
+    // We now use the sprite-based rendering API via GuiGraphics.blitSprite.
     private static final int HEART_TEXTURE_HEIGHT = 9;
+    private static HealthCapability HEALTH_CAP = null;
 
-    public static void render(Gui gui, GuiGraphics guiGraphics, float partialTicks, int width, int height) {
-        if (Config.Baked.healthOverhaulEnabled && !Minecraft.getInstance().options.hideGui) {
+    public static void render(Gui gui, GuiGraphics guiGraphics, float partialTicks, int width, int height)
+    {
+        if (Config.Baked.healthOverhaulEnabled && !Minecraft.getInstance().options.hideGui)
+        {
             Player player = Minecraft.getInstance().player;
-            if (player != null && !player.isCreative() && !player.isSpectator()) {
+            if (player != null && !player.isCreative() && !player.isSpectator())
+            {
                 rand.setSeed(player.tickCount * 445L);
 
                 RenderSystem.enableBlend();
@@ -74,7 +76,8 @@ public class RenderHealthGui
         int totalHearts = Mth.ceil(shieldHealth / 2.0F) + brokenHearts;
 
         boolean appendedRow = false;
-        if (Config.Baked.appendBrokenShieldHeartsToHealthBar) {
+        if (Config.Baked.appendBrokenShieldHeartsToHealthBar)
+        {
             playerHearts = Mth.ceil(player.getMaxHealth() / 2.0f);
 
             if (OverflowingBarsUtil.isHealthBarOverflowing())
@@ -82,7 +85,8 @@ public class RenderHealthGui
 
             playerHearts = playerHearts % 10;
 
-            if (playerHearts > 0) {
+            if (playerHearts > 0)
+            {
                 totalHearts += playerHearts;
                 top += 10;          // matches old Forge behavior
                 appendedRow = true; // we "borrowed" 10px before adding rows
@@ -100,55 +104,104 @@ public class RenderHealthGui
         return Math.max(used, 0);
     }
 
-    public static void renderHearts(GuiGraphics gui, int left, int top, int rowHeight, int playerHearts, int brokenHearts, int health, float shieldHealth) {
-        int shieldHearts = Mth.ceil((double)shieldHealth / 2.0);
+    public static void renderHearts(GuiGraphics gui, int left, int top, int rowHeight, int playerHearts, int brokenHearts, int health, float shieldHealth)
+    {
+        int shieldHearts = Mth.ceil((double) shieldHealth / 2.0);
 
-        for (int i1 = playerHearts + shieldHearts + brokenHearts - 1; i1 >= playerHearts; --i1) {
+        for (int i1 = playerHearts + shieldHearts + brokenHearts - 1; i1 >= playerHearts; --i1)
+        {
             int j1 = i1 / 10;
             int k1 = i1 % 10;
             int x = left + k1 * 8;
             int y = top - j1 * rowHeight;
-            if (health + shieldHealth <= 4) {
+            if (health + shieldHealth <= 4)
+            {
                 y += rand.nextInt(2);
             }
 
             boolean flag = i1 >= brokenHearts + playerHearts;
-            if (flag) {
+            if (flag)
+            {
                 renderHeart(gui, HeartType.CONTAINER, x, y, 0, false);
                 renderHeart(gui, HeartType.SHIELD, x, y, 0, shieldHealth < shieldHearts * 2 && i1 == shieldHearts - 1);
-            } else {
+            } else
+            {
                 renderHeart(gui, HeartType.BROKEN, x, y, 0, false);
             }
         }
     }
 
-    public static void renderHeart(GuiGraphics gui, HeartType heartType, int x, int y, int yTexture, boolean halfIcon) {
-        gui.blit(heartType.location, x, y, heartType.getX(halfIcon), yTexture, 9, 9);
+    public static void renderHeart(GuiGraphics gui, HeartType heartType, int x, int y, int yTexture, boolean halfIcon)
+    {
+        // Use sprite-based blit for new heart sprites, but keep BROKEN from our mod texture sheet
+        if (heartType.isTextureBased())
+        {
+            gui.blit(heartType.location, x, y, heartType.getX(halfIcon), yTexture, HEART_TEXTURE_WIDTH, HEART_TEXTURE_HEIGHT);
+        } else
+        {
+            gui.blitSprite(heartType.getSprite(halfIcon), x, y, HEART_TEXTURE_WIDTH, HEART_TEXTURE_HEIGHT);
+        }
     }
 
     @OnlyIn(Dist.CLIENT)
-    public static enum HeartType {
-        CONTAINER(MINECRAFT_GUI_ICONS_LOCATION, 0),
-        SHIELD(MINECRAFT_GUI_ICONS_LOCATION, 8),
+    public enum HeartType
+    {
+        // Vanilla heart sprites (1.20.6+): hud/heart/container, hud/heart/full, hud/heart/half
+        CONTAINER(ResourceLocation.withDefaultNamespace("hud/heart/container")),
+        SHIELD(ResourceLocation.withDefaultNamespace("hud/heart/absorbing_full"), ResourceLocation.withDefaultNamespace("hud/heart/absorbing_half")),
+        // Keep BROKEN from our mod texture atlas (overlay.png)
         BROKEN(ICONS, 0);
 
+        // Sprite-based
+        private final ResourceLocation fullSprite;
+        private final ResourceLocation halfSprite; // may be null when not applicable
+        // Texture-based (for BROKEN)
         private final ResourceLocation location;
         private final int index;
 
-        private HeartType(ResourceLocation location, int index) {
-            this.location = location;
-            this.index = index;
+        HeartType(ResourceLocation singleSprite)
+        {
+            this.fullSprite = singleSprite;
+            this.halfSprite = null;
+            this.location = null;
+            this.index = 0;
         }
 
-        public int getX(boolean halfIcon) {
-            if (this == BROKEN) {
-                return (16 + this.index) * HEART_TEXTURE_WIDTH;
-            } else {
-                int i = 0;
-                if (this == SHIELD)
-                    i = halfIcon ? 1 : 0;
-                return 16 + (this.index * 2 + i) * 9;
+        HeartType(ResourceLocation fullSprite, ResourceLocation halfSprite)
+        {
+            this.fullSprite = fullSprite;
+            this.halfSprite = halfSprite;
+            this.location = null;
+            this.index = 0;
+        }
+
+        HeartType(ResourceLocation location, int index)
+        {
+            this.location = location;
+            this.index = index;
+            this.fullSprite = null;
+            this.halfSprite = null;
+        }
+
+        public boolean isTextureBased()
+        {
+            return this == BROKEN;
+        }
+
+        public ResourceLocation getSprite(boolean halfIcon)
+        {
+            if (this == SHIELD && halfIcon && this.halfSprite != null)
+            {
+                return this.halfSprite;
             }
+            return this.fullSprite;
+        }
+
+        public int getX(boolean halfIcon)
+        {
+            // Maintain original UV logic for the custom broken heart in overlay.png
+            // This used to offset into the old icons grid; overlay aligns to that layout.
+            return (16 + this.index) * HEART_TEXTURE_WIDTH;
         }
     }
 }

@@ -4,6 +4,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -12,7 +13,6 @@ import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
-import net.minecraft.world.entity.ai.attributes.Attributes;
 import org.jetbrains.annotations.Nullable;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.thirst.ThirstUtil;
@@ -21,13 +21,16 @@ import sfiomn.legendarysurvivaloverhaul.util.CapabilityUtil;
 
 import java.util.List;
 
-public class NetherChaliceItem extends WearableCurioItem {
-    public NetherChaliceItem(Properties pProperties) {
+public class NetherChaliceItem extends WearableCurioItem
+{
+    public NetherChaliceItem(Properties pProperties)
+    {
         super(pProperties);
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand usedHand) {
+    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand usedHand)
+    {
         if (LegendarySurvivalOverhaul.curiosLoaded)
             return super.use(level, player, usedHand);
 
@@ -39,11 +42,13 @@ public class NetherChaliceItem extends WearableCurioItem {
         HitResult positionLookedAt = player.pick(player.getAttributeValue(Attributes.BLOCK_INTERACTION_RANGE) / 2, 0.0F, true);
         FluidState fluidState = null;
 
-        if (positionLookedAt.getType() == HitResult.Type.BLOCK) {
+        if (positionLookedAt.getType() == HitResult.Type.BLOCK)
+        {
             fluidState = level.getFluidState(((BlockHitResult) positionLookedAt).getBlockPos());
         }
 
-        if (fluidState != null && (fluidState.is(Fluids.LAVA) || fluidState.is(Fluids.FLOWING_LAVA))) {
+        if (fluidState != null && (fluidState.is(Fluids.LAVA) || fluidState.is(Fluids.FLOWING_LAVA)))
+        {
             player.swing(InteractionHand.MAIN_HAND);
             player.playSound(SoundEvents.GENERIC_DRINK, 1.0f, 1.0f);
             ThirstUtil.takeDrink(player, Config.Baked.hydrationLava, (float) Config.Baked.saturationLava);
@@ -54,14 +59,16 @@ public class NetherChaliceItem extends WearableCurioItem {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable TooltipContext level, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
+    public void appendHoverText(ItemStack stack, @Nullable TooltipContext level, List<Component> tooltipComponents, TooltipFlag isAdvanced)
+    {
         super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
 
         tooltipComponents.add(Component.translatable("tooltip." + LegendarySurvivalOverhaul.MOD_ID + ".nether_chalice.description"));
     }
 
     @Override
-    public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
+    public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged)
+    {
         return slotChanged;
     }
 }

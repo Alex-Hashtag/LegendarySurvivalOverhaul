@@ -27,22 +27,24 @@ import sfiomn.legendarysurvivaloverhaul.registry.ItemRegistry;
 import sfiomn.legendarysurvivaloverhaul.registry.ParticleTypeRegistry;
 
 
-public class IceFernBlock extends CropBlock {
+public class IceFernBlock extends CropBlock
+{
     public static final int MAX_AGE = 3;
     public static final IntegerProperty AGE = BlockStateProperties.AGE_3;
+    public static final Properties properties = getProperties();
     private static final VoxelShape[] SHAPE_BY_AGE = new VoxelShape[]{
             Block.box(3.0D, 0.0D, 3.0D, 13.0D, 8.0D, 13.0D),
             Block.box(1.0D, 0.0D, 1.0D, 15.0D, 10.0D, 15.0D),
             Block.box(1.0D, 0.0D, 1.0D, 15.0D, 15.0D, 15.0D),
             Block.box(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D)};
 
-    public static final Properties properties = getProperties();
-
-    public IceFernBlock() {
+    public IceFernBlock()
+    {
         super(properties);
     }
 
-    public static Properties getProperties() {
+    public static Properties getProperties()
+    {
         return BlockBehaviour.Properties
                 .of()
                 .mapColor(MapColor.PLANT)
@@ -55,15 +57,19 @@ public class IceFernBlock extends CropBlock {
     }
 
     @Override
-    public void growCrops(Level level, BlockPos pos, BlockState blockState) {
+    public void growCrops(Level level, BlockPos pos, BlockState blockState)
+    {
         int i = this.getAge(blockState) + this.getBonemealAgeIncrease(level);
         int j = this.getMaxAge();
-        if (i > j) {
+        if (i > j)
+        {
             i = j;
         }
 
-        if (i == MAX_AGE) {
-            if (level.getRandom().nextFloat() < Config.Baked.goldFernChance) {
+        if (i == MAX_AGE)
+        {
+            if (level.getRandom().nextFloat() < Config.Baked.goldFernChance)
+            {
                 level.setBlock(pos, BlockRegistry.ICE_FERN_GOLD.get().defaultBlockState(), 2);
                 return;
             }
@@ -73,43 +79,51 @@ public class IceFernBlock extends CropBlock {
     }
 
     @Override
-    protected boolean mayPlaceOn(BlockState blockState, BlockGetter level, BlockPos pos) {
+    protected boolean mayPlaceOn(BlockState blockState, BlockGetter level, BlockPos pos)
+    {
         return blockState.is(Blocks.GRASS_BLOCK) || blockState.is(Blocks.DIRT) || blockState.is(Blocks.COARSE_DIRT) || blockState.is(Blocks.PODZOL) || blockState.is(Blocks.FARMLAND) || blockState.is(Blocks.SNOW_BLOCK);
     }
 
     @Override
-    protected int getBonemealAgeIncrease(Level pLevel) {
+    protected int getBonemealAgeIncrease(Level pLevel)
+    {
         return Mth.nextInt(pLevel.random, 0, 1);
     }
 
     @Override
-    protected ItemLike getBaseSeedId() {
+    protected ItemLike getBaseSeedId()
+    {
         return ItemRegistry.ICE_FERN_SEEDS.get();
     }
 
     @Override
-    public IntegerProperty getAgeProperty() {
+    public IntegerProperty getAgeProperty()
+    {
         return AGE;
     }
 
     @Override
-    public int getMaxAge() {
+    public int getMaxAge()
+    {
         return MAX_AGE;
     }
 
     @Override
-    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder)
+    {
         builder.add(AGE);
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, BlockGetter reader, BlockPos pos, CollisionContext context) {
+    public VoxelShape getShape(BlockState state, BlockGetter reader, BlockPos pos, CollisionContext context)
+    {
         return SHAPE_BY_AGE[this.getAge(state)];
     }
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource rand) {
+    public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource rand)
+    {
         if (getAge(state) < getMaxAge())
             return;
 

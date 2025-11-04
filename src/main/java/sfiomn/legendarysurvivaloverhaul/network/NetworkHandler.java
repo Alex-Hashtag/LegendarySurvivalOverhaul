@@ -2,21 +2,23 @@ package sfiomn.legendarysurvivaloverhaul.network;
 
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
-import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 import net.neoforged.neoforge.network.handling.DirectionalPayloadHandler;
+import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.network.packets.*;
 
 @EventBusSubscriber(modid = LegendarySurvivalOverhaul.MOD_ID, bus = EventBusSubscriber.Bus.MOD)
-public class NetworkHandler {
+public class NetworkHandler
+{
 
-    public NetworkHandler() {
+    public NetworkHandler()
+    {
     }
 
     @SubscribeEvent
-    public static void register(final RegisterPayloadHandlersEvent event) {
+    public static void register(final RegisterPayloadHandlersEvent event)
+    {
         PayloadRegistrar reg = event.registrar(LegendarySurvivalOverhaul.MOD_ID).versioned("1");
 
         reg.playBidirectional(UpdateTemperaturesPacket.TYPE, UpdateTemperaturesPacket.STREAM_CODEC,

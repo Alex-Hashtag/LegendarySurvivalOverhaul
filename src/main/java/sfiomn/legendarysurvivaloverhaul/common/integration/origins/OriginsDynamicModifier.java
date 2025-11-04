@@ -1,19 +1,19 @@
 package sfiomn.legendarysurvivaloverhaul.common.integration.origins;
 
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
-import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonTemperatureResistance;
-import sfiomn.legendarysurvivaloverhaul.api.data.manager.TemperatureDataManager;
 import sfiomn.legendarysurvivaloverhaul.api.temperature.DynamicModifierBase;
 import sfiomn.legendarysurvivaloverhaul.api.temperature.TemperatureEnum;
 
-public class OriginsDynamicModifier extends DynamicModifierBase {
-    public OriginsDynamicModifier() {}
+public class OriginsDynamicModifier extends DynamicModifierBase
+{
+    public OriginsDynamicModifier()
+    {
+    }
 
     @Override
-    public float applyDynamicPlayerInfluence(Player player, float currentTemperature, float currentResistance) {
+    public float applyDynamicPlayerInfluence(Player player, float currentTemperature, float currentResistance)
+    {
 
         if (!LegendarySurvivalOverhaul.originsLoaded)
             return 0.0f;

@@ -14,7 +14,8 @@ import sfiomn.legendarysurvivaloverhaul.registry.ItemRegistry;
 
 import java.util.concurrent.CompletableFuture;
 
-public class CuriosItemTagProvider extends ItemTagsProvider {
+public class CuriosItemTagProvider extends ItemTagsProvider
+{
     public static final TagKey<Item> BELT_TAG = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("curios", "belt"));
     public static final TagKey<Item> NECKLACE_TAG = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("curios", "necklace"));
     public static final TagKey<Item> HEAD_TAG = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("curios", "head"));
@@ -22,12 +23,14 @@ public class CuriosItemTagProvider extends ItemTagsProvider {
     public static final TagKey<Item> CHARM_TAG = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("curios", "charm"));
     public static final TagKey<Item> RING_TAG = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("curios", "ring"));
 
-    public CuriosItemTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, CompletableFuture<TagLookup<Block>> p_275322_, @Nullable ExistingFileHelper existingFileHelper) {
+    public CuriosItemTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, CompletableFuture<TagLookup<Block>> p_275322_, @Nullable ExistingFileHelper existingFileHelper)
+    {
         super(output, lookupProvider, p_275322_, "curios", existingFileHelper);
     }
 
     @Override
-    protected void addTags(HolderLookup.Provider provider) {
+    protected void addTags(HolderLookup.Provider provider)
+    {
         this.tag(BELT_TAG)
                 .add(ItemRegistry.THERMOMETER.get());
         this.tag(NECKLACE_TAG)

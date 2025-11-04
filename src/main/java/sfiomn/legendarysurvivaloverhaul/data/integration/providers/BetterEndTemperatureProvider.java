@@ -8,14 +8,17 @@ import sfiomn.legendarysurvivaloverhaul.api.data.providers.TemperatureDataProvid
 
 import java.util.concurrent.CompletableFuture;
 
-public class BetterEndTemperatureProvider extends TemperatureDataProvider {
+public class BetterEndTemperatureProvider extends TemperatureDataProvider
+{
 
-    public BetterEndTemperatureProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper fileHelper) {
+    public BetterEndTemperatureProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper fileHelper)
+    {
         super("betterend", output, lookupProvider, fileHelper);
     }
 
     @Override
-    public void generate(HolderLookup.Provider provider, ExistingFileHelper existingFileHelper) {
+    public void generate(HolderLookup.Provider provider, ExistingFileHelper existingFileHelper)
+    {
         fuelItem("charcoal_block").thermalType(ThermalTypeEnum.HEATING).duration(5400);
 
         fuelItem("emerald_ice").thermalType(ThermalTypeEnum.COOLING).duration(1800);

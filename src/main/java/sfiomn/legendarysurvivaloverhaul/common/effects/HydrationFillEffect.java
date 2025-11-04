@@ -6,8 +6,8 @@ import net.minecraft.world.effect.MobEffectCategory;
 
 public class HydrationFillEffect extends MobEffect
 {
-	public HydrationFillEffect()
-	{
-		super(MobEffectCategory.BENEFICIAL, 9564927);
-	}
+    public HydrationFillEffect()
+    {
+        super(MobEffectCategory.BENEFICIAL, 9564927);
+    }
 }

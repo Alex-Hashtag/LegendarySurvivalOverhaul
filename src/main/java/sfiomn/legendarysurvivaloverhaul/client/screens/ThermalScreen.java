@@ -15,42 +15,50 @@ import sfiomn.legendarysurvivaloverhaul.api.block.ThermalTypeEnum;
 import sfiomn.legendarysurvivaloverhaul.common.containers.AbstractThermalContainer;
 
 @OnlyIn(Dist.CLIENT)
-public class ThermalScreen extends AbstractContainerScreen<AbstractThermalContainer> {
+public class ThermalScreen extends AbstractContainerScreen<AbstractThermalContainer>
+{
     public static final ResourceLocation HEATER_SCREEN = ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "textures/gui/heater_screen.png");
     public static final ResourceLocation COOLER_SCREEN = ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "textures/gui/cooler_screen.png");
     public static final int FUEL_LEVEL_WIDTH = 29;
     public static final int FUEL_LEVEL_HEIGHT = 27;
 
-    public ThermalScreen(AbstractThermalContainer screenContainer, Inventory playerInventory, Component titleIn) {
+    public ThermalScreen(AbstractThermalContainer screenContainer, Inventory playerInventory, Component titleIn)
+    {
         super(screenContainer, playerInventory, titleIn);
     }
 
     @Override
-    protected void init() {
+    protected void init()
+    {
         super.init();
         this.inventoryLabelY = 10000;
         this.titleLabelY = 10000;
     }
 
     @Override
-    public void render(@NotNull GuiGraphics gui, int mouseX, int mouseY, float partialTicks) {
+    public void render(@NotNull GuiGraphics gui, int mouseX, int mouseY, float partialTicks)
+    {
         this.renderBackground(gui, mouseX, mouseY, partialTicks);
         super.render(gui, mouseX, mouseY, partialTicks);
         this.renderTooltip(gui, mouseX, mouseY);
     }
 
     @Override
-    protected void renderBg(GuiGraphics gui, float partialTicks, int x, int y) {
-        if (minecraft == null) {
+    protected void renderBg(GuiGraphics gui, float partialTicks, int x, int y)
+    {
+        if (minecraft == null)
+        {
             return;
         }
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1, 1, 1, 1);
 
         ResourceLocation TEXTURE;
-        if (menu.getThermalType() == ThermalTypeEnum.HEATING) {
+        if (menu.getThermalType() == ThermalTypeEnum.HEATING)
+        {
             TEXTURE = HEATER_SCREEN;
-        } else {
+        } else
+        {
             TEXTURE = COOLER_SCREEN;
         }
 

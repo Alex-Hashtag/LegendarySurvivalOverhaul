@@ -7,14 +7,17 @@ import sfiomn.legendarysurvivaloverhaul.api.data.providers.TemperatureDataProvid
 
 import java.util.concurrent.CompletableFuture;
 
-public class BopTemperatureProvider extends TemperatureDataProvider {
+public class BopTemperatureProvider extends TemperatureDataProvider
+{
 
-    public BopTemperatureProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper fileHelper) {
+    public BopTemperatureProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper fileHelper)
+    {
         super("biomesoplenty", output, lookupProvider, fileHelper);
     }
 
     @Override
-    public void generate(HolderLookup.Provider provider, ExistingFileHelper existingFileHelper) {
+    public void generate(HolderLookup.Provider provider, ExistingFileHelper existingFileHelper)
+    {
         biome("crystalline_chasm").temperature(0.8f).isDry(false);
         biome("undergrowth").temperature(0.75f).isDry(false);
         biome("visceral_heap").temperature(0.9f).isDry(false);

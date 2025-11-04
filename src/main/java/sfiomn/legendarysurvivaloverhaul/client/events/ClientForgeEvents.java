@@ -1,12 +1,12 @@
 package sfiomn.legendarysurvivaloverhaul.client.events;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.MapItem;
 import net.minecraft.world.level.block.Block;
@@ -15,7 +15,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.fml.common.Mod;
+import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.CustomizeGuiOverlayEvent;
 import net.neoforged.neoforge.client.event.RenderGuiLayerEvent;
 import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
@@ -23,10 +23,6 @@ import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.entity.player.BonemealEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
-import net.neoforged.neoforge.client.event.ClientTickEvent;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.core.Holder;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonThirstBlock;
 import sfiomn.legendarysurvivaloverhaul.api.thirst.ThirstUtil;
@@ -34,7 +30,6 @@ import sfiomn.legendarysurvivaloverhaul.client.ClientHooks;
 import sfiomn.legendarysurvivaloverhaul.client.effects.TemperatureBreathEffect;
 import sfiomn.legendarysurvivaloverhaul.client.integration.sereneseasons.RenderSeasonCards;
 import sfiomn.legendarysurvivaloverhaul.client.render.*;
-import sfiomn.legendarysurvivaloverhaul.client.screens.WarningDataPackScreen;
 import sfiomn.legendarysurvivaloverhaul.client.sounds.TemperatureBreathSound;
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.thirst.ThirstCapability;
 import sfiomn.legendarysurvivaloverhaul.common.integration.curios.CuriosUtil;
@@ -58,28 +53,35 @@ import static sfiomn.legendarysurvivaloverhaul.util.WorldUtil.timeInGame;
         bus = EventBusSubscriber.Bus.GAME,
         value = Dist.CLIENT
 )
-public class ClientForgeEvents {
+public class ClientForgeEvents
+{
 
     public static boolean hasOpened = false;
     public static int warningPageDelay = 40;
 
     @SubscribeEvent
-    public static void onItemRightClick(PlayerInteractEvent.RightClickItem event){
+    public static void onItemRightClick(PlayerInteractEvent.RightClickItem event)
+    {
         Player player = Minecraft.getInstance().player;
-        if (player == null) {
+        if (player == null)
+        {
             return;
         }
         if (LegendarySurvivalOverhaul.sereneSeasonsLoaded &&
                 BuiltInRegistries.ITEM.getKey(event.getItemStack().getItem())
-                        .equals(ResourceLocation.fromNamespaceAndPath("sereneseasons", "calendar"))) {
+                        .equals(ResourceLocation.fromNamespaceAndPath("sereneseasons", "calendar")))
+        {
             player.displayClientMessage(seasonTooltip(player.blockPosition(), player.level()), true);
-        } else if (event.getItemStack().getItem() == Items.CLOCK) {
+        } else if (event.getItemStack().getItem() == Items.CLOCK)
+        {
             player.displayClientMessage(Component.literal(timeInGame(Minecraft.getInstance())), true);
-        } else if (event.getItemStack().getItem() == Items.COMPASS) {
+        } else if (event.getItemStack().getItem() == Items.COMPASS)
+        {
             String compassLocation = compassLocation(player);
             if (!compassLocation.isEmpty())
                 player.displayClientMessage(Component.literal(compassLocation), true);
-        } else if (Config.Baked.showCoordinateOnMap && event.getItemStack().getItem() == Items.FILLED_MAP) {
+        } else if (Config.Baked.showCoordinateOnMap && event.getItemStack().getItem() == Items.FILLED_MAP)
+        {
             MapItemSavedData mapData = MapItem.getSavedData(event.getItemStack(), event.getLevel());
             if (mapData != null)
                 player.displayClientMessage(
@@ -93,28 +95,34 @@ public class ClientForgeEvents {
     {
         Block plant = event.getLevel().getBlockState(event.getPos()).getBlock();
         Player player = Minecraft.getInstance().player;
-        if (player == null || BuiltInRegistries.BLOCK.getKey(plant) == null) {
+        if (player == null || BuiltInRegistries.BLOCK.getKey(plant) == null)
+        {
             return;
         }
 
-        if (LegendarySurvivalOverhaul.sereneSeasonsLoaded && !plantCanGrow(event.getLevel(), event.getPos(), event.getLevel().getBlockState(event.getPos()))) {
+        if (LegendarySurvivalOverhaul.sereneSeasonsLoaded && !plantCanGrow(event.getLevel(), event.getPos(), event.getLevel().getBlockState(event.getPos())))
+        {
             player.displayClientMessage(Component.translatable("message." + LegendarySurvivalOverhaul.MOD_ID + ".bonemeal.not_correct_season"), true);
         }
     }
 
     @SubscribeEvent
-    public static void onRightClickEmpty(PlayerInteractEvent.RightClickEmpty event) {
-        if (shouldApplyThirst(event.getEntity())) {
+    public static void onRightClickEmpty(PlayerInteractEvent.RightClickEmpty event)
+    {
+        if (shouldApplyThirst(event.getEntity()))
+        {
             // Only run on main hand (otherwise it runs twice)
-            if(event.getHand() == InteractionHand.MAIN_HAND && event.getEntity().getMainHandItem().isEmpty())
+            if (event.getHand() == InteractionHand.MAIN_HAND && event.getEntity().getMainHandItem().isEmpty())
             {
                 Player player = event.getEntity();
 
                 ThirstCapability thirstCapability = CapabilityUtil.getThirstCapability(player);
-                if (!thirstCapability.isHydrationLevelAtMax()) {
-                    JsonThirstBlock jsonFluidThirst = ThirstUtil.getFluidThirstLookedAt(player, (float)(player.getAttributeValue(Attributes.BLOCK_INTERACTION_RANGE) / 2));
+                if (!thirstCapability.isHydrationLevelAtMax())
+                {
+                    JsonThirstBlock jsonFluidThirst = ThirstUtil.getFluidThirstLookedAt(player, (float) (player.getAttributeValue(Attributes.BLOCK_INTERACTION_RANGE) / 2));
 
-                    if (jsonFluidThirst != null && (jsonFluidThirst.hydration != 0 || jsonFluidThirst.saturation != 0)) {
+                    if (jsonFluidThirst != null && (jsonFluidThirst.hydration != 0 || jsonFluidThirst.saturation != 0))
+                    {
                         playerDrinkEffect(event.getEntity());
                         DrinkBlockFluidMessage.sendToServer();
                     }
@@ -124,8 +132,10 @@ public class ClientForgeEvents {
     }
 
     @SubscribeEvent
-    public static void preRenderGameOverlay(RenderGuiLayerEvent.Pre event) {
-        if (event.getName().equals(VanillaGuiLayers.FOOD_LEVEL)) {
+    public static void preRenderGameOverlay(RenderGuiLayerEvent.Pre event)
+    {
+        if (event.getName().equals(VanillaGuiLayers.FOOD_LEVEL))
+        {
 
             // Cancel the vanilla food rendering when cold hunger effect active (the mod redraws a custom food bar)
             if (Minecraft.getInstance().player != null && Minecraft.getInstance().player.hasEffect(MobEffectRegistry.COLD_HUNGER))
@@ -134,23 +144,28 @@ public class ClientForgeEvents {
     }
 
     @SubscribeEvent
-    public static void onRenderOverlayEventHideDebugInfo(CustomizeGuiOverlayEvent.DebugText event) {
+    public static void onRenderOverlayEventHideDebugInfo(CustomizeGuiOverlayEvent.DebugText event)
+    {
         Player player = Minecraft.getInstance().player;
         if (player == null || player.isCreative() || player.isSpectator() || !Config.Baked.hideInfoFromDebug)
             return;
 
-        for (ListIterator<String> it = event.getRight().listIterator(); it.hasNext(); ) {
+        for (ListIterator<String> it = event.getRight().listIterator(); it.hasNext(); )
+        {
             String line = it.next();
-            if (line.contains("Targeted")) {
+            if (line.contains("Targeted"))
+            {
                 line = line.split(":")[0] + ":";
                 it.remove();
                 it.add(line);
             }
         }
 
-        for (ListIterator<String> it = event.getLeft().listIterator(); it.hasNext(); ) {
+        for (ListIterator<String> it = event.getLeft().listIterator(); it.hasNext(); )
+        {
             String line = it.next();
-            if (line.contains("XYZ:")) {
+            if (line.contains("XYZ:"))
+            {
                 line = Component.translatable("message." + LegendarySurvivalOverhaul.MOD_ID + ".warning_use_compass").getString();
                 it.remove();
                 it.add(line);
@@ -161,10 +176,13 @@ public class ClientForgeEvents {
     }
 
     @SubscribeEvent
-    public static void onClientTick(ClientTickEvent.Post event) {
+    public static void onClientTick(ClientTickEvent.Post event)
+    {
         Player player = Minecraft.getInstance().player;
-        if (!Minecraft.getInstance().isPaused() && player != null) {
-            if (Config.Baked.temperatureEnabled) {
+        if (!Minecraft.getInstance().isPaused() && player != null)
+        {
+            if (Config.Baked.temperatureEnabled)
+            {
                 RenderTemperatureGui.updateTimer();
                 RenderTemperatureOverlay.updateTemperatureEffect(player);
                 if (Config.Baked.coldBreathEffectThreshold != -1000)
@@ -182,7 +200,8 @@ public class ClientForgeEvents {
             if (LegendarySurvivalOverhaul.sereneSeasonsLoaded && Config.Baked.ssSeasonCardsEnabled)
                 RenderSeasonCards.updateSeasonCardFading(player);
 
-            if (Config.Baked.localizedBodyDamageEnabled) {
+            if (Config.Baked.localizedBodyDamageEnabled)
+            {
                 RenderBodyDamageGui.updateFlashingTimer();
 
                 if (KeyMappingRegistry.showBodyHealth.consumeClick())
@@ -198,17 +217,21 @@ public class ClientForgeEvents {
     }
 
     @SubscribeEvent
-    public static void onRenderLevelStage(RenderLevelStageEvent event) {
+    public static void onRenderLevelStage(RenderLevelStageEvent event)
+    {
         Player player = Minecraft.getInstance().player;
         if (player != null && event.getStage() == RenderLevelStageEvent.Stage.AFTER_WEATHER
-                && Config.Baked.lowHydrationEffect && shouldApplyThirst(player)) {
+                && Config.Baked.lowHydrationEffect && shouldApplyThirst(player))
+        {
             RenderBlurOverlay.render(player);
         }
     }
 
     @SubscribeEvent
-    public static void onPlayerJoinWorld(EntityJoinLevelEvent event) {
-        if (event.getLevel().isClientSide && event.getEntity() instanceof Player) {
+    public static void onPlayerJoinWorld(EntityJoinLevelEvent event)
+    {
+        if (event.getLevel().isClientSide && event.getEntity() instanceof Player)
+        {
             if (LegendarySurvivalOverhaul.sereneSeasonsLoaded)
                 RenderSeasonCards.init();
         }

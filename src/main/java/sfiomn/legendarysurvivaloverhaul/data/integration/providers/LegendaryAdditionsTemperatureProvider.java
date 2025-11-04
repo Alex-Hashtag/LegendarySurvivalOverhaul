@@ -7,14 +7,17 @@ import sfiomn.legendarysurvivaloverhaul.api.data.providers.TemperatureDataProvid
 
 import java.util.concurrent.CompletableFuture;
 
-public class LegendaryAdditionsTemperatureProvider extends TemperatureDataProvider {
+public class LegendaryAdditionsTemperatureProvider extends TemperatureDataProvider
+{
 
-    public LegendaryAdditionsTemperatureProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper fileHelper) {
+    public LegendaryAdditionsTemperatureProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper fileHelper)
+    {
         super("legendary_additions", output, lookupProvider, fileHelper);
     }
 
     @Override
-    public void generate(HolderLookup.Provider provider, ExistingFileHelper existingFileHelper) {
+    public void generate(HolderLookup.Provider provider, ExistingFileHelper existingFileHelper)
+    {
 
         block("tribal_torch").addTemperature(temperatureBlock(1.0f));
         item("tribal_torch").heatResistance(1.0f);

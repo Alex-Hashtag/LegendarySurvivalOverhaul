@@ -7,14 +7,17 @@ import sfiomn.legendarysurvivaloverhaul.api.data.providers.TemperatureDataProvid
 
 import java.util.concurrent.CompletableFuture;
 
-public class CallOfYucatanTemperatureProvider extends TemperatureDataProvider {
+public class CallOfYucatanTemperatureProvider extends TemperatureDataProvider
+{
 
-    public CallOfYucatanTemperatureProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper fileHelper) {
+    public CallOfYucatanTemperatureProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper fileHelper)
+    {
         super("call_of_yucutan", output, lookupProvider, fileHelper);
     }
 
     @Override
-    public void generate(HolderLookup.Provider provider, ExistingFileHelper existingFileHelper) {
+    public void generate(HolderLookup.Provider provider, ExistingFileHelper existingFileHelper)
+    {
 
         item("jades_helmet").heatResistance(0.5f);
         item("jades_chestplate").coldResistance(1.5f);

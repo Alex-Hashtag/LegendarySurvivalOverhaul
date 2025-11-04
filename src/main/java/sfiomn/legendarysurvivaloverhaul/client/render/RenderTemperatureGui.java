@@ -8,7 +8,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.core.Holder;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.temperature.TemperatureEnum;
 import sfiomn.legendarysurvivaloverhaul.api.temperature.TemperatureUtil;
@@ -26,51 +25,51 @@ import java.util.Random;
 
 public class RenderTemperatureGui
 {
-	private static TemperatureCapability TEMPERATURE_CAP = null;
-	private static final Random rand = new Random();
-
+    private static final Random rand = new Random();
     private static final ResourceLocation ICONS = ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "textures/gui/overlay.png");
+    private static final int TEMPERATURE_TEXTURE_POS_Y = 48;
+    private static final int TEMPERATURE_TEXTURE_WIDTH = 16;
+    private static final int TEMPERATURE_TEXTURE_HEIGHT = 16;
+    private static final int BODY_TEMPERATURE_ICON_TEXTURE_POS_X = 22;
+    private static final int BODY_TEMPERATURE_ICON_TEXTURE_POS_Y = 202;
+    private static final int BODY_TEMPERATURE_ICON_TEXTURE_WIDTH = 10;
+    private static final int BODY_TEMPERATURE_ICON_TEXTURE_HEIGHT = 22;
+    private static final int BODY_TEMPERATURE_FRAME_TEXTURE_POS_Y = 211;
+    private static final int BODY_TEMPERATURE_FRAME_TEXTURE_WIDTH = 23;
+    private static final int BODY_TEMPERATURE_FRAME_TEXTURE_HEIGHT = 13;
+    private static final int BODY_TEMPERATURE_NUMBER_TEXTURE_WIDTH = 3;
+    private static final int BODY_TEMPERATURE_NUMBER_TEXTURE_HEIGHT = 5;
+    private static final int HUNGER_TEXTURE_WIDTH = 9;
+    private static final int HUNGER_TEXTURE_HEIGHT = 9;
+    private static TemperatureCapability TEMPERATURE_CAP = null;
+    private static int frameCounter = -1;
+    private static boolean risingTemperature = false;
+    private static boolean startAnimation = false;
+    private static int flashCounter = -1;
+    private static boolean shakeSide = false;
+    private static int delay = 0;
 
-	private static final int TEMPERATURE_TEXTURE_POS_Y = 48;
-	private static final int TEMPERATURE_TEXTURE_WIDTH = 16;
-	private static final int TEMPERATURE_TEXTURE_HEIGHT = 16;
-
-	private static final int BODY_TEMPERATURE_ICON_TEXTURE_POS_X = 22;
-	private static final int BODY_TEMPERATURE_ICON_TEXTURE_POS_Y = 202;
-	private static final int BODY_TEMPERATURE_ICON_TEXTURE_WIDTH = 10;
-	private static final int BODY_TEMPERATURE_ICON_TEXTURE_HEIGHT = 22;
-	private static final int BODY_TEMPERATURE_FRAME_TEXTURE_POS_Y = 211;
-	private static final int BODY_TEMPERATURE_FRAME_TEXTURE_WIDTH = 23;
-	private static final int BODY_TEMPERATURE_FRAME_TEXTURE_HEIGHT = 13;
-	private static final int BODY_TEMPERATURE_NUMBER_TEXTURE_WIDTH = 3;
-	private static final int BODY_TEMPERATURE_NUMBER_TEXTURE_HEIGHT = 5;
-
-	private static final int HUNGER_TEXTURE_WIDTH = 9;
-	private static final int HUNGER_TEXTURE_HEIGHT = 9;
-
-	private static int frameCounter = -1;
-	private static boolean risingTemperature = false;
-	private static boolean startAnimation = false;
-	private static int flashCounter = -1;
-	private static boolean shakeSide = false;
-	private static int delay = 0;
-	
-	public static void renderTemperature(Gui gui, GuiGraphics guiGraphics, float partialTicks, int width, int height) {
-        if (Config.Baked.temperatureEnabled && !Minecraft.getInstance().options.hideGui) {
+    public static void renderTemperature(Gui gui, GuiGraphics guiGraphics, float partialTicks, int width, int height)
+    {
+        if (Config.Baked.temperatureEnabled && !Minecraft.getInstance().options.hideGui)
+        {
             Player player = Minecraft.getInstance().player;
-            if (player != null && !player.isCreative() && !player.isSpectator()) {
+            if (player != null && !player.isCreative() && !player.isSpectator())
+            {
                 rand.setSeed(player.tickCount * 445L);
                 RenderSystem.enableBlend();
                 RenderSystem.defaultBlendFunc();
 
                 if (Objects.requireNonNull(Config.Baked.temperatureDisplayMode) == EnumUtil.temperatureDisplayMode.SYMBOL
-                        && !CuriosUtil.isThermometerEquipped) {
+                        && !CuriosUtil.isThermometerEquipped)
+                {
                     Minecraft.getInstance().getProfiler().push("temperature_gui");
                     drawTemperatureAsSymbol(guiGraphics, player, width, height);
                     Minecraft.getInstance().getProfiler().pop();
                 }
 
-                if (LegendarySurvivalOverhaul.curiosLoaded && CuriosUtil.isThermometerEquipped) {
+                if (LegendarySurvivalOverhaul.curiosLoaded && CuriosUtil.isThermometerEquipped)
+                {
                     Minecraft.getInstance().getProfiler().push("body_temperature_gui");
                     drawBodyTemperature(guiGraphics, player, width, height);
                     Minecraft.getInstance().getProfiler().pop();
@@ -81,10 +80,13 @@ public class RenderTemperatureGui
         }
     }
 
-	public static void renderColdHunger(Gui gui, GuiGraphics guiGraphics, float partialTicks, int width, int height) {
-        if (!Minecraft.getInstance().options.hideGui) {
+    public static void renderColdHunger(Gui gui, GuiGraphics guiGraphics, float partialTicks, int width, int height)
+    {
+        if (!Minecraft.getInstance().options.hideGui)
+        {
             Player player = Minecraft.getInstance().player;
-            if (player != null && player.hasEffect(MobEffectRegistry.COLD_HUNGER)) {
+            if (player != null && player.hasEffect(MobEffectRegistry.COLD_HUNGER))
+            {
                 RenderSystem.enableBlend();
                 RenderSystem.defaultBlendFunc();
 
@@ -96,348 +98,361 @@ public class RenderTemperatureGui
             }
         }
     }
-	
-	public static void drawTemperatureAsSymbol(GuiGraphics gui, Player player, int width, int height) {
 
-		if (TEMPERATURE_CAP == null || player.tickCount % 20 == 0)
-			TEMPERATURE_CAP = CapabilityUtil.getTempCapability(player);
+    public static void drawTemperatureAsSymbol(GuiGraphics gui, Player player, int width, int height)
+    {
 
-		int x = width / 2 - (TEMPERATURE_TEXTURE_WIDTH / 2);
-		int y = height - 52;
-		
-		int xOffset = 0;
-		int yOffset = 0;
+        if (TEMPERATURE_CAP == null || player.tickCount % 20 == 0)
+            TEMPERATURE_CAP = CapabilityUtil.getTempCapability(player);
 
-		float temperature = TEMPERATURE_CAP.getTemperatureLevel();
-		float targetTemperature = TEMPERATURE_CAP.getTargetTemperatureLevel();
-		TemperatureEnum tempEnum = TEMPERATURE_CAP.getTemperatureEnum();
-		
-		IconPair icon;
-		
-		byte shakeFrequency = 0;
-		
-		switch (tempEnum)
-		{
-		case HEAT_STROKE:
-			icon = IconPair.FIRE;
-			
-			if ((int) temperature == TemperatureEnum.HEAT_STROKE.getLowerBound())
-			{
-				shakeFrequency = 0;
-			}
-			else if (temperature >= TemperatureEnum.HEAT_STROKE.getMiddle())
-			{
-				shakeFrequency = 1;
-			}
-			else
-			{
-				shakeFrequency = 2;
-			}
-			
-			break;
-		case HOT:
-			icon = IconPair.ABOVE_NORMAL;
-			break;
-		case NORMAL:
-			icon = IconPair.NORMAL;
-			break;
-		case COLD:
-			icon = IconPair.BELOW_NORMAL;
-			break;
-		case FROSTBITE:
-			icon = IconPair.SNOWFLAKE;
-			
-			if ((int) temperature == TemperatureEnum.FROSTBITE.getUpperBound())
-			{
-				shakeFrequency = 0;
-			}
-			else if (temperature > TemperatureEnum.FROSTBITE.getMiddle() + 1)
-			{
-				shakeFrequency = 2;
-			}
-			else
-			{
-				shakeFrequency = 1;
-			}
-			
-			break;
-		default:
-			icon = IconPair.UNKNOWN;
-			break;
-		}
-		
-		boolean isDying = (TemperatureEnum.FROSTBITE.getMiddle() >= TEMPERATURE_CAP.getTemperatureLevel()  || TemperatureEnum.HEAT_STROKE.getMiddle() < TEMPERATURE_CAP.getTemperatureLevel());
-		
-		if (shakeFrequency > 0)
-		{
-			if (player.tickCount % shakeFrequency == 0 && !isDying)
-			{
-				int shakeCheck = player.tickCount / shakeFrequency;
+        int x = width / 2 - (TEMPERATURE_TEXTURE_WIDTH / 2);
+        int y = height - 52;
 
-				shakeSide = shakeCheck % 2 == 0;
-				
-				xOffset = shakeSide ? 1 : -1;
-			}
-			else if (isDying)
-			{
-				xOffset = rand.nextFloat() > 0.5f ? 1 : -1;
-				yOffset = rand.nextFloat() > 0.5f ? 1 : -1;
-			}
-		}
-		
-		xOffset += Config.Baked.temperatureDisplayOffsetX;
-		yOffset += Config.Baked.temperatureDisplayOffsetY;
-		
-		if (frameCounter >= 22)
-		{
-			icon = icon.getFlashVariant();
-		}
-		
-		gui.blit(ICONS, x + xOffset, y + yOffset, TEMPERATURE_TEXTURE_WIDTH * icon.getIconIndex(), TEMPERATURE_TEXTURE_POS_Y, TEMPERATURE_TEXTURE_WIDTH, TEMPERATURE_TEXTURE_HEIGHT);
-		gui.blit(ICONS, x + xOffset, y + yOffset, TEMPERATURE_TEXTURE_WIDTH * icon.getIconHolder(), TEMPERATURE_TEXTURE_POS_Y, TEMPERATURE_TEXTURE_WIDTH, TEMPERATURE_TEXTURE_HEIGHT);
+        int xOffset = 0;
+        int yOffset = 0;
 
-		if (delay == 0) {
-			if ((int) targetTemperature != (int) temperature) {
-				risingTemperature = targetTemperature > temperature;
-				startAnimation = true;
-				delay = 80;
-			}
-		} else if (frameCounter == -1){
-			delay --;
-		}
-		
-		int ovrXOffset = TEMPERATURE_TEXTURE_WIDTH * ((frameCounter / 2) - 1);
-		int ovrYOffset = TEMPERATURE_TEXTURE_POS_Y + (TEMPERATURE_TEXTURE_HEIGHT * (risingTemperature ? 1 : 2));
+        float temperature = TEMPERATURE_CAP.getTemperatureLevel();
+        float targetTemperature = TEMPERATURE_CAP.getTargetTemperatureLevel();
+        TemperatureEnum tempEnum = TEMPERATURE_CAP.getTemperatureEnum();
 
-		gui.blit(ICONS, x + xOffset, y + yOffset, ovrXOffset, ovrYOffset, TEMPERATURE_TEXTURE_WIDTH, TEMPERATURE_TEXTURE_HEIGHT);
-	}
+        IconPair icon;
 
-	public static void drawBodyTemperature(GuiGraphics gui, Player player, int width, int height) {
+        byte shakeFrequency = 0;
 
-		if (TEMPERATURE_CAP == null || player.tickCount % 20 == 0)
-			TEMPERATURE_CAP = CapabilityUtil.getTempCapability(player);
+        switch (tempEnum)
+        {
+            case HEAT_STROKE:
+                icon = IconPair.FIRE;
 
-		int x = width / 2 - 92 - 32 + Config.Baked.bodyTemperatureDisplayOffsetX;
-		int y = height - 14 + Config.Baked.bodyTemperatureDisplayOffsetY;
+                if ((int) temperature == TemperatureEnum.HEAT_STROKE.getLowerBound())
+                {
+                    shakeFrequency = 0;
+                } else if (temperature >= TemperatureEnum.HEAT_STROKE.getMiddle())
+                {
+                    shakeFrequency = 1;
+                } else
+                {
+                    shakeFrequency = 2;
+                }
 
-		if (!player.getOffhandItem().isEmpty() && player.getMainArm() == HumanoidArm.RIGHT && Config.Baked.bodyTemperatureDisplayOffsetX == 0 && Config.Baked.bodyTemperatureDisplayOffsetY == 0)
-			x -= 31;
+                break;
+            case HOT:
+                icon = IconPair.ABOVE_NORMAL;
+                break;
+            case NORMAL:
+                icon = IconPair.NORMAL;
+                break;
+            case COLD:
+                icon = IconPair.BELOW_NORMAL;
+                break;
+            case FROSTBITE:
+                icon = IconPair.SNOWFLAKE;
 
-		float bodyTemperature = TemperatureUtil.clampTemperature(TEMPERATURE_CAP.getTemperatureLevel());
-		float tempRatio = (bodyTemperature - TemperatureEnum.FROSTBITE.getLowerBound()) / (TemperatureEnum.HEAT_STROKE.getUpperBound() - TemperatureEnum.FROSTBITE.getLowerBound());
+                if ((int) temperature == TemperatureEnum.FROSTBITE.getUpperBound())
+                {
+                    shakeFrequency = 0;
+                } else if (temperature > TemperatureEnum.FROSTBITE.getMiddle() + 1)
+                {
+                    shakeFrequency = 2;
+                } else
+                {
+                    shakeFrequency = 1;
+                }
 
-		// Temperature Frame rendering
-		gui.blit(ICONS, x, y,
-				0,
-				BODY_TEMPERATURE_FRAME_TEXTURE_POS_Y,
-				BODY_TEMPERATURE_FRAME_TEXTURE_WIDTH,
-				BODY_TEMPERATURE_FRAME_TEXTURE_HEIGHT);
+                break;
+            default:
+                icon = IconPair.UNKNOWN;
+                break;
+        }
 
-		if (Config.Baked.renderTemperatureInFahrenheit) {
-			bodyTemperature = Math.min(WorldUtil.toFahrenheit(bodyTemperature), 99.9f);
-		}
-		String bodyTemperatureString = Float.toString(MathUtil.round(bodyTemperature, 1));
+        boolean isDying = (TemperatureEnum.FROSTBITE.getMiddle() >= TEMPERATURE_CAP.getTemperatureLevel() || TemperatureEnum.HEAT_STROKE.getMiddle() < TEMPERATURE_CAP.getTemperatureLevel());
 
-		BodyTemperatureNumber number1 = BodyTemperatureNumber.get('0');
-		if (bodyTemperatureString.length() == 4) {
-			number1 = BodyTemperatureNumber.get(bodyTemperatureString.charAt(0));
-		}
-		gui.blit(ICONS, x + 5, y + 4,
-				number1.iconIndexX,
-				number1.iconIndexY,
-				BODY_TEMPERATURE_NUMBER_TEXTURE_WIDTH,
-				BODY_TEMPERATURE_NUMBER_TEXTURE_HEIGHT);
+        if (shakeFrequency > 0)
+        {
+            if (player.tickCount % shakeFrequency == 0 && !isDying)
+            {
+                int shakeCheck = player.tickCount / shakeFrequency;
 
-		BodyTemperatureNumber number2 = BodyTemperatureNumber.get(bodyTemperatureString.charAt(bodyTemperatureString.length() - 3));
-		gui.blit(ICONS, x + 9, y + 4,
-				number2.iconIndexX,
-				number2.iconIndexY,
-				BODY_TEMPERATURE_NUMBER_TEXTURE_WIDTH,
-				BODY_TEMPERATURE_NUMBER_TEXTURE_HEIGHT);
+                shakeSide = shakeCheck % 2 == 0;
 
-		BodyTemperatureNumber number3 = BodyTemperatureNumber.get(bodyTemperatureString.charAt(bodyTemperatureString.length() - 1));
-		gui.blit(ICONS, x + 15, y + 4,
-				number3.iconIndexX,
-				number3.iconIndexY,
-				BODY_TEMPERATURE_NUMBER_TEXTURE_WIDTH,
-				BODY_TEMPERATURE_NUMBER_TEXTURE_HEIGHT);
+                xOffset = shakeSide ? 1 : -1;
+            } else if (isDying)
+            {
+                xOffset = rand.nextFloat() > 0.5f ? 1 : -1;
+                yOffset = rand.nextFloat() > 0.5f ? 1 : -1;
+            }
+        }
 
-		// Thermometer rendering
-		gui.blit(ICONS, x + 22, y - 10,
-				BODY_TEMPERATURE_ICON_TEXTURE_POS_X + BODY_TEMPERATURE_ICON_TEXTURE_WIDTH * BodyTemperatureIcon.EMPTY.iconIndexX,
-				BODY_TEMPERATURE_ICON_TEXTURE_POS_Y,
-				BODY_TEMPERATURE_ICON_TEXTURE_WIDTH,
-				BODY_TEMPERATURE_ICON_TEXTURE_HEIGHT);
+        xOffset += Config.Baked.temperatureDisplayOffsetX;
+        yOffset += Config.Baked.temperatureDisplayOffsetY;
 
-		int thermometerActualHeight = (int) (tempRatio * 17);
+        if (frameCounter >= 22)
+        {
+            icon = icon.getFlashVariant();
+        }
 
-		gui.blit(ICONS, x + 22, y - 10 + 17 - thermometerActualHeight,
-				BODY_TEMPERATURE_ICON_TEXTURE_POS_X + BODY_TEMPERATURE_ICON_TEXTURE_WIDTH * BodyTemperatureIcon.get(tempRatio).iconIndexX,
-				BODY_TEMPERATURE_ICON_TEXTURE_POS_Y + 17 - thermometerActualHeight,
-				BODY_TEMPERATURE_ICON_TEXTURE_WIDTH,
-				thermometerActualHeight + 5);
-	}
+        gui.blit(ICONS, x + xOffset, y + yOffset, TEMPERATURE_TEXTURE_WIDTH * icon.getIconIndex(), TEMPERATURE_TEXTURE_POS_Y, TEMPERATURE_TEXTURE_WIDTH, TEMPERATURE_TEXTURE_HEIGHT);
+        gui.blit(ICONS, x + xOffset, y + yOffset, TEMPERATURE_TEXTURE_WIDTH * icon.getIconHolder(), TEMPERATURE_TEXTURE_POS_Y, TEMPERATURE_TEXTURE_WIDTH, TEMPERATURE_TEXTURE_HEIGHT);
 
-	public static void drawFoodBarColdEffect(GuiGraphics gui, Player player, int width, int height) {
+        if (delay == 0)
+        {
+            if ((int) targetTemperature != (int) temperature)
+            {
+                risingTemperature = targetTemperature > temperature;
+                startAnimation = true;
+                delay = 80;
+            }
+        } else if (frameCounter == -1)
+        {
+            delay--;
+        }
 
-		int foodLevel = player.getFoodData().getFoodLevel();
-		float saturationLevelInt = (int) player.getFoodData().getSaturationLevel();
+        int ovrXOffset = TEMPERATURE_TEXTURE_WIDTH * ((frameCounter / 2) - 1);
+        int ovrYOffset = TEMPERATURE_TEXTURE_POS_Y + (TEMPERATURE_TEXTURE_HEIGHT * (risingTemperature ? 1 : 2));
 
-		int left = width / 2 + 91; // Same x offset as the hunger bar
-		int top = height - 39;
+        gui.blit(ICONS, x + xOffset, y + yOffset, ovrXOffset, ovrYOffset, TEMPERATURE_TEXTURE_WIDTH, TEMPERATURE_TEXTURE_HEIGHT);
+    }
 
-		// Draw the 10 hunger meats
-		for (int i = 0; i < 10; i++)
-		{
-			int halfIcon = i * 2 + 1;
-			int x = left - i * 8 - 9;
-			int y = top;
+    public static void drawBodyTemperature(GuiGraphics gui, Player player, int width, int height)
+    {
 
-			// Shake based on thirst level and saturation level
-			int yOffset = 0;
-			if (Config.Baked.showVanillaBarAnimationOverlay && player.getFoodData().getSaturationLevel() <= 0.0f && player.tickCount % (player.getFoodData().getFoodLevel() * 3 + 1) == 0)
-			{
-				yOffset = (rand.nextInt(3) - 1);
-			}
+        if (TEMPERATURE_CAP == null || player.tickCount % 20 == 0)
+            TEMPERATURE_CAP = CapabilityUtil.getTempCapability(player);
 
-			int xTextureOffset = HUNGER_TEXTURE_WIDTH * 6;
-			int yTextureOffset = HUNGER_TEXTURE_HEIGHT;
+        int x = width / 2 - 92 - 32 + Config.Baked.bodyTemperatureDisplayOffsetX;
+        int y = height - 14 + Config.Baked.bodyTemperatureDisplayOffsetY;
 
-			if (player.hasEffect(MobEffects.HUNGER)) {
-				xTextureOffset += HUNGER_TEXTURE_WIDTH * 3;
-			}
+        if (!player.getOffhandItem().isEmpty() && player.getMainArm() == HumanoidArm.RIGHT && Config.Baked.bodyTemperatureDisplayOffsetX == 0 && Config.Baked.bodyTemperatureDisplayOffsetY == 0)
+            x -= 31;
 
-			if (halfIcon < foodLevel) // Full hunger icon
-				gui.blit(ICONS, x, y + yOffset, xTextureOffset + HUNGER_TEXTURE_WIDTH, yTextureOffset, HUNGER_TEXTURE_WIDTH, HUNGER_TEXTURE_HEIGHT);
-			else if (halfIcon == foodLevel) // Half hunger icon
-				gui.blit(ICONS, x, y + yOffset, xTextureOffset + (HUNGER_TEXTURE_WIDTH * 2), yTextureOffset, HUNGER_TEXTURE_WIDTH, HUNGER_TEXTURE_HEIGHT);
-			else
-				gui.blit(ICONS, x, y + yOffset, xTextureOffset, yTextureOffset, HUNGER_TEXTURE_WIDTH, HUNGER_TEXTURE_HEIGHT);
+        float bodyTemperature = TemperatureUtil.clampTemperature(TEMPERATURE_CAP.getTemperatureLevel());
+        float tempRatio = (bodyTemperature - TemperatureEnum.FROSTBITE.getLowerBound()) / (TemperatureEnum.HEAT_STROKE.getUpperBound() - TemperatureEnum.FROSTBITE.getLowerBound());
 
-			// Reassign texture offset for saturation
-			xTextureOffset = HUNGER_TEXTURE_WIDTH * 12;
-			if (saturationLevelInt > 0 && Config.Baked.foodSaturationDisplayed) {
-				if (halfIcon < saturationLevelInt) { // Full saturation icon
-					gui.blit(ICONS, x, y + yOffset, xTextureOffset, yTextureOffset, HUNGER_TEXTURE_WIDTH, HUNGER_TEXTURE_HEIGHT);
-				} else if (halfIcon == saturationLevelInt) { // Half saturation icon
-					gui.blit(ICONS, x, y + yOffset, xTextureOffset + HUNGER_TEXTURE_WIDTH, yTextureOffset, HUNGER_TEXTURE_WIDTH, HUNGER_TEXTURE_HEIGHT);
-				}
-			}
-		}
-	}
+        // Temperature Frame rendering
+        gui.blit(ICONS, x, y,
+                0,
+                BODY_TEMPERATURE_FRAME_TEXTURE_POS_Y,
+                BODY_TEMPERATURE_FRAME_TEXTURE_WIDTH,
+                BODY_TEMPERATURE_FRAME_TEXTURE_HEIGHT);
 
-	public static void updateTimer()
-	{
-		if (frameCounter >= 0)
-			frameCounter--;
-			flashCounter--;
+        if (Config.Baked.renderTemperatureInFahrenheit)
+        {
+            bodyTemperature = Math.min(WorldUtil.toFahrenheit(bodyTemperature), 99.9f);
+        }
+        String bodyTemperatureString = Float.toString(MathUtil.round(bodyTemperature, 1));
 
-		if (startAnimation)
-		{
-			frameCounter = 24;
-			startAnimation = false;
-		}
-	}
-	
-	private enum IconPair
-	{
-		NORMAL(0, 3),
-		FIRE(1, 4),
-		SNOWFLAKE(2, 5),
-		ABOVE_NORMAL(0, 11),
-		BELOW_NORMAL(0, 12),
-		NORMAL_FLASH(0, 6),
-		FIRE_FLASH(1, 7),
-		SNOWFLAKE_FLASH(2, 8),
-		ABOVE_NORMAL_FLASH(0, 9),
-		BELOW_NORMAL_FLASH(0, 10),
-		UNKNOWN(0, 13);
-		
-		private final int iconIndex;
-		private final int iconHolder;
-		
-		private IconPair(int iconIndex, int iconHolder)
-		{
-			this.iconIndex = iconIndex;
-			this.iconHolder = iconHolder;
-		}
-		
-		public int getIconIndex()
-		{
-			return this.iconIndex;
-		}
-		
-		public int getIconHolder()
-		{
-			return this.iconHolder;
-		}
-		
-		public IconPair getFlashVariant()
-		{
-			switch(this)
-			{
-			case NORMAL:
-				return NORMAL_FLASH;
-			case FIRE:
-				return FIRE_FLASH;
-			case SNOWFLAKE:
-				return SNOWFLAKE_FLASH;
-			case ABOVE_NORMAL:
-				return ABOVE_NORMAL_FLASH;
-			case BELOW_NORMAL:
-				return BELOW_NORMAL_FLASH;
-			default:
-				return this;
-			}
-		}
-	}
+        BodyTemperatureNumber number1 = BodyTemperatureNumber.get('0');
+        if (bodyTemperatureString.length() == 4)
+        {
+            number1 = BodyTemperatureNumber.get(bodyTemperatureString.charAt(0));
+        }
+        gui.blit(ICONS, x + 5, y + 4,
+                number1.iconIndexX,
+                number1.iconIndexY,
+                BODY_TEMPERATURE_NUMBER_TEXTURE_WIDTH,
+                BODY_TEMPERATURE_NUMBER_TEXTURE_HEIGHT);
 
-	private enum BodyTemperatureIcon {
-		EMPTY(0),
-		COLD_0(1),
-		COLD_1(2),
-		COLD_2(3),
-		TEMPERATE_0(4),
-		TEMPERATE_1(5),
-		TEMPERATE_2(6),
-		HOT_0(7),
-		HOT_1(8),
-		HOT_2(9);
+        BodyTemperatureNumber number2 = BodyTemperatureNumber.get(bodyTemperatureString.charAt(bodyTemperatureString.length() - 3));
+        gui.blit(ICONS, x + 9, y + 4,
+                number2.iconIndexX,
+                number2.iconIndexY,
+                BODY_TEMPERATURE_NUMBER_TEXTURE_WIDTH,
+                BODY_TEMPERATURE_NUMBER_TEXTURE_HEIGHT);
 
-		public final int iconIndexX;
+        BodyTemperatureNumber number3 = BodyTemperatureNumber.get(bodyTemperatureString.charAt(bodyTemperatureString.length() - 1));
+        gui.blit(ICONS, x + 15, y + 4,
+                number3.iconIndexX,
+                number3.iconIndexY,
+                BODY_TEMPERATURE_NUMBER_TEXTURE_WIDTH,
+                BODY_TEMPERATURE_NUMBER_TEXTURE_HEIGHT);
 
-		BodyTemperatureIcon(int iconIndexX) {
-			this.iconIndexX = iconIndexX;
-		}
+        // Thermometer rendering
+        gui.blit(ICONS, x + 22, y - 10,
+                BODY_TEMPERATURE_ICON_TEXTURE_POS_X + BODY_TEMPERATURE_ICON_TEXTURE_WIDTH * BodyTemperatureIcon.EMPTY.iconIndexX,
+                BODY_TEMPERATURE_ICON_TEXTURE_POS_Y,
+                BODY_TEMPERATURE_ICON_TEXTURE_WIDTH,
+                BODY_TEMPERATURE_ICON_TEXTURE_HEIGHT);
 
-		public static BodyTemperatureIcon get(float tempRatio) {
-			return BodyTemperatureIcon.values()[Math.min(1 + (int)(tempRatio * 9), 9)];
-		}
-	}
+        int thermometerActualHeight = (int) (tempRatio * 17);
 
-	private enum BodyTemperatureNumber {
-		ZERO(17, 231),
-		ONE(1, 225),
-		TWO(5, 225),
-		THREE(9, 225),
-		FOUR(13, 225),
-		FIVE(17, 225),
-		SIX(1, 231),
-		SEVEN(5, 231),
-		HEIGHT(9, 231),
-		NINE(13, 231);
+        gui.blit(ICONS, x + 22, y - 10 + 17 - thermometerActualHeight,
+                BODY_TEMPERATURE_ICON_TEXTURE_POS_X + BODY_TEMPERATURE_ICON_TEXTURE_WIDTH * BodyTemperatureIcon.get(tempRatio).iconIndexX,
+                BODY_TEMPERATURE_ICON_TEXTURE_POS_Y + 17 - thermometerActualHeight,
+                BODY_TEMPERATURE_ICON_TEXTURE_WIDTH,
+                thermometerActualHeight + 5);
+    }
 
-		public final int iconIndexX;
+    public static void drawFoodBarColdEffect(GuiGraphics gui, Player player, int width, int height)
+    {
 
-		public final int iconIndexY;
+        int foodLevel = player.getFoodData().getFoodLevel();
+        float saturationLevelInt = (int) player.getFoodData().getSaturationLevel();
 
-		BodyTemperatureNumber(int iconIndexX, int iconIndexY) {
-			this.iconIndexX = iconIndexX;
-			this.iconIndexY = iconIndexY;
-		}
+        int left = width / 2 + 91; // Same x offset as the hunger bar
+        int top = height - 39;
 
-		public static BodyTemperatureNumber get(char charNum) {
-			return BodyTemperatureNumber.values()[Character.getNumericValue(charNum)];
-		}
-	}
+        // Draw the 10 hunger meats
+        for (int i = 0; i < 10; i++)
+        {
+            int halfIcon = i * 2 + 1;
+            int x = left - i * 8 - 9;
+            int y = top;
+
+            // Shake based on thirst level and saturation level
+            int yOffset = 0;
+            if (Config.Baked.showVanillaBarAnimationOverlay && player.getFoodData().getSaturationLevel() <= 0.0f && player.tickCount % (player.getFoodData().getFoodLevel() * 3 + 1) == 0)
+            {
+                yOffset = (rand.nextInt(3) - 1);
+            }
+
+            int xTextureOffset = HUNGER_TEXTURE_WIDTH * 6;
+            int yTextureOffset = HUNGER_TEXTURE_HEIGHT;
+
+            if (player.hasEffect(MobEffects.HUNGER))
+            {
+                xTextureOffset += HUNGER_TEXTURE_WIDTH * 3;
+            }
+
+            if (halfIcon < foodLevel) // Full hunger icon
+                gui.blit(ICONS, x, y + yOffset, xTextureOffset + HUNGER_TEXTURE_WIDTH, yTextureOffset, HUNGER_TEXTURE_WIDTH, HUNGER_TEXTURE_HEIGHT);
+            else if (halfIcon == foodLevel) // Half hunger icon
+                gui.blit(ICONS, x, y + yOffset, xTextureOffset + (HUNGER_TEXTURE_WIDTH * 2), yTextureOffset, HUNGER_TEXTURE_WIDTH, HUNGER_TEXTURE_HEIGHT);
+            else
+                gui.blit(ICONS, x, y + yOffset, xTextureOffset, yTextureOffset, HUNGER_TEXTURE_WIDTH, HUNGER_TEXTURE_HEIGHT);
+
+            // Reassign texture offset for saturation
+            xTextureOffset = HUNGER_TEXTURE_WIDTH * 12;
+            if (saturationLevelInt > 0 && Config.Baked.foodSaturationDisplayed)
+            {
+                if (halfIcon < saturationLevelInt)
+                { // Full saturation icon
+                    gui.blit(ICONS, x, y + yOffset, xTextureOffset, yTextureOffset, HUNGER_TEXTURE_WIDTH, HUNGER_TEXTURE_HEIGHT);
+                } else if (halfIcon == saturationLevelInt)
+                { // Half saturation icon
+                    gui.blit(ICONS, x, y + yOffset, xTextureOffset + HUNGER_TEXTURE_WIDTH, yTextureOffset, HUNGER_TEXTURE_WIDTH, HUNGER_TEXTURE_HEIGHT);
+                }
+            }
+        }
+    }
+
+    public static void updateTimer()
+    {
+        if (frameCounter >= 0)
+            frameCounter--;
+        flashCounter--;
+
+        if (startAnimation)
+        {
+            frameCounter = 24;
+            startAnimation = false;
+        }
+    }
+
+    private enum IconPair
+    {
+        NORMAL(0, 3),
+        FIRE(1, 4),
+        SNOWFLAKE(2, 5),
+        ABOVE_NORMAL(0, 11),
+        BELOW_NORMAL(0, 12),
+        NORMAL_FLASH(0, 6),
+        FIRE_FLASH(1, 7),
+        SNOWFLAKE_FLASH(2, 8),
+        ABOVE_NORMAL_FLASH(0, 9),
+        BELOW_NORMAL_FLASH(0, 10),
+        UNKNOWN(0, 13);
+
+        private final int iconIndex;
+        private final int iconHolder;
+
+        IconPair(int iconIndex, int iconHolder)
+        {
+            this.iconIndex = iconIndex;
+            this.iconHolder = iconHolder;
+        }
+
+        public int getIconIndex()
+        {
+            return this.iconIndex;
+        }
+
+        public int getIconHolder()
+        {
+            return this.iconHolder;
+        }
+
+        public IconPair getFlashVariant()
+        {
+            switch (this)
+            {
+                case NORMAL:
+                    return NORMAL_FLASH;
+                case FIRE:
+                    return FIRE_FLASH;
+                case SNOWFLAKE:
+                    return SNOWFLAKE_FLASH;
+                case ABOVE_NORMAL:
+                    return ABOVE_NORMAL_FLASH;
+                case BELOW_NORMAL:
+                    return BELOW_NORMAL_FLASH;
+                default:
+                    return this;
+            }
+        }
+    }
+
+    private enum BodyTemperatureIcon
+    {
+        EMPTY(0),
+        COLD_0(1),
+        COLD_1(2),
+        COLD_2(3),
+        TEMPERATE_0(4),
+        TEMPERATE_1(5),
+        TEMPERATE_2(6),
+        HOT_0(7),
+        HOT_1(8),
+        HOT_2(9);
+
+        public final int iconIndexX;
+
+        BodyTemperatureIcon(int iconIndexX)
+        {
+            this.iconIndexX = iconIndexX;
+        }
+
+        public static BodyTemperatureIcon get(float tempRatio)
+        {
+            return BodyTemperatureIcon.values()[Math.min(1 + (int) (tempRatio * 9), 9)];
+        }
+    }
+
+    private enum BodyTemperatureNumber
+    {
+        ZERO(17, 231),
+        ONE(1, 225),
+        TWO(5, 225),
+        THREE(9, 225),
+        FOUR(13, 225),
+        FIVE(17, 225),
+        SIX(1, 231),
+        SEVEN(5, 231),
+        HEIGHT(9, 231),
+        NINE(13, 231);
+
+        public final int iconIndexX;
+
+        public final int iconIndexY;
+
+        BodyTemperatureNumber(int iconIndexX, int iconIndexY)
+        {
+            this.iconIndexX = iconIndexX;
+            this.iconIndexY = iconIndexY;
+        }
+
+        public static BodyTemperatureNumber get(char charNum)
+        {
+            return BodyTemperatureNumber.values()[Character.getNumericValue(charNum)];
+        }
+    }
 }

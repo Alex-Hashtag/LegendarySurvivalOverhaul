@@ -8,10 +8,13 @@ import sfiomn.legendarysurvivaloverhaul.config.Config;
 import static sfiomn.legendarysurvivaloverhaul.registry.MobEffectRegistry.PAINKILLER;
 import static sfiomn.legendarysurvivaloverhaul.registry.MobEffectRegistry.PAINKILLER_ADDICTION;
 
-public class MedsAndHerbsUtil {
+public class MedsAndHerbsUtil
+{
 
-    public static boolean triggerMorphineBehavior(Player player) {
-        if (player.hasEffect(PAINKILLER_ADDICTION)) {
+    public static boolean triggerMorphineBehavior(Player player)
+    {
+        if (player.hasEffect(PAINKILLER_ADDICTION))
+        {
             player.displayClientMessage(Component.translatable("message.legendarysurvivaloverhaul.morphine_use_under_painkiller_addiction"), true);
 
             return false;

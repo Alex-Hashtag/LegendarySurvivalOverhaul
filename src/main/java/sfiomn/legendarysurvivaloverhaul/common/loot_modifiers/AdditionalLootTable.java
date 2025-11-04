@@ -20,7 +20,8 @@ import java.util.function.Supplier;
 
 import static net.minecraft.world.level.storage.loot.LootTable.createStackSplitter;
 
-public class AdditionalLootTable extends LootModifier {
+public class AdditionalLootTable extends LootModifier
+{
 
     public static final Supplier<MapCodec<AdditionalLootTable>> CODEC = Suppliers.memoize(
             () -> RecordCodecBuilder.mapCodec(instance -> codecStart(instance)
@@ -33,15 +34,18 @@ public class AdditionalLootTable extends LootModifier {
     private final ResourceLocation lootTable;
     private final boolean replace;
 
-    public AdditionalLootTable(LootItemCondition[] conditions, ResourceLocation lootTable, boolean replace) {
+    public AdditionalLootTable(LootItemCondition[] conditions, ResourceLocation lootTable, boolean replace)
+    {
         super(conditions);
         this.lootTable = lootTable;
         this.replace = replace;
     }
 
     @Override
-    protected ObjectArrayList<ItemStack> doApply(ObjectArrayList<ItemStack> generatedLoot, LootContext context) {
-        if (replace) {
+    protected ObjectArrayList<ItemStack> doApply(ObjectArrayList<ItemStack> generatedLoot, LootContext context)
+    {
+        if (replace)
+        {
             generatedLoot.clear();
         }
 
@@ -58,7 +62,8 @@ public class AdditionalLootTable extends LootModifier {
     }
 
     @Override
-    public MapCodec<? extends IGlobalLootModifier> codec() {
+    public MapCodec<? extends IGlobalLootModifier> codec()
+    {
         return CODEC.get();
     }
 }

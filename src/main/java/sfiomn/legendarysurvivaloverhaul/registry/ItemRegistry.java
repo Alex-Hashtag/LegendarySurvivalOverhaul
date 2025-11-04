@@ -1,14 +1,12 @@
 package sfiomn.legendarysurvivaloverhaul.registry;
 
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.*;
-import net.minecraft.world.item.Item.TooltipContext;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.neoforge.registries.DeferredRegister;
-import net.minecraft.core.registries.Registries;
 import net.neoforged.neoforge.registries.DeferredHolder;
-import org.jetbrains.annotations.Nullable;
+import net.neoforged.neoforge.registries.DeferredRegister;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.item.CoatEnum;
 import sfiomn.legendarysurvivaloverhaul.common.items.*;

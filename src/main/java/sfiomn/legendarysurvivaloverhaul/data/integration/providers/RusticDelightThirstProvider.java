@@ -7,14 +7,17 @@ import sfiomn.legendarysurvivaloverhaul.api.data.providers.ThirstDataProvider;
 
 import java.util.concurrent.CompletableFuture;
 
-public class RusticDelightThirstProvider extends ThirstDataProvider {
+public class RusticDelightThirstProvider extends ThirstDataProvider
+{
 
-    public RusticDelightThirstProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper fileHelper) {
+    public RusticDelightThirstProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper fileHelper)
+    {
         super("rusticdelight", output, lookupProvider, fileHelper);
     }
 
     @Override
-    public void generate(HolderLookup.Provider provider, ExistingFileHelper existingFileHelper) {
+    public void generate(HolderLookup.Provider provider, ExistingFileHelper existingFileHelper)
+    {
 
         consumable("bell_pepper_green").addThirst(thirstData(4, 0.0f));
         consumable("bell_pepper_yellow").addThirst(thirstData(4, 0.0f));

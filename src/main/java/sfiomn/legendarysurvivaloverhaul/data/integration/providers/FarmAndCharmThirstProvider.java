@@ -8,14 +8,17 @@ import sfiomn.legendarysurvivaloverhaul.api.data.providers.ThirstDataProvider;
 
 import java.util.concurrent.CompletableFuture;
 
-public class FarmAndCharmThirstProvider extends ThirstDataProvider {
+public class FarmAndCharmThirstProvider extends ThirstDataProvider
+{
 
-    public FarmAndCharmThirstProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper fileHelper) {
+    public FarmAndCharmThirstProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper fileHelper)
+    {
         super("farm_and_charm", output, lookupProvider, fileHelper);
     }
 
     @Override
-    public void generate(HolderLookup.Provider provider, ExistingFileHelper existingFileHelper) {
+    public void generate(HolderLookup.Provider provider, ExistingFileHelper existingFileHelper)
+    {
 
         consumable("tomato").addThirst(thirstData(4, 0.0f));
         consumable("strawberry").addThirst(thirstData(2, 0.0f));

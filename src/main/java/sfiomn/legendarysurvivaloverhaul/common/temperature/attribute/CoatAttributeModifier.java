@@ -8,23 +8,27 @@ import sfiomn.legendarysurvivaloverhaul.api.temperature.TemperatureUtil;
 
 public class CoatAttributeModifier extends AttributeModifierBase
 {
-	public CoatAttributeModifier() {}
+    public CoatAttributeModifier()
+    {
+    }
 
-	@Override
-	public JsonTemperatureResistance getItemAttributes(ItemStack stack)
-	{
-		JsonTemperatureResistance config = new JsonTemperatureResistance();
-		if (!TemperatureUtil.getArmorCoatTag(stack).isEmpty()) {
-			CoatEnum coat = CoatEnum.getFromId(TemperatureUtil.getArmorCoatTag(stack));
-			if (coat != null) {
-				if (coat.type().equals("cooling"))
-					config.heatResistance += (float) coat.modifier();
-				if (coat.type().equals("heating"))
-					config.coldResistance += (float) coat.modifier();
-				if (coat.type().equals("thermal"))
-					config.thermalResistance += (float) coat.modifier();
-			}
-		}
-		return config;
-	}
+    @Override
+    public JsonTemperatureResistance getItemAttributes(ItemStack stack)
+    {
+        JsonTemperatureResistance config = new JsonTemperatureResistance();
+        if (!TemperatureUtil.getArmorCoatTag(stack).isEmpty())
+        {
+            CoatEnum coat = CoatEnum.getFromId(TemperatureUtil.getArmorCoatTag(stack));
+            if (coat != null)
+            {
+                if (coat.type().equals("cooling"))
+                    config.heatResistance += (float) coat.modifier();
+                if (coat.type().equals("heating"))
+                    config.coldResistance += (float) coat.modifier();
+                if (coat.type().equals("thermal"))
+                    config.thermalResistance += (float) coat.modifier();
+            }
+        }
+        return config;
+    }
 }

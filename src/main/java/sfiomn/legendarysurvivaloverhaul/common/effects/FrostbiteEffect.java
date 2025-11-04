@@ -10,33 +10,33 @@ import sfiomn.legendarysurvivaloverhaul.util.DifficultyUtil;
 
 public class FrostbiteEffect extends IncurableMobEffect
 {
-	public FrostbiteEffect()
-	{
-		super(MobEffectCategory.HARMFUL, 9164281);
-	}
-	
-	@Override
-	public boolean applyEffectTick(@NotNull LivingEntity entity, int amplifier)
-	{
-		if(entity instanceof Player player && !entity.hasEffect(MobEffectRegistry.COLD_IMMUNITY))
-		{
-            if (DifficultyUtil.isModDangerous() && DifficultyUtil.healthAboveDifficulty(player) && !player.isSleeping())
-			{
-				ModDamageTypes.hypothermia(player, 1.0f);
-			}
-		}
-		return true;
-	}
-	
-	@Override
-	public boolean shouldApplyEffectTickThisTick(int duration, int amplifier)
-	{
-		int time = 50 >> amplifier;
-		return time == 0 || duration % time == 0;
-	}
+    public FrostbiteEffect()
+    {
+        super(MobEffectCategory.HARMFUL, 9164281);
+    }
 
-	public static boolean playerIsImmuneToFrost(Player player)
-	{
-		return player.hasEffect(MobEffectRegistry.COLD_IMMUNITY) || player.hasEffect(MobEffectRegistry.TEMPERATURE_IMMUNITY);
-	}
+    public static boolean playerIsImmuneToFrost(Player player)
+    {
+        return player.hasEffect(MobEffectRegistry.COLD_IMMUNITY) || player.hasEffect(MobEffectRegistry.TEMPERATURE_IMMUNITY);
+    }
+
+    @Override
+    public boolean applyEffectTick(@NotNull LivingEntity entity, int amplifier)
+    {
+        if (entity instanceof Player player && !entity.hasEffect(MobEffectRegistry.COLD_IMMUNITY))
+        {
+            if (DifficultyUtil.isModDangerous() && DifficultyUtil.healthAboveDifficulty(player) && !player.isSleeping())
+            {
+                ModDamageTypes.hypothermia(player, 1.0f);
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public boolean shouldApplyEffectTickThisTick(int duration, int amplifier)
+    {
+        int time = 50 >> amplifier;
+        return time == 0 || duration % time == 0;
+    }
 }

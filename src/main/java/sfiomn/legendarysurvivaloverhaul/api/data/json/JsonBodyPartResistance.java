@@ -4,7 +4,8 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import sfiomn.legendarysurvivaloverhaul.api.bodydamage.BodyPartEnum;
 
-public class JsonBodyPartResistance {
+public class JsonBodyPartResistance
+{
     public static final Codec<JsonBodyPartResistance> CODEC = RecordCodecBuilder.create((inst) -> inst.group(
             Codec.FLOAT.optionalFieldOf("body_resistance", 0.0f).forGetter(c -> c.bodyResistance),
             Codec.FLOAT.optionalFieldOf("head_resistance", 0.0f).forGetter(c -> c.headResistance),
@@ -25,7 +26,8 @@ public class JsonBodyPartResistance {
 
     public JsonBodyPartResistance(float bodyResistance, float headResistance, float chestResistance,
                                   float rightArmResistance, float leftArmResistance,
-                                  float legsResistance, float feetResistance) {
+                                  float legsResistance, float feetResistance)
+    {
         this.bodyResistance = bodyResistance;
         this.headResistance = headResistance;
         this.chestResistance = chestResistance;
@@ -35,8 +37,10 @@ public class JsonBodyPartResistance {
         this.feetResistance = feetResistance;
     }
 
-    public float getBodyPartResistance(BodyPartEnum bodyPartEnum) {
-        return switch (bodyPartEnum) {
+    public float getBodyPartResistance(BodyPartEnum bodyPartEnum)
+    {
+        return switch (bodyPartEnum)
+        {
             case HEAD -> headResistance;
             case CHEST -> chestResistance;
             case RIGHT_ARM -> rightArmResistance;

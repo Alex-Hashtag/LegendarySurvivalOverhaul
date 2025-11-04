@@ -14,14 +14,17 @@ import java.util.concurrent.CompletableFuture;
 
 import static sfiomn.legendarysurvivaloverhaul.util.internal.ThirstUtilInternal.HYDRATION_ENUM_TAG;
 
-public class ModThirstProvider extends ThirstDataProvider {
+public class ModThirstProvider extends ThirstDataProvider
+{
 
-    public ModThirstProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper fileHelper) {
+    public ModThirstProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper fileHelper)
+    {
         super(LegendarySurvivalOverhaul.MOD_ID, output, lookupProvider, fileHelper);
     }
 
     @Override
-    public void generate(HolderLookup.Provider provider, ExistingFileHelper existingFileHelper) {
+    public void generate(HolderLookup.Provider provider, ExistingFileHelper existingFileHelper)
+    {
         consumable(ItemRegistry.APPLE_JUICE.get()).addThirst(thirstData(6, 3.0f));
         consumable(ItemRegistry.BEETROOT_JUICE.get()).addThirst(thirstData(8, 4.0f));
         consumable(ItemRegistry.CACTUS_JUICE.get()).addThirst(thirstData(9, 3.0f));

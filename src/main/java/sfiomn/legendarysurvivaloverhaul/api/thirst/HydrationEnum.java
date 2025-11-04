@@ -5,33 +5,35 @@ package sfiomn.legendarysurvivaloverhaul.api.thirst;
 // https://github.com/Charles445/SimpleDifficulty/blob/v0.3.4/src/main/java/com/charles445/simpledifficulty/api/thirst/ThirstEnum.java
 public enum HydrationEnum
 {
-	NORMAL	("normal"),
-	RAIN	("rain"),
-	POTION	("potion"),
-	PURIFIED("purified");
+    NORMAL("normal"),
+    RAIN("rain"),
+    POTION("potion"),
+    PURIFIED("purified");
 
-	private final String name;
+    private final String name;
 
-	HydrationEnum(String name)
-	{
-		this.name = name;
-	}
+    HydrationEnum(String name)
+    {
+        this.name = name;
+    }
 
-	public String getName()
-	{
-		return this.name;
-	}
+    public static HydrationEnum getByName(String name)
+    {
+        for (HydrationEnum hydrationEnum : HydrationEnum.values())
+        {
+            if (hydrationEnum.getName().equals(name))
+                return hydrationEnum;
+        }
+        return null;
+    }
 
-	public static HydrationEnum getByName(String name) {
-		for (HydrationEnum hydrationEnum: HydrationEnum.values()) {
-			if (hydrationEnum.getName().equals(name))
-				return hydrationEnum;
-		}
-		return null;
-	}
+    public String getName()
+    {
+        return this.name;
+    }
 
-	public String toString()
-	{
-		return this.getName();
-	}
+    public String toString()
+    {
+        return this.getName();
+    }
 }

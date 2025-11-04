@@ -20,18 +20,22 @@ import sfiomn.legendarysurvivaloverhaul.util.MathUtil;
 import static sfiomn.legendarysurvivaloverhaul.util.RenderUtil.renderTextureOverlay;
 
 @OnlyIn(Dist.CLIENT)
-public class RenderTemperatureOverlay {
-    private static TemperatureCapability TEMPERATURE_CAP = null;
+public class RenderTemperatureOverlay
+{
     private static final ResourceLocation FROSTBITE_EFFECT = ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "textures/gui/freeze_effect.png");
     private static final ResourceLocation HEAT_STROKE_EFFECT = ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "textures/gui/heat_effect.png");
+    private static TemperatureCapability TEMPERATURE_CAP = null;
     private static ResourceLocation temperatureEffect = null;
     private static float fadeLevel = 0;
     private static boolean triggerTemperatureSoundEffect;
 
-    public static void render(Gui gui, GuiGraphics guiGraphics, float partialTicks, int width, int height) {
-        if (Config.Baked.temperatureEnabled && temperatureEffect != null) {
+    public static void render(Gui gui, GuiGraphics guiGraphics, float partialTicks, int width, int height)
+    {
+        if (Config.Baked.temperatureEnabled && temperatureEffect != null)
+        {
             Player player = net.minecraft.client.Minecraft.getInstance().player;
-            if (player != null && temperatureEffect != null && !player.isCreative() && !player.isSpectator()) {
+            if (player != null && temperatureEffect != null && !player.isCreative() && !player.isSpectator())
+            {
                 RenderSystem.enableBlend();
                 RenderSystem.defaultBlendFunc();
                 renderTextureOverlay(guiGraphics, temperatureEffect, width, height, fadeLevel);
@@ -40,8 +44,10 @@ public class RenderTemperatureOverlay {
         }
     }
 
-    public static void updateTemperatureEffect(Player player) {
-        if (player != null && player.isAlive()) {
+    public static void updateTemperatureEffect(Player player)
+    {
+        if (player != null && player.isAlive())
+        {
 
             if (TEMPERATURE_CAP == null || player.tickCount % 20 == 0)
                 TEMPERATURE_CAP = CapabilityUtil.getTempCapability(player);
@@ -53,50 +59,64 @@ public class RenderTemperatureOverlay {
             boolean heatstrokeLimit = temperature >= TemperatureEnum.HEAT_STROKE.getMiddle() - 1;
 
             float targetFadeLevel;
-            if (Config.Baked.coldTemperatureOverlay && tempEnum == TemperatureEnum.FROSTBITE && !FrostbiteEffect.playerIsImmuneToFrost(player)) {
+            if (Config.Baked.coldTemperatureOverlay && tempEnum == TemperatureEnum.FROSTBITE && !FrostbiteEffect.playerIsImmuneToFrost(player))
+            {
                 temperatureEffect = FROSTBITE_EFFECT;
-                if (frostbiteLimit) {
+                if (frostbiteLimit)
+                {
                     targetFadeLevel = 0.75f;
-                    if (triggerTemperatureSoundEffect) {
+                    if (triggerTemperatureSoundEffect)
+                    {
                         triggerTemperatureSoundEffect = false;
                         player.playSound(SoundRegistry.FROSTBITE.get(), 1.0f, 1.0f);
                     }
-                } else {
+                } else
+                {
                     targetFadeLevel = 0.35f;
                     triggerTemperatureSoundEffect = true;
-                    if (fadeLevel == 0) {
+                    if (fadeLevel == 0)
+                    {
                         player.playSound(SoundRegistry.FROSTBITE_EARLY.get(), 1.0f, 1.0f);
                     }
                 }
-            } else if (Config.Baked.heatTemperatureOverlay && tempEnum == TemperatureEnum.HEAT_STROKE && !HeatStrokeEffect.playerIsImmuneToHeat(player)) {
+            } else if (Config.Baked.heatTemperatureOverlay && tempEnum == TemperatureEnum.HEAT_STROKE && !HeatStrokeEffect.playerIsImmuneToHeat(player))
+            {
                 temperatureEffect = HEAT_STROKE_EFFECT;
 
-                if (heatstrokeLimit) {
+                if (heatstrokeLimit)
+                {
                     targetFadeLevel = 0.6f;
-                    if (triggerTemperatureSoundEffect) {
+                    if (triggerTemperatureSoundEffect)
+                    {
                         triggerTemperatureSoundEffect = false;
                         player.playSound(SoundRegistry.HEAT_STROKE.get(), 1.0f, 1.0f);
                     }
-                } else {
+                } else
+                {
                     targetFadeLevel = 0.25f;
                     triggerTemperatureSoundEffect = true;
-                    if (fadeLevel == 0) {
+                    if (fadeLevel == 0)
+                    {
                         player.playSound(SoundRegistry.HEAT_STROKE_EARLY.get(), 1.0f, 1.0f);
                     }
                 }
-            } else {
+            } else
+            {
                 triggerTemperatureSoundEffect = true;
                 targetFadeLevel = 0;
             }
 
-            if (targetFadeLevel > fadeLevel) {
+            if (targetFadeLevel > fadeLevel)
+            {
                 fadeLevel = Math.min(targetFadeLevel, fadeLevel + MathUtil.round(1.0f / 20.0f, 2));
             }
-            if (targetFadeLevel < fadeLevel) {
+            if (targetFadeLevel < fadeLevel)
+            {
                 fadeLevel = Math.max(targetFadeLevel, fadeLevel - MathUtil.round(1.0f / 20.0f, 2));
             }
 
-            if (fadeLevel == 0) {
+            if (fadeLevel == 0)
+            {
                 temperatureEffect = null;
             }
         }

@@ -7,14 +7,17 @@ import sfiomn.legendarysurvivaloverhaul.api.data.providers.TemperatureDataProvid
 
 import java.util.concurrent.CompletableFuture;
 
-public class HardcoreTorchesTemperatureProvider extends TemperatureDataProvider {
+public class HardcoreTorchesTemperatureProvider extends TemperatureDataProvider
+{
 
-    public HardcoreTorchesTemperatureProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper fileHelper) {
+    public HardcoreTorchesTemperatureProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper fileHelper)
+    {
         super("hardcore_torches", output, lookupProvider, fileHelper);
     }
 
     @Override
-    public void generate(HolderLookup.Provider provider, ExistingFileHelper existingFileHelper) {
+    public void generate(HolderLookup.Provider provider, ExistingFileHelper existingFileHelper)
+    {
 
         block("hardcore_campfire")
                 .addTemperature(temperatureBlock(10.0f).addProperty("lit", "true"))

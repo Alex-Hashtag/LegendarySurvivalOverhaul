@@ -7,17 +7,20 @@ import sfiomn.legendarysurvivaloverhaul.api.temperature.TemporaryModifierGroupEn
 import java.util.HashMap;
 import java.util.Map;
 
-public class TemperatureConsumableBlockData implements ITemperatureConsumableBlockData {
+public class TemperatureConsumableBlockData implements ITemperatureConsumableBlockData
+{
+    private final Map<String, String> properties;
     private TemporaryModifierGroupEnum group;
     private int temperatureLevel;
     private int durationInTick;
-    private final Map<String, String> properties;
 
-    public TemperatureConsumableBlockData() {
+    public TemperatureConsumableBlockData()
+    {
         properties = new HashMap<>();
     }
 
-    public TemperatureConsumableBlockData(TemperatureConsumableBlockData copy) {
+    public TemperatureConsumableBlockData(TemperatureConsumableBlockData copy)
+    {
         group = copy.group;
         temperatureLevel = copy.temperatureLevel;
         durationInTick = copy.durationInTick;
@@ -25,36 +28,42 @@ public class TemperatureConsumableBlockData implements ITemperatureConsumableBlo
     }
 
     @Override
-    public ITemperatureConsumableBlockData group(TemporaryModifierGroupEnum group) {
+    public ITemperatureConsumableBlockData group(TemporaryModifierGroupEnum group)
+    {
         this.group = group;
         return this;
     }
 
     @Override
-    public ITemperatureConsumableBlockData temperatureLevel(int temperatureLevel) {
+    public ITemperatureConsumableBlockData temperatureLevel(int temperatureLevel)
+    {
         this.temperatureLevel = temperatureLevel;
         return this;
     }
 
     @Override
-    public ITemperatureConsumableBlockData duration(int durationInTick) {
-        this.durationInTick = durationInTick    ;
+    public ITemperatureConsumableBlockData duration(int durationInTick)
+    {
+        this.durationInTick = durationInTick;
         return this;
     }
 
     @Override
-    public ITemperatureConsumableBlockData addProperty(String propertyName, String propertyValue) {
+    public ITemperatureConsumableBlockData addProperty(String propertyName, String propertyValue)
+    {
         properties.put(propertyName, propertyValue);
         return this;
     }
 
     @Override
-    public ITemperatureConsumableBlockData copy() {
+    public ITemperatureConsumableBlockData copy()
+    {
         return new TemperatureConsumableBlockData(this);
     }
 
     @Override
-    public JsonObject build() {
+    public JsonObject build()
+    {
         JsonObject json = new JsonObject();
         json.addProperty("group", this.group.name());
         json.addProperty("temperature_level", this.temperatureLevel);

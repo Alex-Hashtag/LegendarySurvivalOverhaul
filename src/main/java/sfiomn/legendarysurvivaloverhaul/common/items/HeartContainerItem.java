@@ -15,7 +15,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
-import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.health.HealthCapability;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
 import sfiomn.legendarysurvivaloverhaul.registry.SoundRegistry;
@@ -23,66 +22,74 @@ import sfiomn.legendarysurvivaloverhaul.util.CapabilityUtil;
 
 public class HeartContainerItem extends Item
 {
-	public HeartContainerItem(Item.Properties properties)
-	{
-		super(properties);
-	}
+    public HeartContainerItem(Item.Properties properties)
+    {
+        super(properties);
+    }
 
-	@Override
-	public int getUseDuration(@NotNull ItemStack stack, LivingEntity entity) {
-		return 30;
-	}
+    @Override
+    public int getUseDuration(@NotNull ItemStack stack, LivingEntity entity)
+    {
+        return 30;
+    }
 
-	@Override
-	public @NotNull UseAnim getUseAnimation(@NotNull ItemStack stack) {
-		return UseAnim.BOW;
-	}
+    @Override
+    public @NotNull UseAnim getUseAnimation(@NotNull ItemStack stack)
+    {
+        return UseAnim.BOW;
+    }
 
-	@Override
-	public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level level, @NotNull Player player, @NotNull InteractionHand hand) {
-		if (Config.Baked.healthOverhaulEnabled) {
-			HealthCapability cap = CapabilityUtil.getHealthCapability(player);
+    @Override
+    public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level level, @NotNull Player player, @NotNull InteractionHand hand)
+    {
+        if (Config.Baked.healthOverhaulEnabled)
+        {
+            HealthCapability cap = CapabilityUtil.getHealthCapability(player);
 
-			if (cap.getAdditionalHealth() >= Config.Baked.maxAdditionalHealth) {
-				if (level.isClientSide)
-					player.displayClientMessage(Component.translatable("message.legendarysurvivaloverhaul.heart_container.additional_health_full"), true);
-				return InteractionResultHolder.fail(player.getItemInHand(hand));
-			}
-		}
+            if (cap.getAdditionalHealth() >= Config.Baked.maxAdditionalHealth)
+            {
+                if (level.isClientSide)
+                    player.displayClientMessage(Component.translatable("message.legendarysurvivaloverhaul.heart_container.additional_health_full"), true);
+                return InteractionResultHolder.fail(player.getItemInHand(hand));
+            }
+        }
 
-		player.startUsingItem(hand);
-		return InteractionResultHolder.success(player.getItemInHand(hand));
-	}
+        player.startUsingItem(hand);
+        return InteractionResultHolder.success(player.getItemInHand(hand));
+    }
 
-	@Override
-	public @NotNull ItemStack finishUsingItem(@NotNull ItemStack stack, @NotNull Level level, @NotNull LivingEntity entity)
-	{
-		if (entity instanceof Player player)
-		{
-			stack = super.finishUsingItem(stack, level, player);
+    @Override
+    public @NotNull ItemStack finishUsingItem(@NotNull ItemStack stack, @NotNull Level level, @NotNull LivingEntity entity)
+    {
+        if (entity instanceof Player player)
+        {
+            stack = super.finishUsingItem(stack, level, player);
 
-			if (!level.isClientSide)
-				player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 200, 1));
+            if (!level.isClientSide)
+                player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 200, 1));
 
-			if (Config.Baked.healthOverhaulEnabled) {
-				HealthCapability cap = CapabilityUtil.getHealthCapability(player);
+            if (Config.Baked.healthOverhaulEnabled)
+            {
+                HealthCapability cap = CapabilityUtil.getHealthCapability(player);
 
-				cap.addAdditionalHealth(2);
+                cap.addAdditionalHealth(2);
 
-				level.playSound(null, player, SoundRegistry.HEART_CONTAINER.get(), SoundSource.NEUTRAL, 1.0f, 1.0f);
-				for (int i = 0; i < 100; i++) {
-					level.addParticle(ParticleTypes.CRIMSON_SPORE, player.position().x, player.position().add(0, 1.5, 0).y, player.position().z, 0.2, 0.2, 0.2);
-				}
+                level.playSound(null, player, SoundRegistry.HEART_CONTAINER.get(), SoundSource.NEUTRAL, 1.0f, 1.0f);
+                for (int i = 0; i < 100; i++)
+                {
+                    level.addParticle(ParticleTypes.CRIMSON_SPORE, player.position().x, player.position().add(0, 1.5, 0).y, player.position().z, 0.2, 0.2, 0.2);
+                }
 
-				if (level.isClientSide) {
-					Minecraft.getInstance().gameRenderer.displayItemActivation(stack);
-				}
-			}
-			if (!player.isCreative())
-				stack.shrink(1);
-		}
+                if (level.isClientSide)
+                {
+                    Minecraft.getInstance().gameRenderer.displayItemActivation(stack);
+                }
+            }
+            if (!player.isCreative())
+                stack.shrink(1);
+        }
 
-		return stack;
-	}
-	
+        return stack;
+    }
+
 }

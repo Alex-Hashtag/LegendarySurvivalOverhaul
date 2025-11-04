@@ -16,7 +16,8 @@ import sfiomn.legendarysurvivaloverhaul.common.integration.eclipticseasons.Eclip
 import sfiomn.legendarysurvivaloverhaul.common.integration.sereneseasons.SereneSeasonsUtil;
 
 
-public class SeasonalCalendarTimeProperty implements ClampedItemPropertyFunction {
+public class SeasonalCalendarTimeProperty implements ClampedItemPropertyFunction
+{
     float olderD0 = 0;
 
     @OnlyIn(Dist.CLIENT)
@@ -34,21 +35,20 @@ public class SeasonalCalendarTimeProperty implements ClampedItemPropertyFunction
         if (level == null)
         {
             return 0;
-        }
-        else
+        } else
         {
             try
             {
                 double d0 = 0;
 
-                if (LegendarySurvivalOverhaul.sereneSeasonsLoaded) {
+                if (LegendarySurvivalOverhaul.sereneSeasonsLoaded)
+                {
                     d0 = SereneSeasonsUtil.getTimeInSeasonCycle(level);
                 } else if (LegendarySurvivalOverhaul.eclipticSeasonsLoaded)
                     d0 = EclipticSeasonsUtil.getDayInSeasonCycle(level);
 
                 return Mth.positiveModulo((float) d0, 1.0F);
-            }
-            catch (NullPointerException e)
+            } catch (NullPointerException e)
             {
                 return 0;
             }

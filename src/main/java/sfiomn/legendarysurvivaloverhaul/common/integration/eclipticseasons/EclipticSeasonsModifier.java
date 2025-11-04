@@ -12,48 +12,47 @@ import static sfiomn.legendarysurvivaloverhaul.common.integration.eclipticseason
 
 public class EclipticSeasonsModifier extends ModifierBase
 {
-	public EclipticSeasonsModifier()
-	{
-		super();
-	}
+    public EclipticSeasonsModifier()
+    {
+        super();
+    }
 
-	@Override
-	public float getWorldInfluence(Player player, Level level, BlockPos pos)
-	{
-		if (!LegendarySurvivalOverhaul.eclipticSeasonsLoaded || !Config.Baked.eclipticSeasonsEnabled)
-			return 0.0f;
-		
-		try
-		{
-			// In theory, this should only ever run if Ecliptic Seasons is installed
-			// However, just to be safe, we put this inside of a try/catch to make
-			// sure something weird hasn't happened with the API
-			return getUncaughtWorldInfluence(level, pos);
-		}
-		catch (Exception e)
-		{
-			// If an error somehow occurs, disable compatibility 
-			LegendarySurvivalOverhaul.LOGGER.error("An error has occurred with Ecliptic Seasons compatibility, disabling modifier", e);
-			LegendarySurvivalOverhaul.eclipticSeasonsLoaded = false;
+    @Override
+    public float getWorldInfluence(Player player, Level level, BlockPos pos)
+    {
+        if (!LegendarySurvivalOverhaul.eclipticSeasonsLoaded || !Config.Baked.eclipticSeasonsEnabled)
+            return 0.0f;
 
-			return 0.0f;
-		}
-	}
-	
-	public float getUncaughtWorldInfluence(Level level, BlockPos pos)
-	{
-		if (!hasDimensionSeason(level))
-			return 0.0f;
+        try
+        {
+            // In theory, this should only ever run if Ecliptic Seasons is installed
+            // However, just to be safe, we put this inside of a try/catch to make
+            // sure something weird hasn't happened with the API
+            return getUncaughtWorldInfluence(level, pos);
+        } catch (Exception e)
+        {
+            // If an error somehow occurs, disable compatibility
+            LegendarySurvivalOverhaul.LOGGER.error("An error has occurred with Ecliptic Seasons compatibility, disabling modifier", e);
+            LegendarySurvivalOverhaul.eclipticSeasonsLoaded = false;
 
-		if (EclipticSeasonsCompat.isSolarTermNone(level))
-			return 0.0f;
+            return 0.0f;
+        }
+    }
 
-		int timeInSubSeason = (int) (EclipticSeasonsCompat.getTimeInTerm(level) * 24000 + level.getLevelData().getDayTime() % 24000);
-		int subSeasonDuration = EclipticSeasonsUtil.getDaysInSolarTerm(level) * 24000;
-		int ordinal = EclipticSeasonsCompat.getSolarTermOrdinal(level);
-		float value = getBlendedSeasonModifier(getSeasonModifier(ordinal - 1), getSeasonModifier(ordinal), getSeasonModifier(ordinal + 1), timeInSubSeason, subSeasonDuration);
-		double targetUndergroundTemperature = 0;
+    public float getUncaughtWorldInfluence(Level level, BlockPos pos)
+    {
+        if (!hasDimensionSeason(level))
+            return 0.0f;
 
-		return applyUndergroundEffect(value, level, pos, (float) targetUndergroundTemperature);
-	}
+        if (EclipticSeasonsCompat.isSolarTermNone(level))
+            return 0.0f;
+
+        int timeInSubSeason = (int) (EclipticSeasonsCompat.getTimeInTerm(level) * 24000 + level.getLevelData().getDayTime() % 24000);
+        int subSeasonDuration = EclipticSeasonsUtil.getDaysInSolarTerm(level) * 24000;
+        int ordinal = EclipticSeasonsCompat.getSolarTermOrdinal(level);
+        float value = getBlendedSeasonModifier(getSeasonModifier(ordinal - 1), getSeasonModifier(ordinal), getSeasonModifier(ordinal + 1), timeInSubSeason, subSeasonDuration);
+        double targetUndergroundTemperature = 0;
+
+        return applyUndergroundEffect(value, level, pos, (float) targetUndergroundTemperature);
+    }
 }

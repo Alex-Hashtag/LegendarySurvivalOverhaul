@@ -8,66 +8,85 @@ import net.minecraft.world.level.Level;
  */
 public interface IThirstCapability
 {
-    public float getThirstExhaustion();
-    public int getHydrationLevel();
-    public float getSaturationLevel();
-    public int getThirstTickTimer();
-    public int getThirstDamageTickTimer();
-    public int getThirstDamageCounter();
+    float getThirstExhaustion();
 
-    public void setThirstExhaustion(float exhaustion);
-    public void setHydrationLevel(int thirst);
-    public void setThirstSaturation(float saturation);
-    public void setThirstTickTimer(int ticktimer);
-    public void setThirstDamageTickTimer(int ticktimer);
-    public void setThirstDamageCounter(int damagecounter);
+    void setThirstExhaustion(float exhaustion);
 
-    public void addThirstExhaustion(float exhaustion);
-    public void addHydrationLevel(int thirst);
-    public void addSaturationLevel(float saturation);
-    public void addThirstTickTimer(int ticktimer);
-    public void addThirstDamageTickTimer(int ticktimer);
-    public void addThirstDamageCounter(int damagecounter);
+    int getHydrationLevel();
+
+    void setHydrationLevel(int thirst);
+
+    float getSaturationLevel();
+
+    int getThirstTickTimer();
+
+    void setThirstTickTimer(int ticktimer);
+
+    int getThirstDamageTickTimer();
+
+    void setThirstDamageTickTimer(int ticktimer);
+
+    int getThirstDamageCounter();
+
+    void setThirstDamageCounter(int damagecounter);
+
+    void setThirstSaturation(float saturation);
+
+    void addThirstExhaustion(float exhaustion);
+
+    void addHydrationLevel(int thirst);
+
+    void addSaturationLevel(float saturation);
+
+    void addThirstTickTimer(int ticktimer);
+
+    void addThirstDamageTickTimer(int ticktimer);
+
+    void addThirstDamageCounter(int damagecounter);
 
     /**
      * Check whether the hydration level is at maximum or not
      * <br>
+     *
      * @return boolean hydration is at maximum
      */
-    public boolean isHydrationLevelAtMax();
+    boolean isHydrationLevelAtMax();
 
     /**
      * (Don't use this!) <br>
      * Checks if the capability needs an update
+     *
      * @return boolean has thirst changed
      */
-    public boolean isDirty();
+    boolean isDirty();
 
     /**
      * (Don't use this!) <br>
      * Sets the capability as updated
      */
-    public void setClean();
+    void setClean();
 
     /**
      * Force the synchronization server - client
      * of the thirst capability
      */
-    public void setDirty();
+    void setDirty();
 
     /**
      * (Don't use this!) <br>
      * Runs a tick update for the player's thirst capability
+     *
      * @param player
      * @param world
      * @param isStart
      */
-    public void tickUpdate(Player player, Level world, boolean isStart);
+    void tickUpdate(Player player, Level world, boolean isStart);
 
     /**
      * (Don't use this!) <br>
      * Gets the current tick of the packet timer
+     *
      * @return int packetTimer
      */
-    public int getPacketTimer();
+    int getPacketTimer();
 }

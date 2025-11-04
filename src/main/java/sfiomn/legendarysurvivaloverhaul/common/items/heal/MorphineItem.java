@@ -20,9 +20,11 @@ import java.util.List;
 import static sfiomn.legendarysurvivaloverhaul.registry.MobEffectRegistry.PAINKILLER;
 import static sfiomn.legendarysurvivaloverhaul.registry.MobEffectRegistry.PAINKILLER_ADDICTION;
 
-public class MorphineItem extends Item {
+public class MorphineItem extends Item
+{
 
-    public MorphineItem(Item.Properties p_i48487_1_) {
+    public MorphineItem(Item.Properties p_i48487_1_)
+    {
         super(p_i48487_1_);
     }
 
@@ -43,7 +45,8 @@ public class MorphineItem extends Item {
     {
         ItemStack stack = player.getItemInHand(hand);
 
-        if (player.hasEffect(PAINKILLER_ADDICTION)) {
+        if (player.hasEffect(PAINKILLER_ADDICTION))
+        {
             player.displayClientMessage(Component.translatable("message.legendarysurvivaloverhaul.morphine_use_under_painkiller_addiction"), true);
             return InteractionResultHolder.fail(stack);
         }
@@ -55,7 +58,7 @@ public class MorphineItem extends Item {
     @Override
     public @NotNull ItemStack finishUsingItem(@NotNull ItemStack stack, Level level, @NotNull LivingEntity entity)
     {
-        if(level.isClientSide || !(entity instanceof Player player))
+        if (level.isClientSide || !(entity instanceof Player player))
             return stack;
 
         player.addEffect(new MobEffectInstance(PAINKILLER, Config.Baked.morphinePainkillerTickDuration, 0, false, false, true));
@@ -74,7 +77,8 @@ public class MorphineItem extends Item {
     }
 
     @Override
-    public void appendHoverText(@NotNull ItemStack stack, @Nullable TooltipContext level, @NotNull List<Component> tooltip, @NotNull TooltipFlag isAdvanced) {
+    public void appendHoverText(@NotNull ItemStack stack, @Nullable TooltipContext level, @NotNull List<Component> tooltip, @NotNull TooltipFlag isAdvanced)
+    {
         if (Config.Baked.localizedBodyDamageEnabled)
             tooltip.add(Component.translatable("tooltip.legendarysurvivaloverhaul.body_heal_item.morphine"));
         super.appendHoverText(stack, level, tooltip, isAdvanced);

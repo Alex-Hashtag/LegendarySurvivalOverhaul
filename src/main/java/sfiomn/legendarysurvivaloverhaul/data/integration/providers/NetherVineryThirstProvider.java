@@ -9,14 +9,17 @@ import sfiomn.legendarysurvivaloverhaul.registry.MobEffectRegistry;
 
 import java.util.concurrent.CompletableFuture;
 
-public class NetherVineryThirstProvider extends ThirstDataProvider {
+public class NetherVineryThirstProvider extends ThirstDataProvider
+{
 
-    public NetherVineryThirstProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper fileHelper) {
+    public NetherVineryThirstProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper fileHelper)
+    {
         super("nethervinery", output, lookupProvider, fileHelper);
     }
 
     @Override
-    public void generate(HolderLookup.Provider provider, ExistingFileHelper existingFileHelper) {
+    public void generate(HolderLookup.Provider provider, ExistingFileHelper existingFileHelper)
+    {
 
         consumable("crimson_grape").addThirst(thirstData(2, 0.0f));
         consumable("warped_grape").addThirst(thirstData(2, 0.0f));

@@ -11,14 +11,17 @@ import sfiomn.legendarysurvivaloverhaul.registry.MobEffectRegistry;
 
 import java.util.concurrent.CompletableFuture;
 
-public class MinecraftThirstProvider extends ThirstDataProvider {
+public class MinecraftThirstProvider extends ThirstDataProvider
+{
 
-    public MinecraftThirstProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper fileHelper) {
+    public MinecraftThirstProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper fileHelper)
+    {
         super("minecraft", output, lookupProvider, fileHelper);
     }
 
     @Override
-    public void generate(HolderLookup.Provider provider, ExistingFileHelper existingFileHelper) {
+    public void generate(HolderLookup.Provider provider, ExistingFileHelper existingFileHelper)
+    {
         block("rain").addThirst(thirstData(1, 0));
 
         IThirstData dirtyWater = thirstData(3, 0)

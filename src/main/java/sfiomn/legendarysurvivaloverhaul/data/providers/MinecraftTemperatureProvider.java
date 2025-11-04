@@ -9,14 +9,17 @@ import sfiomn.legendarysurvivaloverhaul.api.temperature.TemporaryModifierGroupEn
 
 import java.util.concurrent.CompletableFuture;
 
-public class MinecraftTemperatureProvider extends TemperatureDataProvider {
+public class MinecraftTemperatureProvider extends TemperatureDataProvider
+{
 
-    public MinecraftTemperatureProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper fileHelper) {
+    public MinecraftTemperatureProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper fileHelper)
+    {
         super("minecraft", output, lookupProvider, fileHelper);
     }
 
     @Override
-    public void generate(HolderLookup.Provider provider, ExistingFileHelper existingFileHelper) {
+    public void generate(HolderLookup.Provider provider, ExistingFileHelper existingFileHelper)
+    {
         dimension("overworld").temperature(20).hasAltitude().seaLevelHeight(64);
         dimension("the_end").temperature(-13);
         dimension("the_nether").temperature(27);

@@ -5,10 +5,8 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.PacketFlow;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload.Type;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.network.PacketDistributor;
-// removed deprecated import: ClientPacketDistributor
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonBodyPartResistance;
@@ -19,7 +17,8 @@ import java.util.Map;
 
 public record SyncBodyPartResistanceItemsPacket(
         Map<ResourceLocation, JsonBodyPartResistance> bodyPartResistanceItems
-) implements CustomPacketPayload {
+) implements CustomPacketPayload
+{
 
     public static final ResourceLocation ID =
             ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "sync_body_part_resistance_items");
@@ -36,30 +35,37 @@ public record SyncBodyPartResistanceItemsPacket(
                     SyncBodyPartResistanceItemsPacket::new
             );
 
-    @Override
-    public Type<? extends CustomPacketPayload> type() { return TYPE; }
-
     // Handler (client-only)
-    public static void handle(SyncBodyPartResistanceItemsPacket pkt, IPayloadContext ctx) {
+    public static void handle(SyncBodyPartResistanceItemsPacket pkt, IPayloadContext ctx)
+    {
         if (ctx.flow() != PacketFlow.CLIENTBOUND) return;
         ctx.enqueueWork(() -> BodyPartResistanceItemListener.acceptServerBodyPartResistanceItems(pkt.bodyPartResistanceItems()));
     }
 
-    /* -------- Convenience send helpers -------- */
-
     // Client -> Server
-    public static void sendToServer(Map<ResourceLocation, JsonBodyPartResistance> data) {
+    public static void sendToServer(Map<ResourceLocation, JsonBodyPartResistance> data)
+    {
         PacketDistributor.sendToServer(new SyncBodyPartResistanceItemsPacket(data));
     }
 
+    /* -------- Convenience send helpers -------- */
+
     // Server -> one player
     public static void sendToPlayer(net.minecraft.server.level.ServerPlayer player,
-                                    Map<ResourceLocation, JsonBodyPartResistance> data) {
+                                    Map<ResourceLocation, JsonBodyPartResistance> data)
+    {
         PacketDistributor.sendToPlayer(player, new SyncBodyPartResistanceItemsPacket(data));
     }
 
     // Server -> everyone
-    public static void sendToAll(Map<ResourceLocation, JsonBodyPartResistance> data) {
+    public static void sendToAll(Map<ResourceLocation, JsonBodyPartResistance> data)
+    {
         PacketDistributor.sendToAllPlayers(new SyncBodyPartResistanceItemsPacket(data));
+    }
+
+    @Override
+    public Type<? extends CustomPacketPayload> type()
+    {
+        return TYPE;
     }
 }

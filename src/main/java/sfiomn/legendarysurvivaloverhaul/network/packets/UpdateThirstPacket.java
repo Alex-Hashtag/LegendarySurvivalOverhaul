@@ -8,7 +8,6 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.PacketFlow;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload.Type;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
@@ -18,7 +17,8 @@ import sfiomn.legendarysurvivaloverhaul.util.CapabilityUtil;
 
 public record UpdateThirstPacket(
         CompoundTag compound
-) implements CustomPacketPayload {
+) implements CustomPacketPayload
+{
 
     public static final ResourceLocation ID =
             ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "update_thirst");
@@ -31,15 +31,14 @@ public record UpdateThirstPacket(
                     UpdateThirstPacket::new
             );
 
-    @Override
-    public Type<? extends CustomPacketPayload> type() { return TYPE; }
-
     // Handler
-    public static void handle(UpdateThirstPacket pkt, IPayloadContext ctx) {
+    public static void handle(UpdateThirstPacket pkt, IPayloadContext ctx)
+    {
         if (ctx.flow() != PacketFlow.CLIENTBOUND) return;
         ctx.enqueueWork(() -> {
             LocalPlayer player = Minecraft.getInstance().player;
-            if (player != null) {
+            if (player != null)
+            {
                 ThirstCapability thirst = CapabilityUtil.getThirstCapability(player);
                 thirst.readNBT(pkt.compound());
             }
@@ -47,15 +46,24 @@ public record UpdateThirstPacket(
     }
 
     // Convenience senders
-    public static void sendToServer(CompoundTag compound) {
+    public static void sendToServer(CompoundTag compound)
+    {
         PacketDistributor.sendToServer(new UpdateThirstPacket(compound));
     }
 
-    public static void sendToPlayer(net.minecraft.server.level.ServerPlayer player, CompoundTag compound) {
+    public static void sendToPlayer(net.minecraft.server.level.ServerPlayer player, CompoundTag compound)
+    {
         PacketDistributor.sendToPlayer(player, new UpdateThirstPacket(compound));
     }
 
-    public static void sendToAll(CompoundTag compound) {
+    public static void sendToAll(CompoundTag compound)
+    {
         PacketDistributor.sendToAllPlayers(new UpdateThirstPacket(compound));
+    }
+
+    @Override
+    public Type<? extends CustomPacketPayload> type()
+    {
+        return TYPE;
     }
 }

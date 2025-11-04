@@ -9,14 +9,17 @@ import sfiomn.legendarysurvivaloverhaul.registry.MobEffectRegistry;
 
 import java.util.concurrent.CompletableFuture;
 
-public class BreweryThirstProvider extends ThirstDataProvider {
+public class BreweryThirstProvider extends ThirstDataProvider
+{
 
-    public BreweryThirstProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper fileHelper) {
+    public BreweryThirstProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper fileHelper)
+    {
         super("brewery", output, lookupProvider, fileHelper);
     }
 
     @Override
-    public void generate(HolderLookup.Provider provider, ExistingFileHelper existingFileHelper) {
+    public void generate(HolderLookup.Provider provider, ExistingFileHelper existingFileHelper)
+    {
 
         IThirstData whiskey_hydration = thirstData(5, 5.0f).addEffect(MobEffectRegistry.THIRST.get(), 800, 0.4f);
         consumableAndBlock("whiskey_jojannik", whiskey_hydration);

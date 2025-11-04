@@ -8,14 +8,17 @@ import sfiomn.legendarysurvivaloverhaul.api.temperature.TemporaryModifierGroupEn
 
 import java.util.concurrent.CompletableFuture;
 
-public class HerbalBrewsTemperatureProvider extends TemperatureDataProvider {
+public class HerbalBrewsTemperatureProvider extends TemperatureDataProvider
+{
 
-    public HerbalBrewsTemperatureProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper fileHelper) {
+    public HerbalBrewsTemperatureProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper fileHelper)
+    {
         super("herbalbrews", output, lookupProvider, fileHelper);
     }
 
     @Override
-    public void generate(HolderLookup.Provider provider, ExistingFileHelper existingFileHelper) {
+    public void generate(HolderLookup.Provider provider, ExistingFileHelper existingFileHelper)
+    {
 
         block("stove")
                 .addTemperature(temperatureBlock(6.0f).addProperty("lit", "true"))

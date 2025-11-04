@@ -6,9 +6,9 @@ import mezz.jei.api.ingredients.subtypes.ISubtypeInterpreter;
 import mezz.jei.api.ingredients.subtypes.UidContext;
 import mezz.jei.api.registration.*;
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -16,7 +16,6 @@ import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.level.Level;
-import net.minecraft.core.Holder;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jetbrains.annotations.NotNull;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
@@ -36,34 +35,43 @@ import static sfiomn.legendarysurvivaloverhaul.common.integration.mutantmonsters
 import static sfiomn.legendarysurvivaloverhaul.util.internal.ThirstUtilInternal.HYDRATION_ENUM_TAG;
 
 @JeiPlugin
-public class JeiIntegration implements IModPlugin {
+public class JeiIntegration implements IModPlugin
+{
 
     @Override
-    public ResourceLocation getPluginUid() {
+    public ResourceLocation getPluginUid()
+    {
         return ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "jei_plugin");
     }
 
     @Override
-    public void registerCategories(IRecipeCategoryRegistration registration) {
+    public void registerCategories(IRecipeCategoryRegistration registration)
+    {
 
-        if (Config.Baked.temperatureEnabled) {
+        if (Config.Baked.temperatureEnabled)
+        {
             registration.addRecipeCategories(new SewingRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
         }
     }
 
     @Override
-    public void registerItemSubtypes(ISubtypeRegistration registration) {
-        if (Config.Baked.thirstEnabled) {
+    public void registerItemSubtypes(ISubtypeRegistration registration)
+    {
+        if (Config.Baked.thirstEnabled)
+        {
             registration.registerSubtypeInterpreter(ItemRegistry.CANTEEN.get(), CanteenSubtypeInterpreter.INSTANCE);
             registration.registerSubtypeInterpreter(ItemRegistry.LARGE_CANTEEN.get(), CanteenSubtypeInterpreter.INSTANCE);
         }
     }
 
     @Override
-    public void registerRecipes(@NotNull IRecipeRegistration registration) {
+    public void registerRecipes(@NotNull IRecipeRegistration registration)
+    {
         Level world = Minecraft.getInstance().level;
-        if (Config.Baked.temperatureEnabled) {
-            if (world != null) {
+        if (Config.Baked.temperatureEnabled)
+        {
+            if (world != null)
+            {
                 RecipeManager rm = world.getRecipeManager();
                 registration.addRecipes(
                         SewingRecipeCategory.SEWING_RECIPE_TYPE,
@@ -79,57 +87,30 @@ public class JeiIntegration implements IModPlugin {
     }
 
     @Override
-    public void registerGuiHandlers(IGuiHandlerRegistration registration) {
-        if (Config.Baked.temperatureEnabled) {
+    public void registerGuiHandlers(IGuiHandlerRegistration registration)
+    {
+        if (Config.Baked.temperatureEnabled)
+        {
             registration.addRecipeClickArea(SewingTableScreen.class, 40, 37, 20, 20, SewingRecipeCategory.SEWING_RECIPE_TYPE);
         }
     }
 
     @Override
-    public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
-        if (Config.Baked.temperatureEnabled) {
+    public void registerRecipeCatalysts(IRecipeCatalystRegistration registration)
+    {
+        if (Config.Baked.temperatureEnabled)
+        {
             registration.addRecipeCatalyst(new ItemStack(BlockRegistry.SEWING_TABLE.get()), SewingRecipeCategory.SEWING_RECIPE_TYPE);
         }
     }
 
-    public static class CanteenSubtypeInterpreter implements ISubtypeInterpreter<ItemStack> {
-        public static final CanteenSubtypeInterpreter INSTANCE = new CanteenSubtypeInterpreter();
-
-        private CanteenSubtypeInterpreter() {
-        }
-
-        @Override
-        public Object getSubtypeData(ItemStack itemStack, UidContext context) {
-            CustomData custom = itemStack.get(DataComponents.CUSTOM_DATA);
-            if (custom == null) {
-                return "";
-            }
-            var tag = custom.copyTag();
-            if (!tag.contains(HYDRATION_ENUM_TAG)) {
-                return "";
-            }
-            return tag.getString(HYDRATION_ENUM_TAG);
-        }
-
-        @Override
-        public String getLegacyStringSubtypeInfo(ItemStack itemStack, UidContext context) {
-            CustomData custom = itemStack.get(DataComponents.CUSTOM_DATA);
-            if (custom == null) {
-                return "";
-            }
-            var tag = custom.copyTag();
-            if (!tag.contains(HYDRATION_ENUM_TAG)) {
-                return "";
-            }
-            return tag.getString(HYDRATION_ENUM_TAG);
-        }
-    }
-
-    private ArrayList<SewingRecipe> sewingCoatRecipes() {
+    private ArrayList<SewingRecipe> sewingCoatRecipes()
+    {
         ArrayList<SewingRecipe> sewingRecipes = new ArrayList<>();
 
         BuiltInRegistries.ITEM.stream().forEach(item -> {
-            if ((item instanceof ArmorItem || isMutantMonstersArmor(item)) && BuiltInRegistries.ITEM.getKey(item) != null) {
+            if ((item instanceof ArmorItem || isMutantMonstersArmor(item)) && BuiltInRegistries.ITEM.getKey(item) != null)
+            {
                 addSewingRecipe(item, sewingRecipes);
             }
         });
@@ -137,10 +118,13 @@ public class JeiIntegration implements IModPlugin {
         return sewingRecipes;
     }
 
-    private void addSewingRecipe(Item itemArmor, ArrayList<SewingRecipe> sewingRecipes) {
+    private void addSewingRecipe(Item itemArmor, ArrayList<SewingRecipe> sewingRecipes)
+    {
         ResourceLocation itemArmorRegistryName = BuiltInRegistries.ITEM.getKey(itemArmor);
-        for (DeferredHolder<Item, ? extends Item> modItem : ItemRegistry.ITEMS.getEntries()) {
-            if (modItem.get() instanceof CoatItem itemCoat && itemArmorRegistryName != null) {
+        for (DeferredHolder<Item, ? extends Item> modItem : ItemRegistry.ITEMS.getEntries())
+        {
+            if (modItem.get() instanceof CoatItem itemCoat && itemArmorRegistryName != null)
+            {
                 ItemStack result = new ItemStack(itemArmor);
                 TemperatureUtil.setArmorCoatTag(result, itemCoat.coat.id());
                 sewingRecipes.add(
@@ -153,11 +137,53 @@ public class JeiIntegration implements IModPlugin {
         }
     }
 
-    private SewingRecipe getCoatRecipe(Item base, Item addition, ItemStack result) {
+    private SewingRecipe getCoatRecipe(Item base, Item addition, ItemStack result)
+    {
         return new SewingRecipe(
                 Ingredient.of(base),
                 Ingredient.of(addition),
                 result
         );
+    }
+
+    public static class CanteenSubtypeInterpreter implements ISubtypeInterpreter<ItemStack>
+    {
+        public static final CanteenSubtypeInterpreter INSTANCE = new CanteenSubtypeInterpreter();
+
+        private CanteenSubtypeInterpreter()
+        {
+        }
+
+        @Override
+        public Object getSubtypeData(ItemStack itemStack, UidContext context)
+        {
+            CustomData custom = itemStack.get(DataComponents.CUSTOM_DATA);
+            if (custom == null)
+            {
+                return "";
+            }
+            var tag = custom.copyTag();
+            if (!tag.contains(HYDRATION_ENUM_TAG))
+            {
+                return "";
+            }
+            return tag.getString(HYDRATION_ENUM_TAG);
+        }
+
+        @Override
+        public String getLegacyStringSubtypeInfo(ItemStack itemStack, UidContext context)
+        {
+            CustomData custom = itemStack.get(DataComponents.CUSTOM_DATA);
+            if (custom == null)
+            {
+                return "";
+            }
+            var tag = custom.copyTag();
+            if (!tag.contains(HYDRATION_ENUM_TAG))
+            {
+                return "";
+            }
+            return tag.getString(HYDRATION_ENUM_TAG);
+        }
     }
 }

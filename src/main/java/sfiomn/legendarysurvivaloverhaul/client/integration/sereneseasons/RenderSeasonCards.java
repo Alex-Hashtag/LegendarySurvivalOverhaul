@@ -2,6 +2,8 @@ package sfiomn.legendarysurvivaloverhaul.client.integration.sereneseasons;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -9,8 +11,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import net.minecraft.client.gui.Gui;
-import net.minecraft.client.gui.GuiGraphics;
 import sereneseasons.api.season.Season;
 import sereneseasons.api.season.SeasonHelper;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
@@ -19,7 +19,8 @@ import sfiomn.legendarysurvivaloverhaul.config.Config;
 import sfiomn.legendarysurvivaloverhaul.util.RenderUtil;
 
 @OnlyIn(Dist.CLIENT)
-public class RenderSeasonCards {
+public class RenderSeasonCards
+{
     private static final ResourceLocation SPRING_CARD = ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "textures/cards/spring.png");
     private static final ResourceLocation AUTUMN_CARD = ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "textures/cards/autumn.png");
     private static final ResourceLocation SUMMER_CARD = ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "textures/cards/summer.png");
@@ -27,7 +28,7 @@ public class RenderSeasonCards {
     private static final ResourceLocation DRY_CARD = ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "textures/cards/dry.png");
     private static final ResourceLocation WET_CARD = ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "textures/cards/wet.png");
     private static final int CARD_WIDTH = 128;
-    private	static final int CARD_HEIGHT = 128;
+    private static final int CARD_HEIGHT = 128;
     private static ResourceLocation seasonCard = null;
     private static Season lastSeason = null;
     private static SereneSeasonsUtil.TropicalSeason lastTropicalSeason = null;
@@ -39,9 +40,11 @@ public class RenderSeasonCards {
     private static int cardTimer = 0;
 
 
-    public static void render(Gui gui, GuiGraphics guiGraphics, float partialTicks, int width, int height) {
+    public static void render(Gui gui, GuiGraphics guiGraphics, float partialTicks, int width, int height)
+    {
         if (LegendarySurvivalOverhaul.sereneSeasonsLoaded && Config.Baked.ssSeasonCardsEnabled &&
-                seasonCard != null) {
+                seasonCard != null)
+        {
             int x = Mth.floor(width / 2.0f - CARD_WIDTH / 2.0f);
             int y = Mth.floor(height / 4.0f - CARD_HEIGHT / 2.0f);
 
@@ -63,36 +66,43 @@ public class RenderSeasonCards {
         }
     }
 
-    public static void updateSeasonCardFading(Player player) {
+    public static void updateSeasonCardFading(Player player)
+    {
         if (player == null || !player.isAlive())
             return;
 
         Level level = player.level();
-        if (lastDimension == null || lastDimension != level.dimension()) {
+        if (lastDimension == null || lastDimension != level.dimension())
+        {
             delayTimer = Config.Baked.seasonCardsSpawnDimensionDelayInTicks;
             lastDimension = level.dimension();
             isDimensionSeasonal = SereneSeasonsUtil.hasSeasons(level);
         }
 
-        if (!isDimensionSeasonal) {
+        if (!isDimensionSeasonal)
+        {
             if (lastSeason != null || lastTropicalSeason != null)
                 reset();
             return;
         }
 
-        if (delayTimer > 0) {
+        if (delayTimer > 0)
+        {
             delayTimer--;
             return;
         }
 
-        if (seasonCard == null) {
+        if (seasonCard == null)
+        {
             Season currentSeason;
             SereneSeasonsUtil.TropicalSeason currentTropicalSeason;
             SereneSeasonsUtil.SeasonType seasonType = SereneSeasonsUtil.getSeasonType(level.getBiome(player.blockPosition()));
 
-            if (seasonType == SereneSeasonsUtil.SeasonType.NORMAL_SEASON) {
+            if (seasonType == SereneSeasonsUtil.SeasonType.NORMAL_SEASON)
+            {
                 currentSeason = SeasonHelper.getSeasonState(level).getSeason();
-                if (currentSeason != lastSeason) {
+                if (currentSeason != lastSeason)
+                {
                     lastSeason = currentSeason;
                     fadeIn = true;
                     cardTimer = 0;
@@ -105,9 +115,11 @@ public class RenderSeasonCards {
                     else if (currentSeason == Season.WINTER)
                         seasonCard = WINTER_CARD;
                 }
-            } else if (seasonType == SereneSeasonsUtil.SeasonType.TROPICAL_SEASON) {
+            } else if (seasonType == SereneSeasonsUtil.SeasonType.TROPICAL_SEASON)
+            {
                 currentTropicalSeason = SereneSeasonsUtil.TropicalSeason.getTropicalSeason(SeasonHelper.getSeasonState(level).getTropicalSeason());
-                if (currentTropicalSeason != lastTropicalSeason) {
+                if (currentTropicalSeason != lastTropicalSeason)
+                {
                     lastTropicalSeason = currentTropicalSeason;
                     fadeIn = true;
                     cardTimer = 0;
@@ -119,35 +131,42 @@ public class RenderSeasonCards {
             }
         }
 
-        if (seasonCard != null) {
+        if (seasonCard != null)
+        {
             float targetFadeLevel = 0.0f;
             if (fadeIn)
                 targetFadeLevel = 1.0f;
 
-            if (targetFadeLevel > fadeLevel) {
+            if (targetFadeLevel > fadeLevel)
+            {
                 fadeLevel = Math.min(targetFadeLevel, fadeLevel + (Math.round(1.0f / Config.Baked.seasonCardsFadeInInTicks * 100) / 100.0f));
             }
-            if (targetFadeLevel < fadeLevel) {
+            if (targetFadeLevel < fadeLevel)
+            {
                 fadeLevel = Math.max(targetFadeLevel, fadeLevel - (Math.round(1.0f / Config.Baked.seasonCardsFadeOutInTicks * 100) / 100.0f));
             }
 
-            if (fadeLevel == 1.0f) {
+            if (fadeLevel == 1.0f)
+            {
                 if (cardTimer++ >= Config.Baked.seasonCardsDisplayTimeInTicks)
                     fadeIn = false;
-            } else if (fadeLevel == 0.0f) {
+            } else if (fadeLevel == 0.0f)
+            {
                 seasonCard = null;
             }
         }
     }
 
-    public static void reset() {
+    public static void reset()
+    {
         lastSeason = null;
         lastTropicalSeason = null;
         seasonCard = null;
         fadeLevel = 0;
     }
 
-    public static void init() {
+    public static void init()
+    {
         seasonCard = null;
         lastSeason = null;
         lastTropicalSeason = null;

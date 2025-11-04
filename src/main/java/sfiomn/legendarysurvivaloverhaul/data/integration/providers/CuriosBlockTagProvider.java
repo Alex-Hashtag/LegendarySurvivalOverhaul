@@ -8,12 +8,15 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.CompletableFuture;
 
-public class CuriosBlockTagProvider extends BlockTagsProvider {
-    public CuriosBlockTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, @Nullable ExistingFileHelper existingFileHelper) {
+public class CuriosBlockTagProvider extends BlockTagsProvider
+{
+    public CuriosBlockTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, @Nullable ExistingFileHelper existingFileHelper)
+    {
         super(output, lookupProvider, "curios", existingFileHelper);
     }
 
     @Override
-    protected void addTags(HolderLookup.Provider provider) {
+    protected void addTags(HolderLookup.Provider provider)
+    {
     }
 }

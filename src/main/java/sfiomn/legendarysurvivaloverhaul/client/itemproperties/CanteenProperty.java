@@ -12,7 +12,8 @@ import sfiomn.legendarysurvivaloverhaul.api.thirst.HydrationEnum;
 import sfiomn.legendarysurvivaloverhaul.api.thirst.ThirstUtil;
 
 
-public class CanteenProperty implements ClampedItemPropertyFunction {
+public class CanteenProperty implements ClampedItemPropertyFunction
+{
 
     @OnlyIn(Dist.CLIENT)
     @Override
@@ -20,7 +21,8 @@ public class CanteenProperty implements ClampedItemPropertyFunction {
     {
         HydrationEnum hydrationEnum = ThirstUtil.getHydrationEnumTag(itemStack);
 
-        if (hydrationEnum != null) {
+        if (hydrationEnum != null)
+        {
             return hydrationEnum.ordinal() / 10.0f;
         }
 

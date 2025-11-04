@@ -1,15 +1,15 @@
 package sfiomn.legendarysurvivaloverhaul.common.temperature;
 
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.core.registries.BuiltInRegistries;
-import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonTemperature;
 import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonTemperatureResistance;
 import sfiomn.legendarysurvivaloverhaul.api.data.manager.TemperatureDataManager;
 import sfiomn.legendarysurvivaloverhaul.api.temperature.ModifierBase;
 
-public class MountModifier extends ModifierBase {
+public class MountModifier extends ModifierBase
+{
     public MountModifier()
     {
         super();
@@ -18,7 +18,8 @@ public class MountModifier extends ModifierBase {
     @Override
     public float getPlayerInfluence(Player player)
     {
-        if (player.getVehicle() != null) {
+        if (player.getVehicle() != null)
+        {
             return processMountJson(player.getVehicle());
         }
         return 0.0f;

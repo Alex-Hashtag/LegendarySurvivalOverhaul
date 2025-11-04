@@ -5,11 +5,11 @@ import net.minecraft.world.level.Level;
 
 public interface ITemperatureItemCapability
 {
-	public float getWorldTemperatureLevel();
+    float getWorldTemperatureLevel();
 
-	public void setWorldTemperatureLevel(float temperature);
+    void setWorldTemperatureLevel(float temperature);
 
-	public boolean shouldUpdate(long currentTick);
+    boolean shouldUpdate(long currentTick);
 
-	public void updateWorldTemperature(Level world, Entity holder, long currentTick);
+    void updateWorldTemperature(Level world, Entity holder, long currentTick);
 }

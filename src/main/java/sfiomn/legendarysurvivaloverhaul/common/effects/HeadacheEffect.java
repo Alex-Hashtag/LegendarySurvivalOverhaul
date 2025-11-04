@@ -5,9 +5,9 @@ import net.minecraft.world.effect.MobEffectCategory;
 
 public class HeadacheEffect extends MobEffect
 {
-	public HeadacheEffect()
-	{
-		super(MobEffectCategory.HARMFUL, 1166574);
-	}
+    public HeadacheEffect()
+    {
+        super(MobEffectCategory.HARMFUL, 1166574);
+    }
 
 }

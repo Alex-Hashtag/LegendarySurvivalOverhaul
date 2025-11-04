@@ -10,14 +10,17 @@ import sfiomn.legendarysurvivaloverhaul.api.data.providers.BodyDamageDataProvide
 import java.util.Arrays;
 import java.util.concurrent.CompletableFuture;
 
-public class SupplementariesBodyDamageProvider extends BodyDamageDataProvider {
+public class SupplementariesBodyDamageProvider extends BodyDamageDataProvider
+{
 
-    public SupplementariesBodyDamageProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper fileHelper) {
+    public SupplementariesBodyDamageProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper fileHelper)
+    {
         super("supplementaries", output, lookupProvider, fileHelper);
     }
 
     @Override
-    public void generate(HolderLookup.Provider provider, ExistingFileHelper existingFileHelper) {
+    public void generate(HolderLookup.Provider provider, ExistingFileHelper existingFileHelper)
+    {
         damageSource("supplementaries.bamboo_spikes")
                 .damageDistribution(DamageDistributionEnum.ALL)
                 .addBodyParts(Arrays.asList(BodyPartEnum.LEFT_FOOT, BodyPartEnum.RIGHT_FOOT));

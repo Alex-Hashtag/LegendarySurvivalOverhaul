@@ -8,21 +8,21 @@ import com.google.gson.annotations.SerializedName;
 // Thankfully we don't have to do any file writing for these configs, we just have to 
 // read them
 public class SSBiomeIdentity
-{	
-	@SerializedName("enable_seasonal_effects")
-	public boolean seasonEffects;
-	
-	@SerializedName("use_tropical_seasons")
-	public boolean isTropical;
-	
-	public SSBiomeIdentity(boolean isTropical)
-	{
-		this(true, isTropical);
-	}
-	
-	public SSBiomeIdentity(boolean seasonEffects, boolean isTropical)
-	{
-		this.seasonEffects = seasonEffects;
-		this.isTropical = isTropical;
-	}
+{
+    @SerializedName("enable_seasonal_effects")
+    public boolean seasonEffects;
+
+    @SerializedName("use_tropical_seasons")
+    public boolean isTropical;
+
+    public SSBiomeIdentity(boolean isTropical)
+    {
+        this(true, isTropical);
+    }
+
+    public SSBiomeIdentity(boolean seasonEffects, boolean isTropical)
+    {
+        this.seasonEffects = seasonEffects;
+        this.isTropical = isTropical;
+    }
 }

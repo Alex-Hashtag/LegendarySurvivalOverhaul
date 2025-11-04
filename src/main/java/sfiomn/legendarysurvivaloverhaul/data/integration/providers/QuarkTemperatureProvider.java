@@ -8,14 +8,17 @@ import sfiomn.legendarysurvivaloverhaul.api.data.providers.TemperatureDataProvid
 
 import java.util.concurrent.CompletableFuture;
 
-public class QuarkTemperatureProvider extends TemperatureDataProvider {
+public class QuarkTemperatureProvider extends TemperatureDataProvider
+{
 
-    public QuarkTemperatureProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper fileHelper) {
+    public QuarkTemperatureProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper fileHelper)
+    {
         super("quark", output, lookupProvider, fileHelper);
     }
 
     @Override
-    public void generate(HolderLookup.Provider provider, ExistingFileHelper existingFileHelper) {
+    public void generate(HolderLookup.Provider provider, ExistingFileHelper existingFileHelper)
+    {
         fuelItem("coal_block").thermalType(ThermalTypeEnum.HEATING).duration(5400);
         fuelItem("charcoal_block").thermalType(ThermalTypeEnum.HEATING).duration(5400);
     }

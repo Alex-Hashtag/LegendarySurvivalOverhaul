@@ -9,14 +9,17 @@ import sfiomn.legendarysurvivaloverhaul.registry.MobEffectRegistry;
 
 import java.util.concurrent.CompletableFuture;
 
-public class SurvivalInstinctThirstProvider extends ThirstDataProvider {
+public class SurvivalInstinctThirstProvider extends ThirstDataProvider
+{
 
-    public SurvivalInstinctThirstProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper fileHelper) {
+    public SurvivalInstinctThirstProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper fileHelper)
+    {
         super("survival_instinct", output, lookupProvider, fileHelper);
     }
 
     @Override
-    public void generate(HolderLookup.Provider provider, ExistingFileHelper existingFileHelper) {
+    public void generate(HolderLookup.Provider provider, ExistingFileHelper existingFileHelper)
+    {
 
         IThirstData beer_hydration = thirstData(8, 6.0f)
                 .addEffect(MobEffectRegistry.THIRST.get(), 600, 0.2f);
@@ -31,24 +34,24 @@ public class SurvivalInstinctThirstProvider extends ThirstDataProvider {
                 .addEffect(MobEffectRegistry.THIRST.get(), 400, 0.3f);
         consumable("wine").addThirst(wine);
 
-        consumable("bean_can").addThirst(thirstData(3,1.0f));
-        consumable("cod_can").addThirst(thirstData(4,1.0f));
-        consumable("sardine_can").addThirst(thirstData(4,1.0f));
-        consumable("tuna_can").addThirst(thirstData(4,1.0f));
-        consumable("fruit_can").addThirst(thirstData(6,2.0f));
+        consumable("bean_can").addThirst(thirstData(3, 1.0f));
+        consumable("cod_can").addThirst(thirstData(4, 1.0f));
+        consumable("sardine_can").addThirst(thirstData(4, 1.0f));
+        consumable("tuna_can").addThirst(thirstData(4, 1.0f));
+        consumable("fruit_can").addThirst(thirstData(6, 2.0f));
         consumable("tomato_soup").addThirst(thirstData(6, 2.0f));
-        consumable("military_can").addThirst(thirstData(4,2.0f));
-        consumable("milk").addThirst(thirstData(9,4.0f));
-        consumable("orange_juice").addThirst(thirstData(9,4.0f));
+        consumable("military_can").addThirst(thirstData(4, 2.0f));
+        consumable("milk").addThirst(thirstData(9, 4.0f));
+        consumable("orange_juice").addThirst(thirstData(9, 4.0f));
 
-        consumable("blue_soda").addThirst(thirstData(8,3.5f));
-        consumable("red_soda").addThirst(thirstData(8,3.5f));
-        consumable("lemon_soda").addThirst(thirstData(8,3.5f));
-        consumable("energy_can").addThirst(thirstData(8,3.5f));
-        consumable("monster_can").addThirst(thirstData(11,4.0f));
+        consumable("blue_soda").addThirst(thirstData(8, 3.5f));
+        consumable("red_soda").addThirst(thirstData(8, 3.5f));
+        consumable("lemon_soda").addThirst(thirstData(8, 3.5f));
+        consumable("energy_can").addThirst(thirstData(8, 3.5f));
+        consumable("monster_can").addThirst(thirstData(11, 4.0f));
 
-        consumable("gallon_of_milk").addThirst(thirstData(10,5.0f));
-        consumable("gallon_of_water").addThirst(thirstData(10,5.0f));
+        consumable("gallon_of_milk").addThirst(thirstData(10, 5.0f));
+        consumable("gallon_of_water").addThirst(thirstData(10, 5.0f));
 
     }
 }

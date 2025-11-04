@@ -13,16 +13,19 @@ import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 
 import java.util.List;
 
-public class ModPlacedFeatures {
+public class ModPlacedFeatures
+{
     public static final ResourceKey<PlacedFeature> ICE_FERN_PLACED_KEY = registerKey("ice_fern_placed");
     public static final ResourceKey<PlacedFeature> SUN_FERN_PLACED_KEY = registerKey("sun_fern_placed");
-    public static final ResourceKey<PlacedFeature> WATER_PLANT_PLACED_KEY= registerKey("water_plant_placed");
+    public static final ResourceKey<PlacedFeature> WATER_PLANT_PLACED_KEY = registerKey("water_plant_placed");
 
-    public static ResourceKey<PlacedFeature> registerKey(String name) {
+    public static ResourceKey<PlacedFeature> registerKey(String name)
+    {
         return ResourceKey.create(Registries.PLACED_FEATURE, ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, name));
     }
 
-    public static List<PlacementModifier> worldSurfaceWithCountAndChance(int minCount, int maxCount, int chanceOnceEvery) {
+    public static List<PlacementModifier> worldSurfaceWithCountAndChance(int minCount, int maxCount, int chanceOnceEvery)
+    {
         return List.of(
                 RarityFilter.onAverageOnceEvery(chanceOnceEvery),
                 PlacementUtils.HEIGHTMAP_WORLD_SURFACE,
@@ -30,7 +33,8 @@ public class ModPlacedFeatures {
                 CountPlacement.of(UniformInt.of(minCount, maxCount)));
     }
 
-    public static void bootstrap(BootstrapContext<PlacedFeature> context) {
+    public static void bootstrap(BootstrapContext<PlacedFeature> context)
+    {
         HolderGetter<ConfiguredFeature<?, ?>> configuredFeatures = context.lookup(Registries.CONFIGURED_FEATURE);
 
         PlacementUtils.register(context,

@@ -15,7 +15,8 @@ import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.common.recipe.SewingRecipe;
 import sfiomn.legendarysurvivaloverhaul.registry.BlockRegistry;
 
-public class SewingRecipeCategory implements IRecipeCategory<SewingRecipe> {
+public class SewingRecipeCategory implements IRecipeCategory<SewingRecipe>
+{
     public final static ResourceLocation UID = ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "sewing");
     public final static ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "textures/gui/sewing_table_screen.png");
 
@@ -24,33 +25,39 @@ public class SewingRecipeCategory implements IRecipeCategory<SewingRecipe> {
     private final IDrawable background;
     private final IDrawable icon;
 
-    public SewingRecipeCategory(IGuiHelper helper) {
+    public SewingRecipeCategory(IGuiHelper helper)
+    {
         this.background = helper.createDrawable(TEXTURE, 10, 30, 156, 33);
         this.icon = helper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(BlockRegistry.SEWING_TABLE.get()));
     }
 
     @Override
-    public RecipeType<SewingRecipe> getRecipeType() {
+    public RecipeType<SewingRecipe> getRecipeType()
+    {
         return SEWING_RECIPE_TYPE;
     }
 
     @Override
-    public Component getTitle() {
+    public Component getTitle()
+    {
         return Component.translatable("block." + LegendarySurvivalOverhaul.MOD_ID + ".sewing_table");
     }
 
     @Override
-    public IDrawable getBackground() {
+    public IDrawable getBackground()
+    {
         return this.background;
     }
 
     @Override
-    public IDrawable getIcon() {
+    public IDrawable getIcon()
+    {
         return this.icon;
     }
 
     @Override
-    public void setRecipe(IRecipeLayoutBuilder builder, SewingRecipe recipe, IFocusGroup focuses) {
+    public void setRecipe(IRecipeLayoutBuilder builder, SewingRecipe recipe, IFocusGroup focuses)
+    {
         builder.addSlot(RecipeIngredientRole.INPUT, 8, 9).addIngredients(recipe.getBase());
         builder.addSlot(RecipeIngredientRole.INPUT, 55, 9).addIngredients(recipe.getAddition());
 

@@ -8,7 +8,8 @@ import sfiomn.legendarysurvivaloverhaul.api.temperature.TemporaryModifierGroupEn
 
 import java.util.List;
 
-public class JsonTemperatureConsumable {
+public class JsonTemperatureConsumable
+{
     public static final Codec<JsonTemperatureConsumable> CODEC =
             RecordCodecBuilder.create(inst -> inst.group(
                     Codec.STRING.fieldOf("group").forGetter(c -> c.group.name()),
@@ -24,34 +25,41 @@ public class JsonTemperatureConsumable {
     private DeferredHolder<MobEffect, MobEffect> effect;
     private DeferredHolder<MobEffect, MobEffect> oppositeEffect;
 
-    public JsonTemperatureConsumable(String group, int temperatureLevel, int duration) {
+    public JsonTemperatureConsumable(String group, int temperatureLevel, int duration)
+    {
         this.temperatureLevel = temperatureLevel;
         this.duration = duration;
         this.group = TemporaryModifierGroupEnum.get(group);
         this.effect = null;
         this.oppositeEffect = null;
-        if (temperatureLevel > 0) {
+        if (temperatureLevel > 0)
+        {
             this.effect = this.group.hotEffect;
             this.oppositeEffect = this.group.coldEffect;
-        } else if (temperatureLevel < 0) {
+        } else if (temperatureLevel < 0)
+        {
             this.effect = this.group.coldEffect;
             this.oppositeEffect = this.group.hotEffect;
         }
     }
 
-    public MobEffect getEffect() {
+    public MobEffect getEffect()
+    {
         return this.effect.get();
     }
 
-    public MobEffect getOppositeEffect() {
+    public MobEffect getOppositeEffect()
+    {
         return this.oppositeEffect.get();
     }
 
-    public DeferredHolder<MobEffect, MobEffect> getEffectHolder() {
+    public DeferredHolder<MobEffect, MobEffect> getEffectHolder()
+    {
         return this.effect;
     }
 
-    public DeferredHolder<MobEffect, MobEffect> getOppositeEffectHolder() {
+    public DeferredHolder<MobEffect, MobEffect> getOppositeEffectHolder()
+    {
         return this.oppositeEffect;
     }
 }

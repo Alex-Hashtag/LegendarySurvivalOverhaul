@@ -25,21 +25,27 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ThermometerItem extends Item {
-    public ThermometerItem(Item.Properties properties){
+public class ThermometerItem extends Item
+{
+    public ThermometerItem(Item.Properties properties)
+    {
         super(properties);
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
-        if (level.isClientSide()) {
+    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand)
+    {
+        if (level.isClientSide())
+        {
             TemperatureItemCapability tempCap = CapabilityUtil.getTempItemCapability(player.getMainHandItem());
 
             float temperature = tempCap.getWorldTemperatureLevel();
             Component temperatureComponent;
-            if (Config.Baked.renderTemperatureInFahrenheit) {
+            if (Config.Baked.renderTemperatureInFahrenheit)
+            {
                 temperatureComponent = Component.literal(WorldUtil.toFahrenheit(temperature) + "\u00B0F");
-            } else {
+            } else
+            {
                 temperatureComponent = Component.literal(temperature + "\u00B0C");
             }
             player.displayClientMessage(temperatureComponent, (true));
@@ -48,16 +54,19 @@ public class ThermometerItem extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable TooltipContext level, @NotNull List<Component> tooltipComponents, @NotNull TooltipFlag isAdvanced) {
+    public void appendHoverText(ItemStack stack, @Nullable TooltipContext level, @NotNull List<Component> tooltipComponents, @NotNull TooltipFlag isAdvanced)
+    {
         super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
         List<MutableComponent> text = new ArrayList<>();
 
-        if (InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), KeyMappingRegistry.showAddedDesc.getKey().getValue())) {
+        if (InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), KeyMappingRegistry.showAddedDesc.getKey().getValue()))
+        {
             text.add(Component.translatable("tooltip." + LegendarySurvivalOverhaul.MOD_ID + ".thermometer.description"));
             if (LegendarySurvivalOverhaul.curiosLoaded)
                 text.add(Component.translatable("tooltip." + LegendarySurvivalOverhaul.MOD_ID + ".thermometer.bauble_description"));
 
-        } else {
+        } else
+        {
             text.add(Component.literal(ChatFormatting.GRAY + I18n.get("tooltip." + LegendarySurvivalOverhaul.MOD_ID + ".added_desc.activate", ChatFormatting.LIGHT_PURPLE, I18n.get(KeyMappingRegistry.showAddedDesc.getTranslatedKeyMessage().getString()), ChatFormatting.GRAY)));
         }
 

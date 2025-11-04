@@ -92,7 +92,7 @@ public class JsonConsumableThirst
 
     public boolean matchesNbt(JsonPropertyValue... nbt)
     {
-        if (nbt.length != this.nbt.keySet().size())
+        if (nbt.length != this.nbt.size())
         {
             return false;
         }

@@ -11,8 +11,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class JsonThirstBlock {
-    public static final Codec<JsonThirstBlock> CODEC = RecordCodecBuilder.<JsonThirstBlock>create((inst) -> inst.group(
+public class JsonThirstBlock
+{
+    public static final Codec<JsonThirstBlock> CODEC = RecordCodecBuilder.create((inst) -> inst.group(
             Codec.INT.fieldOf("hydration").forGetter(c -> c.hydration),
             Codec.FLOAT.fieldOf("saturation").forGetter(c -> c.saturation),
             JsonMobEffect.LIST_CODEC.optionalFieldOf("effects", new ArrayList<>()).forGetter(c -> c.effects),
@@ -24,9 +25,10 @@ public class JsonThirstBlock {
     public int hydration;
     public float saturation;
     public List<JsonMobEffect> effects;
-    public Map<String,String> properties;
+    public Map<String, String> properties;
 
-    public JsonThirstBlock(int hydration, float saturation, List<JsonMobEffect> effects, Map<String, String> properties) {
+    public JsonThirstBlock(int hydration, float saturation, List<JsonMobEffect> effects, Map<String, String> properties)
+    {
 
         this.hydration = hydration;
         this.saturation = saturation;
@@ -38,22 +40,23 @@ public class JsonThirstBlock {
         this.properties.putAll(properties);
     }
 
-    public boolean isDefault() {
+    public boolean isDefault()
+    {
         return this.properties.isEmpty();
     }
 
 
     public boolean matchesState(BlockState blockState)
     {
-        for(Property<?> property : blockState.getProperties())
+        for (Property<?> property : blockState.getProperties())
         {
             String name = property.getName();
 
-            if(properties.containsKey(name))
+            if (properties.containsKey(name))
             {
                 String stateValue = blockState.getValue(property).toString();
 
-                if(!properties.get(name).equalsIgnoreCase(stateValue))
+                if (!properties.get(name).equalsIgnoreCase(stateValue))
                 {
                     return false;
                 }
@@ -65,15 +68,15 @@ public class JsonThirstBlock {
 
     public boolean matchesState(FluidState fluidState)
     {
-        for(Property<?> property : fluidState.getProperties())
+        for (Property<?> property : fluidState.getProperties())
         {
             String name = property.getName();
 
-            if(properties.containsKey(name))
+            if (properties.containsKey(name))
             {
                 String stateValue = fluidState.getValue(property).toString();
 
-                if(!properties.get(name).equalsIgnoreCase(stateValue))
+                if (!properties.get(name).equalsIgnoreCase(stateValue))
                 {
                     return false;
                 }

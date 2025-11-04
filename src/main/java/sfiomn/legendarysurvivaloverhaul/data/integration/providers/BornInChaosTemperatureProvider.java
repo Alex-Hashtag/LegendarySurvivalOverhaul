@@ -7,14 +7,17 @@ import sfiomn.legendarysurvivaloverhaul.api.data.providers.TemperatureDataProvid
 
 import java.util.concurrent.CompletableFuture;
 
-public class BornInChaosTemperatureProvider extends TemperatureDataProvider {
+public class BornInChaosTemperatureProvider extends TemperatureDataProvider
+{
 
-    public BornInChaosTemperatureProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper fileHelper) {
+    public BornInChaosTemperatureProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper fileHelper)
+    {
         super("born_in_chaos_v1", output, lookupProvider, fileHelper);
     }
 
     @Override
-    public void generate(HolderLookup.Provider provider, ExistingFileHelper existingFileHelper) {
+    public void generate(HolderLookup.Provider provider, ExistingFileHelper existingFileHelper)
+    {
 
         item("dark_metal_armor_helmet").heatResistance(1.0f);
         item("dark_metal_armor_chestplate").heatResistance(2.0f);

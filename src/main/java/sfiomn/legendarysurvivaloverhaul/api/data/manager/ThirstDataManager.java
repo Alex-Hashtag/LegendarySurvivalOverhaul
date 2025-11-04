@@ -10,13 +10,15 @@ import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonThirstConsumable;
 
 import java.util.List;
 
-public class ThirstDataManager {
+public class ThirstDataManager
+{
 
     public static IThirstBlockManager internalBlock;
     public static IThirstConsumableManager internalConsumable;
 
     /**
      * Retrieves the list of Thirst Information related to the provided block registry name
+     *
      * @param blockRegistryName resource location of the block
      * @return list of Thirst Information
      */
@@ -28,6 +30,7 @@ public class ThirstDataManager {
 
     /**
      * Retrieves the Thirst Information matching the provided block state
+     *
      * @param block block state
      * @return Thirst Information
      */
@@ -39,6 +42,7 @@ public class ThirstDataManager {
 
     /**
      * Retrieves the Thirst Information matching the provided fluid state
+     *
      * @param fluid fluid state
      * @return Thirst Information
      */
@@ -67,7 +71,8 @@ public class ThirstDataManager {
      * @return Thirst Information
      */
     @Nullable
-    public static JsonThirstConsumable getConsumable(ItemStack itemStack) {
+    public static JsonThirstConsumable getConsumable(ItemStack itemStack)
+    {
         return internalConsumable.get(itemStack);
     }
 }

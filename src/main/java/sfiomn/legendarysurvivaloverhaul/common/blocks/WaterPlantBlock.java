@@ -2,6 +2,7 @@ package sfiomn.legendarysurvivaloverhaul.common.blocks;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
@@ -24,16 +25,16 @@ import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraft.tags.BlockTags;
-import net.neoforged.neoforge.event.EventHooks;
 import org.jetbrains.annotations.NotNull;
 import sfiomn.legendarysurvivaloverhaul.registry.ItemRegistry;
 
-public class WaterPlantBlock extends CropBlock {
+public class WaterPlantBlock extends CropBlock
+{
     public static final EnumProperty<DoubleBlockHalf> HALF = BlockStateProperties.DOUBLE_BLOCK_HALF;
 
     public static final int MAX_AGE = 7;
     public static final IntegerProperty AGE = BlockStateProperties.AGE_7;
+    public static final Properties properties = getProperties();
     private static final VoxelShape[] SHAPE_BY_AGE = new VoxelShape[]{
             Block.box(4.0D, 0.0D, 4.0D, 12.0D, 6.0D, 12.0D),
             Block.box(2.0D, 0.0D, 2.0D, 14.0D, 9.0D, 14.0D),
@@ -44,14 +45,14 @@ public class WaterPlantBlock extends CropBlock {
             Block.box(0.0D, 0.0D, 0.0D, 16.0D, 7.0D, 16.0D),
             Block.box(0.0D, 0.0D, 0.0D, 16.0D, 11.0D, 16.0D)};
 
-    public static final Properties properties = getProperties();
-
-    public WaterPlantBlock() {
+    public WaterPlantBlock()
+    {
         super(properties);
         this.registerDefaultState(this.stateDefinition.any().setValue(HALF, DoubleBlockHalf.LOWER));
     }
 
-    public static Properties getProperties() {
+    public static Properties getProperties()
+    {
         return BlockBehaviour.Properties
                 .of()
                 .mapColor(MapColor.PLANT)
@@ -64,16 +65,21 @@ public class WaterPlantBlock extends CropBlock {
     }
 
     @Override
-    public void randomTick(@NotNull BlockState state, ServerLevel level, @NotNull BlockPos pos, @NotNull RandomSource random) {
+    public void randomTick(@NotNull BlockState state, ServerLevel level, @NotNull BlockPos pos, @NotNull RandomSource random)
+    {
         if (!level.isAreaLoaded(pos, 1))
             return; // Forge: prevent loading unloaded chunks when checking neighbor's light
-        if (level.getRawBrightness(pos, 0) >= 9 && !this.isUpperBlock(state)) {
+        if (level.getRawBrightness(pos, 0) >= 9 && !this.isUpperBlock(state))
+        {
             int age = this.getAge(state);
-            if (canGrow(level, state, pos)) {
+            if (canGrow(level, state, pos))
+            {
                 float f = getGrowthSpeed(state, level, pos);
-                if (net.neoforged.neoforge.common.CommonHooks.canCropGrow(level, pos, state, random.nextInt((int) (25.0F / f) + 1) == 0)) {
+                if (net.neoforged.neoforge.common.CommonHooks.canCropGrow(level, pos, state, random.nextInt((int) (25.0F / f) + 1) == 0))
+                {
                     level.setBlock(pos, this.getStateForAge(age + 1), 2);
-                    if (this.getAge(state) > this.getMaxAge() / 2) {
+                    if (this.getAge(state) > this.getMaxAge() / 2)
+                    {
                         level.setBlock(pos.above(), this.getStateForAge(age + 1).setValue(HALF, DoubleBlockHalf.UPPER), 2);
                     }
                 }
@@ -82,56 +88,70 @@ public class WaterPlantBlock extends CropBlock {
     }
 
     @Override
-    public void growCrops(Level level, BlockPos pos, BlockState state) {
+    public void growCrops(Level level, BlockPos pos, BlockState state)
+    {
         int age = this.getAge(state);
-        if (canGrow(level, state, pos)) {
+        if (canGrow(level, state, pos))
+        {
             BlockPos basePos = pos;
-            if (isUpperBlock(state)) {
+            if (isUpperBlock(state))
+            {
                 basePos = pos.below();
             }
             age = Math.min(age + this.getBonemealAgeIncrease(level), this.getMaxAge());
             level.setBlock(basePos, this.getStateForAge(age), 2);
-            if (age > this.getMaxAge() / 2) {
+            if (age > this.getMaxAge() / 2)
+            {
                 level.setBlock(basePos.above(), this.getStateForAge(age).setValue(HALF, DoubleBlockHalf.UPPER), 2);
             }
         }
     }
 
-    public boolean isUpperBlock(BlockState state) {
+    public boolean isUpperBlock(BlockState state)
+    {
         return state.getValue(HALF) == DoubleBlockHalf.UPPER;
     }
 
-    public boolean canGrow(Level level, BlockState state, BlockPos pos) {
-        if (this.isUpperBlock(state) || level.isEmptyBlock(pos.above()) || level.getBlockState(pos.above()).is(this)) {
+    public boolean canGrow(Level level, BlockState state, BlockPos pos)
+    {
+        if (this.isUpperBlock(state) || level.isEmptyBlock(pos.above()) || level.getBlockState(pos.above()).is(this))
+        {
             return this.getAge(state) < this.getMaxAge();
-        } else {
+        } else
+        {
             return this.getAge(state) < this.getMaxAge() / 2;
         }
     }
 
     @Override
-    protected @NotNull ItemLike getBaseSeedId() {
+    protected @NotNull ItemLike getBaseSeedId()
+    {
         return ItemRegistry.WATER_PLANT_SEEDS.get();
     }
 
     @Override
-    public @NotNull IntegerProperty getAgeProperty() {
+    public @NotNull IntegerProperty getAgeProperty()
+    {
         return AGE;
     }
 
     @Override
-    public int getMaxAge() {
+    public int getMaxAge()
+    {
         return MAX_AGE;
     }
 
     @Override
-    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder)
+    {
         builder.add(AGE).add(HALF);
     }
 
     @Override
-    public boolean canSurvive(@NotNull BlockState state, @NotNull LevelReader level, @NotNull BlockPos pos) {
-        if (state.getBlock() == this && isUpperBlock(state)) {
+    public boolean canSurvive(@NotNull BlockState state, @NotNull LevelReader level, @NotNull BlockPos pos)
+    {
+        if (state.getBlock() == this && isUpperBlock(state))
+        {
             BlockState stateBelow = level.getBlockState(pos.below());
             return ((level.getRawBrightness(pos, 0) >= 8 || level.canSeeSky(pos)) && stateBelow.getBlock() == this && this.getAge(stateBelow) > this.getMaxAge() / 2);
         }
@@ -139,12 +159,14 @@ public class WaterPlantBlock extends CropBlock {
     }
 
     @Override
-    protected boolean mayPlaceOn(BlockState blockState, BlockGetter blockReader, BlockPos blockPos) {
+    protected boolean mayPlaceOn(BlockState blockState, BlockGetter blockReader, BlockPos blockPos)
+    {
         return blockState.is(BlockTags.SAND);
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, BlockGetter reader, BlockPos pos, CollisionContext context) {
+    public VoxelShape getShape(BlockState state, BlockGetter reader, BlockPos pos, CollisionContext context)
+    {
         Vec3 vector3d = state.getOffset(reader, pos);
         if (state.getValue(HALF) == DoubleBlockHalf.LOWER)
             return SHAPE_BY_AGE[Math.min(this.getAge(state), 3)].move(vector3d.x, vector3d.y, vector3d.z);
@@ -154,12 +176,16 @@ public class WaterPlantBlock extends CropBlock {
 
 
     @Override
-    public BlockState playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
-        if (!level.isClientSide) {
-            if (isUpperBlock(state)) {
+    public BlockState playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player)
+    {
+        if (!level.isClientSide)
+        {
+            if (isUpperBlock(state))
+            {
                 if (level.getBlockState(pos.below()).is(this)) level.removeBlock(pos.below(), false);
             } else if (level.getBlockState(pos.above()).is(this)) level.removeBlock(pos.above(), false);
-            if (player.isCreative()) {
+            if (player.isCreative())
+            {
                 level.removeBlock(pos, false);
             }
         }
@@ -167,13 +193,16 @@ public class WaterPlantBlock extends CropBlock {
     }
 
     @Override
-    protected int getBonemealAgeIncrease(Level pLevel) {
+    protected int getBonemealAgeIncrease(Level pLevel)
+    {
         return Mth.nextInt(pLevel.random, 1, 2);
     }
 
     @Override
-    public boolean isValidBonemealTarget(@NotNull LevelReader level, @NotNull BlockPos pos, @NotNull BlockState state) {
-        if (canGrow((Level) level, state, pos)) {
+    public boolean isValidBonemealTarget(@NotNull LevelReader level, @NotNull BlockPos pos, @NotNull BlockState state)
+    {
+        if (canGrow((Level) level, state, pos))
+        {
             return state.getBlock() == this;
         }
         return false;

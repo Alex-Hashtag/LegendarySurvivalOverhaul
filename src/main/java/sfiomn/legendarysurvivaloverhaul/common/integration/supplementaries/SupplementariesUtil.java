@@ -1,13 +1,15 @@
 package sfiomn.legendarysurvivaloverhaul.common.integration.supplementaries;
 
 import net.mehvahdjukaar.supplementaries.common.items.LunchBoxItem;
-import net.mehvahdjukaar.supplementaries.common.items.components.LunchBaskedContent; // note the spelling: Basked
+import net.mehvahdjukaar.supplementaries.common.items.components.LunchBaskedContent;
 import net.minecraft.world.item.ItemStack;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 
-public class SupplementariesUtil {
+public class SupplementariesUtil
+{
 
-    public static ItemStack getSelectedItemInLunchBasket(ItemStack stack) {
+    public static ItemStack getSelectedItemInLunchBasket(ItemStack stack)
+    {
         if (!LegendarySurvivalOverhaul.supplementariesLoaded) return ItemStack.EMPTY;
         if (!(stack.getItem() instanceof LunchBoxItem lb)) return ItemStack.EMPTY;
 

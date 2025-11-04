@@ -10,8 +10,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
-public class ModLootTableProvider {
-    public static LootTableProvider createLootTables(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider) {
+public class ModLootTableProvider
+{
+    public static LootTableProvider createLootTables(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider)
+    {
         return new LootTableProvider(output, Set.of(), List.of(
                 new LootTableProvider.SubProviderEntry(ModBlockLootTables::new, LootContextParamSets.BLOCK),
                 new LootTableProvider.SubProviderEntry(ModChestLootTables::new, LootContextParamSets.CHEST),

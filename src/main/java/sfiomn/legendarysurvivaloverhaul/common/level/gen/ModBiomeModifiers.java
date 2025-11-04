@@ -13,16 +13,19 @@ import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 
 
-public class ModBiomeModifiers {
+public class ModBiomeModifiers
+{
     public static final ResourceKey<BiomeModifier> ADD_ICE_FERN = registerKey("add_ice_fern");
     public static final ResourceKey<BiomeModifier> ADD_SUN_FERN = registerKey("add_sun_fern");
     public static final ResourceKey<BiomeModifier> ADD_WATER_PLANT = registerKey("add_water_plant");
 
-    public static ResourceKey<BiomeModifier> registerKey(String name) {
+    public static ResourceKey<BiomeModifier> registerKey(String name)
+    {
         return ResourceKey.create(NeoForgeRegistries.Keys.BIOME_MODIFIERS, ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, name));
     }
 
-    public static void bootstrap(BootstrapContext<BiomeModifier> context) {
+    public static void bootstrap(BootstrapContext<BiomeModifier> context)
+    {
         var placedFeatures = context.lookup(Registries.PLACED_FEATURE);
         var biomes = context.lookup(Registries.BIOME);
 

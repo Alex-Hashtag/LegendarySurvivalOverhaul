@@ -15,7 +15,7 @@ import java.util.Map;
 
 public class JsonTemperatureConsumableBlock
 {
-    public static final Codec<JsonTemperatureConsumableBlock> CODEC = RecordCodecBuilder.<JsonTemperatureConsumableBlock>create((inst) -> inst.group(
+    public static final Codec<JsonTemperatureConsumableBlock> CODEC = RecordCodecBuilder.create((inst) -> inst.group(
             Codec.STRING.fieldOf("group").forGetter(c -> c.group.name()),
             Codec.INT.fieldOf("temperature_level").forGetter(c -> c.temperatureLevel),
             Codec.INT.fieldOf("duration").forGetter(c -> c.duration),
@@ -47,8 +47,7 @@ public class JsonTemperatureConsumableBlock
         {
             this.effect = this.group.hotEffect;
             this.oppositeEffect = this.group.coldEffect;
-        }
-        else if (temperatureLevel < 0)
+        } else if (temperatureLevel < 0)
         {
             this.effect = this.group.coldEffect;
             this.oppositeEffect = this.group.hotEffect;

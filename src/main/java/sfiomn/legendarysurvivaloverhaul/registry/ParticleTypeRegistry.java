@@ -2,10 +2,10 @@ package sfiomn.legendarysurvivaloverhaul.registry;
 
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.particles.SimpleParticleType;
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.neoforge.registries.DeferredRegister;
 import net.minecraft.core.registries.Registries;
+import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredHolder;
+import net.neoforged.neoforge.registries.DeferredRegister;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 
 

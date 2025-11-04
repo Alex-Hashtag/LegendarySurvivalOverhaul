@@ -9,14 +9,17 @@ import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 
 import java.util.concurrent.CompletableFuture;
 
-public class ModEntityTypesTagProvider extends EntityTypeTagsProvider {
+public class ModEntityTypesTagProvider extends EntityTypeTagsProvider
+{
 
-    public ModEntityTypesTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, @Nullable ExistingFileHelper existingFileHelper) {
+    public ModEntityTypesTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, @Nullable ExistingFileHelper existingFileHelper)
+    {
         super(output, lookupProvider, LegendarySurvivalOverhaul.MOD_ID, existingFileHelper);
     }
 
     @Override
-    protected void addTags(HolderLookup.Provider provider) {
+    protected void addTags(HolderLookup.Provider provider)
+    {
 
     }
 }

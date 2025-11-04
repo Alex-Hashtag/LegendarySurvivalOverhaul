@@ -19,42 +19,52 @@ import sfiomn.legendarysurvivaloverhaul.registry.KeyMappingRegistry;
 import java.util.List;
 import java.util.Objects;
 
-public class CoatItem extends Item {
+public class CoatItem extends Item
+{
     public CoatEnum coat;
 
-    public CoatItem(CoatEnum coat, Item.Properties properties) {
+    public CoatItem(CoatEnum coat, Item.Properties properties)
+    {
         super(properties);
         this.coat = coat;
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable TooltipContext context, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
+    public void appendHoverText(ItemStack stack, @Nullable TooltipContext context, List<Component> tooltipComponents, TooltipFlag isAdvanced)
+    {
         super.appendHoverText(stack, context, tooltipComponents, isAdvanced);
 
         MutableComponent text;
 
-        if (InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), KeyMappingRegistry.showAddedDesc.getKey().getValue())) {
-            if (this.coat != null) {
+        if (InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), KeyMappingRegistry.showAddedDesc.getKey().getValue()))
+        {
+            if (this.coat != null)
+            {
                 MutableComponent effectComponent = Component.translatable("tooltip." + LegendarySurvivalOverhaul.MOD_ID + ".coat_item." + this.coat.type() + ".effect").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(6466303)));
                 MutableComponent temperatureComponent = Component.literal(" " + this.coat.modifier());
 
-                if (Objects.equals(coat.type(), "heating")) {
+                if (Objects.equals(coat.type(), "heating"))
+                {
                     effectComponent = effectComponent.withStyle(Style.EMPTY.withColor(TextColor.fromRgb(6466303)));
                     temperatureComponent = temperatureComponent.withStyle(Style.EMPTY.withColor(TextColor.fromRgb(6466303)));
-                } else if (Objects.equals(coat.type(), "cooling")) {
+                } else if (Objects.equals(coat.type(), "cooling"))
+                {
                     effectComponent = effectComponent.withStyle(Style.EMPTY.withColor(TextColor.fromRgb(16420407)));
                     temperatureComponent = temperatureComponent.withStyle(Style.EMPTY.withColor(TextColor.fromRgb(16420407)));
-                } else {
+                } else
+                {
                     effectComponent = effectComponent.withStyle(Style.EMPTY.withColor(TextColor.fromRgb(10040319)));
                     temperatureComponent = temperatureComponent.withStyle(Style.EMPTY.withColor(TextColor.fromRgb(10040319)));
                 }
 
                 text = Component.translatable("tooltip." + LegendarySurvivalOverhaul.MOD_ID + ".coat_item.desc", effectComponent).append(temperatureComponent);
-            } else {
+            } else
+            {
                 return;
             }
 
-        } else {
+        } else
+        {
             text = Component.literal(ChatFormatting.GRAY + I18n.get("tooltip." + LegendarySurvivalOverhaul.MOD_ID + ".added_desc.activate", ChatFormatting.LIGHT_PURPLE, I18n.get(KeyMappingRegistry.showAddedDesc.getTranslatedKeyMessage().getString()), ChatFormatting.GRAY));
         }
 

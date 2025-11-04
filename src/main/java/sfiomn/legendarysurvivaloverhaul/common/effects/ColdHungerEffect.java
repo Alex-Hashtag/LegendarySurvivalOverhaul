@@ -6,7 +6,8 @@ import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
 
-public class ColdHungerEffect extends IncurableMobEffect {
+public class ColdHungerEffect extends IncurableMobEffect
+{
 
     public ColdHungerEffect()
     {
@@ -17,15 +18,16 @@ public class ColdHungerEffect extends IncurableMobEffect {
     @Override
     public boolean applyEffectTick(@NotNull LivingEntity entity, int amplifier)
     {
-        if(entity instanceof Player)
+        if (entity instanceof Player)
         {
-            ((Player)entity).causeFoodExhaustion((float) (Config.Baked.coldHungerEffectModifier * (amplifier + 1)));
+            ((Player) entity).causeFoodExhaustion((float) (Config.Baked.coldHungerEffectModifier * (amplifier + 1)));
         }
         return true;
     }
 
     @Override
-    public boolean shouldApplyEffectTickThisTick(int duration, int amplifier) {
+    public boolean shouldApplyEffectTickThisTick(int duration, int amplifier)
+    {
         int time = 50 >> amplifier;
         return time == 0 || duration % time == 0;
     }

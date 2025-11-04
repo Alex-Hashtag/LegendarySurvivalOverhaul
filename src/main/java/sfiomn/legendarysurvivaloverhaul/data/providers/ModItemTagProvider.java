@@ -10,14 +10,17 @@ import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 
 import java.util.concurrent.CompletableFuture;
 
-public class ModItemTagProvider extends ItemTagsProvider {
+public class ModItemTagProvider extends ItemTagsProvider
+{
 
-    public ModItemTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, CompletableFuture<TagLookup<Block>> p_275322_, @Nullable ExistingFileHelper existingFileHelper) {
+    public ModItemTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, CompletableFuture<TagLookup<Block>> p_275322_, @Nullable ExistingFileHelper existingFileHelper)
+    {
         super(output, lookupProvider, p_275322_, LegendarySurvivalOverhaul.MOD_ID, existingFileHelper);
     }
 
     @Override
-    protected void addTags(HolderLookup.Provider provider) {
+    protected void addTags(HolderLookup.Provider provider)
+    {
 
     }
 }

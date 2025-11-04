@@ -16,19 +16,23 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.BiConsumer;
 
-public class ModBarteringLootTables implements LootTableSubProvider {
+public class ModBarteringLootTables implements LootTableSubProvider
+{
 
-    public static List<ResourceLocation> barteringInjectedLootTables = Arrays.asList(
+    public static List<ResourceLocation> barteringInjectedLootTables = List.of(
             ResourceLocation.parse("gameplay/piglin_bartering")
     );
 
-    public ModBarteringLootTables(HolderLookup.Provider provider) {
+    public ModBarteringLootTables(HolderLookup.Provider provider)
+    {
     }
 
     @Override
-    public void generate(BiConsumer<ResourceKey<LootTable>, LootTable.Builder> biConsumer) {
+    public void generate(BiConsumer<ResourceKey<LootTable>, LootTable.Builder> biConsumer)
+    {
 
-        for (ResourceLocation lootTable : barteringInjectedLootTables) {
+        for (ResourceLocation lootTable : barteringInjectedLootTables)
+        {
             biConsumer.accept(
                     ResourceKey.create(Registries.LOOT_TABLE, ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "inject/" + lootTable.getPath())),
                     LootTable.lootTable().withPool(

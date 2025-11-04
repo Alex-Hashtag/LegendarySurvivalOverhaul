@@ -1,7 +1,7 @@
 package sfiomn.legendarysurvivaloverhaul.util.internal;
 
-import net.minecraft.core.Holder;
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundSource;
@@ -11,7 +11,6 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.core.registries.Registries;
 import org.apache.commons.lang3.tuple.Pair;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.bodydamage.*;
@@ -29,13 +28,9 @@ import sfiomn.legendarysurvivaloverhaul.util.CapabilityUtil;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class BodyDamageUtilInternal implements IBodyDamageUtil {
+public class BodyDamageUtilInternal implements IBodyDamageUtil
+{
     public static final UUID BROKEN_HEART_ATTRIBUTE_UUID = UUID.fromString("2e3cede5-3c18-45c2-8a46-31b89fb9c027");
-
-    private static final List<Holder<MobEffect>> firstAidSuppliesBoostingEffects = new ArrayList<>();
-    private static final List<Holder<MobEffect>> passiveLimbRegenerationEffects = new ArrayList<>();
-    private static final Map<MalusBodyPartEnum, Map<Float, Pair<MobEffect, Integer>>> bodyPartMalusEffects = new HashMap<>();
-
     public static final AttributeBuilder BODY_RESISTANCE = new AttributeBuilder(AttributeRegistry.BODY_RESISTANCE, ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "body_resistance"));
     public static final AttributeBuilder HEAD_RESISTANCE = new AttributeBuilder(AttributeRegistry.HEAD_RESISTANCE, ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "head_temperature"));
     public static final AttributeBuilder CHEST_RESISTANCE = new AttributeBuilder(AttributeRegistry.CHEST_RESISTANCE, ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "chest_temperature"));
@@ -43,11 +38,14 @@ public class BodyDamageUtilInternal implements IBodyDamageUtil {
     public static final AttributeBuilder LEFT_ARM_RESISTANCE = new AttributeBuilder(AttributeRegistry.LEFT_ARM_RESISTANCE, ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "left_arm_resistance"));
     public static final AttributeBuilder LEGS_RESISTANCE = new AttributeBuilder(AttributeRegistry.LEGS_RESISTANCE, ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "legs_resistance"));
     public static final AttributeBuilder FEET_RESISTANCE = new AttributeBuilder(AttributeRegistry.FEET_RESISTANCE, ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "feet_resistance"));
-
     public static final Map<BodyPartEnum, AttributeBuilder> bodyPartResistanceAttribute = new HashMap<>();
     public static final Map<EquipmentSlot, UUID> equipmentSlotBodyResistanceUuid = new HashMap<>();
+    private static final List<Holder<MobEffect>> firstAidSuppliesBoostingEffects = new ArrayList<>();
+    private static final List<Holder<MobEffect>> passiveLimbRegenerationEffects = new ArrayList<>();
+    private static final Map<MalusBodyPartEnum, Map<Float, Pair<MobEffect, Integer>>> bodyPartMalusEffects = new HashMap<>();
 
-    static {
+    static
+    {
         bodyPartResistanceAttribute.put(BodyPartEnum.HEAD, HEAD_RESISTANCE);
         bodyPartResistanceAttribute.put(BodyPartEnum.CHEST, CHEST_RESISTANCE);
         bodyPartResistanceAttribute.put(BodyPartEnum.RIGHT_ARM, RIGHT_ARM_RESISTANCE);
@@ -65,34 +63,45 @@ public class BodyDamageUtilInternal implements IBodyDamageUtil {
         equipmentSlotBodyResistanceUuid.put(EquipmentSlot.FEET, UUID.fromString("53523212-2ebc-4f6b-9044-7f9a1fa96852"));
     }
 
-    public BodyDamageUtilInternal() {}
+    public BodyDamageUtilInternal()
+    {
+    }
 
-    public static void initMalusConfig() {
-        for (MalusBodyPartEnum malus: MalusBodyPartEnum.values()) {
+    public static void initMalusConfig()
+    {
+        for (MalusBodyPartEnum malus : MalusBodyPartEnum.values())
+        {
             Map<Float, Pair<MobEffect, Integer>> malusEffects = new HashMap<>();
-            if (malus.effects.size() != malus.amplifiers.size() || malus.effects.size() != malus.thresholds.size()) {
+            if (malus.effects.size() != malus.amplifiers.size() || malus.effects.size() != malus.thresholds.size())
+            {
                 LegendarySurvivalOverhaul.LOGGER.debug("{} effects, amplifiers and thresholds elements number doesn't match. The last elements won't be used.", malus.name());
             }
 
-            for (int i=0; i<malus.effects.size(); i++) {
+            for (int i = 0; i < malus.effects.size(); i++)
+            {
                 MobEffect malusEffect = BuiltInRegistries.MOB_EFFECT
                         .getOptional(ResourceLocation.parse(malus.effects.get(i)))
                         .orElse(null);
                 int malusAmplifier;
                 float malusThreshold;
-                if (malusEffect == null) {
+                if (malusEffect == null)
+                {
                     LegendarySurvivalOverhaul.LOGGER.debug("Unknown effect {} for {}", malus.effects.get(i), malus.name());
                     continue;
                 }
-                try {
+                try
+                {
                     malusAmplifier = Math.abs(malus.amplifiers.get(i));
-                } catch (IndexOutOfBoundsException e) {
+                } catch (IndexOutOfBoundsException e)
+                {
                     LegendarySurvivalOverhaul.LOGGER.debug("No amplifier defined for effect {} in {}", malus.effects.get(i), malus.name());
                     continue;
                 }
-                try {
+                try
+                {
                     malusThreshold = (float) Mth.clamp(malus.thresholds.get(i), 0.0f, 1.0f);
-                } catch (IndexOutOfBoundsException e) {
+                } catch (IndexOutOfBoundsException e)
+                {
                     LegendarySurvivalOverhaul.LOGGER.debug("No threshold defined for effect {} in {}", malus.thresholds.get(i), malus.name());
                     continue;
                 }
@@ -102,29 +111,34 @@ public class BodyDamageUtilInternal implements IBodyDamageUtil {
         }
     }
 
-    public static void initLimbEffects() {
-        for (String effectRegistryName: Config.Baked.firstAidSuppliesBoostedOnEffects) {
+    public static void initLimbEffects()
+    {
+        for (String effectRegistryName : Config.Baked.firstAidSuppliesBoostedOnEffects)
+        {
             if (ResourceLocation.tryParse(effectRegistryName) == null)
                 LegendarySurvivalOverhaul.LOGGER.info("First Aid Supplies boosting effect : not valid effect registry name : {}", effectRegistryName);
 
             MobEffect boostingEffect = BuiltInRegistries.MOB_EFFECT
                     .getOptional(ResourceLocation.parse(effectRegistryName))
                     .orElse(null);
-            if (boostingEffect == null) {
+            if (boostingEffect == null)
+            {
                 LegendarySurvivalOverhaul.LOGGER.info("Unknown effect {}", effectRegistryName);
                 continue;
             }
             firstAidSuppliesBoostingEffects.add(Holder.direct(boostingEffect));
         }
 
-        for (String effectRegistryName: Config.Baked.passiveLimbRegenerationEffects) {
+        for (String effectRegistryName : Config.Baked.passiveLimbRegenerationEffects)
+        {
             if (ResourceLocation.tryParse(effectRegistryName) == null)
                 LegendarySurvivalOverhaul.LOGGER.info("Limb Regeneration Effect : not valid effect registry name : {}", effectRegistryName);
 
             MobEffect regenerationEffect = BuiltInRegistries.MOB_EFFECT
                     .getOptional(ResourceLocation.parse(effectRegistryName))
                     .orElse(null);
-            if (regenerationEffect == null) {
+            if (regenerationEffect == null)
+            {
                 LegendarySurvivalOverhaul.LOGGER.info("Unknown effect {}", effectRegistryName);
                 continue;
             }
@@ -133,25 +147,31 @@ public class BodyDamageUtilInternal implements IBodyDamageUtil {
     }
 
     @Override
-    public void applyConsumableHealing(Player player, ItemStack itemStack, boolean itemAlreadyConsumed) {
+    public void applyConsumableHealing(Player player, ItemStack itemStack, boolean itemAlreadyConsumed)
+    {
         ResourceLocation itemRegistryName = BuiltInRegistries.ITEM.getKey(itemStack.getItem());
         JsonHealingConsumable jsonConsumableHeal = BodyDamageDataManager.getHealingItem(itemRegistryName);
 
         if (jsonConsumableHeal == null)
             return;
 
-        if (Config.Baked.localizedBodyDamageEnabled && jsonConsumableHeal.healingCharges > 0) {
+        if (Config.Baked.localizedBodyDamageEnabled && jsonConsumableHeal.healingCharges > 0)
+        {
             if (player.level().isClientSide && Minecraft.getInstance().screen == null)
                 ClientHooks.openBodyHealthScreen(player, player.getUsedItemHand(), itemAlreadyConsumed,
                         jsonConsumableHeal.healingCharges, jsonConsumableHeal.healingValue, jsonConsumableHeal.healingTime);
-        } else {
-            if (Config.Baked.localizedBodyDamageEnabled) {
-                for (BodyPartEnum bodyPart : BodyPartEnum.values()) {
+        } else
+        {
+            if (Config.Baked.localizedBodyDamageEnabled)
+            {
+                for (BodyPartEnum bodyPart : BodyPartEnum.values())
+                {
                     BodyDamageUtil.applyHealingTimeBodyPart(player, bodyPart, jsonConsumableHeal.healingValue, jsonConsumableHeal.healingTime);
                 }
             }
 
-            if (jsonConsumableHeal.recoveryEffectDuration > 0) {
+            if (jsonConsumableHeal.recoveryEffectDuration > 0)
+            {
                 player.addEffect(new MobEffectInstance(MobEffectRegistry.RECOVERY, jsonConsumableHeal.recoveryEffectDuration, jsonConsumableHeal.recoveryEffectAmplifier, false, true, true));
             }
 
@@ -162,13 +182,17 @@ public class BodyDamageUtilInternal implements IBodyDamageUtil {
     }
 
     @Override
-    public MobEffectInstance getPlayerPassiveLimbRegenerationEffect(Player player) {
+    public MobEffectInstance getPlayerPassiveLimbRegenerationEffect(Player player)
+    {
         MobEffectInstance passiveLimbRegenerationEffect = null;
-        for (Holder<MobEffect> effect: passiveLimbRegenerationEffects) {
+        for (Holder<MobEffect> effect : passiveLimbRegenerationEffects)
+        {
             MobEffectInstance regenerationEffect = player.getEffect(effect);
-            if (regenerationEffect != null) {
+            if (regenerationEffect != null)
+            {
                 if (passiveLimbRegenerationEffect == null ||
-                        regenerationEffect.getAmplifier() > passiveLimbRegenerationEffect.getAmplifier()) {
+                        regenerationEffect.getAmplifier() > passiveLimbRegenerationEffect.getAmplifier())
+                {
                     passiveLimbRegenerationEffect = regenerationEffect;
                 }
             }
@@ -177,8 +201,10 @@ public class BodyDamageUtilInternal implements IBodyDamageUtil {
     }
 
     @Override
-    public boolean hasPlayerFirstAidSuppliesBoostingEffect(Player player) {
-        for (Holder<MobEffect> effect: firstAidSuppliesBoostingEffects) {
+    public boolean hasPlayerFirstAidSuppliesBoostingEffect(Player player)
+    {
+        for (Holder<MobEffect> effect : firstAidSuppliesBoostingEffects)
+        {
             if (player.hasEffect(effect))
                 return true;
         }
@@ -186,13 +212,16 @@ public class BodyDamageUtilInternal implements IBodyDamageUtil {
     }
 
     @Override
-    public List<Pair<MobEffect, Integer>> getEffects(MalusBodyPartEnum bodyPart, float healthRatio) {
+    public List<Pair<MobEffect, Integer>> getEffects(MalusBodyPartEnum bodyPart, float healthRatio)
+    {
         List<Pair<MobEffect, Integer>> effects = new ArrayList<>();
-        if(bodyPart == null)
+        if (bodyPart == null)
             return effects;
 
-        for (Map.Entry<Float, Pair<MobEffect, Integer>> effect: bodyPartMalusEffects.get(bodyPart).entrySet()) {
-            if (healthRatio <= effect.getKey()) {
+        for (Map.Entry<Float, Pair<MobEffect, Integer>> effect : bodyPartMalusEffects.get(bodyPart).entrySet())
+        {
+            if (healthRatio <= effect.getKey())
+            {
                 effects.add(effect.getValue());
             }
         }
@@ -200,9 +229,10 @@ public class BodyDamageUtilInternal implements IBodyDamageUtil {
     }
 
     @Override
-    public void applyHealingTimeBodyPart(Player player, BodyPartEnum bodyPartEnum, float healingValue, int healingTime) {
+    public void applyHealingTimeBodyPart(Player player, BodyPartEnum bodyPartEnum, float healingValue, int healingTime)
+    {
 
-        if(!Config.Baked.localizedBodyDamageEnabled || bodyPartEnum == null)
+        if (!Config.Baked.localizedBodyDamageEnabled || bodyPartEnum == null)
             return;
 
         IBodyDamageCapability capability = CapabilityUtil.getBodyDamageCapability(player);
@@ -216,9 +246,10 @@ public class BodyDamageUtilInternal implements IBodyDamageUtil {
     }
 
     @Override
-    public void healBodyPart(Player player, BodyPartEnum bodyPartEnum, float healingValue) {
+    public void healBodyPart(Player player, BodyPartEnum bodyPartEnum, float healingValue)
+    {
 
-        if(!Config.Baked.localizedBodyDamageEnabled)
+        if (!Config.Baked.localizedBodyDamageEnabled)
             return;
 
         IBodyDamageCapability capability = CapabilityUtil.getBodyDamageCapability(player);
@@ -227,9 +258,10 @@ public class BodyDamageUtilInternal implements IBodyDamageUtil {
     }
 
     @Override
-    public void hurtBodyPart(Player player, BodyPartEnum bodyPartEnum, float damageValue) {
+    public void hurtBodyPart(Player player, BodyPartEnum bodyPartEnum, float damageValue)
+    {
 
-        if(!Config.Baked.localizedBodyDamageEnabled || bodyPartEnum == null)
+        if (!Config.Baked.localizedBodyDamageEnabled || bodyPartEnum == null)
             return;
 
         IBodyDamageCapability capability = CapabilityUtil.getBodyDamageCapability(player);
@@ -242,10 +274,12 @@ public class BodyDamageUtilInternal implements IBodyDamageUtil {
 
         capability.hurt(bodyPartEnum, damageValue - remainingDamage);
 
-        if (remainingDamage > 0 && !bodyPartEnum.getNeighbours().isEmpty()) {
+        if (remainingDamage > 0 && !bodyPartEnum.getNeighbours().isEmpty())
+        {
             remainingDamage /= (float) (1 - bodyResistance - limbResistance);
             List<BodyPartEnum> damageableBodyParts = bodyPartEnum.getNeighbours().stream().filter(bodyPart -> capability.getBodyPartHealthRatio(bodyPart) > 0).collect(Collectors.toList());
-            if (!damageableBodyParts.isEmpty()){
+            if (!damageableBodyParts.isEmpty())
+            {
                 BodyPartEnum bodyPart = DamageDistributionEnum.ONE_OF.getBodyParts(player, damageableBodyParts).get(0);
                 limbResistance = bodyPartResistanceAttribute.get(bodyPart).getAttribute(player).getValue();
                 capability.hurt(bodyPart, remainingDamage * (float) (1 - bodyResistance - limbResistance));
@@ -254,21 +288,24 @@ public class BodyDamageUtilInternal implements IBodyDamageUtil {
     }
 
     @Override
-    public void balancedHurtBodyParts(Player player, List<BodyPartEnum> bodyParts, float damageValue) {
+    public void balancedHurtBodyParts(Player player, List<BodyPartEnum> bodyParts, float damageValue)
+    {
 
-        if(!Config.Baked.localizedBodyDamageEnabled || bodyParts.isEmpty())
+        if (!Config.Baked.localizedBodyDamageEnabled || bodyParts.isEmpty())
             return;
 
         Collections.shuffle(bodyParts);
 
-        for (BodyPartEnum bodyPart : bodyParts) {
+        for (BodyPartEnum bodyPart : bodyParts)
+        {
             hurtBodyPart(player, bodyPart, damageValue / bodyParts.size());
         }
     }
 
     @Override
-    public void randomHurtBodyParts(Player player, List<BodyPartEnum> bodyParts, float damageValue) {
-        if(!Config.Baked.localizedBodyDamageEnabled || bodyParts.isEmpty())
+    public void randomHurtBodyParts(Player player, List<BodyPartEnum> bodyParts, float damageValue)
+    {
+        if (!Config.Baked.localizedBodyDamageEnabled || bodyParts.isEmpty())
             return;
         int bodyPartIndex = bodyParts.size() == 1 ? 0 : player.getRandom().nextInt(bodyParts.size() - 1);
 
@@ -276,8 +313,9 @@ public class BodyDamageUtilInternal implements IBodyDamageUtil {
     }
 
     @Override
-    public float getHealthRatio(Player player, BodyPartEnum bodyPartEnum) {
-        if(!Config.Baked.localizedBodyDamageEnabled || bodyPartEnum == null)
+    public float getHealthRatio(Player player, BodyPartEnum bodyPartEnum)
+    {
+        if (!Config.Baked.localizedBodyDamageEnabled || bodyPartEnum == null)
             return 0.0f;
 
         IBodyDamageCapability capability = CapabilityUtil.getBodyDamageCapability(player);
@@ -286,8 +324,9 @@ public class BodyDamageUtilInternal implements IBodyDamageUtil {
     }
 
     @Override
-    public float getTotalRemainingHealing(Player player, BodyPartEnum bodyPartEnum) {
-        if(!Config.Baked.localizedBodyDamageEnabled || bodyPartEnum == null)
+    public float getTotalRemainingHealing(Player player, BodyPartEnum bodyPartEnum)
+    {
+        if (!Config.Baked.localizedBodyDamageEnabled || bodyPartEnum == null)
             return 0.0f;
 
         IBodyDamageCapability capability = CapabilityUtil.getBodyDamageCapability(player);
@@ -296,8 +335,9 @@ public class BodyDamageUtilInternal implements IBodyDamageUtil {
     }
 
     @Override
-    public float getMaxHealth(Player player, BodyPartEnum bodyPartEnum) {
-        if(!Config.Baked.localizedBodyDamageEnabled || bodyPartEnum == null)
+    public float getMaxHealth(Player player, BodyPartEnum bodyPartEnum)
+    {
+        if (!Config.Baked.localizedBodyDamageEnabled || bodyPartEnum == null)
             return 0.0f;
 
         IBodyDamageCapability capability = CapabilityUtil.getBodyDamageCapability(player);
@@ -309,7 +349,8 @@ public class BodyDamageUtilInternal implements IBodyDamageUtil {
     public void updatePlayerBrokenHeartAttribute(Player player)
     {
         int expectedBrokenHearts = 0;
-        if (Config.Baked.localizedBodyDamageEnabled && Config.Baked.healthOverhaulEnabled) {
+        if (Config.Baked.localizedBodyDamageEnabled && Config.Baked.healthOverhaulEnabled)
+        {
             IBodyDamageCapability capability = CapabilityUtil.getBodyDamageCapability(player);
 
             expectedBrokenHearts = capability.getExpectedBrokenHearts();

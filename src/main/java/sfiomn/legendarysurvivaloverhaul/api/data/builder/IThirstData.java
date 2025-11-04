@@ -3,7 +3,8 @@ package sfiomn.legendarysurvivaloverhaul.api.data.builder;
 import com.google.gson.JsonObject;
 import net.minecraft.world.effect.MobEffect;
 
-public interface IThirstData {
+public interface IThirstData
+{
 
     IThirstData hydration(int hydrationValue);
 

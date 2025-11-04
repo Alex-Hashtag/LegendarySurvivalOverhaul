@@ -11,14 +11,17 @@ import sfiomn.legendarysurvivaloverhaul.api.data.providers.BodyDamageDataProvide
 import java.util.Arrays;
 import java.util.concurrent.CompletableFuture;
 
-public class MinecraftBodyDamageProvider extends BodyDamageDataProvider {
+public class MinecraftBodyDamageProvider extends BodyDamageDataProvider
+{
 
-    public MinecraftBodyDamageProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper fileHelper) {
+    public MinecraftBodyDamageProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper fileHelper)
+    {
         super("minecraft", output, lookupProvider, fileHelper);
     }
 
     @Override
-    public void generate(HolderLookup.Provider provider, ExistingFileHelper existingFileHelper) {
+    public void generate(HolderLookup.Provider provider, ExistingFileHelper existingFileHelper)
+    {
         consumable(Items.ENCHANTED_GOLDEN_APPLE).healingCharges(0).healingValue(3).duration(600);
 
         item(Items.DIAMOND_HELMET).headResistance(0.1f);

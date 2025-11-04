@@ -16,16 +16,20 @@ import sfiomn.legendarysurvivaloverhaul.api.thirst.HydrationEnum;
 import sfiomn.legendarysurvivaloverhaul.api.thirst.ThirstUtil;
 import sfiomn.legendarysurvivaloverhaul.common.items.drink.CanteenItem;
 
-public class PurificationBlastingRecipe extends BlastingRecipe {
-    public PurificationBlastingRecipe(String group, CookingBookCategory cookingBookCategory, Ingredient ingredient, ItemStack result, float experience, int cookingTime) {
+public class PurificationBlastingRecipe extends BlastingRecipe
+{
+    public PurificationBlastingRecipe(String group, CookingBookCategory cookingBookCategory, Ingredient ingredient, ItemStack result, float experience, int cookingTime)
+    {
         super(group, cookingBookCategory, ingredient, result, experience, cookingTime);
     }
 
-    public boolean matches(Container inventory, @NotNull Level level) {
+    public boolean matches(Container inventory, @NotNull Level level)
+    {
         return this.ingredient.test(inventory.getItem(0)) && ThirstUtil.getCapacityTag(inventory.getItem(0)) > 0;
     }
 
-    public @NotNull ItemStack assemble(Container inventory, @NotNull HolderLookup.Provider provider) {
+    public @NotNull ItemStack assemble(Container inventory, @NotNull HolderLookup.Provider provider)
+    {
         int hydrationCapacity = ThirstUtil.getCapacityTag(inventory.getItem(0));
         ItemStack result = this.result.copy();
         ThirstUtil.setHydrationEnumTag(result, HydrationEnum.PURIFIED);
@@ -34,10 +38,12 @@ public class PurificationBlastingRecipe extends BlastingRecipe {
     }
 
     @Override
-    public @NotNull ItemStack getResultItem(@NotNull HolderLookup.Provider provider) {
+    public @NotNull ItemStack getResultItem(@NotNull HolderLookup.Provider provider)
+    {
         ItemStack result = this.result.copy();
         int maxHydrationCapacity = 0;
-        if (this.result.getItem() instanceof CanteenItem resultItem) {
+        if (this.result.getItem() instanceof CanteenItem resultItem)
+        {
             maxHydrationCapacity = resultItem.getMaxCapacity();
         }
         ThirstUtil.setHydrationEnumTag(result, HydrationEnum.PURIFIED);
@@ -46,23 +52,39 @@ public class PurificationBlastingRecipe extends BlastingRecipe {
     }
 
     @Override
-    public @NotNull RecipeSerializer<?> getSerializer() {
+    public @NotNull RecipeSerializer<?> getSerializer()
+    {
         return Serializer.INSTANCE;
     }
 
     @Override
-    public @NotNull RecipeType<?> getType() {
+    public @NotNull RecipeType<?> getType()
+    {
         return RecipeType.BLASTING;
     }
 
-    public static class Serializer implements RecipeSerializer<PurificationBlastingRecipe> {
+    public static class Serializer implements RecipeSerializer<PurificationBlastingRecipe>
+    {
         public static final Serializer INSTANCE = new Serializer(100);
+        private static final StreamCodec<RegistryFriendlyByteBuf, PurificationBlastingRecipe> STREAM_CODEC = StreamCodec.composite(
+                ByteBufCodecs.STRING_UTF8, AbstractCookingRecipe::getGroup,
+                ByteBufCodecs.fromCodec(CookingBookCategory.CODEC), AbstractCookingRecipe::category,
+                Ingredient.CONTENTS_STREAM_CODEC, r -> r.ingredient,
+                ItemStack.STREAM_CODEC, r -> r.result,
+                ByteBufCodecs.FLOAT, r -> r.experience,
+                ByteBufCodecs.VAR_INT, r -> r.cookingTime,
+                PurificationBlastingRecipe::new
+        );
         private final int defaultCookingTime;
 
-        public Serializer(int cookingTime) { this.defaultCookingTime = cookingTime; }
+        public Serializer(int cookingTime)
+        {
+            this.defaultCookingTime = cookingTime;
+        }
 
         @Override
-        public MapCodec<PurificationBlastingRecipe> codec() {
+        public MapCodec<PurificationBlastingRecipe> codec()
+        {
             return RecordCodecBuilder.mapCodec(instance -> instance.group(
                     Codec.STRING.optionalFieldOf("group", "").forGetter(AbstractCookingRecipe::getGroup),
                     CookingBookCategory.CODEC.optionalFieldOf("category", CookingBookCategory.MISC).forGetter(AbstractCookingRecipe::category),
@@ -73,18 +95,9 @@ public class PurificationBlastingRecipe extends BlastingRecipe {
             ).apply(instance, (group, category, ingredient, result, exp, time) -> new PurificationBlastingRecipe(group, category, ingredient, result, exp, time)));
         }
 
-        private static final StreamCodec<RegistryFriendlyByteBuf, PurificationBlastingRecipe> STREAM_CODEC = StreamCodec.composite(
-                ByteBufCodecs.STRING_UTF8, AbstractCookingRecipe::getGroup,
-                ByteBufCodecs.fromCodec(CookingBookCategory.CODEC), AbstractCookingRecipe::category,
-                Ingredient.CONTENTS_STREAM_CODEC, r -> r.ingredient,
-                ItemStack.STREAM_CODEC, r -> r.result,
-                ByteBufCodecs.FLOAT, r -> r.experience,
-                ByteBufCodecs.VAR_INT, r -> r.cookingTime,
-                PurificationBlastingRecipe::new
-        );
-
         @Override
-        public StreamCodec<RegistryFriendlyByteBuf, PurificationBlastingRecipe> streamCodec() {
+        public StreamCodec<RegistryFriendlyByteBuf, PurificationBlastingRecipe> streamCodec()
+        {
             return STREAM_CODEC;
         }
     }

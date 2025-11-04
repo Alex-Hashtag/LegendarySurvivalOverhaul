@@ -5,6 +5,7 @@ import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonTemperatureConsumableB
 
 import java.util.List;
 
-public interface ITemperatureConsumableBlockManager {
+public interface ITemperatureConsumableBlockManager
+{
     List<JsonTemperatureConsumableBlock> get(ResourceLocation consumableRegistryName);
 }

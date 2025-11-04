@@ -7,21 +7,25 @@ import sfiomn.legendarysurvivaloverhaul.api.data.builder.ITemperatureConsumableD
 import java.util.ArrayList;
 import java.util.List;
 
-public class TemperatureConsumableDataHolder implements ITemperatureConsumableDataHolder {
+public class TemperatureConsumableDataHolder implements ITemperatureConsumableDataHolder
+{
     private final List<ITemperatureConsumableData> temperatureDataList;
 
-    public TemperatureConsumableDataHolder() {
+    public TemperatureConsumableDataHolder()
+    {
         temperatureDataList = new ArrayList<>();
     }
 
     @Override
-    public ITemperatureConsumableDataHolder addTemperature(ITemperatureConsumableData temperatureData) {
+    public ITemperatureConsumableDataHolder addTemperature(ITemperatureConsumableData temperatureData)
+    {
         temperatureDataList.add(temperatureData.copy());
         return this;
     }
 
     @Override
-    public JsonArray build() {
+    public JsonArray build()
+    {
         JsonArray json = new JsonArray();
         temperatureDataList.forEach(t -> json.add(t.build()));
         return json;

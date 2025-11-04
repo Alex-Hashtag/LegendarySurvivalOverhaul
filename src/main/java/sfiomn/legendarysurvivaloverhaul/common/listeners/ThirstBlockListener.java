@@ -6,6 +6,7 @@ import com.google.gson.JsonElement;
 import com.mojang.serialization.JsonOps;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
@@ -13,10 +14,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
 import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.network.PacketDistributor;
-import net.minecraft.core.registries.Registries;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import net.minecraft.server.level.ServerPlayer;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonThirstBlock;
 import sfiomn.legendarysurvivaloverhaul.api.data.manager.IThirstBlockManager;
@@ -26,25 +25,47 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ThirstBlockListener extends SimpleJsonResourceReloadListener implements IThirstBlockManager {
+public class ThirstBlockListener extends SimpleJsonResourceReloadListener implements IThirstBlockManager
+{
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
     private static final Map<ResourceLocation, List<JsonThirstBlock>> THIRST_BLOCKS = new HashMap<>();
 
-    public ThirstBlockListener() {
+    public ThirstBlockListener()
+    {
         super(GSON, LegendarySurvivalOverhaul.MOD_ID + "/thirst/blocks");
     }
 
+    public static void sendDataToClient(@Nullable ServerPlayer player)
+    {
+        if (player == null)
+        {
+            PacketDistributor.sendToAllPlayers(new SyncThirstBlocksPacket(THIRST_BLOCKS));
+        } else
+        {
+            PacketDistributor.sendToPlayer(player, new SyncThirstBlocksPacket(THIRST_BLOCKS));
+        }
+    }
+
+    public static void acceptServerThirstBlocks(Map<ResourceLocation, List<JsonThirstBlock>> thirstBlocks)
+    {
+        THIRST_BLOCKS.clear();
+        THIRST_BLOCKS.putAll(thirstBlocks);
+    }
+
     @Override
-    protected void apply(@NotNull Map<ResourceLocation, JsonElement> resourceLocationJsonElementMap, @NotNull ResourceManager resourceManager, @NotNull ProfilerFiller profilerFiller) {
+    protected void apply(@NotNull Map<ResourceLocation, JsonElement> resourceLocationJsonElementMap, @NotNull ResourceManager resourceManager, @NotNull ProfilerFiller profilerFiller)
+    {
         THIRST_BLOCKS.clear();
 
         resourceLocationJsonElementMap.forEach((key, json) -> {
-            try {
+            try
+            {
                 var parsedJson = JsonThirstBlock.LIST_CODEC.parse(JsonOps.INSTANCE, json);
                 List<JsonThirstBlock> parsedThirstBlocks = parsedJson.getOrThrow(err -> new IllegalStateException("Failed parsing thirst block: " + err));
                 if (ModList.get().isLoaded(key.getNamespace()))
                     THIRST_BLOCKS.put(key, parsedThirstBlocks);
-            } catch (Exception error) {
+            } catch (Exception error)
+            {
                 LegendarySurvivalOverhaul.LOGGER.error("Failed to parse thirst block json {}", key);
             }
         });
@@ -52,26 +73,15 @@ public class ThirstBlockListener extends SimpleJsonResourceReloadListener implem
         LegendarySurvivalOverhaul.LOGGER.info("Loaded {} thirst blocks", THIRST_BLOCKS.size());
     }
 
-    public static void sendDataToClient(@Nullable ServerPlayer player) {
-        if (player == null) {
-            PacketDistributor.sendToAllPlayers(new SyncThirstBlocksPacket(THIRST_BLOCKS));
-        } else {
-            PacketDistributor.sendToPlayer(player, new SyncThirstBlocksPacket(THIRST_BLOCKS));
-        }
-    }
-
-    public static void acceptServerThirstBlocks(Map<ResourceLocation, List<JsonThirstBlock>> thirstBlocks) {
-        THIRST_BLOCKS.clear();
-        THIRST_BLOCKS.putAll(thirstBlocks);
-    }
-
     @Override
-    public List<JsonThirstBlock> get(ResourceLocation resourceLocation) {
+    public List<JsonThirstBlock> get(ResourceLocation resourceLocation)
+    {
         return THIRST_BLOCKS.get(resourceLocation);
     }
 
     @Override
-    public JsonThirstBlock get(BlockState block) {
+    public JsonThirstBlock get(BlockState block)
+    {
         List<JsonThirstBlock> jsonThirstBlocks = null;
         JsonThirstBlock defaultJct = null;
 
@@ -81,7 +91,8 @@ public class ThirstBlockListener extends SimpleJsonResourceReloadListener implem
             jsonThirstBlocks = THIRST_BLOCKS.get(blockRegistryName);
 
         if (jsonThirstBlocks != null)
-            for (JsonThirstBlock jtb: jsonThirstBlocks) {
+            for (JsonThirstBlock jtb : jsonThirstBlocks)
+            {
                 if (jtb.matchesState(block))
                     return jtb;
                 if (jtb.isDefault())
@@ -92,7 +103,8 @@ public class ThirstBlockListener extends SimpleJsonResourceReloadListener implem
     }
 
     @Override
-    public JsonThirstBlock get(FluidState fluid) {
+    public JsonThirstBlock get(FluidState fluid)
+    {
         List<JsonThirstBlock> jsonThirstBlocks = null;
         JsonThirstBlock defaultJct = null;
 
@@ -102,7 +114,8 @@ public class ThirstBlockListener extends SimpleJsonResourceReloadListener implem
             jsonThirstBlocks = THIRST_BLOCKS.get(fluidRegistryName);
 
         if (jsonThirstBlocks != null)
-            for (JsonThirstBlock jtb: jsonThirstBlocks) {
+            for (JsonThirstBlock jtb : jsonThirstBlocks)
+            {
                 if (jtb.matchesState(fluid))
                     return jtb;
                 if (jtb.isDefault())

@@ -7,21 +7,25 @@ import sfiomn.legendarysurvivaloverhaul.api.data.builder.ITemperatureBlockDataHo
 import java.util.ArrayList;
 import java.util.List;
 
-public class TemperatureBlockDataHolder implements ITemperatureBlockDataHolder {
+public class TemperatureBlockDataHolder implements ITemperatureBlockDataHolder
+{
     private final List<ITemperatureBlockData> temperatureDataList;
 
-    public TemperatureBlockDataHolder() {
+    public TemperatureBlockDataHolder()
+    {
         temperatureDataList = new ArrayList<>();
     }
 
     @Override
-    public TemperatureBlockDataHolder addTemperature(ITemperatureBlockData temperatureData) {
+    public TemperatureBlockDataHolder addTemperature(ITemperatureBlockData temperatureData)
+    {
         temperatureDataList.add(temperatureData.copy());
         return this;
     }
 
     @Override
-    public JsonArray build() {
+    public JsonArray build()
+    {
         JsonArray json = new JsonArray();
         temperatureDataList.forEach(t -> json.add(t.build()));
         return json;

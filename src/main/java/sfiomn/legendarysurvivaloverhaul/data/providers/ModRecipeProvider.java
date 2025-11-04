@@ -1,6 +1,5 @@
 package sfiomn.legendarysurvivaloverhaul.data.providers;
 
-import com.google.gson.JsonObject;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.*;
@@ -20,20 +19,85 @@ import sfiomn.legendarysurvivaloverhaul.data.recipes.SewingRecipeBuilder;
 import sfiomn.legendarysurvivaloverhaul.registry.BlockRegistry;
 import sfiomn.legendarysurvivaloverhaul.registry.ItemRegistry;
 
-import net.minecraft.core.registries.BuiltInRegistries;
-
 import java.util.concurrent.CompletableFuture;
 
 import static sfiomn.legendarysurvivaloverhaul.util.internal.ThirstUtilInternal.HYDRATION_ENUM_TAG;
 
-public class ModRecipeProvider extends RecipeProvider {
+public class ModRecipeProvider extends RecipeProvider
+{
 
-    public ModRecipeProvider(PackOutput generator, CompletableFuture<HolderLookup.Provider> lookupProvider) {
+    public ModRecipeProvider(PackOutput generator, CompletableFuture<HolderLookup.Provider> lookupProvider)
+    {
         super(generator, lookupProvider);
     }
 
+    protected static void smelting(@NotNull RecipeOutput output, Ingredient input, ItemLike result, float experience, int cookingTime, String recipeName)
+    {
+        SimpleCookingRecipeBuilder
+                .smelting(input, RecipeCategory.MISC, result, experience, cookingTime)
+                .unlockedBy(getHasName(input.getItems()[0].getItem()), has(input.getItems()[0].getItem()))
+                .save(output, LegendarySurvivalOverhaul.MOD_ID + ":" + recipeName + "_from_smelting_" + getItemName(input.getItems()[0].getItem()));
+    }
+
+    protected static void purification_smelting(@NotNull RecipeOutput output, Ingredient input, ItemLike result, float experience, int cookingTime, String recipeName)
+    {
+        PurificationRecipeBuilder
+                .smelting(input, RecipeCategory.MISC, result, experience, cookingTime)
+                .unlockedBy(getHasName(input.getItems()[0].getItem()), has(input.getItems()[0].getItem()))
+                .group("purification")
+                .save(output, LegendarySurvivalOverhaul.MOD_ID + ":" + recipeName + "_from_purification_smelting_" + getItemName(input.getItems()[0].getItem()));
+    }
+
+    protected static void blasting(@NotNull RecipeOutput output, Ingredient input, ItemLike result, float experience, int cookingTime, String recipeName)
+    {
+        SimpleCookingRecipeBuilder
+                .blasting(input, RecipeCategory.MISC, result, experience, cookingTime)
+                .unlockedBy(getHasName(input.getItems()[0].getItem()), has(input.getItems()[0].getItem()))
+                .save(output, LegendarySurvivalOverhaul.MOD_ID + ":" + recipeName + "_from_blasting_" + getItemName(input.getItems()[0].getItem()));
+    }
+
+    protected static void purification_blasting(@NotNull RecipeOutput output, Ingredient input, ItemLike result, float experience, int cookingTime, String recipeName)
+    {
+        PurificationRecipeBuilder
+                .blasting(input, RecipeCategory.MISC, result, experience, cookingTime)
+                .unlockedBy(getHasName(input.getItems()[0].getItem()), has(input.getItems()[0].getItem()))
+                .group("purification")
+                .save(output, LegendarySurvivalOverhaul.MOD_ID + ":" + recipeName + "_from_purification_blasting_" + getItemName(input.getItems()[0].getItem()));
+    }
+
+    protected static void sewing(@NotNull RecipeOutput output, Ingredient input, Ingredient addition, ItemStack result, String recipeName)
+    {
+        String additionName = getItemName(addition.getItems()[0].getItem());
+
+        SewingRecipeBuilder
+                .sewingRecipe(input, addition, result, RecipeCategory.MISC)
+                .unlockedBy("has_coat", has(addition.getItems()[0].getItem()))
+                .unlockedBy(getHasName(BlockRegistry.SEWING_TABLE.get().asItem()), insideOf(BlockRegistry.SEWING_TABLE.get()))
+                .save(output, LegendarySurvivalOverhaul.MOD_ID + ":" + recipeName + "_from_sewing_" + getItemName(input.getItems()[0].getItem()) + "_" + additionName);
+    }
+
+    protected static void juice(RecipeOutput consumer, ItemLike fruit, Item juice)
+    {
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.FOOD, juice)
+                .requires(ItemRegistry.PURIFIED_WATER_BOTTLE.get())
+                .requires(Items.SUGAR)
+                .requires(fruit)
+                .requires(fruit)
+                .requires(fruit)
+                .group("drink")
+                .unlockedBy(getHasName(fruit), has(fruit))
+                .save(consumer);
+    }
+
+    private static Ingredient partialNbtIngredient(ItemLike item, CompoundTag nbt)
+    {
+        // For 1.21.1, we'll use a simple ingredient and handle NBT in the recipe logic
+        return Ingredient.of(item);
+    }
+
     @Override
-    protected void buildRecipes(@NotNull RecipeOutput output) {
+    protected void buildRecipes(@NotNull RecipeOutput output)
+    {
         ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, ItemRegistry.DESERT_HELMET.get())
                 .pattern("r#r")
                 .pattern("r r")
@@ -274,7 +338,7 @@ public class ModRecipeProvider extends RecipeProvider {
                 .save(output);
 
         CompoundTag nbt = new CompoundTag();
-        nbt.putString("Potion",  LegendarySurvivalOverhaul.MOD_ID + ":temperature_immunity");
+        nbt.putString("Potion", LegendarySurvivalOverhaul.MOD_ID + ":temperature_immunity");
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ItemRegistry.THERMAL_RESISTANCE_RING.get())
                 .pattern(" wh")
                 .pattern("stw")
@@ -400,62 +464,5 @@ public class ModRecipeProvider extends RecipeProvider {
 
         sewing(output, Ingredient.of(Items.STRING), Ingredient.of(ItemRegistry.ICE_FERN.get()), new ItemStack(ItemRegistry.COLD_STRING.get()), "cold_string");
         sewing(output, Ingredient.of(Items.STRING), Ingredient.of(ItemRegistry.SUN_FERN.get()), new ItemStack(ItemRegistry.WARM_STRING.get()), "warm_string");
-    }
-
-    protected static void smelting(@NotNull RecipeOutput output, Ingredient input, ItemLike result, float experience, int cookingTime, String recipeName) {
-        SimpleCookingRecipeBuilder
-                .smelting(input, RecipeCategory.MISC, result, experience, cookingTime)
-                .unlockedBy(getHasName(input.getItems()[0].getItem()), has(input.getItems()[0].getItem()))
-                .save(output, LegendarySurvivalOverhaul.MOD_ID + ":" + recipeName + "_from_smelting_" + getItemName(input.getItems()[0].getItem()));
-    }
-
-    protected static void purification_smelting(@NotNull RecipeOutput output, Ingredient input, ItemLike result, float experience, int cookingTime, String recipeName) {
-        PurificationRecipeBuilder
-                .smelting(input, RecipeCategory.MISC, result, experience, cookingTime)
-                .unlockedBy(getHasName(input.getItems()[0].getItem()), has(input.getItems()[0].getItem()))
-                .group("purification")
-                .save(output, LegendarySurvivalOverhaul.MOD_ID + ":" + recipeName + "_from_purification_smelting_" + getItemName(input.getItems()[0].getItem()));
-    }
-
-    protected static void blasting(@NotNull RecipeOutput output, Ingredient input, ItemLike result, float experience, int cookingTime, String recipeName) {
-        SimpleCookingRecipeBuilder
-                .blasting(input, RecipeCategory.MISC, result, experience, cookingTime)
-                .unlockedBy(getHasName(input.getItems()[0].getItem()), has(input.getItems()[0].getItem()))
-                .save(output, LegendarySurvivalOverhaul.MOD_ID + ":" + recipeName + "_from_blasting_" + getItemName(input.getItems()[0].getItem()));
-    }
-
-    protected static void purification_blasting(@NotNull RecipeOutput output, Ingredient input, ItemLike result, float experience, int cookingTime, String recipeName) {
-        PurificationRecipeBuilder
-                .blasting(input, RecipeCategory.MISC, result, experience, cookingTime)
-                .unlockedBy(getHasName(input.getItems()[0].getItem()), has(input.getItems()[0].getItem()))
-                .group("purification")
-                .save(output, LegendarySurvivalOverhaul.MOD_ID + ":" + recipeName + "_from_purification_blasting_" + getItemName(input.getItems()[0].getItem()));
-    }
-
-    protected static void sewing(@NotNull RecipeOutput output, Ingredient input, Ingredient addition, ItemStack result, String recipeName) {
-        String additionName = getItemName(addition.getItems()[0].getItem());
-
-        SewingRecipeBuilder
-                .sewingRecipe(input, addition, result, RecipeCategory.MISC)
-                .unlockedBy("has_coat", has(addition.getItems()[0].getItem()))
-                .unlockedBy(getHasName(BlockRegistry.SEWING_TABLE.get().asItem()), insideOf(BlockRegistry.SEWING_TABLE.get()))
-                .save(output, LegendarySurvivalOverhaul.MOD_ID + ":" + recipeName + "_from_sewing_" + getItemName(input.getItems()[0].getItem()) + "_" + additionName);
-    }
-
-    protected static void juice(RecipeOutput consumer, ItemLike fruit, Item juice) {
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.FOOD, juice)
-                .requires(ItemRegistry.PURIFIED_WATER_BOTTLE.get())
-                .requires(Items.SUGAR)
-                .requires(fruit)
-                .requires(fruit)
-                .requires(fruit)
-                .group("drink")
-                .unlockedBy(getHasName(fruit), has(fruit))
-                .save(consumer);
-    }
-
-    private static Ingredient partialNbtIngredient(ItemLike item, CompoundTag nbt) {
-        // For 1.21.1, we'll use a simple ingredient and handle NBT in the recipe logic
-        return Ingredient.of(item);
     }
 }

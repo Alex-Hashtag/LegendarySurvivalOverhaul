@@ -28,24 +28,30 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
-public class ModAdvancementProvider extends AdvancementProvider {
+public class ModAdvancementProvider extends AdvancementProvider
+{
 
     public static final String SEW_A_COAT_ADVANCEMENT =
             LegendarySurvivalOverhaul.MOD_ID + ":main/sew_a_coat";
 
     public ModAdvancementProvider(PackOutput packOutput,
                                   CompletableFuture<HolderLookup.Provider> lookupProvider,
-                                  ExistingFileHelper existingFileHelper) {
+                                  ExistingFileHelper existingFileHelper)
+    {
         super(packOutput, lookupProvider, existingFileHelper, List.of(new LegendarySurvivalAdvancements()));
     }
 
-    private static class LegendarySurvivalAdvancements implements AdvancementProvider.AdvancementGenerator {
-        private LegendarySurvivalAdvancements() {}
+    private static class LegendarySurvivalAdvancements implements AdvancementProvider.AdvancementGenerator
+    {
+        private LegendarySurvivalAdvancements()
+        {
+        }
 
         @Override
         public void generate(HolderLookup.@NotNull Provider registries,
                              @NotNull Consumer<AdvancementHolder> consumer,
-                             @NotNull ExistingFileHelper existingFileHelper) {
+                             @NotNull ExistingFileHelper existingFileHelper)
+        {
 
             AdvancementHolder root = Advancement.Builder.advancement()
                     .display(
@@ -97,7 +103,8 @@ public class ModAdvancementProvider extends AdvancementProvider {
 
             // The craftedItem trigger now expects List<ItemPredicate.Builder>
             List<ItemPredicate.Builder> itemPredicates = new ArrayList<>();
-            for (CoatEnum coatEnum : CoatEnum.values()) {
+            for (CoatEnum coatEnum : CoatEnum.values())
+            {
                 CompoundTag coatTag = new CompoundTag();
                 coatTag.putString(TemperatureUtilInternal.COAT_TAG, coatEnum.id());
                 itemPredicates.add(

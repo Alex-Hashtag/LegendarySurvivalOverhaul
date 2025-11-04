@@ -11,35 +11,35 @@ import java.util.UUID;
 
 public interface ITemperatureUtil
 {
-	float getPlayerTargetTemperature(Player player);
-	
-	float getWorldTemperature(Level world, BlockPos pos);
-	
-	float clampTemperature(float temperature);
+    float getPlayerTargetTemperature(Player player);
 
-	void applyConsumableTemperature(Player player, ResourceLocation itemRegistryName);
+    float getWorldTemperature(Level world, BlockPos pos);
 
-	void applyConsumableBlockTemperature(Player player, BlockState blockState);
+    float clampTemperature(float temperature);
 
-	TemperatureEnum getTemperatureEnum(float temperature);
+    void applyConsumableTemperature(Player player, ResourceLocation itemRegistryName);
 
-	boolean hasImmunity(Player player, TemperatureImmunityEnum immunity);
+    void applyConsumableBlockTemperature(Player player, BlockState blockState);
 
-	void addImmunity(Player player, TemperatureImmunityEnum immunity);
+    TemperatureEnum getTemperatureEnum(float temperature);
 
-	void removeImmunity(Player player, TemperatureImmunityEnum immunity);
+    boolean hasImmunity(Player player, TemperatureImmunityEnum immunity);
 
-	void addTemperatureModifier(Player player, double temperature, UUID uuid);
+    void addImmunity(Player player, TemperatureImmunityEnum immunity);
 
-	void addHeatResistanceModifier(Player player, double temperature, UUID uuid);
+    void removeImmunity(Player player, TemperatureImmunityEnum immunity);
 
-	void addColdResistanceModifier(Player player, double temperature, UUID uuid);
+    void addTemperatureModifier(Player player, double temperature, UUID uuid);
 
-	void addThermalResistanceModifier(Player player, double temperature, UUID uuid);
+    void addHeatResistanceModifier(Player player, double temperature, UUID uuid);
 
-	void setArmorCoatTag(final ItemStack stack, String temperatureType);
+    void addColdResistanceModifier(Player player, double temperature, UUID uuid);
 
-	String getArmorCoatTag(final ItemStack stack);
+    void addThermalResistanceModifier(Player player, double temperature, UUID uuid);
 
-	void removeArmorCoatTag(final ItemStack stack);
+    void setArmorCoatTag(final ItemStack stack, String temperatureType);
+
+    String getArmorCoatTag(final ItemStack stack);
+
+    void removeArmorCoatTag(final ItemStack stack);
 }

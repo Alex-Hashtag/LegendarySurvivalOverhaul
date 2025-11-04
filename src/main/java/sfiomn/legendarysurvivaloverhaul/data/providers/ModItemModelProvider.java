@@ -10,13 +10,16 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.registry.ItemRegistry;
 
-public class ModItemModelProvider extends ItemModelProvider {
-    public ModItemModelProvider(PackOutput output, ExistingFileHelper existingFileHelper) {
+public class ModItemModelProvider extends ItemModelProvider
+{
+    public ModItemModelProvider(PackOutput output, ExistingFileHelper existingFileHelper)
+    {
         super(output, LegendarySurvivalOverhaul.MOD_ID, existingFileHelper);
     }
 
     @Override
-    protected void registerModels() {
+    protected void registerModels()
+    {
         simpleJuiceItem(ItemRegistry.APPLE_JUICE);
         simpleJuiceItem(ItemRegistry.BEETROOT_JUICE);
         simpleJuiceItem(ItemRegistry.CACTUS_JUICE);
@@ -82,15 +85,18 @@ public class ModItemModelProvider extends ItemModelProvider {
         simpleArmorItem(ItemRegistry.SNOW_HELMET);
         simpleArmorItem(ItemRegistry.SNOW_LEGGINGS);
 
-        for (int i=0; i<30; i++) {
+        for (int i = 0; i < 30; i++)
+        {
             String jsonName = String.format("%02d", i);
             singleTexture("item/thermometer/thermometer_" + jsonName, ResourceLocation.parse("item/generated"),
                     "layer0", ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "item/thermometer/thermometer_" + jsonName));
         }
 
         String[] serene_seasons = {"autumn", "dry", "spring", "summer", "wet", "winter"};
-        for (int i=1; i<4; i++) {
-            for (String season: serene_seasons) {
+        for (int i = 1; i < 4; i++)
+        {
+            for (String season : serene_seasons)
+            {
                 String jsonName = season + i;
                 singleTexture("item/seasonal_calendar/serene_seasons/seasonal_calendar_" + jsonName, ResourceLocation.parse("item/generated"),
                         "layer0", ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "item/seasonal_calendar/serene_seasons/" + jsonName));
@@ -98,8 +104,10 @@ public class ModItemModelProvider extends ItemModelProvider {
         }
 
         String[] ecliptic_seasons = {"autumn", "spring", "summer", "winter"};
-        for (int i=1; i<7; i++) {
-            for (String season: ecliptic_seasons) {
+        for (int i = 1; i < 7; i++)
+        {
+            for (String season : ecliptic_seasons)
+            {
                 String jsonName = season + i;
                 singleTexture("item/seasonal_calendar/ecliptic_seasons/seasonal_calendar_" + jsonName, ResourceLocation.parse("item/generated"),
                         "layer0", ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "item/seasonal_calendar/ecliptic_seasons/" + jsonName));
@@ -110,42 +118,50 @@ public class ModItemModelProvider extends ItemModelProvider {
                 "layer0", ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "item/seasonal_calendar/calendar_null"));
     }
 
-    private void simpleItem(DeferredHolder<Item, ? extends Item> item) {
+    private void simpleItem(DeferredHolder<Item, ? extends Item> item)
+    {
         singleTexture(item.getId().getPath(), ResourceLocation.parse("item/generated"),
                 "layer0", ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "item/" + item.getId().getPath()));
     }
 
-    private void simpleItem(String jsonName) {
+    private void simpleItem(String jsonName)
+    {
         singleTexture(jsonName, ResourceLocation.parse("item/generated"),
                 "layer0", ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "item/" + jsonName));
     }
 
-    private void simpleArmorItem(DeferredHolder<Item, ? extends Item> item) {
+    private void simpleArmorItem(DeferredHolder<Item, ? extends Item> item)
+    {
         singleTexture(item.getId().getPath(), ResourceLocation.parse("item/generated"),
                 "layer0", ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "item/armor/" + item.getId().getPath()));
     }
 
-    private void simpleCoatItem(DeferredHolder<Item, ? extends Item> item) {
+    private void simpleCoatItem(DeferredHolder<Item, ? extends Item> item)
+    {
         singleTexture(item.getId().getPath(), ResourceLocation.parse("item/generated"),
                 "layer0", ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "item/coat/" + item.getId().getPath()));
     }
 
-    private void simpleHealingItem(DeferredHolder<Item, ? extends Item> item) {
+    private void simpleHealingItem(DeferredHolder<Item, ? extends Item> item)
+    {
         singleTexture(item.getId().getPath(), ResourceLocation.parse("item/generated"),
                 "layer0", ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "item/healing/" + item.getId().getPath()));
     }
 
-    private void simpleJuiceItem(DeferredHolder<Item, ? extends Item> item) {
+    private void simpleJuiceItem(DeferredHolder<Item, ? extends Item> item)
+    {
         singleTexture(item.getId().getPath(), ResourceLocation.parse("item/generated"),
                 "layer0", ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "item/juice/" + item.getId().getPath()));
     }
 
-    private void simplePaddingItem(DeferredHolder<Item, ? extends Item> item) {
+    private void simplePaddingItem(DeferredHolder<Item, ? extends Item> item)
+    {
         singleTexture(item.getId().getPath(), ResourceLocation.parse("item/generated"),
                 "layer0", ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "item/padding/" + item.getId().getPath()));
     }
 
-    private void canteenItem(DeferredHolder<Item, ? extends Item> canteenItem) {
+    private void canteenItem(DeferredHolder<Item, ? extends Item> canteenItem)
+    {
         withExistingParent(canteenItem.getId().getPath(), ResourceLocation.parse("item/generated"))
                 .texture("layer0", ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "item/" + canteenItem.getId().getPath()))
                 .override()

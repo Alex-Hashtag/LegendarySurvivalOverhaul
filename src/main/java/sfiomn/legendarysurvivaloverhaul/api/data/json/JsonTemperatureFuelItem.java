@@ -4,8 +4,9 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import sfiomn.legendarysurvivaloverhaul.api.block.ThermalTypeEnum;
 
-public class JsonTemperatureFuelItem {
-    public static final Codec<JsonTemperatureFuelItem> CODEC = RecordCodecBuilder.<JsonTemperatureFuelItem>create((inst) -> inst.group(
+public class JsonTemperatureFuelItem
+{
+    public static final Codec<JsonTemperatureFuelItem> CODEC = RecordCodecBuilder.create((inst) -> inst.group(
             Codec.STRING.fieldOf("thermal_type").forGetter(d -> d.thermalType.name()),
             Codec.INT.fieldOf("duration").forGetter(d -> d.duration)
     ).apply(inst, JsonTemperatureFuelItem::new));

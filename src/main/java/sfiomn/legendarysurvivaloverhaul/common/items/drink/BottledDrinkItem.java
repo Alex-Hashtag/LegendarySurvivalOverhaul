@@ -8,9 +8,11 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
 
-public abstract class BottledDrinkItem extends DrinkItem {
+public abstract class BottledDrinkItem extends DrinkItem
+{
 
-    public BottledDrinkItem(Properties properties) {
+    public BottledDrinkItem(Properties properties)
+    {
         super(properties.stacksTo(64));
     }
 
@@ -23,17 +25,20 @@ public abstract class BottledDrinkItem extends DrinkItem {
     @Override
     public @NotNull ItemStack finishUsingItem(@NotNull ItemStack stack, Level level, @NotNull LivingEntity entity)
     {
-        if(level.isClientSide || !(entity instanceof Player player))
+        if (level.isClientSide || !(entity instanceof Player player))
             return stack;
 
         stack = super.finishUsingItem(stack, level, player);
 
-        if (Config.Baked.glassBottleLootAfterDrink) {
+        if (Config.Baked.glassBottleLootAfterDrink)
+        {
             ItemStack glassBottle = new ItemStack(Items.GLASS_BOTTLE);
 
-            if (stack.isEmpty()) {
+            if (stack.isEmpty())
+            {
                 return glassBottle;
-            } else {
+            } else
+            {
                 int slot = player.getInventory().findSlotMatchingUnusedItem(glassBottle);
                 if (slot == -1)
                     slot = player.getInventory().getFreeSlot();

@@ -2,7 +2,8 @@ package sfiomn.legendarysurvivaloverhaul.api.config.json_old.bodydamage;
 
 import com.google.gson.annotations.SerializedName;
 
-public class JsonConsumableHeal {
+public class JsonConsumableHeal
+{
     @SerializedName("healingCharges")
     public int healingCharges;
     @SerializedName("healingValue")
@@ -10,7 +11,8 @@ public class JsonConsumableHeal {
     @SerializedName("healingTime")
     public int healingTime;
 
-    public JsonConsumableHeal(int healingCharges, float healingValue, int healingTime) {
+    public JsonConsumableHeal(int healingCharges, float healingValue, int healingTime)
+    {
         this.healingCharges = healingCharges;
         this.healingValue = healingValue;
         this.healingTime = healingTime;

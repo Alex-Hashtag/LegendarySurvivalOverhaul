@@ -16,19 +16,23 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.BiConsumer;
 
-public class ModFishingLootTables implements LootTableSubProvider {
+public class ModFishingLootTables implements LootTableSubProvider
+{
 
-    public static List<ResourceLocation> fishingInjectedLootTables = Arrays.asList(
+    public static List<ResourceLocation> fishingInjectedLootTables = List.of(
             ResourceLocation.parse("gameplay/fishing/treasure")
     );
 
-    public ModFishingLootTables(HolderLookup.Provider provider) {
+    public ModFishingLootTables(HolderLookup.Provider provider)
+    {
     }
 
     @Override
-    public void generate(BiConsumer<ResourceKey<LootTable>, LootTable.Builder> biConsumer) {
+    public void generate(BiConsumer<ResourceKey<LootTable>, LootTable.Builder> biConsumer)
+    {
 
-        for (ResourceLocation lootTable : fishingInjectedLootTables) {
+        for (ResourceLocation lootTable : fishingInjectedLootTables)
+        {
             biConsumer.accept(
                     ResourceKey.create(Registries.LOOT_TABLE, ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "inject/" + lootTable.getPath())),
                     LootTable.lootTable().withPool(

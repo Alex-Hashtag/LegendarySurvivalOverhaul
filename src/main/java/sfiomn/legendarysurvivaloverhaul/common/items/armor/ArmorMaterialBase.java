@@ -17,7 +17,8 @@ import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import java.util.EnumMap;
 import java.util.List;
 
-public class ArmorMaterialBase {
+public class ArmorMaterialBase
+{
 
     public static final DeferredRegister<ArmorMaterial> ARMOR_MATERIALS =
             DeferredRegister.create(Registries.ARMOR_MATERIAL, LegendarySurvivalOverhaul.MOD_ID);
@@ -60,7 +61,8 @@ public class ArmorMaterialBase {
             0
     ));
 
-    public static void register(IEventBus eventBus) {
+    public static void register(IEventBus eventBus)
+    {
         ARMOR_MATERIALS.register(eventBus);
     }
 }

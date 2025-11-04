@@ -6,11 +6,12 @@ import net.minecraft.world.level.Level;
 /**
  * (Don't use this!) <br>
  * Runs a tick update for the player's food capability
+ *
  * @param player
  * @param world
  * @param isStart
  */
 public interface IFoodCapability
 {
-	public void tickUpdate(Player player, Level world, boolean isStart);
+    void tickUpdate(Player player, Level world, boolean isStart);
 }

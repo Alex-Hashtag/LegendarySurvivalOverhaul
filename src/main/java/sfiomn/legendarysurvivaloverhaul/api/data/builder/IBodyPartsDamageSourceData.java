@@ -6,7 +6,8 @@ import sfiomn.legendarysurvivaloverhaul.api.bodydamage.DamageDistributionEnum;
 
 import java.util.List;
 
-public interface IBodyPartsDamageSourceData {
+public interface IBodyPartsDamageSourceData
+{
 
     IBodyPartsDamageSourceData damageDistribution(DamageDistributionEnum damageDistribution);
 

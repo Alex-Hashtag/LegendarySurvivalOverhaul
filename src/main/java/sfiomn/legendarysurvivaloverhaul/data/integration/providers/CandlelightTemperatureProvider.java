@@ -12,14 +12,17 @@ import java.util.concurrent.CompletableFuture;
 import static sfiomn.legendarysurvivaloverhaul.api.temperature.TemporaryModifierGroupEnum.DRINK;
 import static sfiomn.legendarysurvivaloverhaul.api.temperature.TemporaryModifierGroupEnum.FOOD;
 
-public class CandlelightTemperatureProvider extends TemperatureDataProvider {
+public class CandlelightTemperatureProvider extends TemperatureDataProvider
+{
 
-    public CandlelightTemperatureProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper fileHelper) {
+    public CandlelightTemperatureProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper fileHelper)
+    {
         super("candlelight", output, lookupProvider, fileHelper);
     }
 
     @Override
-    public void generate(HolderLookup.Provider provider, ExistingFileHelper existingFileHelper) {
+    public void generate(HolderLookup.Provider provider, ExistingFileHelper existingFileHelper)
+    {
 
         consumable("beetroot_salad").addTemperature(temperatureConsumable(FOOD).temperatureLevel(-1).duration(2400));
         consumable("salad").addTemperature(temperatureConsumable(FOOD).temperatureLevel(-1).duration(2400));

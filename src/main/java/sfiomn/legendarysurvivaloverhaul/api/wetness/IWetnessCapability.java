@@ -5,48 +5,54 @@ import net.minecraft.world.level.Level;
 
 public interface IWetnessCapability
 {
-	public int getWetness();
-	public int getWetnessTickTimer();
+    int getWetness();
 
-	public void setWetness(int exhaustion);
-	public void setWetnessTickTimer(int tickTimer);
+    void setWetness(int exhaustion);
 
-	public void addWetness(int wetness);
-	public void addWetnessTickTimer(int tickTimer);
+    int getWetnessTickTimer();
 
-	/**
-	 * (Don't use this!) <br>
-	 * Checks if the capability needs an update
-	 * @return boolean has thirst changed
-	 */
-	public boolean isDirty();
+    void setWetnessTickTimer(int tickTimer);
 
-	/**
-	 * (Don't use this!) <br>
-	 * Sets the capability as updated
-	 */
-	public void setClean();
+    void addWetness(int wetness);
 
-	/**
-	 * Force the synchronization server - client
-	 * of the thirst capability
-	 */
-	public void setDirty();
+    void addWetnessTickTimer(int tickTimer);
 
-	/**
-	 * (Don't use this!) <br>
-	 * Runs a tick update for the player's thirst capability
-	 * @param player
-	 * @param world
-	 * @param isStart
-	 */
-	public void tickUpdate(Player player, Level world, boolean isStart);
+    /**
+     * (Don't use this!) <br>
+     * Checks if the capability needs an update
+     *
+     * @return boolean has thirst changed
+     */
+    boolean isDirty();
+
+    /**
+     * (Don't use this!) <br>
+     * Sets the capability as updated
+     */
+    void setClean();
+
+    /**
+     * Force the synchronization server - client
+     * of the thirst capability
+     */
+    void setDirty();
+
+    /**
+     * (Don't use this!) <br>
+     * Runs a tick update for the player's thirst capability
+     *
+     * @param player
+     * @param world
+     * @param isStart
+     */
+    void tickUpdate(Player player, Level world, boolean isStart);
 
 
-	/**
-	 * (Don't use this!) <br>
-	 * Gets the current tick of the packet timer
-	 * @return int packetTimer
-	 */
-	public int getPacketTimer();
+    /**
+     * (Don't use this!) <br>
+     * Gets the current tick of the packet timer
+     *
+     * @return int packetTimer
+     */
+    int getPacketTimer();
 }

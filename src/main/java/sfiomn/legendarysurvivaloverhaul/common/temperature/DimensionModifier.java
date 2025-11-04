@@ -12,21 +12,21 @@ import sfiomn.legendarysurvivaloverhaul.common.integration.terrafirmacraft.Terra
 
 public class DimensionModifier extends ModifierBase
 {
-	public DimensionModifier()
-	{
-		super();
-	}
-	
-	@Override
-	public float getWorldInfluence(@Nullable Player player, Level level, BlockPos pos)
-	{
-		if (TerraFirmaCraftUtil.shouldUseTerraFirmaCraftTemp())
-			return 0.0f;
+    public DimensionModifier()
+    {
+        super();
+    }
 
-		JsonTemperatureDimension dimensionTemperature = TemperatureDataManager.getDimension(level.dimension().location());
-		if (dimensionTemperature == null)
-			return TemperatureEnum.NORMAL.getMiddle();
+    @Override
+    public float getWorldInfluence(@Nullable Player player, Level level, BlockPos pos)
+    {
+        if (TerraFirmaCraftUtil.shouldUseTerraFirmaCraftTemp())
+            return 0.0f;
 
-		return dimensionTemperature.temperature;
-	}
+        JsonTemperatureDimension dimensionTemperature = TemperatureDataManager.getDimension(level.dimension().location());
+        if (dimensionTemperature == null)
+            return TemperatureEnum.NORMAL.getMiddle();
+
+        return dimensionTemperature.temperature;
+    }
 }

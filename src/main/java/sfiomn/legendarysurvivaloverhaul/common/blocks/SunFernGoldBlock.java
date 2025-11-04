@@ -2,6 +2,7 @@ package sfiomn.legendarysurvivaloverhaul.common.blocks;
 
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -13,16 +14,22 @@ import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import net.minecraft.tags.BlockTags;
 import sfiomn.legendarysurvivaloverhaul.registry.ParticleTypeRegistry;
 
-public class SunFernGoldBlock extends BushBlock {
+public class SunFernGoldBlock extends BushBlock
+{
 
     // Required for 1.20.3+
     public static final MapCodec<SunFernGoldBlock> CODEC = simpleCodec(SunFernGoldBlock::new);
-    @Override public MapCodec<SunFernGoldBlock> codec() { return CODEC; }
 
-    public static Properties getProperties() {
+    // Constructor used by codec & registry
+    public SunFernGoldBlock(Properties properties)
+    {
+        super(properties);
+    }
+
+    public static Properties getProperties()
+    {
         return Properties
                 .of()
                 .mapColor(MapColor.PLANT)
@@ -34,21 +41,24 @@ public class SunFernGoldBlock extends BushBlock {
                 .pushReaction(PushReaction.DESTROY);
     }
 
-    // Constructor used by codec & registry
-    public SunFernGoldBlock(Properties properties) {
-        super(properties);
+    @Override
+    public MapCodec<SunFernGoldBlock> codec()
+    {
+        return CODEC;
     }
 
     @Override
-    protected boolean mayPlaceOn(BlockState blockState, BlockGetter level, BlockPos pos) {
+    protected boolean mayPlaceOn(BlockState blockState, BlockGetter level, BlockPos pos)
+    {
         return blockState.is(Blocks.GRASS_BLOCK) || blockState.is(Blocks.DIRT) ||
                 blockState.is(Blocks.COARSE_DIRT) || blockState.is(Blocks.PODZOL) ||
-                blockState.is(Blocks.FARMLAND)   || blockState.is(BlockTags.SAND);
+                blockState.is(Blocks.FARMLAND) || blockState.is(BlockTags.SAND);
     }
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource rand) {
+    public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource rand)
+    {
         double offsetX = (2 * rand.nextFloat() - 1) * 0.3F;
         double offsetZ = (2 * rand.nextFloat() - 1) * 0.3F;
 

@@ -13,47 +13,45 @@ import sfiomn.legendarysurvivaloverhaul.util.CapabilityUtil;
 
 public class WetnessCommand extends CommandBase
 {
-	public WetnessCommand()
-	{
-		super(Commands.literal("wetness")
-				.requires((p_198521_0_) -> p_198521_0_.hasPermission(2))
-				.then(Commands.literal("get").executes(src -> new WetnessCommand().get(src.getSource())))
-				.then(Commands.literal("set")
-						.then(Commands.argument("value", IntegerArgumentType.integer(0, WetnessCapability.WETNESS_LIMIT))
-								.executes(src -> new WetnessCommand().setWetness(src.getSource(), IntegerArgumentType.getInteger(src, "value")))))
-		);
-	}
+    public WetnessCommand()
+    {
+        super(Commands.literal("wetness")
+                .requires((p_198521_0_) -> p_198521_0_.hasPermission(2))
+                .then(Commands.literal("get").executes(src -> new WetnessCommand().get(src.getSource())))
+                .then(Commands.literal("set")
+                        .then(Commands.argument("value", IntegerArgumentType.integer(0, WetnessCapability.WETNESS_LIMIT))
+                                .executes(src -> new WetnessCommand().setWetness(src.getSource(), IntegerArgumentType.getInteger(src, "value")))))
+        );
+    }
 
-	@Override
-	public int get(CommandSourceStack source)
-	{
-		try
-		{
-			if (source.getEntity() instanceof Player)
-			{
-				Player player = (Player) source.getEntity();
-				WetnessCapability cap = CapabilityUtil.getWetnessCapability(player);
-				
-				int wetness = cap.getWetness();
-				int ticksWet = cap.getWetnessTickTimer();
+    @Override
+    public int get(CommandSourceStack source)
+    {
+        try
+        {
+            if (source.getEntity() instanceof Player player)
+            {
+                WetnessCapability cap = CapabilityUtil.getWetnessCapability(player);
 
-				String reply = "Wetness: " + wetness + "/" + WetnessCapability.WETNESS_LIMIT + "\nTicks Wet: " + ticksWet;
+                int wetness = cap.getWetness();
+                int ticksWet = cap.getWetnessTickTimer();
 
-				source.sendSuccess(() -> Component.literal(reply), false);
-			}
-		}
-		catch(Exception e) 
-		{
-			LegendarySurvivalOverhaul.LOGGER.error(e.getMessage());
-		}
-		return Command.SINGLE_SUCCESS;
-	}
-	
-	private int setWetness(CommandSourceStack src, int value) throws CommandSyntaxException
-	{
-		WetnessCapability cap = CapabilityUtil.getWetnessCapability(src.getPlayerOrException());
-		cap.setWetness(value);
-		src.sendSuccess(() -> Component.literal("Set wetness to " + value), false);
-		return Command.SINGLE_SUCCESS;
-	}
+                String reply = "Wetness: " + wetness + "/" + WetnessCapability.WETNESS_LIMIT + "\nTicks Wet: " + ticksWet;
+
+                source.sendSuccess(() -> Component.literal(reply), false);
+            }
+        } catch (Exception e)
+        {
+            LegendarySurvivalOverhaul.LOGGER.error(e.getMessage());
+        }
+        return Command.SINGLE_SUCCESS;
+    }
+
+    private int setWetness(CommandSourceStack src, int value) throws CommandSyntaxException
+    {
+        WetnessCapability cap = CapabilityUtil.getWetnessCapability(src.getPlayerOrException());
+        cap.setWetness(value);
+        src.sendSuccess(() -> Component.literal("Set wetness to " + value), false);
+        return Command.SINGLE_SUCCESS;
+    }
 }

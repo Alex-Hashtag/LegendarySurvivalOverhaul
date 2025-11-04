@@ -1,13 +1,12 @@
 package sfiomn.legendarysurvivaloverhaul.common.temperature.dynamic;
 
-import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonTemperatureResistance;
 import sfiomn.legendarysurvivaloverhaul.api.temperature.DynamicModifierBase;
-import sfiomn.legendarysurvivaloverhaul.api.temperature.TemperatureEnum;
 import sfiomn.legendarysurvivaloverhaul.registry.AttributeRegistry;
 
-public class TemperatureResistanceModifier extends DynamicModifierBase {
+public class TemperatureResistanceModifier extends DynamicModifierBase
+{
 
     public TemperatureResistanceModifier()
     {
@@ -15,7 +14,8 @@ public class TemperatureResistanceModifier extends DynamicModifierBase {
     }
 
     @Override
-    public float applyDynamicPlayerInfluence(Player player, float currentTemperature, float currentResistance) {
+    public float applyDynamicPlayerInfluence(Player player, float currentTemperature, float currentResistance)
+    {
         JsonTemperatureResistance jsonTemperatureResistance = new JsonTemperatureResistance();
 
         if (player.getAttributes().hasAttribute(AttributeRegistry.THERMAL_RESISTANCE))

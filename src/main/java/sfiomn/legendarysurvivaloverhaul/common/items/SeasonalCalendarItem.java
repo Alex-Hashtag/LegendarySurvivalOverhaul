@@ -12,14 +12,18 @@ import sfiomn.legendarysurvivaloverhaul.common.integration.eclipticseasons.Eclip
 import sfiomn.legendarysurvivaloverhaul.common.integration.sereneseasons.SereneSeasonsUtil;
 
 
-public class SeasonalCalendarItem extends Item {
-    public SeasonalCalendarItem(Item.Properties properties){
+public class SeasonalCalendarItem extends Item
+{
+    public SeasonalCalendarItem(Item.Properties properties)
+    {
         super(properties.stacksTo(1));
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
-        if (level.isClientSide()) {
+    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand)
+    {
+        if (level.isClientSide())
+        {
             if (LegendarySurvivalOverhaul.sereneSeasonsLoaded)
                 player.displayClientMessage(SereneSeasonsUtil.seasonTooltip(player.blockPosition(), player.level()), true);
             else if (LegendarySurvivalOverhaul.eclipticSeasonsLoaded)

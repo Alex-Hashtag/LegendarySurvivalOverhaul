@@ -2,7 +2,8 @@ package sfiomn.legendarysurvivaloverhaul.api.item;
 
 import sfiomn.legendarysurvivaloverhaul.config.Config;
 
-public enum CoatEnum {
+public enum CoatEnum
+{
 
     THERMAL_1("thermal1", "thermal"),
     THERMAL_2("thermal2", "thermal"),
@@ -17,21 +18,38 @@ public enum CoatEnum {
     private final String coatId;
     private final String coatType;
 
-    CoatEnum(String coatId, String coatType) {
+    CoatEnum(String coatId, String coatType)
+    {
         this.coatId = coatId;
         this.coatType = coatType;
     }
 
-    public String id() {
+    public static CoatEnum getFromId(String id)
+    {
+        for (CoatEnum coat : CoatEnum.values())
+        {
+            if (coat.coatId.equals(id))
+            {
+                return coat;
+            }
+        }
+        return null;
+    }
+
+    public String id()
+    {
         return this.coatId;
     }
 
-    public String type() {
+    public String type()
+    {
         return this.coatType;
     }
 
-    public double modifier() {
-        return switch (this) {
+    public double modifier()
+    {
+        return switch (this)
+        {
             case THERMAL_1 -> Config.Baked.thermalCoat1Modifier;
             case THERMAL_2 -> Config.Baked.thermalCoat2Modifier;
             case THERMAL_3 -> Config.Baked.thermalCoat3Modifier;
@@ -42,14 +60,5 @@ public enum CoatEnum {
             case HEATING_2 -> Config.Baked.heatingCoat2Modifier;
             case HEATING_3 -> Config.Baked.heatingCoat3Modifier;
         };
-    }
-
-    public static CoatEnum getFromId(String id) {
-        for (CoatEnum coat : CoatEnum.values()) {
-            if (coat.coatId.equals(id)) {
-                return coat;
-            }
-        }
-        return null;
     }
 }

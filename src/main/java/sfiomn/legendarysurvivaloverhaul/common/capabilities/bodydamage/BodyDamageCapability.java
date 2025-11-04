@@ -11,7 +11,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.common.util.INBTSerializable;
 import org.apache.commons.lang3.tuple.Pair;
-import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.bodydamage.BodyDamageUtil;
 import sfiomn.legendarysurvivaloverhaul.api.bodydamage.BodyPartEnum;
 import sfiomn.legendarysurvivaloverhaul.api.bodydamage.IBodyDamageCapability;
@@ -25,7 +24,10 @@ import sfiomn.legendarysurvivaloverhaul.registry.SoundRegistry;
 import sfiomn.legendarysurvivaloverhaul.util.EnumUtil;
 import sfiomn.legendarysurvivaloverhaul.util.MathUtil;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.BiConsumer;
 
 /**
@@ -135,16 +137,15 @@ public class BodyDamageCapability implements IBodyDamageCapability, INBTSerializ
             this.packetTimer++;
             return;
         }
-        ;
 
         if (updateTickTimer++ >= 19)
         {
             updateTickTimer = 0;
             double playerMaxHealthCheckUpdate = HealthUtil.getPlayerStableMaxHealth(player);
 
-            if (Config.Baked.bodyPartHealthMode == EnumUtil.bodyPartHealthMode.DYNAMIC && 
-                playerMaxHealth != playerMaxHealthCheckUpdate &&
-                playerMaxHealthCheckUpdate > 0)  // Don't update if player health is invalid
+            if (Config.Baked.bodyPartHealthMode == EnumUtil.bodyPartHealthMode.DYNAMIC &&
+                    playerMaxHealth != playerMaxHealthCheckUpdate &&
+                    playerMaxHealthCheckUpdate > 0)  // Don't update if player health is invalid
             {
                 playerMaxHealth = (float) playerMaxHealthCheckUpdate;
                 updateBodyPartDynamicMaxHealth(playerMaxHealth);
@@ -433,14 +434,15 @@ public class BodyDamageCapability implements IBodyDamageCapability, INBTSerializ
         BodyPart bodyPart = this.bodyParts.get(part);
         float maxHealth = bodyPart.getMaxHealth();
         float damage = bodyPart.getDamage();
-        
+
         // Safety check: if maxHealth is 0 (uninitialized), assume healthy
-        if (maxHealth <= 0) {
+        if (maxHealth <= 0)
+        {
             return 1.0f;
         }
-        
+
         float ratio = MathUtil.round((maxHealth - damage) / maxHealth, 2);
-        
+
 
         return ratio;
     }
@@ -482,7 +484,7 @@ public class BodyDamageCapability implements IBodyDamageCapability, INBTSerializ
     private void updateBodyPartDynamicMaxHealth(float maxHealth)
     {
         if (maxHealth <= 0) return;  // Safety check: don't update with invalid health values
-        
+
         for (BodyPart bodyPart : this.bodyParts.values())
         {
             float newMaxHealth = Math.round(bodyPart.getHealthMultiplier() * maxHealth * 100) / 100.0f;

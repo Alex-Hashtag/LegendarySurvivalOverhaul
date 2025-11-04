@@ -10,14 +10,17 @@ import sfiomn.legendarysurvivaloverhaul.registry.ItemRegistry;
 
 import java.util.concurrent.CompletableFuture;
 
-public class ModBodyDamageProvider extends BodyDamageDataProvider {
+public class ModBodyDamageProvider extends BodyDamageDataProvider
+{
 
-    public ModBodyDamageProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper fileHelper) {
+    public ModBodyDamageProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper fileHelper)
+    {
         super(LegendarySurvivalOverhaul.MOD_ID, output, lookupProvider, fileHelper);
     }
 
     @Override
-    public void generate(HolderLookup.Provider provider, ExistingFileHelper existingFileHelper) {
+    public void generate(HolderLookup.Provider provider, ExistingFileHelper existingFileHelper)
+    {
         consumable(ItemRegistry.HEALING_HERBS.get()).healingCharges(1).healingValue(2).duration(600)
                 .recoveryEffectDuration(600);
         consumable(ItemRegistry.PLASTER.get()).healingCharges(1).healingValue(3).duration(400)

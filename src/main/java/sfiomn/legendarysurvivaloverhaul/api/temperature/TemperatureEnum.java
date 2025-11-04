@@ -4,52 +4,53 @@ package sfiomn.legendarysurvivaloverhaul.api.temperature;
 // https://github.com/Charles445/SimpleDifficulty/blob/v0.3.4/src/main/java/com/charles445/simpledifficulty/api/temperature/TemperatureEnum.java
 public enum TemperatureEnum
 {
-	FROSTBITE(0, 10), // You start dying.
-	COLD(10, 16),
-	NORMAL(16, 24),
-	HOT(24,30), // The player will begin to sweat. This grows in intensity as the player gets hotter.
-	HEAT_STROKE(30,40); // You start dying.
-	
-	private final int lowerBound;
-	private final int upperBound;
-	
-	TemperatureEnum(int lowerBound, int upperBound)
-	{
-		this.lowerBound = lowerBound;
-		this.upperBound = upperBound;
-	}
-	
-	public boolean matches(float temperature)
-	{
-		temperature = TemperatureUtil.clampTemperature(temperature);
-		return (temperature >= this.lowerBound && temperature < this.upperBound);
-	}
+    FROSTBITE(0, 10), // You start dying.
+    COLD(10, 16),
+    NORMAL(16, 24),
+    HOT(24, 30), // The player will begin to sweat. This grows in intensity as the player gets hotter.
+    HEAT_STROKE(30, 40); // You start dying.
 
-	public static TemperatureEnum get(float temperature) {
-		if (temperature < FROSTBITE.upperBound)
-			return FROSTBITE;
-		else if (temperature >= COLD.lowerBound && temperature < COLD.upperBound)
-			return COLD;
-		else if (temperature >= NORMAL.lowerBound && temperature < NORMAL.upperBound)
-			return NORMAL;
-		else if (temperature >= HOT.lowerBound && temperature < HOT.upperBound)
-			return HOT;
-		else
-			return HEAT_STROKE;
-	}
-	
-	public float getMiddle()
-	{
-		return (this.upperBound + this.lowerBound) / 2.0f;
-	}
-	
-	public int getLowerBound() 
-	{
-		return this.lowerBound;
-	}
-	
-	public int getUpperBound() 
-	{
-		return this.upperBound;
-	}
+    private final int lowerBound;
+    private final int upperBound;
+
+    TemperatureEnum(int lowerBound, int upperBound)
+    {
+        this.lowerBound = lowerBound;
+        this.upperBound = upperBound;
+    }
+
+    public static TemperatureEnum get(float temperature)
+    {
+        if (temperature < FROSTBITE.upperBound)
+            return FROSTBITE;
+        else if (temperature >= COLD.lowerBound && temperature < COLD.upperBound)
+            return COLD;
+        else if (temperature >= NORMAL.lowerBound && temperature < NORMAL.upperBound)
+            return NORMAL;
+        else if (temperature >= HOT.lowerBound && temperature < HOT.upperBound)
+            return HOT;
+        else
+            return HEAT_STROKE;
+    }
+
+    public boolean matches(float temperature)
+    {
+        temperature = TemperatureUtil.clampTemperature(temperature);
+        return (temperature >= this.lowerBound && temperature < this.upperBound);
+    }
+
+    public float getMiddle()
+    {
+        return (this.upperBound + this.lowerBound) / 2.0f;
+    }
+
+    public int getLowerBound()
+    {
+        return this.lowerBound;
+    }
+
+    public int getUpperBound()
+    {
+        return this.upperBound;
+    }
 }

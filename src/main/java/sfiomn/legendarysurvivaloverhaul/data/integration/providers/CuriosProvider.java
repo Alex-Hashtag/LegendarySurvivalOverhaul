@@ -9,13 +9,16 @@ import top.theillusivec4.curios.api.CuriosDataProvider;
 
 import java.util.concurrent.CompletableFuture;
 
-public class CuriosProvider extends CuriosDataProvider {
-    public CuriosProvider(PackOutput output, ExistingFileHelper fileHelper, CompletableFuture<HolderLookup.Provider> registries) {
+public class CuriosProvider extends CuriosDataProvider
+{
+    public CuriosProvider(PackOutput output, ExistingFileHelper fileHelper, CompletableFuture<HolderLookup.Provider> registries)
+    {
         super(LegendarySurvivalOverhaul.MOD_ID, output, fileHelper, registries);
     }
 
     @Override
-    public void generate(HolderLookup.Provider provider, ExistingFileHelper existingFileHelper) {
+    public void generate(HolderLookup.Provider provider, ExistingFileHelper existingFileHelper)
+    {
         String beltSlotId = "belt";
         String necklaceSlotId = "necklace";
         String headSlotId = "head";

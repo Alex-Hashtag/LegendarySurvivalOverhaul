@@ -4,21 +4,22 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import sfiomn.legendarysurvivaloverhaul.api.data.builder.ITemperatureConsumableData;
-import sfiomn.legendarysurvivaloverhaul.api.data.builder.IThirstData;
 import sfiomn.legendarysurvivaloverhaul.api.data.providers.TemperatureDataProvider;
-import sfiomn.legendarysurvivaloverhaul.api.data.providers.ThirstDataProvider;
 import sfiomn.legendarysurvivaloverhaul.api.temperature.TemporaryModifierGroupEnum;
 
 import java.util.concurrent.CompletableFuture;
 
-public class MinersDelightTemperatureProvider extends TemperatureDataProvider {
+public class MinersDelightTemperatureProvider extends TemperatureDataProvider
+{
 
-    public MinersDelightTemperatureProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper fileHelper) {
+    public MinersDelightTemperatureProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper fileHelper)
+    {
         super("miners_delight", output, lookupProvider, fileHelper);
     }
 
     @Override
-    public void generate(HolderLookup.Provider provider, ExistingFileHelper existingFileHelper) {
+    public void generate(HolderLookup.Provider provider, ExistingFileHelper existingFileHelper)
+    {
 
         ITemperatureConsumableData soupTemperature = temperatureConsumable(TemporaryModifierGroupEnum.DRINK).temperatureLevel(1).duration(2400);
         consumable("beetroot_soup_cup").addTemperature(soupTemperature);

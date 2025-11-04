@@ -1,10 +1,9 @@
 package sfiomn.legendarysurvivaloverhaul.util.internal;
 
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -25,7 +24,6 @@ import sfiomn.legendarysurvivaloverhaul.api.thirst.IThirstUtil;
 import sfiomn.legendarysurvivaloverhaul.api.thirst.ThirstUtil;
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.thirst.ThirstCapability;
 import sfiomn.legendarysurvivaloverhaul.common.integration.curios.CuriosUtil;
-//import sfiomn.legendarysurvivaloverhaul.common.integration.origins.OriginsUtil;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
 import sfiomn.legendarysurvivaloverhaul.registry.ItemRegistry;
 import sfiomn.legendarysurvivaloverhaul.registry.MobEffectRegistry;
@@ -33,7 +31,8 @@ import sfiomn.legendarysurvivaloverhaul.util.CapabilityUtil;
 
 import java.util.*;
 
-public class ThirstUtilInternal implements IThirstUtil {
+public class ThirstUtilInternal implements IThirstUtil
+{
 
     public static final String HYDRATION_ENUM_TAG = LegendarySurvivalOverhaul.MOD_ID + ":HydrationPurity";
     public static final String CAPACITY_TAG = LegendarySurvivalOverhaul.MOD_ID + ":HydrationCapacity";
@@ -51,9 +50,11 @@ public class ThirstUtilInternal implements IThirstUtil {
     public HydrationEnum getHydrationEnumTag(ItemStack stack)
     {
         CustomData custom = stack.get(DataComponents.CUSTOM_DATA);
-        if (custom != null) {
+        if (custom != null)
+        {
             final CompoundTag compound = custom.copyTag();
-            if (compound.contains(HYDRATION_ENUM_TAG)) {
+            if (compound.contains(HYDRATION_ENUM_TAG))
+            {
                 String hydrationEnumName = compound.getString(HYDRATION_ENUM_TAG);
                 return HydrationEnum.getByName(hydrationEnumName);
             }
@@ -65,9 +66,11 @@ public class ThirstUtilInternal implements IThirstUtil {
     public void removeHydrationEnumTag(ItemStack stack)
     {
         CustomData custom = stack.get(DataComponents.CUSTOM_DATA);
-        if (custom != null) {
+        if (custom != null)
+        {
             final CompoundTag compound = custom.copyTag();
-            if (compound.contains(HYDRATION_ENUM_TAG)) {
+            if (compound.contains(HYDRATION_ENUM_TAG))
+            {
                 compound.remove(HYDRATION_ENUM_TAG);
                 stack.set(DataComponents.CUSTOM_DATA, CustomData.of(compound));
             }
@@ -87,9 +90,11 @@ public class ThirstUtilInternal implements IThirstUtil {
     public int getCapacityTag(ItemStack stack)
     {
         CustomData custom = stack.get(DataComponents.CUSTOM_DATA);
-        if (custom != null) {
+        if (custom != null)
+        {
             final CompoundTag compound = custom.copyTag();
-            if (compound.contains(CAPACITY_TAG)) {
+            if (compound.contains(CAPACITY_TAG))
+            {
                 return compound.getInt(CAPACITY_TAG);
             }
         }
@@ -100,9 +105,11 @@ public class ThirstUtilInternal implements IThirstUtil {
     public void removeCapacityTag(ItemStack stack)
     {
         CustomData custom = stack.get(DataComponents.CUSTOM_DATA);
-        if (custom != null) {
+        if (custom != null)
+        {
             final CompoundTag compound = custom.copyTag();
-            if (compound.contains(CAPACITY_TAG)) {
+            if (compound.contains(CAPACITY_TAG))
+            {
                 compound.remove(CAPACITY_TAG);
                 stack.set(DataComponents.CUSTOM_DATA, CustomData.of(compound));
             }
@@ -110,40 +117,48 @@ public class ThirstUtilInternal implements IThirstUtil {
     }
 
     @Override
-    public void takeDrink(Player player, ItemStack itemStack) {
-        if(!Config.Baked.thirstEnabled || !ThirstUtil.isThirstActive(player))
+    public void takeDrink(Player player, ItemStack itemStack)
+    {
+        if (!Config.Baked.thirstEnabled || !ThirstUtil.isThirstActive(player))
             return;
 
         JsonThirstConsumable jsonThirstConsumable = ThirstDataManager.getConsumable(itemStack);
 
-        if (jsonThirstConsumable != null) {
+        if (jsonThirstConsumable != null)
+        {
             ThirstUtil.takeDrink(player, jsonThirstConsumable.hydration, jsonThirstConsumable.saturation, jsonThirstConsumable.effects);
         }
     }
 
     @Override
-    public void takeDrink(Player player, int hydration, float saturation, List<JsonMobEffect> effects) {
-        if(!Config.Baked.thirstEnabled || !ThirstUtil.isThirstActive(player))
+    public void takeDrink(Player player, int hydration, float saturation, List<JsonMobEffect> effects)
+    {
+        if (!Config.Baked.thirstEnabled || !ThirstUtil.isThirstActive(player))
             return;
 
         IThirstCapability capability = CapabilityUtil.getThirstCapability(player);
 
-        if (!capability.isHydrationLevelAtMax()) {
+        if (!capability.isHydrationLevelAtMax())
+        {
             capability.addHydrationLevel(hydration);
 
             capability.addSaturationLevel(saturation);
         }
 
         // Check for effect chance
-        for (JsonMobEffect effect: effects) {
-            if (effect.chance >= 0.0f && effect.duration > 0 && !effect.name.isEmpty() && player.level().random.nextFloat() < effect.chance) {
+        for (JsonMobEffect effect : effects)
+        {
+            if (effect.chance >= 0.0f && effect.duration > 0 && !effect.name.isEmpty() && player.level().random.nextFloat() < effect.chance)
+            {
                 ResourceLocation effectId = ResourceLocation.parse(effect.name);
                 var effectHolder = BuiltInRegistries.MOB_EFFECT.getHolder(effectId);
-                if (effectHolder.isPresent()) {
+                if (effectHolder.isPresent())
+                {
                     int effectDuration = effect.duration;
                     if (Config.Baked.cumulativeThirstEffectDuration &&
                             effectHolder.get().value() == MobEffectRegistry.THIRST.get() &&
-                            player.getEffect(MobEffectRegistry.THIRST) != null) {
+                            player.getEffect(MobEffectRegistry.THIRST) != null)
+                    {
                         effectDuration += Objects.requireNonNull(player.getEffect(MobEffectRegistry.THIRST)).getDuration();
                     }
                     player.addEffect(new MobEffectInstance(effectHolder.get(), effectDuration, effect.amplifier, false, true, true));
@@ -160,22 +175,26 @@ public class ThirstUtilInternal implements IThirstUtil {
     }
 
     @Override
-    public void addExhaustion(Player player, float exhaustion) {
+    public void addExhaustion(Player player, float exhaustion)
+    {
         ThirstCapability thirstCap = CapabilityUtil.getThirstCapability(player);
         thirstCap.addThirstExhaustion(exhaustion);
     }
 
     @Override
-    public JsonThirstBlock getFluidThirstLookedAt(Player player, double finalDistance) {
+    public JsonThirstBlock getFluidThirstLookedAt(Player player, double finalDistance)
+    {
         ResourceLocation rain = ResourceLocation.parse("rain");
 
         // Check if player is looking up, if it's raining, if they can see sky, and if drinkFromRain is enabled
-        if(player.getViewXRot(1.0f) < -60.0f && player.level().isRainingAt(player.blockPosition().above()) &&
-                ThirstDataManager.getBlock(rain) != null) {
+        if (player.getViewXRot(1.0f) < -60.0f && player.level().isRainingAt(player.blockPosition().above()) &&
+                ThirstDataManager.getBlock(rain) != null)
+        {
             //Drinking rain
             List<JsonThirstBlock> thirstPropertyList = ThirstDataManager.getBlock(rain);
 
-            if (thirstPropertyList == null || thirstPropertyList.isEmpty()) {
+            if (thirstPropertyList == null || thirstPropertyList.isEmpty())
+            {
                 return null;
             }
 
@@ -184,15 +203,18 @@ public class ThirstUtilInternal implements IThirstUtil {
 
         HitResult positionLookedAt = player.pick(finalDistance, 0.0F, true);
 
-        if (positionLookedAt.getType() == HitResult.Type.BLOCK) {
+        if (positionLookedAt.getType() == HitResult.Type.BLOCK)
+        {
 
             FluidState fluidState = player.level().getFluidState(((BlockHitResult) positionLookedAt).getBlockPos());
             ResourceLocation fluidRegistryName = BuiltInRegistries.FLUID.getKey(fluidState.getType());
             JsonThirstBlock defaultThirst = null;
 
-            if (fluidRegistryName != null && !fluidState.isEmpty()) {
+            if (fluidRegistryName != null && !fluidState.isEmpty())
+            {
 
-                if (LegendarySurvivalOverhaul.curiosLoaded) {
+                if (LegendarySurvivalOverhaul.curiosLoaded)
+                {
                     if (CuriosUtil.isCurioItemEquipped(player, ItemRegistry.NETHER_CHALICE.get()) &&
                             (fluidState.is(Fluids.FLOWING_LAVA) || fluidState.is(Fluids.LAVA)))
                         return new JsonThirstBlock(Config.Baked.hydrationLava, (float) Config.Baked.saturationLava, new ArrayList<>(), new HashMap<>());
@@ -209,14 +231,16 @@ public class ThirstUtilInternal implements IThirstUtil {
                 if (jsonBlockFluidThirsts == null)
                     return null;
 
-                for (JsonThirstBlock thirstInfo : jsonBlockFluidThirsts) {
+                for (JsonThirstBlock thirstInfo : jsonBlockFluidThirsts)
+                {
                     if (thirstInfo == null)
                         continue;
 
                     if (thirstInfo.isDefault())
                         defaultThirst = thirstInfo;
 
-                    if (thirstInfo.matchesState(fluidState)) {
+                    if (thirstInfo.matchesState(fluidState))
+                    {
                         return thirstInfo;
                     }
                 }
@@ -228,31 +252,36 @@ public class ThirstUtilInternal implements IThirstUtil {
     }
 
     @Override
-    public JsonThirstBlock getBlockThirstLookedAt(Player player, double finalDistance) {
+    public JsonThirstBlock getBlockThirstLookedAt(Player player, double finalDistance)
+    {
 
         HitResult positionLookedAt = player.pick(finalDistance, 0.0F, true);
 
-        if (positionLookedAt.getType() == HitResult.Type.BLOCK) {
+        if (positionLookedAt.getType() == HitResult.Type.BLOCK)
+        {
 
             JsonThirstBlock defaultThirst = null;
 
             BlockState blockState = player.level().getBlockState(((BlockHitResult) positionLookedAt).getBlockPos());
             ResourceLocation blockRegistryName = BuiltInRegistries.BLOCK.getKey(blockState.getBlock());
 
-            if (blockRegistryName != null) {
+            if (blockRegistryName != null)
+            {
                 List<JsonThirstBlock> jsonBlockFluidThirsts = ThirstDataManager.getBlock(blockRegistryName);
 
                 if (jsonBlockFluidThirsts == null)
                     return null;
 
-                for (JsonThirstBlock thirstInfo : jsonBlockFluidThirsts) {
+                for (JsonThirstBlock thirstInfo : jsonBlockFluidThirsts)
+                {
                     if (thirstInfo == null)
                         continue;
 
                     if (thirstInfo.isDefault())
                         defaultThirst = thirstInfo;
 
-                    if (thirstInfo.matchesState(blockState)) {
+                    if (thirstInfo.matchesState(blockState))
+                    {
                         return thirstInfo;
                     }
                 }
@@ -264,23 +293,27 @@ public class ThirstUtilInternal implements IThirstUtil {
     }
 
     @Override
-    public void deactivateThirst(Player player) {
+    public void deactivateThirst(Player player)
+    {
         ThirstCapability cap = CapabilityUtil.getThirstCapability(player);
         cap.setThirstTickTimer(-1);
         cap.setDirty();
     }
 
     @Override
-    public void activateThirst(Player player) {
+    public void activateThirst(Player player)
+    {
         ThirstCapability cap = CapabilityUtil.getThirstCapability(player);
-        if (cap.getThirstTickTimer() == -1) {
+        if (cap.getThirstTickTimer() == -1)
+        {
             cap.setThirstTickTimer(0);
             cap.setDirty();
         }
     }
 
     @Override
-    public boolean isThirstActive(Player player) {
+    public boolean isThirstActive(Player player)
+    {
         return CapabilityUtil.getThirstCapability(player).getThirstTickTimer() != -1;
     }
 }

@@ -16,7 +16,8 @@ import sfiomn.legendarysurvivaloverhaul.util.CapabilityUtil;
 
 import java.util.Collection;
 
-public class HealthCommand extends CommandBase {
+public class HealthCommand extends CommandBase
+{
     public HealthCommand()
     {
         super(Commands.literal("healthoverhaul")
@@ -24,86 +25,95 @@ public class HealthCommand extends CommandBase {
                 .then(Commands.argument("target", EntityArgument.entities())
                         .then(Commands.literal("get")
                                 .then(Commands.literal("shield")
-                                        .executes(src ->  new HealthCommand().getShield(src.getSource(), EntityArgument.getEntities(src, "target"))))
+                                        .executes(src -> new HealthCommand().getShield(src.getSource(), EntityArgument.getEntities(src, "target"))))
                                 .then(Commands.literal("additionalHealth")
-                                        .executes(src ->  new HealthCommand().getHealth(src.getSource(), EntityArgument.getEntities(src, "target"))))
+                                        .executes(src -> new HealthCommand().getHealth(src.getSource(), EntityArgument.getEntities(src, "target"))))
                                 .then(Commands.literal("brokenHearts")
-                                        .executes(src ->  new HealthCommand().getBrokenHeart(src.getSource(), EntityArgument.getEntities(src, "target")))))
+                                        .executes(src -> new HealthCommand().getBrokenHeart(src.getSource(), EntityArgument.getEntities(src, "target")))))
                         .then(Commands.literal("set")
                                 .then(Commands.literal("shield")
                                         .then(Commands.argument("shieldValue", DoubleArgumentType.doubleArg(0, Config.Baked.maxShieldHealth))
-                                                .executes(src ->  new HealthCommand().setShield(src.getSource(), EntityArgument.getEntities(src, "target"), DoubleArgumentType.getDouble(src, "shieldValue")))))
+                                                .executes(src -> new HealthCommand().setShield(src.getSource(), EntityArgument.getEntities(src, "target"), DoubleArgumentType.getDouble(src, "shieldValue")))))
                                 .then(Commands.literal("additionalHealth")
                                         .then(Commands.argument("healthValue", DoubleArgumentType.doubleArg(0, Config.Baked.maxAdditionalHealth))
-                                                .executes(src ->  new HealthCommand().setHealth(src.getSource(), EntityArgument.getEntities(src, "target"), DoubleArgumentType.getDouble(src, "healthValue")))))
+                                                .executes(src -> new HealthCommand().setHealth(src.getSource(), EntityArgument.getEntities(src, "target"), DoubleArgumentType.getDouble(src, "healthValue")))))
                         )
                 )
         );
     }
 
-    private int getShield(CommandSourceStack src, Collection<? extends Entity> entities) {
-        try {
+    private int getShield(CommandSourceStack src, Collection<? extends Entity> entities)
+    {
+        try
+        {
             StringBuilder reply = new StringBuilder();
-            for (Entity entity : entities) {
-                if (entity instanceof Player player && src.getEntity() instanceof Player) {
+            for (Entity entity : entities)
+            {
+                if (entity instanceof Player player && src.getEntity() instanceof Player)
+                {
                     reply.append("Player ").append(player.getName().getString()).append(" ");
                     float shieldValue = CapabilityUtil.getHealthCapability(player).getShieldHealth();
 
                     reply.append("Shield: ")
                             .append(shieldValue)
-                            .append("\n");;
+                            .append("\n");
 
                     src.sendSuccess(() -> Component.literal(reply.toString()), false);
                 }
             }
-        }
-        catch(Exception e)
+        } catch (Exception e)
         {
             LegendarySurvivalOverhaul.LOGGER.error(e.getMessage());
         }
         return Command.SINGLE_SUCCESS;
     }
 
-    private int getHealth(CommandSourceStack src, Collection<? extends Entity> entities) {
-        try {
+    private int getHealth(CommandSourceStack src, Collection<? extends Entity> entities)
+    {
+        try
+        {
             StringBuilder reply = new StringBuilder();
-            for (Entity entity : entities) {
-                if (entity instanceof Player player && src.getEntity() instanceof Player) {
+            for (Entity entity : entities)
+            {
+                if (entity instanceof Player player && src.getEntity() instanceof Player)
+                {
                     reply.append("Player ").append(player.getName().getString()).append(" ");
                     float healthValue = CapabilityUtil.getHealthCapability(player).getAdditionalHealth();
 
                     reply.append("Additional Health: ")
                             .append(healthValue)
-                            .append("\n");;
+                            .append("\n");
 
                     src.sendSuccess(() -> Component.literal(reply.toString()), false);
                 }
             }
-        }
-        catch(Exception e)
+        } catch (Exception e)
         {
             LegendarySurvivalOverhaul.LOGGER.error(e.getMessage());
         }
         return Command.SINGLE_SUCCESS;
     }
 
-    private int getBrokenHeart(CommandSourceStack src, Collection<? extends Entity> entities) {
-        try {
+    private int getBrokenHeart(CommandSourceStack src, Collection<? extends Entity> entities)
+    {
+        try
+        {
             StringBuilder reply = new StringBuilder();
-            for (Entity entity : entities) {
-                if (entity instanceof Player player && src.getEntity() instanceof Player) {
+            for (Entity entity : entities)
+            {
+                if (entity instanceof Player player && src.getEntity() instanceof Player)
+                {
                     reply.append("Player ").append(player.getName().getString()).append(" ");
                     float brokenHearts = (int) player.getAttributeValue(AttributeRegistry.BROKEN_HEART);
 
                     reply.append("Broken Hearts: ")
                             .append(brokenHearts)
-                            .append("\n");;
+                            .append("\n");
 
                     src.sendSuccess(() -> Component.literal(reply.toString()), false);
                 }
             }
-        }
-        catch(Exception e)
+        } catch (Exception e)
         {
             LegendarySurvivalOverhaul.LOGGER.error(e.getMessage());
         }
@@ -112,8 +122,10 @@ public class HealthCommand extends CommandBase {
 
     private int setShield(CommandSourceStack src, Collection<? extends Entity> entities, double shieldValue) throws CommandSyntaxException
     {
-        for (Entity entity: entities) {
-            if (entity instanceof Player player) {
+        for (Entity entity : entities)
+        {
+            if (entity instanceof Player player)
+            {
                 CapabilityUtil.getHealthCapability(player).setShieldHealth((float) shieldValue);
             }
         }
@@ -122,8 +134,10 @@ public class HealthCommand extends CommandBase {
 
     private int setHealth(CommandSourceStack src, Collection<? extends Entity> entities, double healthValue) throws CommandSyntaxException
     {
-        for (Entity entity: entities) {
-            if (entity instanceof Player player) {
+        for (Entity entity : entities)
+        {
+            if (entity instanceof Player player)
+            {
                 CapabilityUtil.getHealthCapability(player).setAdditionalHealth((float) healthValue);
             }
         }

@@ -6,7 +6,8 @@ import java.util.List;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 
-public enum BodyPartEnum {
+public enum BodyPartEnum
+{
     HEAD(),
     RIGHT_ARM(),
     LEFT_ARM(),
@@ -16,10 +17,21 @@ public enum BodyPartEnum {
     LEFT_LEG(),
     LEFT_FOOT();
 
-    BodyPartEnum() {}
+    BodyPartEnum()
+    {
+    }
 
-    public List<BodyPartEnum> getNeighbours() {
-        switch (this) {
+    public static BodyPartEnum get(String name)
+    {
+        for (BodyPartEnum b : values())
+            if (b.name().equalsIgnoreCase(name)) return b;
+        throw new IllegalArgumentException();
+    }
+
+    public List<BodyPartEnum> getNeighbours()
+    {
+        switch (this)
+        {
             case HEAD:
             case LEFT_ARM:
             case RIGHT_ARM:
@@ -37,11 +49,5 @@ public enum BodyPartEnum {
             default:
                 return emptyList();
         }
-    }
-
-    public static BodyPartEnum get(String name) {
-        for(BodyPartEnum b : values())
-            if(b.name().equalsIgnoreCase(name)) return b;
-        throw new IllegalArgumentException();
     }
 }

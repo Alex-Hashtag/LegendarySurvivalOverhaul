@@ -2,7 +2,8 @@ package sfiomn.legendarysurvivaloverhaul.api.data.builder;
 
 import com.google.gson.JsonObject;
 
-public interface IHealingConsumableData {
+public interface IHealingConsumableData
+{
 
     IHealingConsumableData healingCharges(int healingCharges);
 

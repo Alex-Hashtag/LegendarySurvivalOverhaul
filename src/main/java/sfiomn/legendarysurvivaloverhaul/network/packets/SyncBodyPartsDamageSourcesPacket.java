@@ -5,7 +5,6 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.PacketFlow;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload.Type;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
@@ -18,7 +17,8 @@ import java.util.Map;
 
 public record SyncBodyPartsDamageSourcesPacket(
         Map<ResourceLocation, JsonBodyPartsDamageSource> damageSources
-) implements CustomPacketPayload {
+) implements CustomPacketPayload
+{
 
     public static final ResourceLocation ID =
             ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "sync_body_parts_damage_sources");
@@ -36,32 +36,37 @@ public record SyncBodyPartsDamageSourcesPacket(
                     SyncBodyPartsDamageSourcesPacket::new
             );
 
-    @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return TYPE;
-    }
-
     // Handler (client-only)
-    public static void handle(SyncBodyPartsDamageSourcesPacket pkt, IPayloadContext ctx) {
+    public static void handle(SyncBodyPartsDamageSourcesPacket pkt, IPayloadContext ctx)
+    {
         if (ctx.flow() != PacketFlow.CLIENTBOUND) return;
         ctx.enqueueWork(() -> BodyPartsDamageSourceListener.acceptServerDamageSources(pkt.damageSources()));
     }
 
-    /* -------- Convenience send helpers -------- */
-
     // Client -> Server
-    public static void sendToServer(Map<ResourceLocation, JsonBodyPartsDamageSource> data) {
+    public static void sendToServer(Map<ResourceLocation, JsonBodyPartsDamageSource> data)
+    {
         PacketDistributor.sendToServer(new SyncBodyPartsDamageSourcesPacket(data));
     }
 
+    /* -------- Convenience send helpers -------- */
+
     // Server -> one player
     public static void sendToPlayer(net.minecraft.server.level.ServerPlayer player,
-                                    Map<ResourceLocation, JsonBodyPartsDamageSource> data) {
+                                    Map<ResourceLocation, JsonBodyPartsDamageSource> data)
+    {
         PacketDistributor.sendToPlayer(player, new SyncBodyPartsDamageSourcesPacket(data));
     }
 
     // Server -> all
-    public static void sendToAll(Map<ResourceLocation, JsonBodyPartsDamageSource> data) {
+    public static void sendToAll(Map<ResourceLocation, JsonBodyPartsDamageSource> data)
+    {
         PacketDistributor.sendToAllPlayers(new SyncBodyPartsDamageSourcesPacket(data));
+    }
+
+    @Override
+    public Type<? extends CustomPacketPayload> type()
+    {
+        return TYPE;
     }
 }

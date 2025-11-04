@@ -7,17 +7,20 @@ import sfiomn.legendarysurvivaloverhaul.api.data.providers.TemperatureDataProvid
 
 import java.util.concurrent.CompletableFuture;
 
-public class DecorativeBlocksTemperatureProvider extends TemperatureDataProvider {
+public class DecorativeBlocksTemperatureProvider extends TemperatureDataProvider
+{
 
-    public DecorativeBlocksTemperatureProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper fileHelper) {
+    public DecorativeBlocksTemperatureProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper fileHelper)
+    {
         super("decorative_blocks", output, lookupProvider, fileHelper);
     }
 
     @Override
-    public void generate(HolderLookup.Provider provider, ExistingFileHelper existingFileHelper) {
+    public void generate(HolderLookup.Provider provider, ExistingFileHelper existingFileHelper)
+    {
         block("brazier")
-            .addTemperature(temperatureBlock(12.5f).addProperty("lit", "true"))
-            .addTemperature(temperatureBlock(0).addProperty("lit", "false"));
+                .addTemperature(temperatureBlock(12.5f).addProperty("lit", "true"))
+                .addTemperature(temperatureBlock(0).addProperty("lit", "false"));
 
         block("soul_brazier")
                 .addTemperature(temperatureBlock(-12.5f).addProperty("lit", "true"))

@@ -1,6 +1,5 @@
 package sfiomn.legendarysurvivaloverhaul.common.recipe;
 
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.HolderLookup;
@@ -15,57 +14,83 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 
-public class SewingRecipe implements Recipe<RecipeInput> {
+public class SewingRecipe implements Recipe<RecipeInput>
+{
     private final Ingredient base;
     private final Ingredient addition;
     private final ItemStack result;
 
-    public SewingRecipe(Ingredient base, Ingredient addition, ItemStack result) {
+    public SewingRecipe(Ingredient base, Ingredient addition, ItemStack result)
+    {
         this.base = base;
         this.addition = addition;
         this.result = result;
     }
 
-    public Ingredient getBase() { return base; }
-    public Ingredient getAddition() { return addition; }
+    public Ingredient getBase()
+    {
+        return base;
+    }
+
+    public Ingredient getAddition()
+    {
+        return addition;
+    }
 
     @Override
-    public boolean matches(@NotNull RecipeInput input, Level level) {
+    public boolean matches(@NotNull RecipeInput input, Level level)
+    {
         if (level.isClientSide) return false;
         return base.test(input.getItem(0))
                 && addition.test(input.getItem(1));
     }
 
     @Override
-    public @NotNull ItemStack assemble(@NotNull RecipeInput input, @NotNull HolderLookup.Provider provider) {
+    public @NotNull ItemStack assemble(@NotNull RecipeInput input, @NotNull HolderLookup.Provider provider)
+    {
         ItemStack itemstack = this.result.copy();
         ItemStack base = input.getItem(0);
         CustomData custom = base.get(DataComponents.CUSTOM_DATA);
-        if (custom != null) {
+        if (custom != null)
+        {
             itemstack.set(DataComponents.CUSTOM_DATA, CustomData.of(custom.copyTag()));
         }
         return itemstack;
     }
 
     @Override
-    public boolean canCraftInDimensions(int i, int i1) { return true; }
+    public boolean canCraftInDimensions(int i, int i1)
+    {
+        return true;
+    }
 
     @Override
-    public @NotNull ItemStack getResultItem(@NotNull HolderLookup.Provider provider) { return result.copy(); }
+    public @NotNull ItemStack getResultItem(@NotNull HolderLookup.Provider provider)
+    {
+        return result.copy();
+    }
 
     @Override
-    public RecipeSerializer<?> getSerializer() { return Serializer.INSTANCE; }
+    public RecipeSerializer<?> getSerializer()
+    {
+        return Serializer.INSTANCE;
+    }
 
     @Override
-    public RecipeType<?> getType() { return Type.INSTANCE; }
+    public RecipeType<?> getType()
+    {
+        return Type.INSTANCE;
+    }
 
-    public static class Type implements RecipeType<SewingRecipe> {
+    public static class Type implements RecipeType<SewingRecipe>
+    {
         public static final Type INSTANCE = new Type();
         public static final ResourceLocation ID =
                 ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "sewing");
     }
 
-    public static class Serializer implements RecipeSerializer<SewingRecipe> {
+    public static class Serializer implements RecipeSerializer<SewingRecipe>
+    {
         public static final Serializer INSTANCE = new Serializer();
         public static final ResourceLocation ID =
                 ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "sewing");
@@ -84,10 +109,16 @@ public class SewingRecipe implements Recipe<RecipeInput> {
         );
 
         @Override
-        public MapCodec<SewingRecipe> codec() { return CODEC; }
+        public MapCodec<SewingRecipe> codec()
+        {
+            return CODEC;
+        }
 
         @Override
-        public StreamCodec<RegistryFriendlyByteBuf, SewingRecipe> streamCodec() { return STREAM_CODEC; }
+        public StreamCodec<RegistryFriendlyByteBuf, SewingRecipe> streamCodec()
+        {
+            return STREAM_CODEC;
+        }
     }
 
 }

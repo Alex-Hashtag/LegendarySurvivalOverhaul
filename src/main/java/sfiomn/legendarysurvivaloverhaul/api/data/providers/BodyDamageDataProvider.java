@@ -2,7 +2,6 @@ package sfiomn.legendarysurvivaloverhaul.api.data.providers;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
@@ -25,7 +24,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
-public abstract class BodyDamageDataProvider implements DataProvider {
+public abstract class BodyDamageDataProvider implements DataProvider
+{
     private final String modId;
     private final CompletableFuture<HolderLookup.Provider> lookupProvider;
     private final PackOutput.PathProvider consumablesPathProvider;
@@ -36,7 +36,8 @@ public abstract class BodyDamageDataProvider implements DataProvider {
     private final Map<String, IBodyPartResistanceData> bodyPartResistanceBuilders = new HashMap<>();
     private final ExistingFileHelper fileHelper;
 
-    public BodyDamageDataProvider(String modId, PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper fileHelper) {
+    public BodyDamageDataProvider(String modId, PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper fileHelper)
+    {
         this.modId = modId;
         this.fileHelper = fileHelper;
         this.consumablesPathProvider = output.createPathProvider(PackOutput.Target.DATA_PACK, LegendarySurvivalOverhaul.MOD_ID + "/body_damage/consumables");
@@ -48,7 +49,8 @@ public abstract class BodyDamageDataProvider implements DataProvider {
     public abstract void generate(HolderLookup.Provider provider, ExistingFileHelper existingFileHelper);
 
     @Nonnull
-    public CompletableFuture<?> run(@Nonnull CachedOutput pOutput) {
+    public CompletableFuture<?> run(@Nonnull CachedOutput pOutput)
+    {
         return this.lookupProvider.thenCompose((p_255484_) -> {
             List<CompletableFuture<?>> list = new ArrayList<>();
             this.generate(p_255484_, this.fileHelper);
@@ -70,32 +72,38 @@ public abstract class BodyDamageDataProvider implements DataProvider {
         });
     }
 
-    public final IHealingConsumableData consumable(String id) {
+    public final IHealingConsumableData consumable(String id)
+    {
         return this.consumablesBuilders.computeIfAbsent(id, (k) -> new HealingConsumableData());
     }
 
-    public final IHealingConsumableData consumable(Item item) {
+    public final IHealingConsumableData consumable(Item item)
+    {
         ResourceLocation itemRegistryName = BuiltInRegistries.ITEM.getKey(item);
         assert itemRegistryName != null;
         return this.consumablesBuilders.computeIfAbsent(itemRegistryName.toString(), (k) -> new HealingConsumableData());
     }
 
-    public final IBodyPartsDamageSourceData damageSource(String id) {
+    public final IBodyPartsDamageSourceData damageSource(String id)
+    {
         return this.bodyPartsDamageSourceBuilders.computeIfAbsent(id, (k) -> new BodyPartsDamageSourceData());
     }
 
-    public final IBodyPartResistanceData item(String id) {
+    public final IBodyPartResistanceData item(String id)
+    {
         return this.bodyPartResistanceBuilders.computeIfAbsent(id, (k) -> new BodyPartResistanceData());
     }
 
-    public final IBodyPartResistanceData item(Item item) {
+    public final IBodyPartResistanceData item(Item item)
+    {
         ResourceLocation itemRegistryName = BuiltInRegistries.ITEM.getKey(item);
         assert itemRegistryName != null;
         return this.bodyPartResistanceBuilders.computeIfAbsent(itemRegistryName.toString(), (k) -> new BodyPartResistanceData());
     }
 
     @Nonnull
-    public final String getName() {
+    public final String getName()
+    {
         return "Body Damage for " + this.modId;
     }
 }

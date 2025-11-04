@@ -9,21 +9,21 @@ import sfiomn.legendarysurvivaloverhaul.config.Config;
 public class OnFireModifier extends ModifierBase
 {
 
-	public OnFireModifier()
-	{
-		super();
-	}
-	
+    public OnFireModifier()
+    {
+        super();
+    }
 
-	@Override
-	public float getPlayerInfluence(Player player)
-	{
-		if (player.getRemainingFireTicks() > 0 && !TemperatureUtil.hasImmunity(player, TemperatureImmunityEnum.ON_FIRE))
-		{
-			// LegendarySurvivalOverhaul.LOGGER.debug("On fire temp influence : " + String.valueOf(Config.Baked.onFireModifier));
-			return (float) Config.Baked.onFireModifier;
-		}
-		
-		return 0.0f;
-	}
+
+    @Override
+    public float getPlayerInfluence(Player player)
+    {
+        if (player.getRemainingFireTicks() > 0 && !TemperatureUtil.hasImmunity(player, TemperatureImmunityEnum.ON_FIRE))
+        {
+            // LegendarySurvivalOverhaul.LOGGER.debug("On fire temp influence : " + String.valueOf(Config.Baked.onFireModifier));
+            return (float) Config.Baked.onFireModifier;
+        }
+
+        return 0.0f;
+    }
 }

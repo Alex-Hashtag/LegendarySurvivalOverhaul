@@ -13,14 +13,17 @@ import sfiomn.legendarysurvivaloverhaul.registry.ItemRegistry;
 
 import java.util.concurrent.CompletableFuture;
 
-public class ModTemperatureProvider extends TemperatureDataProvider {
+public class ModTemperatureProvider extends TemperatureDataProvider
+{
 
-    public ModTemperatureProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper fileHelper) {
+    public ModTemperatureProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper fileHelper)
+    {
         super(LegendarySurvivalOverhaul.MOD_ID, output, lookupProvider, fileHelper);
     }
 
     @Override
-    public void generate(HolderLookup.Provider provider, ExistingFileHelper existingFileHelper) {
+    public void generate(HolderLookup.Provider provider, ExistingFileHelper existingFileHelper)
+    {
         block(BlockRegistry.COOLER.get())
                 .addTemperature(temperatureBlock(-15.0f).addProperty("lit", "true"))
                 .addTemperature(temperatureBlock(0.0f).addProperty("lit", "false"));

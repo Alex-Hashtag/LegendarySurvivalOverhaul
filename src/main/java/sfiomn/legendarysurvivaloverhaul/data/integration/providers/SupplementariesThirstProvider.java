@@ -9,14 +9,17 @@ import sfiomn.legendarysurvivaloverhaul.registry.MobEffectRegistry;
 
 import java.util.concurrent.CompletableFuture;
 
-public class SupplementariesThirstProvider extends ThirstDataProvider {
+public class SupplementariesThirstProvider extends ThirstDataProvider
+{
 
-    public SupplementariesThirstProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper fileHelper) {
+    public SupplementariesThirstProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper fileHelper)
+    {
         super("supplementaries", output, lookupProvider, fileHelper);
     }
 
     @Override
-    public void generate(HolderLookup.Provider provider, ExistingFileHelper existingFileHelper) {
+    public void generate(HolderLookup.Provider provider, ExistingFileHelper existingFileHelper)
+    {
 
         IThirstData sinkThirst = thirstData(3, 0)
                 .addEffect(MobEffectRegistry.THIRST.get(), 300, 0.75f)

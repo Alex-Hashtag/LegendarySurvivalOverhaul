@@ -19,58 +19,64 @@ import sfiomn.legendarysurvivaloverhaul.util.CapabilityUtil;
 
 public class ShieldContainerItem extends Item
 {
-	public ShieldContainerItem(Properties properties)
-	{
-		super(properties);
-	}
+    public ShieldContainerItem(Properties properties)
+    {
+        super(properties);
+    }
 
-	@Override
-	public int getUseDuration(@NotNull ItemStack stack, LivingEntity entity) {
-		return 30;
-	}
+    @Override
+    public int getUseDuration(@NotNull ItemStack stack, LivingEntity entity)
+    {
+        return 30;
+    }
 
-	@Override
-	public @NotNull UseAnim getUseAnimation(@NotNull ItemStack stack) {
-		return UseAnim.BOW;
-	}
+    @Override
+    public @NotNull UseAnim getUseAnimation(@NotNull ItemStack stack)
+    {
+        return UseAnim.BOW;
+    }
 
-	@Override
-	public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level level, @NotNull Player player, @NotNull InteractionHand hand) {
-		if (Config.Baked.healthOverhaulEnabled) {
-			HealthCapability cap = CapabilityUtil.getHealthCapability(player);
+    @Override
+    public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level level, @NotNull Player player, @NotNull InteractionHand hand)
+    {
+        if (Config.Baked.healthOverhaulEnabled)
+        {
+            HealthCapability cap = CapabilityUtil.getHealthCapability(player);
 
-			if (cap.getShieldHealth() > Config.Baked.maxShieldHealth) {
-				return InteractionResultHolder.fail(player.getItemInHand(hand));
-			}
-		}
+            if (cap.getShieldHealth() > Config.Baked.maxShieldHealth)
+            {
+                return InteractionResultHolder.fail(player.getItemInHand(hand));
+            }
+        }
 
-		player.startUsingItem(hand);
-		return InteractionResultHolder.success(player.getItemInHand(hand));
-	}
+        player.startUsingItem(hand);
+        return InteractionResultHolder.success(player.getItemInHand(hand));
+    }
 
-	@Override
-	public @NotNull ItemStack finishUsingItem(@NotNull ItemStack stack, @NotNull Level level, @NotNull LivingEntity entity)
-	{
-		if (entity instanceof Player player)
-		{
-			stack = super.finishUsingItem(stack, level, player);
+    @Override
+    public @NotNull ItemStack finishUsingItem(@NotNull ItemStack stack, @NotNull Level level, @NotNull LivingEntity entity)
+    {
+        if (entity instanceof Player player)
+        {
+            stack = super.finishUsingItem(stack, level, player);
 
-			if (!level.isClientSide)
-				player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 200, 1));
+            if (!level.isClientSide)
+                player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 200, 1));
 
-			if (Config.Baked.healthOverhaulEnabled) {
-				HealthCapability cap = CapabilityUtil.getHealthCapability(player);
+            if (Config.Baked.healthOverhaulEnabled)
+            {
+                HealthCapability cap = CapabilityUtil.getHealthCapability(player);
 
-				cap.addShieldHealth(2);
+                cap.addShieldHealth(2);
 
-				level.playSound(null, player, SoundRegistry.HEART_CONTAINER.get(), SoundSource.NEUTRAL, 1.0f, 1.0f);
-			}
+                level.playSound(null, player, SoundRegistry.HEART_CONTAINER.get(), SoundSource.NEUTRAL, 1.0f, 1.0f);
+            }
 
-			if (!player.isCreative())
-				stack.shrink(1);
-		}
-		
-		return stack;
-	}
-	
+            if (!player.isCreative())
+                stack.shrink(1);
+        }
+
+        return stack;
+    }
+
 }

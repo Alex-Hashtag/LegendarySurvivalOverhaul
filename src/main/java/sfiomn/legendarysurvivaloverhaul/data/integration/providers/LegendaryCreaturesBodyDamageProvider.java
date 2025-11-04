@@ -10,14 +10,17 @@ import sfiomn.legendarysurvivaloverhaul.api.data.providers.BodyDamageDataProvide
 import java.util.Arrays;
 import java.util.concurrent.CompletableFuture;
 
-public class LegendaryCreaturesBodyDamageProvider extends BodyDamageDataProvider {
+public class LegendaryCreaturesBodyDamageProvider extends BodyDamageDataProvider
+{
 
-    public LegendaryCreaturesBodyDamageProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper fileHelper) {
+    public LegendaryCreaturesBodyDamageProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper fileHelper)
+    {
         super("legendarycreatures", output, lookupProvider, fileHelper);
     }
 
     @Override
-    public void generate(HolderLookup.Provider provider, ExistingFileHelper existingFileHelper) {
+    public void generate(HolderLookup.Provider provider, ExistingFileHelper existingFileHelper)
+    {
         damageSource("legendarycreatures.root_attack")
                 .damageDistribution(DamageDistributionEnum.ONE_OF)
                 .addBodyParts(Arrays.asList(BodyPartEnum.LEFT_FOOT, BodyPartEnum.RIGHT_FOOT, BodyPartEnum.LEFT_LEG, BodyPartEnum.RIGHT_LEG));

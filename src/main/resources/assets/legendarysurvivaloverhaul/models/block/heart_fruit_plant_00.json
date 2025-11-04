@@ -1,8 +1,8 @@
 {
-	"parent": "legendarysurvivaloverhaul:block/heart_fruit_plant_base",
-	"textures": {
-		"stem": "legendarysurvivaloverhaul:block/heartfruit_stem_00",
-		"fruit": "legendarysurvivaloverhaul:block/heartfruit_fruit_00"
-	},
-	"render_type": "cutout"
+  "parent": "legendarysurvivaloverhaul:block/heart_fruit_plant_base",
+  "textures": {
+    "stem": "legendarysurvivaloverhaul:block/heartfruit_stem_00",
+    "fruit": "legendarysurvivaloverhaul:block/heartfruit_fruit_00"
+  },
+  "render_type": "cutout"
 }

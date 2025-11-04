@@ -16,32 +16,38 @@ import static sfiomn.legendarysurvivaloverhaul.data.loot.ModChestLootTables.ches
 import static sfiomn.legendarysurvivaloverhaul.data.loot.ModEntityLootTables.entityInjectedLootTables;
 import static sfiomn.legendarysurvivaloverhaul.data.loot.ModFishingLootTables.fishingInjectedLootTables;
 
-public class ModGlobalLootModifierProvider extends GlobalLootModifierProvider {
+public class ModGlobalLootModifierProvider extends GlobalLootModifierProvider
+{
 
-    public ModGlobalLootModifierProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider) {
+    public ModGlobalLootModifierProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider)
+    {
         super(output, lookupProvider, LegendarySurvivalOverhaul.MOD_ID);
     }
 
     @Override
-    protected void start() {
-        for (ResourceKey<net.minecraft.world.level.storage.loot.LootTable> lootTableKey : chestInjectedLootTables.keySet()) {
+    protected void start()
+    {
+        for (ResourceKey<net.minecraft.world.level.storage.loot.LootTable> lootTableKey : chestInjectedLootTables.keySet())
+        {
             ResourceLocation lootTable = lootTableKey.location();
             this.add(lootTable.getPath(), new AdditionalLootTable(
-                    new LootItemCondition[]{ LootTableIdCondition.builder(lootTable).build() },
+                    new LootItemCondition[]{LootTableIdCondition.builder(lootTable).build()},
                     ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "inject/" + lootTable.getPath()),
                     false
             ));
         }
 
 
-        for (ResourceLocation lootTable: entityInjectedLootTables) {
+        for (ResourceLocation lootTable : entityInjectedLootTables)
+        {
             this.add(lootTable.getPath(), new AdditionalLootTable(
                     new LootItemCondition[]{LootTableIdCondition.builder(lootTable).build()},
                     ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "inject/" + lootTable.getPath()),
                     false));
         }
 
-        for (ResourceLocation lootTable: fishingInjectedLootTables) {
+        for (ResourceLocation lootTable : fishingInjectedLootTables)
+        {
             this.add(lootTable.getPath(), new AdditionalLootTable(
                     new LootItemCondition[]{LootTableIdCondition.builder(lootTable).build()},
                     ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "inject/" + lootTable.getPath()),

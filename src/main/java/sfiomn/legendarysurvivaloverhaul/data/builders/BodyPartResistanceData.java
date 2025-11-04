@@ -3,7 +3,8 @@ package sfiomn.legendarysurvivaloverhaul.data.builders;
 import com.google.gson.JsonObject;
 import sfiomn.legendarysurvivaloverhaul.api.data.builder.IBodyPartResistanceData;
 
-public class BodyPartResistanceData implements IBodyPartResistanceData {
+public class BodyPartResistanceData implements IBodyPartResistanceData
+{
     private float bodyResistance;
     private float headResistance;
     private float chestResistance;
@@ -12,53 +13,62 @@ public class BodyPartResistanceData implements IBodyPartResistanceData {
     private float legsResistance;
     private float feetResistance;
 
-    public BodyPartResistanceData() {
+    public BodyPartResistanceData()
+    {
     }
 
     @Override
-    public IBodyPartResistanceData bodyResistance(float resistanceValue) {
+    public IBodyPartResistanceData bodyResistance(float resistanceValue)
+    {
         bodyResistance = resistanceValue;
         return this;
     }
 
     @Override
-    public IBodyPartResistanceData headResistance(float resistanceValue) {
+    public IBodyPartResistanceData headResistance(float resistanceValue)
+    {
         headResistance = resistanceValue;
         return this;
     }
 
     @Override
-    public IBodyPartResistanceData chestResistance(float resistanceValue) {
+    public IBodyPartResistanceData chestResistance(float resistanceValue)
+    {
         chestResistance = resistanceValue;
         return this;
     }
 
     @Override
-    public IBodyPartResistanceData rightArmResistance(float resistanceValue) {
+    public IBodyPartResistanceData rightArmResistance(float resistanceValue)
+    {
         rightArmResistance = resistanceValue;
         return this;
     }
 
     @Override
-    public IBodyPartResistanceData leftArmResistance(float resistanceValue) {
+    public IBodyPartResistanceData leftArmResistance(float resistanceValue)
+    {
         leftArmResistance = resistanceValue;
         return this;
     }
 
     @Override
-    public IBodyPartResistanceData legsResistance(float resistanceValue) {
+    public IBodyPartResistanceData legsResistance(float resistanceValue)
+    {
         legsResistance = resistanceValue;
         return this;
     }
 
     @Override
-    public IBodyPartResistanceData feetResistance(float resistanceValue) {
+    public IBodyPartResistanceData feetResistance(float resistanceValue)
+    {
         feetResistance = resistanceValue;
         return this;
     }
 
     @Override
-    public JsonObject build() {
+    public JsonObject build()
+    {
         JsonObject json = new JsonObject();
         json.addProperty("body_resistance", this.bodyResistance);
         json.addProperty("head_resistance", this.headResistance);

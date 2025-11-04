@@ -12,20 +12,28 @@ import net.neoforged.fml.util.ObfuscationReflectionHelper;
 import java.lang.reflect.Field;
 import java.util.List;
 
-public class FocusShader {
+public class FocusShader
+{
     public static final ResourceLocation BLUR_SHADER = ResourceLocation.parse("shaders/post/blobs2.json");
     private static final Field shaders = ObfuscationReflectionHelper.findField(PostChain.class, "passes");
 
-    public FocusShader() {}
+    public FocusShader()
+    {
+    }
 
-    public void render(float intensity) {
-        if (intensity > 0) {
+    public void render(float intensity)
+    {
+        if (intensity > 0)
+        {
             PostChain currentEffect = Minecraft.getInstance().gameRenderer.currentEffect();
             if (currentEffect == null ||
-                    !currentEffect.getName().equals("minecraft:shaders/post/blobs2.json")) {
-                try {
+                    !currentEffect.getName().equals("minecraft:shaders/post/blobs2.json"))
+            {
+                try
+                {
                     Minecraft.getInstance().gameRenderer.loadEffect(BLUR_SHADER);
-                } catch (NullPointerException e) {
+                } catch (NullPointerException e)
+                {
                     return;
                 }
             }
@@ -33,25 +41,31 @@ public class FocusShader {
         }
     }
 
-    public void stopRender() {
+    public void stopRender()
+    {
         PostChain currentEffect = Minecraft.getInstance().gameRenderer.currentEffect();
         if (currentEffect != null &&
-                currentEffect.getName().equals("minecraft:shaders/post/blobs2.json")) {
+                currentEffect.getName().equals("minecraft:shaders/post/blobs2.json"))
+        {
             Minecraft.getInstance().gameRenderer.shutdownEffect();
         }
     }
 
     @OnlyIn(value = Dist.CLIENT)
-    public void updateIntensity(float intensity) {
+    public void updateIntensity(float intensity)
+    {
 
         Uniform shaderRadius;
-        try {
+        try
+        {
             shaderRadius = ((List<PostPass>) shaders.get(Minecraft.getInstance().gameRenderer.currentEffect())).get(0).getEffect().getUniform("Radius");
-        } catch (IllegalArgumentException | IllegalAccessException | NullPointerException e) {
+        } catch (IllegalArgumentException | IllegalAccessException | NullPointerException e)
+        {
             shaderRadius = null;
         }
 
-        if (shaderRadius != null) {
+        if (shaderRadius != null)
+        {
             shaderRadius.set(intensity);
         }
     }
