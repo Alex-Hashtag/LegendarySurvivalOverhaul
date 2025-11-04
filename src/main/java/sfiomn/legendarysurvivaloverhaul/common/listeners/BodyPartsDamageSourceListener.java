@@ -17,7 +17,7 @@ import org.jetbrains.annotations.Nullable;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonBodyPartsDamageSource;
 import sfiomn.legendarysurvivaloverhaul.api.data.manager.IBodyPartsDamageSourceManager;
-import sfiomn.legendarysurvivaloverhaul.network.packets.SyncBodyPartsDamageSourcesPacket;
+import sfiomn.legendarysurvivaloverhaul.network.payloads.SyncBodyPartsDamageSourcesPayload;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -37,10 +37,10 @@ public class BodyPartsDamageSourceListener extends SimpleJsonResourceReloadListe
     {
         if (player == null)
         {
-            PacketDistributor.sendToAllPlayers(new SyncBodyPartsDamageSourcesPacket(DAMAGE_SOURCES));
+            PacketDistributor.sendToAllPlayers(new SyncBodyPartsDamageSourcesPayload(DAMAGE_SOURCES));
         } else
         {
-            PacketDistributor.sendToPlayer(player, new SyncBodyPartsDamageSourcesPacket(DAMAGE_SOURCES));
+            PacketDistributor.sendToPlayer(player, new SyncBodyPartsDamageSourcesPayload(DAMAGE_SOURCES));
         }
     }
 

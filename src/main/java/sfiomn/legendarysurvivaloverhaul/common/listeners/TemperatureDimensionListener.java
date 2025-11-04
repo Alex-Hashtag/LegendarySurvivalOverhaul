@@ -17,7 +17,7 @@ import org.jetbrains.annotations.Nullable;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonTemperatureDimension;
 import sfiomn.legendarysurvivaloverhaul.api.data.manager.ITemperatureDimensionManager;
-import sfiomn.legendarysurvivaloverhaul.network.packets.SyncTemperatureDimensionsPacket;
+import sfiomn.legendarysurvivaloverhaul.network.payloads.SyncTemperatureDimensionsPayload;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -37,10 +37,10 @@ public class TemperatureDimensionListener extends SimpleJsonResourceReloadListen
     {
         if (player == null)
         {
-            PacketDistributor.sendToAllPlayers(new SyncTemperatureDimensionsPacket(TEMPERATURE_DIMENSIONS));
+            PacketDistributor.sendToAllPlayers(new SyncTemperatureDimensionsPayload(TEMPERATURE_DIMENSIONS));
         } else
         {
-            PacketDistributor.sendToPlayer(player, new SyncTemperatureDimensionsPacket(TEMPERATURE_DIMENSIONS));
+            PacketDistributor.sendToPlayer(player, new SyncTemperatureDimensionsPayload(TEMPERATURE_DIMENSIONS));
         }
     }
 

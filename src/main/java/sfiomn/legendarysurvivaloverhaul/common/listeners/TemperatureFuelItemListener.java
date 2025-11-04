@@ -17,7 +17,7 @@ import org.jetbrains.annotations.Nullable;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonTemperatureFuelItem;
 import sfiomn.legendarysurvivaloverhaul.api.data.manager.ITemperatureFuelItemManager;
-import sfiomn.legendarysurvivaloverhaul.network.packets.SyncTemperatureFuelItemsPacket;
+import sfiomn.legendarysurvivaloverhaul.network.payloads.SyncTemperatureFuelItemsPayload;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -37,10 +37,10 @@ public class TemperatureFuelItemListener extends SimpleJsonResourceReloadListene
     {
         if (player == null)
         {
-            PacketDistributor.sendToAllPlayers(new SyncTemperatureFuelItemsPacket(TEMPERATURE_FUEL_ITEMS));
+            PacketDistributor.sendToAllPlayers(new SyncTemperatureFuelItemsPayload(TEMPERATURE_FUEL_ITEMS));
         } else
         {
-            PacketDistributor.sendToPlayer(player, new SyncTemperatureFuelItemsPacket(TEMPERATURE_FUEL_ITEMS));
+            PacketDistributor.sendToPlayer(player, new SyncTemperatureFuelItemsPayload(TEMPERATURE_FUEL_ITEMS));
         }
     }
 

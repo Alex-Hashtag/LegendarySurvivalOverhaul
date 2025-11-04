@@ -1,4 +1,4 @@
-package sfiomn.legendarysurvivaloverhaul.network.packets;
+package sfiomn.legendarysurvivaloverhaul.network.payloads;
 
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -15,28 +15,28 @@ import sfiomn.legendarysurvivaloverhaul.common.listeners.BodyPartResistanceItemL
 import java.util.HashMap;
 import java.util.Map;
 
-public record SyncBodyPartResistanceItemsPacket(
+public record SyncBodyPartResistanceItemsPayload(
         Map<ResourceLocation, JsonBodyPartResistance> bodyPartResistanceItems
 ) implements CustomPacketPayload
 {
 
     public static final ResourceLocation ID =
             ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "sync_body_part_resistance_items");
-    public static final Type<SyncBodyPartResistanceItemsPacket> TYPE = new Type<>(ID);
+    public static final Type<SyncBodyPartResistanceItemsPayload> TYPE = new Type<>(ID);
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, SyncBodyPartResistanceItemsPacket> STREAM_CODEC =
+    public static final StreamCodec<RegistryFriendlyByteBuf, SyncBodyPartResistanceItemsPayload> STREAM_CODEC =
             StreamCodec.composite(
                     ByteBufCodecs.map(
                             HashMap::new,
                             ResourceLocation.STREAM_CODEC,
                             ByteBufCodecs.fromCodecTrusted(JsonBodyPartResistance.CODEC)
                     ),
-                    SyncBodyPartResistanceItemsPacket::bodyPartResistanceItems,
-                    SyncBodyPartResistanceItemsPacket::new
+                    SyncBodyPartResistanceItemsPayload::bodyPartResistanceItems,
+                    SyncBodyPartResistanceItemsPayload::new
             );
 
     // Handler (client-only)
-    public static void handle(SyncBodyPartResistanceItemsPacket pkt, IPayloadContext ctx)
+    public static void handle(SyncBodyPartResistanceItemsPayload pkt, IPayloadContext ctx)
     {
         if (ctx.flow() != PacketFlow.CLIENTBOUND) return;
         ctx.enqueueWork(() -> BodyPartResistanceItemListener.acceptServerBodyPartResistanceItems(pkt.bodyPartResistanceItems()));
@@ -45,7 +45,7 @@ public record SyncBodyPartResistanceItemsPacket(
     // Client -> Server
     public static void sendToServer(Map<ResourceLocation, JsonBodyPartResistance> data)
     {
-        PacketDistributor.sendToServer(new SyncBodyPartResistanceItemsPacket(data));
+        PacketDistributor.sendToServer(new SyncBodyPartResistanceItemsPayload(data));
     }
 
     /* -------- Convenience send helpers -------- */
@@ -54,13 +54,13 @@ public record SyncBodyPartResistanceItemsPacket(
     public static void sendToPlayer(net.minecraft.server.level.ServerPlayer player,
                                     Map<ResourceLocation, JsonBodyPartResistance> data)
     {
-        PacketDistributor.sendToPlayer(player, new SyncBodyPartResistanceItemsPacket(data));
+        PacketDistributor.sendToPlayer(player, new SyncBodyPartResistanceItemsPayload(data));
     }
 
     // Server -> everyone
     public static void sendToAll(Map<ResourceLocation, JsonBodyPartResistance> data)
     {
-        PacketDistributor.sendToAllPlayers(new SyncBodyPartResistanceItemsPacket(data));
+        PacketDistributor.sendToAllPlayers(new SyncBodyPartResistanceItemsPayload(data));
     }
 
     @Override

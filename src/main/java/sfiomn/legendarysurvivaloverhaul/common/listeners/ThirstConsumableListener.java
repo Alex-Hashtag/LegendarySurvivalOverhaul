@@ -18,7 +18,7 @@ import org.jetbrains.annotations.Nullable;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonThirstConsumable;
 import sfiomn.legendarysurvivaloverhaul.api.data.manager.IThirstConsumableManager;
-import sfiomn.legendarysurvivaloverhaul.network.packets.SyncThirstConsumablesPacket;
+import sfiomn.legendarysurvivaloverhaul.network.payloads.SyncThirstConsumablesPaload;
 
 import java.util.HashMap;
 import java.util.List;
@@ -38,10 +38,10 @@ public class ThirstConsumableListener extends SimpleJsonResourceReloadListener i
     {
         if (player == null)
         {
-            PacketDistributor.sendToAllPlayers(new SyncThirstConsumablesPacket(THIRST_CONSUMABLES));
+            PacketDistributor.sendToAllPlayers(new SyncThirstConsumablesPaload(THIRST_CONSUMABLES));
         } else
         {
-            PacketDistributor.sendToPlayer(player, new SyncThirstConsumablesPacket(THIRST_CONSUMABLES));
+            PacketDistributor.sendToPlayer(player, new SyncThirstConsumablesPaload(THIRST_CONSUMABLES));
         }
     }
 

@@ -1,4 +1,4 @@
-package sfiomn.legendarysurvivaloverhaul.network.packets;
+package sfiomn.legendarysurvivaloverhaul.network.payloads;
 
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -15,7 +15,7 @@ import sfiomn.legendarysurvivaloverhaul.common.listeners.TemperatureFuelItemList
 import java.util.HashMap;
 import java.util.Map;
 
-public record SyncTemperatureFuelItemsPacket(
+public record SyncTemperatureFuelItemsPayload(
         Map<ResourceLocation, JsonTemperatureFuelItem> temperatureFuelItems
 ) implements CustomPacketPayload
 {
@@ -23,20 +23,20 @@ public record SyncTemperatureFuelItemsPacket(
     public static final ResourceLocation ID =
             ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "sync_temperature_fuel_items");
 
-    public static final Type<SyncTemperatureFuelItemsPacket> TYPE = new Type<>(ID);
+    public static final Type<SyncTemperatureFuelItemsPayload> TYPE = new Type<>(ID);
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, SyncTemperatureFuelItemsPacket> STREAM_CODEC =
+    public static final StreamCodec<RegistryFriendlyByteBuf, SyncTemperatureFuelItemsPayload> STREAM_CODEC =
             StreamCodec.composite(
                     ByteBufCodecs.map(
                             HashMap::new,
                             ResourceLocation.STREAM_CODEC,
                             ByteBufCodecs.fromCodecTrusted(JsonTemperatureFuelItem.CODEC)
                     ),
-                    SyncTemperatureFuelItemsPacket::temperatureFuelItems,
-                    SyncTemperatureFuelItemsPacket::new
+                    SyncTemperatureFuelItemsPayload::temperatureFuelItems,
+                    SyncTemperatureFuelItemsPayload::new
             );
 
-    public static void handle(SyncTemperatureFuelItemsPacket pkt, IPayloadContext ctx)
+    public static void handle(SyncTemperatureFuelItemsPayload pkt, IPayloadContext ctx)
     {
         if (ctx.flow() != PacketFlow.CLIENTBOUND) return;
         ctx.enqueueWork(() -> TemperatureFuelItemListener.acceptServerTemperatureFuelItems(pkt.temperatureFuelItems()));
@@ -44,17 +44,17 @@ public record SyncTemperatureFuelItemsPacket(
 
     public static void sendToServer(Map<ResourceLocation, JsonTemperatureFuelItem> data)
     {
-        PacketDistributor.sendToServer(new SyncTemperatureFuelItemsPacket(data));
+        PacketDistributor.sendToServer(new SyncTemperatureFuelItemsPayload(data));
     }
 
     public static void sendToPlayer(net.minecraft.server.level.ServerPlayer player, Map<ResourceLocation, JsonTemperatureFuelItem> data)
     {
-        PacketDistributor.sendToPlayer(player, new SyncTemperatureFuelItemsPacket(data));
+        PacketDistributor.sendToPlayer(player, new SyncTemperatureFuelItemsPayload(data));
     }
 
     public static void sendToAll(Map<ResourceLocation, JsonTemperatureFuelItem> data)
     {
-        PacketDistributor.sendToAllPlayers(new SyncTemperatureFuelItemsPacket(data));
+        PacketDistributor.sendToAllPlayers(new SyncTemperatureFuelItemsPayload(data));
     }
 
     @Override

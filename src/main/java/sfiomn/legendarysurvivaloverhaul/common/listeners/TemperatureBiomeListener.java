@@ -17,7 +17,7 @@ import org.jetbrains.annotations.Nullable;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonTemperatureBiomeOverride;
 import sfiomn.legendarysurvivaloverhaul.api.data.manager.ITemperatureBiomeManager;
-import sfiomn.legendarysurvivaloverhaul.network.packets.SyncTemperatureBiomesPacket;
+import sfiomn.legendarysurvivaloverhaul.network.payloads.SyncTemperatureBiomesPayload;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -37,10 +37,10 @@ public class TemperatureBiomeListener extends SimpleJsonResourceReloadListener i
     {
         if (player == null)
         {
-            PacketDistributor.sendToAllPlayers(new SyncTemperatureBiomesPacket(TEMPERATURE_BIOMES));
+            PacketDistributor.sendToAllPlayers(new SyncTemperatureBiomesPayload(TEMPERATURE_BIOMES));
         } else
         {
-            PacketDistributor.sendToPlayer(player, new SyncTemperatureBiomesPacket(TEMPERATURE_BIOMES));
+            PacketDistributor.sendToPlayer(player, new SyncTemperatureBiomesPayload(TEMPERATURE_BIOMES));
         }
     }
 

@@ -1,4 +1,4 @@
-package sfiomn.legendarysurvivaloverhaul.network.packets;
+package sfiomn.legendarysurvivaloverhaul.network.payloads;
 
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -15,7 +15,7 @@ import sfiomn.legendarysurvivaloverhaul.common.listeners.ThirstConsumableListene
 import java.util.List;
 import java.util.Map;
 
-public record SyncThirstConsumablesPacket(
+public record SyncThirstConsumablesPaload(
         Map<ResourceLocation, List<JsonThirstConsumable>> thirstConsumables
 ) implements CustomPacketPayload
 {
@@ -23,21 +23,21 @@ public record SyncThirstConsumablesPacket(
     public static final ResourceLocation ID =
             ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "sync_thirst_consumables");
 
-    public static final Type<SyncThirstConsumablesPacket> TYPE = new Type<>(ID);
+    public static final Type<SyncThirstConsumablesPaload> TYPE = new Type<>(ID);
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, SyncThirstConsumablesPacket> STREAM_CODEC =
+    public static final StreamCodec<RegistryFriendlyByteBuf, SyncThirstConsumablesPaload> STREAM_CODEC =
             StreamCodec.composite(
                     ByteBufCodecs.map(
                             java.util.HashMap::new,
                             ResourceLocation.STREAM_CODEC,
                             ByteBufCodecs.fromCodecTrusted(JsonThirstConsumable.LIST_CODEC)
                     ),
-                    SyncThirstConsumablesPacket::thirstConsumables,
-                    SyncThirstConsumablesPacket::new
+                    SyncThirstConsumablesPaload::thirstConsumables,
+                    SyncThirstConsumablesPaload::new
             );
 
     // Handler (client-only)
-    public static void handle(SyncThirstConsumablesPacket pkt, IPayloadContext ctx)
+    public static void handle(SyncThirstConsumablesPaload pkt, IPayloadContext ctx)
     {
         if (ctx.flow() != PacketFlow.CLIENTBOUND) return;
         ctx.enqueueWork(() -> ThirstConsumableListener.acceptServerThirstConsumables(pkt.thirstConsumables()));
@@ -46,7 +46,7 @@ public record SyncThirstConsumablesPacket(
     // Client -> Server
     public static void sendToServer(Map<ResourceLocation, List<JsonThirstConsumable>> data)
     {
-        PacketDistributor.sendToServer(new SyncThirstConsumablesPacket(data));
+        PacketDistributor.sendToServer(new SyncThirstConsumablesPaload(data));
     }
 
     /* ---------- Convenience send helpers ---------- */
@@ -55,13 +55,13 @@ public record SyncThirstConsumablesPacket(
     public static void sendToPlayer(net.minecraft.server.level.ServerPlayer player,
                                     Map<ResourceLocation, List<JsonThirstConsumable>> data)
     {
-        PacketDistributor.sendToPlayer(player, new SyncThirstConsumablesPacket(data));
+        PacketDistributor.sendToPlayer(player, new SyncThirstConsumablesPaload(data));
     }
 
     // Server -> all players
     public static void sendToAll(Map<ResourceLocation, List<JsonThirstConsumable>> data)
     {
-        PacketDistributor.sendToAllPlayers(new SyncThirstConsumablesPacket(data));
+        PacketDistributor.sendToAllPlayers(new SyncThirstConsumablesPaload(data));
     }
 
     @Override

@@ -1,4 +1,4 @@
-package sfiomn.legendarysurvivaloverhaul.network.packets;
+package sfiomn.legendarysurvivaloverhaul.network.payloads;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
@@ -15,24 +15,24 @@ import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.common.attachments.temperature.TemperatureAttachment;
 import sfiomn.legendarysurvivaloverhaul.util.AttachmentUtil;
 
-public record UpdateTemperaturesPacket(
+public record UpdateTemperaturesPayload(
         CompoundTag compound
 ) implements CustomPacketPayload
 {
 
     public static final ResourceLocation ID =
             ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "update_temperatures");
-    public static final Type<UpdateTemperaturesPacket> TYPE = new Type<>(ID);
+    public static final Type<UpdateTemperaturesPayload> TYPE = new Type<>(ID);
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, UpdateTemperaturesPacket> STREAM_CODEC =
+    public static final StreamCodec<RegistryFriendlyByteBuf, UpdateTemperaturesPayload> STREAM_CODEC =
             StreamCodec.composite(
                     ByteBufCodecs.COMPOUND_TAG,
-                    UpdateTemperaturesPacket::compound,
-                    UpdateTemperaturesPacket::new
+                    UpdateTemperaturesPayload::compound,
+                    UpdateTemperaturesPayload::new
             );
 
     // Handler (replaces old handle(...Supplier<NetworkEvent.Context>))
-    public static void handle(UpdateTemperaturesPacket pkt, IPayloadContext ctx)
+    public static void handle(UpdateTemperaturesPayload pkt, IPayloadContext ctx)
     {
         if (ctx.flow() != PacketFlow.CLIENTBOUND) return;
         ctx.enqueueWork(() -> {
@@ -48,17 +48,17 @@ public record UpdateTemperaturesPacket(
     // Convenience senders
     public static void sendToServer(CompoundTag compound)
     {
-        PacketDistributor.sendToServer(new UpdateTemperaturesPacket(compound));
+        PacketDistributor.sendToServer(new UpdateTemperaturesPayload(compound));
     }
 
     public static void sendToPlayer(net.minecraft.server.level.ServerPlayer player, CompoundTag compound)
     {
-        PacketDistributor.sendToPlayer(player, new UpdateTemperaturesPacket(compound));
+        PacketDistributor.sendToPlayer(player, new UpdateTemperaturesPayload(compound));
     }
 
     public static void sendToAll(CompoundTag compound)
     {
-        PacketDistributor.sendToAllPlayers(new UpdateTemperaturesPacket(compound));
+        PacketDistributor.sendToAllPlayers(new UpdateTemperaturesPayload(compound));
     }
 
     @Override

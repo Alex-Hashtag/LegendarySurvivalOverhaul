@@ -1,4 +1,4 @@
-package sfiomn.legendarysurvivaloverhaul.network.packets;
+package sfiomn.legendarysurvivaloverhaul.network.payloads;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
@@ -12,53 +12,51 @@ import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
-import sfiomn.legendarysurvivaloverhaul.common.attachments.thirst.ThirstAttachment;
+import sfiomn.legendarysurvivaloverhaul.common.attachments.health.HealthAttachment;
 import sfiomn.legendarysurvivaloverhaul.util.AttachmentUtil;
 
-public record UpdateThirstPacket(
+public record UpdateHeartsPayload(
         CompoundTag compound
 ) implements CustomPacketPayload
 {
 
     public static final ResourceLocation ID =
-            ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "update_thirst");
-    public static final Type<UpdateThirstPacket> TYPE = new Type<>(ID);
+            ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "update_hearts");
+    public static final Type<UpdateHeartsPayload> TYPE = new Type<>(ID);
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, UpdateThirstPacket> STREAM_CODEC =
+    public static final StreamCodec<RegistryFriendlyByteBuf, UpdateHeartsPayload> STREAM_CODEC =
             StreamCodec.composite(
                     ByteBufCodecs.COMPOUND_TAG,
-                    UpdateThirstPacket::compound,
-                    UpdateThirstPacket::new
+                    UpdateHeartsPayload::compound,
+                    UpdateHeartsPayload::new
             );
 
-    // Handler
-    public static void handle(UpdateThirstPacket pkt, IPayloadContext ctx)
+    public static void handle(UpdateHeartsPayload pkt, IPayloadContext ctx)
     {
         if (ctx.flow() != PacketFlow.CLIENTBOUND) return;
         ctx.enqueueWork(() -> {
             LocalPlayer player = Minecraft.getInstance().player;
             if (player != null)
             {
-                ThirstAttachment thirst = AttachmentUtil.getThirstAttachment(player);
-                thirst.readNBT(pkt.compound());
+                HealthAttachment healthAttachment = AttachmentUtil.getHealthAttachment(player);
+                healthAttachment.readNBT(pkt.compound());
             }
         });
     }
 
-    // Convenience senders
     public static void sendToServer(CompoundTag compound)
     {
-        PacketDistributor.sendToServer(new UpdateThirstPacket(compound));
+        PacketDistributor.sendToServer(new UpdateHeartsPayload(compound));
     }
 
     public static void sendToPlayer(net.minecraft.server.level.ServerPlayer player, CompoundTag compound)
     {
-        PacketDistributor.sendToPlayer(player, new UpdateThirstPacket(compound));
+        PacketDistributor.sendToPlayer(player, new UpdateHeartsPayload(compound));
     }
 
     public static void sendToAll(CompoundTag compound)
     {
-        PacketDistributor.sendToAllPlayers(new UpdateThirstPacket(compound));
+        PacketDistributor.sendToAllPlayers(new UpdateHeartsPayload(compound));
     }
 
     @Override

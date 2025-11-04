@@ -19,7 +19,7 @@ import org.jetbrains.annotations.Nullable;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonThirstBlock;
 import sfiomn.legendarysurvivaloverhaul.api.data.manager.IThirstBlockManager;
-import sfiomn.legendarysurvivaloverhaul.network.packets.SyncThirstBlocksPacket;
+import sfiomn.legendarysurvivaloverhaul.network.payloads.SyncThirstBlocksPayload;
 
 import java.util.HashMap;
 import java.util.List;
@@ -39,10 +39,10 @@ public class ThirstBlockListener extends SimpleJsonResourceReloadListener implem
     {
         if (player == null)
         {
-            PacketDistributor.sendToAllPlayers(new SyncThirstBlocksPacket(THIRST_BLOCKS));
+            PacketDistributor.sendToAllPlayers(new SyncThirstBlocksPayload(THIRST_BLOCKS));
         } else
         {
-            PacketDistributor.sendToPlayer(player, new SyncThirstBlocksPacket(THIRST_BLOCKS));
+            PacketDistributor.sendToPlayer(player, new SyncThirstBlocksPayload(THIRST_BLOCKS));
         }
     }
 

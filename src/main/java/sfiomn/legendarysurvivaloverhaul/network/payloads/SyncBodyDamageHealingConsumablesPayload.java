@@ -1,4 +1,4 @@
-package sfiomn.legendarysurvivaloverhaul.network.packets;
+package sfiomn.legendarysurvivaloverhaul.network.payloads;
 
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -15,28 +15,28 @@ import sfiomn.legendarysurvivaloverhaul.common.listeners.BodyDamageHealingConsum
 import java.util.HashMap;
 import java.util.Map;
 
-public record SyncBodyDamageHealingConsumablesPacket(
+public record SyncBodyDamageHealingConsumablesPayload(
         Map<ResourceLocation, JsonHealingConsumable> healingConsumables
 ) implements CustomPacketPayload
 {
 
     public static final ResourceLocation ID =
             ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "sync_body_damage_healing_consumables");
-    public static final Type<SyncBodyDamageHealingConsumablesPacket> TYPE = new Type<>(ID);
+    public static final Type<SyncBodyDamageHealingConsumablesPayload> TYPE = new Type<>(ID);
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, SyncBodyDamageHealingConsumablesPacket> STREAM_CODEC =
+    public static final StreamCodec<RegistryFriendlyByteBuf, SyncBodyDamageHealingConsumablesPayload> STREAM_CODEC =
             StreamCodec.composite(
                     ByteBufCodecs.map(
                             HashMap::new,
                             ResourceLocation.STREAM_CODEC,
                             ByteBufCodecs.fromCodecTrusted(JsonHealingConsumable.CODEC)
                     ),
-                    SyncBodyDamageHealingConsumablesPacket::healingConsumables,
-                    SyncBodyDamageHealingConsumablesPacket::new
+                    SyncBodyDamageHealingConsumablesPayload::healingConsumables,
+                    SyncBodyDamageHealingConsumablesPayload::new
             );
 
     // Handler (client-side; guard to avoid running on server)
-    public static void handle(SyncBodyDamageHealingConsumablesPacket pkt, IPayloadContext ctx)
+    public static void handle(SyncBodyDamageHealingConsumablesPayload pkt, IPayloadContext ctx)
     {
         if (ctx.flow() != PacketFlow.CLIENTBOUND) return;
         ctx.enqueueWork(() -> BodyDamageHealingConsumableListener.acceptServerHealingConsumables(pkt.healingConsumables()));
@@ -45,14 +45,14 @@ public record SyncBodyDamageHealingConsumablesPacket(
     // Convenience senders (replace NetworkHandler.INSTANCE.send(...))
     public static void sendToServer(Map<ResourceLocation, JsonHealingConsumable> data)
     {
-        PacketDistributor.sendToServer(new SyncBodyDamageHealingConsumablesPacket(data));
+        PacketDistributor.sendToServer(new SyncBodyDamageHealingConsumablesPayload(data));
     }
 
     // Example: server->one player
     public static void sendToPlayer(net.minecraft.server.level.ServerPlayer player,
                                     Map<ResourceLocation, JsonHealingConsumable> data)
     {
-        PacketDistributor.sendToPlayer(player, new SyncBodyDamageHealingConsumablesPacket(data));
+        PacketDistributor.sendToPlayer(player, new SyncBodyDamageHealingConsumablesPayload(data));
     }
 
     @Override

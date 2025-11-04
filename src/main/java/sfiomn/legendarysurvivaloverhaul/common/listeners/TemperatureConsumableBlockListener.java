@@ -17,7 +17,7 @@ import org.jetbrains.annotations.Nullable;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonTemperatureConsumableBlock;
 import sfiomn.legendarysurvivaloverhaul.api.data.manager.ITemperatureConsumableBlockManager;
-import sfiomn.legendarysurvivaloverhaul.network.packets.SyncTemperatureConsumableBlocksPacket;
+import sfiomn.legendarysurvivaloverhaul.network.payloads.SyncTemperatureConsumableBlocksPayload;
 
 import java.util.HashMap;
 import java.util.List;
@@ -38,10 +38,10 @@ public class TemperatureConsumableBlockListener extends SimpleJsonResourceReload
     {
         if (player == null)
         {
-            PacketDistributor.sendToAllPlayers(new SyncTemperatureConsumableBlocksPacket(TEMPERATURE_CONSUMABLE_BLOCKS));
+            PacketDistributor.sendToAllPlayers(new SyncTemperatureConsumableBlocksPayload(TEMPERATURE_CONSUMABLE_BLOCKS));
         } else
         {
-            PacketDistributor.sendToPlayer(player, new SyncTemperatureConsumableBlocksPacket(TEMPERATURE_CONSUMABLE_BLOCKS));
+            PacketDistributor.sendToPlayer(player, new SyncTemperatureConsumableBlocksPayload(TEMPERATURE_CONSUMABLE_BLOCKS));
         }
     }
 

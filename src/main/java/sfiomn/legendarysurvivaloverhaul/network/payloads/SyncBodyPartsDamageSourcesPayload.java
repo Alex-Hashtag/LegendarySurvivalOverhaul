@@ -1,4 +1,4 @@
-package sfiomn.legendarysurvivaloverhaul.network.packets;
+package sfiomn.legendarysurvivaloverhaul.network.payloads;
 
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -15,7 +15,7 @@ import sfiomn.legendarysurvivaloverhaul.common.listeners.BodyPartsDamageSourceLi
 import java.util.HashMap;
 import java.util.Map;
 
-public record SyncBodyPartsDamageSourcesPacket(
+public record SyncBodyPartsDamageSourcesPayload(
         Map<ResourceLocation, JsonBodyPartsDamageSource> damageSources
 ) implements CustomPacketPayload
 {
@@ -23,21 +23,21 @@ public record SyncBodyPartsDamageSourcesPacket(
     public static final ResourceLocation ID =
             ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "sync_body_parts_damage_sources");
 
-    public static final Type<SyncBodyPartsDamageSourcesPacket> TYPE = new Type<>(ID);
+    public static final Type<SyncBodyPartsDamageSourcesPayload> TYPE = new Type<>(ID);
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, SyncBodyPartsDamageSourcesPacket> STREAM_CODEC =
+    public static final StreamCodec<RegistryFriendlyByteBuf, SyncBodyPartsDamageSourcesPayload> STREAM_CODEC =
             StreamCodec.composite(
                     ByteBufCodecs.map(
                             HashMap::new,
                             ResourceLocation.STREAM_CODEC,
                             ByteBufCodecs.fromCodecTrusted(JsonBodyPartsDamageSource.CODEC)
                     ),
-                    SyncBodyPartsDamageSourcesPacket::damageSources,
-                    SyncBodyPartsDamageSourcesPacket::new
+                    SyncBodyPartsDamageSourcesPayload::damageSources,
+                    SyncBodyPartsDamageSourcesPayload::new
             );
 
     // Handler (client-only)
-    public static void handle(SyncBodyPartsDamageSourcesPacket pkt, IPayloadContext ctx)
+    public static void handle(SyncBodyPartsDamageSourcesPayload pkt, IPayloadContext ctx)
     {
         if (ctx.flow() != PacketFlow.CLIENTBOUND) return;
         ctx.enqueueWork(() -> BodyPartsDamageSourceListener.acceptServerDamageSources(pkt.damageSources()));
@@ -46,7 +46,7 @@ public record SyncBodyPartsDamageSourcesPacket(
     // Client -> Server
     public static void sendToServer(Map<ResourceLocation, JsonBodyPartsDamageSource> data)
     {
-        PacketDistributor.sendToServer(new SyncBodyPartsDamageSourcesPacket(data));
+        PacketDistributor.sendToServer(new SyncBodyPartsDamageSourcesPayload(data));
     }
 
     /* -------- Convenience send helpers -------- */
@@ -55,13 +55,13 @@ public record SyncBodyPartsDamageSourcesPacket(
     public static void sendToPlayer(net.minecraft.server.level.ServerPlayer player,
                                     Map<ResourceLocation, JsonBodyPartsDamageSource> data)
     {
-        PacketDistributor.sendToPlayer(player, new SyncBodyPartsDamageSourcesPacket(data));
+        PacketDistributor.sendToPlayer(player, new SyncBodyPartsDamageSourcesPayload(data));
     }
 
     // Server -> all
     public static void sendToAll(Map<ResourceLocation, JsonBodyPartsDamageSource> data)
     {
-        PacketDistributor.sendToAllPlayers(new SyncBodyPartsDamageSourcesPacket(data));
+        PacketDistributor.sendToAllPlayers(new SyncBodyPartsDamageSourcesPayload(data));
     }
 
     @Override

@@ -1,4 +1,4 @@
-package sfiomn.legendarysurvivaloverhaul.network.packets;
+package sfiomn.legendarysurvivaloverhaul.network.payloads;
 
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -15,7 +15,7 @@ import sfiomn.legendarysurvivaloverhaul.common.listeners.ThirstBlockListener;
 import java.util.List;
 import java.util.Map;
 
-public record SyncThirstBlocksPacket(
+public record SyncThirstBlocksPayload(
         Map<ResourceLocation, List<JsonThirstBlock>> thirstBlocks
 ) implements CustomPacketPayload
 {
@@ -23,21 +23,21 @@ public record SyncThirstBlocksPacket(
     public static final ResourceLocation ID =
             ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "sync_thirst_blocks");
 
-    public static final Type<SyncThirstBlocksPacket> TYPE = new Type<>(ID);
+    public static final Type<SyncThirstBlocksPayload> TYPE = new Type<>(ID);
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, SyncThirstBlocksPacket> STREAM_CODEC =
+    public static final StreamCodec<RegistryFriendlyByteBuf, SyncThirstBlocksPayload> STREAM_CODEC =
             StreamCodec.composite(
                     ByteBufCodecs.map(
                             java.util.HashMap::new,
                             ResourceLocation.STREAM_CODEC,
                             ByteBufCodecs.fromCodecTrusted(JsonThirstBlock.LIST_CODEC)
                     ),
-                    SyncThirstBlocksPacket::thirstBlocks,
-                    SyncThirstBlocksPacket::new
+                    SyncThirstBlocksPayload::thirstBlocks,
+                    SyncThirstBlocksPayload::new
             );
 
     // Handler (client-only)
-    public static void handle(SyncThirstBlocksPacket pkt, IPayloadContext ctx)
+    public static void handle(SyncThirstBlocksPayload pkt, IPayloadContext ctx)
     {
         if (ctx.flow() != PacketFlow.CLIENTBOUND) return;
         ctx.enqueueWork(() -> ThirstBlockListener.acceptServerThirstBlocks(pkt.thirstBlocks()));
@@ -46,7 +46,7 @@ public record SyncThirstBlocksPacket(
     // Client -> Server
     public static void sendToServer(Map<ResourceLocation, List<JsonThirstBlock>> data)
     {
-        PacketDistributor.sendToServer(new SyncThirstBlocksPacket(data));
+        PacketDistributor.sendToServer(new SyncThirstBlocksPayload(data));
     }
 
     /* ---------- Convenience send helpers ---------- */
@@ -55,13 +55,13 @@ public record SyncThirstBlocksPacket(
     public static void sendToPlayer(net.minecraft.server.level.ServerPlayer player,
                                     Map<ResourceLocation, List<JsonThirstBlock>> data)
     {
-        PacketDistributor.sendToPlayer(player, new SyncThirstBlocksPacket(data));
+        PacketDistributor.sendToPlayer(player, new SyncThirstBlocksPayload(data));
     }
 
     // Server -> all players
     public static void sendToAll(Map<ResourceLocation, List<JsonThirstBlock>> data)
     {
-        PacketDistributor.sendToAllPlayers(new SyncThirstBlocksPacket(data));
+        PacketDistributor.sendToAllPlayers(new SyncThirstBlocksPayload(data));
     }
 
     @Override

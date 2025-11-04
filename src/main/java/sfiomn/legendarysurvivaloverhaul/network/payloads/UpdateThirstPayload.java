@@ -1,4 +1,4 @@
-package sfiomn.legendarysurvivaloverhaul.network.packets;
+package sfiomn.legendarysurvivaloverhaul.network.payloads;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
@@ -12,35 +12,35 @@ import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
-import sfiomn.legendarysurvivaloverhaul.common.attachments.wetness.WetnessAttachment;
+import sfiomn.legendarysurvivaloverhaul.common.attachments.thirst.ThirstAttachment;
 import sfiomn.legendarysurvivaloverhaul.util.AttachmentUtil;
 
-public record UpdateWetnessPacket(
+public record UpdateThirstPayload(
         CompoundTag compound
 ) implements CustomPacketPayload
 {
 
     public static final ResourceLocation ID =
-            ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "update_wetness");
-    public static final Type<UpdateWetnessPacket> TYPE = new Type<>(ID);
+            ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "update_thirst");
+    public static final Type<UpdateThirstPayload> TYPE = new Type<>(ID);
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, UpdateWetnessPacket> STREAM_CODEC =
+    public static final StreamCodec<RegistryFriendlyByteBuf, UpdateThirstPayload> STREAM_CODEC =
             StreamCodec.composite(
                     ByteBufCodecs.COMPOUND_TAG,
-                    UpdateWetnessPacket::compound,
-                    UpdateWetnessPacket::new
+                    UpdateThirstPayload::compound,
+                    UpdateThirstPayload::new
             );
 
-    // Handler (client side apply)
-    public static void handle(UpdateWetnessPacket pkt, IPayloadContext ctx)
+    // Handler
+    public static void handle(UpdateThirstPayload pkt, IPayloadContext ctx)
     {
         if (ctx.flow() != PacketFlow.CLIENTBOUND) return;
         ctx.enqueueWork(() -> {
             LocalPlayer player = Minecraft.getInstance().player;
             if (player != null)
             {
-                WetnessAttachment wetness = AttachmentUtil.getWetnessAttachment(player);
-                wetness.readNBT(pkt.compound());
+                ThirstAttachment thirst = AttachmentUtil.getThirstAttachment(player);
+                thirst.readNBT(pkt.compound());
             }
         });
     }
@@ -48,17 +48,17 @@ public record UpdateWetnessPacket(
     // Convenience senders
     public static void sendToServer(CompoundTag compound)
     {
-        PacketDistributor.sendToServer(new UpdateWetnessPacket(compound));
+        PacketDistributor.sendToServer(new UpdateThirstPayload(compound));
     }
 
     public static void sendToPlayer(net.minecraft.server.level.ServerPlayer player, CompoundTag compound)
     {
-        PacketDistributor.sendToPlayer(player, new UpdateWetnessPacket(compound));
+        PacketDistributor.sendToPlayer(player, new UpdateThirstPayload(compound));
     }
 
     public static void sendToAll(CompoundTag compound)
     {
-        PacketDistributor.sendToAllPlayers(new UpdateWetnessPacket(compound));
+        PacketDistributor.sendToAllPlayers(new UpdateThirstPayload(compound));
     }
 
     @Override

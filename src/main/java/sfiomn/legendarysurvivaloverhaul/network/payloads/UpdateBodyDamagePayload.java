@@ -1,4 +1,4 @@
-package sfiomn.legendarysurvivaloverhaul.network.packets;
+package sfiomn.legendarysurvivaloverhaul.network.payloads;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
@@ -15,23 +15,23 @@ import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.common.attachments.bodydamage.BodyDamageAttachment;
 import sfiomn.legendarysurvivaloverhaul.util.AttachmentUtil;
 
-public record UpdateBodyDamagePacket(
+public record UpdateBodyDamagePayload(
         CompoundTag compound
 ) implements CustomPacketPayload
 {
 
     public static final ResourceLocation ID =
             ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "update_body_damage");
-    public static final Type<UpdateBodyDamagePacket> TYPE = new Type<>(ID);
+    public static final Type<UpdateBodyDamagePayload> TYPE = new Type<>(ID);
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, UpdateBodyDamagePacket> STREAM_CODEC =
+    public static final StreamCodec<RegistryFriendlyByteBuf, UpdateBodyDamagePayload> STREAM_CODEC =
             StreamCodec.composite(
                     ByteBufCodecs.COMPOUND_TAG,
-                    UpdateBodyDamagePacket::compound,
-                    UpdateBodyDamagePacket::new
+                    UpdateBodyDamagePayload::compound,
+                    UpdateBodyDamagePayload::new
             );
 
-    public static void handle(UpdateBodyDamagePacket pkt, IPayloadContext ctx)
+    public static void handle(UpdateBodyDamagePayload pkt, IPayloadContext ctx)
     {
         if (ctx.flow() != PacketFlow.CLIENTBOUND) return;
         ctx.enqueueWork(() -> {
@@ -46,17 +46,17 @@ public record UpdateBodyDamagePacket(
 
     public static void sendToServer(CompoundTag compound)
     {
-        PacketDistributor.sendToServer(new UpdateBodyDamagePacket(compound));
+        PacketDistributor.sendToServer(new UpdateBodyDamagePayload(compound));
     }
 
     public static void sendToPlayer(net.minecraft.server.level.ServerPlayer player, CompoundTag compound)
     {
-        PacketDistributor.sendToPlayer(player, new UpdateBodyDamagePacket(compound));
+        PacketDistributor.sendToPlayer(player, new UpdateBodyDamagePayload(compound));
     }
 
     public static void sendToAll(CompoundTag compound)
     {
-        PacketDistributor.sendToAllPlayers(new UpdateBodyDamagePacket(compound));
+        PacketDistributor.sendToAllPlayers(new UpdateBodyDamagePayload(compound));
     }
 
     @Override

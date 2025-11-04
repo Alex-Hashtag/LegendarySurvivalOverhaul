@@ -1,4 +1,4 @@
-package sfiomn.legendarysurvivaloverhaul.network.packets;
+package sfiomn.legendarysurvivaloverhaul.network.payloads;
 
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -15,27 +15,27 @@ import sfiomn.legendarysurvivaloverhaul.common.listeners.TemperatureBlockListene
 import java.util.List;
 import java.util.Map;
 
-public record SyncTemperatureBlocksPacket(
+public record SyncTemperatureBlocksPayload(
         Map<ResourceLocation, List<JsonTemperatureBlock>> temperatureBlocks
 ) implements CustomPacketPayload
 {
 
     public static final ResourceLocation ID =
             ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "sync_temperature_blocks");
-    public static final Type<SyncTemperatureBlocksPacket> TYPE = new Type<>(ID);
+    public static final Type<SyncTemperatureBlocksPayload> TYPE = new Type<>(ID);
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, SyncTemperatureBlocksPacket> STREAM_CODEC =
+    public static final StreamCodec<RegistryFriendlyByteBuf, SyncTemperatureBlocksPayload> STREAM_CODEC =
             StreamCodec.composite(
                     ByteBufCodecs.map(
                             java.util.HashMap::new,
                             ResourceLocation.STREAM_CODEC,
                             ByteBufCodecs.fromCodecTrusted(JsonTemperatureBlock.LIST_CODEC)
                     ),
-                    SyncTemperatureBlocksPacket::temperatureBlocks,
-                    SyncTemperatureBlocksPacket::new
+                    SyncTemperatureBlocksPayload::temperatureBlocks,
+                    SyncTemperatureBlocksPayload::new
             );
 
-    public static void handle(SyncTemperatureBlocksPacket pkt, IPayloadContext ctx)
+    public static void handle(SyncTemperatureBlocksPayload pkt, IPayloadContext ctx)
     {
         if (ctx.flow() != PacketFlow.CLIENTBOUND) return;
         ctx.enqueueWork(() -> TemperatureBlockListener.acceptServerTemperatureBlocks(pkt.temperatureBlocks()));
@@ -43,17 +43,17 @@ public record SyncTemperatureBlocksPacket(
 
     public static void sendToServer(Map<ResourceLocation, List<JsonTemperatureBlock>> data)
     {
-        PacketDistributor.sendToServer(new SyncTemperatureBlocksPacket(data));
+        PacketDistributor.sendToServer(new SyncTemperatureBlocksPayload(data));
     }
 
     public static void sendToPlayer(net.minecraft.server.level.ServerPlayer player, Map<ResourceLocation, List<JsonTemperatureBlock>> data)
     {
-        PacketDistributor.sendToPlayer(player, new SyncTemperatureBlocksPacket(data));
+        PacketDistributor.sendToPlayer(player, new SyncTemperatureBlocksPayload(data));
     }
 
     public static void sendToAll(Map<ResourceLocation, List<JsonTemperatureBlock>> data)
     {
-        PacketDistributor.sendToAllPlayers(new SyncTemperatureBlocksPacket(data));
+        PacketDistributor.sendToAllPlayers(new SyncTemperatureBlocksPayload(data));
     }
 
     @Override

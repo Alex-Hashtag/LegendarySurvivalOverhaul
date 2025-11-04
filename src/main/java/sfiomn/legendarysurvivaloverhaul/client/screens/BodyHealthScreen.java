@@ -15,7 +15,7 @@ import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.bodydamage.BodyDamageUtil;
 import sfiomn.legendarysurvivaloverhaul.api.bodydamage.BodyPartEnum;
 import sfiomn.legendarysurvivaloverhaul.common.attachments.bodydamage.BodyDamageAttachment;
-import sfiomn.legendarysurvivaloverhaul.network.packets.BodyPartHealingTimeMessage;
+import sfiomn.legendarysurvivaloverhaul.network.payloads.BodyPartHealingTimeMessage;
 import sfiomn.legendarysurvivaloverhaul.registry.KeyMappingRegistry;
 import sfiomn.legendarysurvivaloverhaul.util.AttachmentUtil;
 import sfiomn.legendarysurvivaloverhaul.util.MathUtil;

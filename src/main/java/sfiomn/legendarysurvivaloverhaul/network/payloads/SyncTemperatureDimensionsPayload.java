@@ -1,4 +1,4 @@
-package sfiomn.legendarysurvivaloverhaul.network.packets;
+package sfiomn.legendarysurvivaloverhaul.network.payloads;
 
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -14,28 +14,28 @@ import sfiomn.legendarysurvivaloverhaul.common.listeners.TemperatureDimensionLis
 
 import java.util.Map;
 
-public record SyncTemperatureDimensionsPacket(
+public record SyncTemperatureDimensionsPayload(
         Map<ResourceLocation, JsonTemperatureDimension> temperatureDimensions
 ) implements CustomPacketPayload
 {
 
     public static final ResourceLocation ID =
             ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "sync_temperature_dimensions");
-    public static final Type<SyncTemperatureDimensionsPacket> TYPE = new Type<>(ID);
+    public static final Type<SyncTemperatureDimensionsPayload> TYPE = new Type<>(ID);
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, SyncTemperatureDimensionsPacket> STREAM_CODEC =
+    public static final StreamCodec<RegistryFriendlyByteBuf, SyncTemperatureDimensionsPayload> STREAM_CODEC =
             StreamCodec.composite(
                     ByteBufCodecs.map(
                             java.util.HashMap::new,
                             ResourceLocation.STREAM_CODEC,
                             ByteBufCodecs.fromCodecTrusted(JsonTemperatureDimension.CODEC)
                     ),
-                    SyncTemperatureDimensionsPacket::temperatureDimensions,
-                    SyncTemperatureDimensionsPacket::new
+                    SyncTemperatureDimensionsPayload::temperatureDimensions,
+                    SyncTemperatureDimensionsPayload::new
             );
 
     // Handler (client-only)
-    public static void handle(SyncTemperatureDimensionsPacket pkt, IPayloadContext ctx)
+    public static void handle(SyncTemperatureDimensionsPayload pkt, IPayloadContext ctx)
     {
         if (ctx.flow() != PacketFlow.CLIENTBOUND) return;
         ctx.enqueueWork(() -> TemperatureDimensionListener.acceptServerTemperatureDimensions(pkt.temperatureDimensions()));
@@ -44,7 +44,7 @@ public record SyncTemperatureDimensionsPacket(
     // Client -> Server
     public static void sendToServer(Map<ResourceLocation, JsonTemperatureDimension> data)
     {
-        PacketDistributor.sendToServer(new SyncTemperatureDimensionsPacket(data));
+        PacketDistributor.sendToServer(new SyncTemperatureDimensionsPayload(data));
     }
 
     /* ---------- Convenience send helpers ---------- */
@@ -53,13 +53,13 @@ public record SyncTemperatureDimensionsPacket(
     public static void sendToPlayer(net.minecraft.server.level.ServerPlayer player,
                                     Map<ResourceLocation, JsonTemperatureDimension> data)
     {
-        PacketDistributor.sendToPlayer(player, new SyncTemperatureDimensionsPacket(data));
+        PacketDistributor.sendToPlayer(player, new SyncTemperatureDimensionsPayload(data));
     }
 
     // Server -> all players
     public static void sendToAll(Map<ResourceLocation, JsonTemperatureDimension> data)
     {
-        PacketDistributor.sendToAllPlayers(new SyncTemperatureDimensionsPacket(data));
+        PacketDistributor.sendToAllPlayers(new SyncTemperatureDimensionsPayload(data));
     }
 
     @Override

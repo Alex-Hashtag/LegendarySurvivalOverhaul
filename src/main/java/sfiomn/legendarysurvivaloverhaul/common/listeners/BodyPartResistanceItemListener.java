@@ -17,7 +17,7 @@ import org.jetbrains.annotations.Nullable;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonBodyPartResistance;
 import sfiomn.legendarysurvivaloverhaul.api.data.manager.IBodyResistanceItemManager;
-import sfiomn.legendarysurvivaloverhaul.network.packets.SyncBodyPartResistanceItemsPacket;
+import sfiomn.legendarysurvivaloverhaul.network.payloads.SyncBodyPartResistanceItemsPayload;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -37,10 +37,10 @@ public class BodyPartResistanceItemListener extends SimpleJsonResourceReloadList
     {
         if (player == null)
         {
-            PacketDistributor.sendToAllPlayers(new SyncBodyPartResistanceItemsPacket(BODY_PART_RESISTANCE_ITEMS));
+            PacketDistributor.sendToAllPlayers(new SyncBodyPartResistanceItemsPayload(BODY_PART_RESISTANCE_ITEMS));
         } else
         {
-            PacketDistributor.sendToPlayer(player, new SyncBodyPartResistanceItemsPacket(BODY_PART_RESISTANCE_ITEMS));
+            PacketDistributor.sendToPlayer(player, new SyncBodyPartResistanceItemsPayload(BODY_PART_RESISTANCE_ITEMS));
         }
     }
 

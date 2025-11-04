@@ -34,7 +34,7 @@ import sfiomn.legendarysurvivaloverhaul.client.sounds.TemperatureBreathSound;
 import sfiomn.legendarysurvivaloverhaul.common.attachments.thirst.ThirstAttachment;
 import sfiomn.legendarysurvivaloverhaul.common.integration.curios.CuriosUtil;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
-import sfiomn.legendarysurvivaloverhaul.network.packets.DrinkBlockFluidMessage;
+import sfiomn.legendarysurvivaloverhaul.network.payloads.DrinkBlockFluidMessage;
 import sfiomn.legendarysurvivaloverhaul.registry.ItemRegistry;
 import sfiomn.legendarysurvivaloverhaul.registry.KeyMappingRegistry;
 import sfiomn.legendarysurvivaloverhaul.registry.MobEffectRegistry;

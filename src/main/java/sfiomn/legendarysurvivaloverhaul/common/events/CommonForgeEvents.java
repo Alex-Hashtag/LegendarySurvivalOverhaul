@@ -65,6 +65,7 @@ import sfiomn.legendarysurvivaloverhaul.common.integration.supplementaries.Suppl
 import sfiomn.legendarysurvivaloverhaul.common.items.heal.BodyHealingItem;
 import sfiomn.legendarysurvivaloverhaul.common.listeners.*;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
+import sfiomn.legendarysurvivaloverhaul.network.payloads.*;
 import sfiomn.legendarysurvivaloverhaul.registry.ItemRegistry;
 import sfiomn.legendarysurvivaloverhaul.registry.MobEffectRegistry;
 import sfiomn.legendarysurvivaloverhaul.registry.SoundRegistry;
@@ -494,35 +495,35 @@ public class CommonForgeEvents
             if (Config.Baked.temperatureEnabled)
             {
                 var tempCap = AttachmentUtil.getTempAttachment(serverPlayer);
-                sfiomn.legendarysurvivaloverhaul.network.packets.UpdateTemperaturesPacket.sendToPlayer(
+                UpdateTemperaturesPayload.sendToPlayer(
                         serverPlayer, tempCap.writeNBT()
                 );
             }
             if (Config.Baked.thirstEnabled)
             {
                 var thirstCap = AttachmentUtil.getThirstAttachment(serverPlayer);
-                sfiomn.legendarysurvivaloverhaul.network.packets.UpdateThirstPacket.sendToPlayer(
+                UpdateThirstPayload.sendToPlayer(
                         serverPlayer, thirstCap.writeNBT()
                 );
             }
             if (Config.Baked.wetnessEnabled)
             {
                 var wetnessCap = AttachmentUtil.getWetnessAttachment(serverPlayer);
-                sfiomn.legendarysurvivaloverhaul.network.packets.UpdateWetnessPacket.sendToPlayer(
+                UpdateWetnessPayload.sendToPlayer(
                         serverPlayer, wetnessCap.writeNBT()
                 );
             }
             if (Config.Baked.localizedBodyDamageEnabled)
             {
                 var bodyCap = AttachmentUtil.getBodyDamageAttachment(serverPlayer);
-                sfiomn.legendarysurvivaloverhaul.network.packets.UpdateBodyDamagePacket.sendToPlayer(
+                UpdateBodyDamagePayload.sendToPlayer(
                         serverPlayer, bodyCap.writeNBT()
                 );
             }
             if (Config.Baked.healthOverhaulEnabled)
             {
                 var healthCap = AttachmentUtil.getHealthAttachment(serverPlayer);
-                sfiomn.legendarysurvivaloverhaul.network.packets.UpdateHeartsPacket.sendToPlayer(
+                UpdateHeartsPayload.sendToPlayer(
                         serverPlayer, healthCap.writeNBT()
                 );
             }
@@ -581,7 +582,7 @@ public class CommonForgeEvents
             tempCap.tickUpdate(player, level, isStart);
             if (tempCap.isDirty())
             {
-                sfiomn.legendarysurvivaloverhaul.network.packets.UpdateTemperaturesPacket.sendToPlayer(
+                UpdateTemperaturesPayload.sendToPlayer(
                         serverPlayer, tempCap.writeNBT()
                 );
                 tempCap.setClean();
@@ -595,7 +596,7 @@ public class CommonForgeEvents
             thirstCap.tickUpdate(player, level, isStart);
             if (thirstCap.isDirty())
             {
-                sfiomn.legendarysurvivaloverhaul.network.packets.UpdateThirstPacket.sendToPlayer(
+                UpdateThirstPayload.sendToPlayer(
                         serverPlayer, thirstCap.writeNBT()
                 );
                 thirstCap.setClean();
@@ -609,7 +610,7 @@ public class CommonForgeEvents
             wetnessCap.tickUpdate(player, level, isStart);
             if (wetnessCap.isDirty())
             {
-                sfiomn.legendarysurvivaloverhaul.network.packets.UpdateWetnessPacket.sendToPlayer(
+                UpdateWetnessPayload.sendToPlayer(
                         serverPlayer, wetnessCap.writeNBT()
                 );
                 wetnessCap.setClean();
@@ -629,7 +630,7 @@ public class CommonForgeEvents
             bodyCap.tickUpdate(player, level, isStart);
             if (bodyCap.isDirty())
             {
-                sfiomn.legendarysurvivaloverhaul.network.packets.UpdateBodyDamagePacket.sendToPlayer(
+                UpdateBodyDamagePayload.sendToPlayer(
                         serverPlayer, bodyCap.writeNBT()
                 );
                 bodyCap.setClean();
@@ -642,7 +643,7 @@ public class CommonForgeEvents
             var healthCap = AttachmentUtil.getHealthAttachment(player);
             if (healthCap.isDirty())
             {
-                sfiomn.legendarysurvivaloverhaul.network.packets.UpdateHeartsPacket.sendToPlayer(
+                UpdateHeartsPayload.sendToPlayer(
                         serverPlayer, healthCap.writeNBT()
                 );
                 healthCap.setClean();

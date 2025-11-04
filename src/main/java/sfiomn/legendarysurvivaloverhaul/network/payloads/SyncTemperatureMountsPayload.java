@@ -1,4 +1,4 @@
-package sfiomn.legendarysurvivaloverhaul.network.packets;
+package sfiomn.legendarysurvivaloverhaul.network.payloads;
 
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -10,43 +10,43 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonTemperatureResistance;
-import sfiomn.legendarysurvivaloverhaul.common.listeners.TemperatureOriginListener;
+import sfiomn.legendarysurvivaloverhaul.common.listeners.TemperatureMountListener;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public record SyncTemperatureOriginsPacket(
-        Map<ResourceLocation, JsonTemperatureResistance> temperatureOrigins
+public record SyncTemperatureMountsPayload(
+        Map<ResourceLocation, JsonTemperatureResistance> temperatureMounts
 ) implements CustomPacketPayload
 {
 
     public static final ResourceLocation ID =
-            ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "sync_temperature_origins");
+            ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "sync_temperature_mounts");
 
-    public static final Type<SyncTemperatureOriginsPacket> TYPE = new Type<>(ID);
+    public static final Type<SyncTemperatureMountsPayload> TYPE = new Type<>(ID);
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, SyncTemperatureOriginsPacket> STREAM_CODEC =
+    public static final StreamCodec<RegistryFriendlyByteBuf, SyncTemperatureMountsPayload> STREAM_CODEC =
             StreamCodec.composite(
                     ByteBufCodecs.map(
                             HashMap::new,
                             ResourceLocation.STREAM_CODEC,
                             ByteBufCodecs.fromCodecTrusted(JsonTemperatureResistance.CODEC)
                     ),
-                    SyncTemperatureOriginsPacket::temperatureOrigins,
-                    SyncTemperatureOriginsPacket::new
+                    SyncTemperatureMountsPayload::temperatureMounts,
+                    SyncTemperatureMountsPayload::new
             );
 
     // Handler (client-only)
-    public static void handle(SyncTemperatureOriginsPacket pkt, IPayloadContext ctx)
+    public static void handle(SyncTemperatureMountsPayload pkt, IPayloadContext ctx)
     {
         if (ctx.flow() != PacketFlow.CLIENTBOUND) return;
-        ctx.enqueueWork(() -> TemperatureOriginListener.acceptServerTemperatureOrigins(pkt.temperatureOrigins()));
+        ctx.enqueueWork(() -> TemperatureMountListener.acceptServerTemperatureMounts(pkt.temperatureMounts()));
     }
 
     // Client -> Server
     public static void sendToServer(Map<ResourceLocation, JsonTemperatureResistance> data)
     {
-        PacketDistributor.sendToServer(new SyncTemperatureOriginsPacket(data));
+        PacketDistributor.sendToServer(new SyncTemperatureMountsPayload(data));
     }
 
     /* ---------- Convenience send helpers ---------- */
@@ -55,13 +55,13 @@ public record SyncTemperatureOriginsPacket(
     public static void sendToPlayer(net.minecraft.server.level.ServerPlayer player,
                                     Map<ResourceLocation, JsonTemperatureResistance> data)
     {
-        PacketDistributor.sendToPlayer(player, new SyncTemperatureOriginsPacket(data));
+        PacketDistributor.sendToPlayer(player, new SyncTemperatureMountsPayload(data));
     }
 
     // Server -> all players
     public static void sendToAll(Map<ResourceLocation, JsonTemperatureResistance> data)
     {
-        PacketDistributor.sendToAllPlayers(new SyncTemperatureOriginsPacket(data));
+        PacketDistributor.sendToAllPlayers(new SyncTemperatureMountsPayload(data));
     }
 
     @Override

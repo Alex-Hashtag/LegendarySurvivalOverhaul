@@ -17,7 +17,7 @@ import org.jetbrains.annotations.Nullable;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonHealingConsumable;
 import sfiomn.legendarysurvivaloverhaul.api.data.manager.IHealingConsumableManager;
-import sfiomn.legendarysurvivaloverhaul.network.packets.SyncBodyDamageHealingConsumablesPacket;
+import sfiomn.legendarysurvivaloverhaul.network.payloads.SyncBodyDamageHealingConsumablesPayload;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -37,10 +37,10 @@ public class BodyDamageHealingConsumableListener extends SimpleJsonResourceReloa
     {
         if (player == null)
         {
-            PacketDistributor.sendToAllPlayers(new SyncBodyDamageHealingConsumablesPacket(HEALING_CONSUMABLES));
+            PacketDistributor.sendToAllPlayers(new SyncBodyDamageHealingConsumablesPayload(HEALING_CONSUMABLES));
         } else
         {
-            PacketDistributor.sendToPlayer(player, new SyncBodyDamageHealingConsumablesPacket(HEALING_CONSUMABLES));
+            PacketDistributor.sendToPlayer(player, new SyncBodyDamageHealingConsumablesPayload(HEALING_CONSUMABLES));
         }
     }
 

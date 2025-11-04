@@ -1,4 +1,4 @@
-package sfiomn.legendarysurvivaloverhaul.network.packets;
+package sfiomn.legendarysurvivaloverhaul.network.payloads;
 
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -14,27 +14,27 @@ import sfiomn.legendarysurvivaloverhaul.common.listeners.TemperatureBiomeListene
 
 import java.util.Map;
 
-public record SyncTemperatureBiomesPacket(
+public record SyncTemperatureBiomesPayload(
         Map<ResourceLocation, JsonTemperatureBiomeOverride> temperatureBiomes
 ) implements CustomPacketPayload
 {
 
     public static final ResourceLocation ID =
             ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "sync_temperature_biomes");
-    public static final Type<SyncTemperatureBiomesPacket> TYPE = new Type<>(ID);
+    public static final Type<SyncTemperatureBiomesPayload> TYPE = new Type<>(ID);
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, SyncTemperatureBiomesPacket> STREAM_CODEC =
+    public static final StreamCodec<RegistryFriendlyByteBuf, SyncTemperatureBiomesPayload> STREAM_CODEC =
             StreamCodec.composite(
                     ByteBufCodecs.map(
                             java.util.HashMap::new,
                             ResourceLocation.STREAM_CODEC,
                             ByteBufCodecs.fromCodecTrusted(JsonTemperatureBiomeOverride.CODEC)
                     ),
-                    SyncTemperatureBiomesPacket::temperatureBiomes,
-                    SyncTemperatureBiomesPacket::new
+                    SyncTemperatureBiomesPayload::temperatureBiomes,
+                    SyncTemperatureBiomesPayload::new
             );
 
-    public static void handle(SyncTemperatureBiomesPacket pkt, IPayloadContext ctx)
+    public static void handle(SyncTemperatureBiomesPayload pkt, IPayloadContext ctx)
     {
         if (ctx.flow() != PacketFlow.CLIENTBOUND) return;
         ctx.enqueueWork(() -> TemperatureBiomeListener.acceptServerTemperatureBiomes(pkt.temperatureBiomes()));
@@ -42,18 +42,18 @@ public record SyncTemperatureBiomesPacket(
 
     public static void sendToServer(Map<ResourceLocation, JsonTemperatureBiomeOverride> data)
     {
-        PacketDistributor.sendToServer(new SyncTemperatureBiomesPacket(data));
+        PacketDistributor.sendToServer(new SyncTemperatureBiomesPayload(data));
     }
 
     public static void sendToPlayer(net.minecraft.server.level.ServerPlayer player, Map<ResourceLocation, JsonTemperatureBiomeOverride> data)
     {
-        PacketDistributor.sendToPlayer(player, new SyncTemperatureBiomesPacket(data));
+        PacketDistributor.sendToPlayer(player, new SyncTemperatureBiomesPayload(data));
     }
 
     // Server -> all players
     public static void sendToAll(Map<ResourceLocation, JsonTemperatureBiomeOverride> data)
     {
-        PacketDistributor.sendToAllPlayers(new SyncTemperatureBiomesPacket(data));
+        PacketDistributor.sendToAllPlayers(new SyncTemperatureBiomesPayload(data));
     }
 
     @Override
