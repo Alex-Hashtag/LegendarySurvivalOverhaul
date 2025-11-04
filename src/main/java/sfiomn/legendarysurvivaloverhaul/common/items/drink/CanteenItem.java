@@ -28,7 +28,7 @@ import sfiomn.legendarysurvivaloverhaul.api.wetness.WetnessUtil;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
 import sfiomn.legendarysurvivaloverhaul.registry.MobEffectRegistry;
 import sfiomn.legendarysurvivaloverhaul.registry.SoundRegistry;
-import sfiomn.legendarysurvivaloverhaul.util.CapabilityUtil;
+import sfiomn.legendarysurvivaloverhaul.util.AttachmentUtil;
 
 public class CanteenItem extends DrinkItem
 {
@@ -148,7 +148,7 @@ public class CanteenItem extends DrinkItem
             return InteractionResultHolder.consume(canteen);
         }
 
-        if (canDrink(canteen) && !CapabilityUtil.getThirstCapability(player).isHydrationLevelAtMax())
+        if (canDrink(canteen) && !AttachmentUtil.getThirstAttachment(player).isHydrationLevelAtMax())
         {
             player.startUsingItem(hand);
             return InteractionResultHolder.consume(canteen);

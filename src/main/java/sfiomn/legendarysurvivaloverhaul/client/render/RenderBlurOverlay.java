@@ -6,8 +6,8 @@ import net.minecraft.world.entity.player.Player;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import sfiomn.legendarysurvivaloverhaul.client.shaders.FocusShader;
-import sfiomn.legendarysurvivaloverhaul.common.capabilities.thirst.ThirstCapability;
-import sfiomn.legendarysurvivaloverhaul.util.CapabilityUtil;
+import sfiomn.legendarysurvivaloverhaul.common.attachments.thirst.ThirstAttachment;
+import sfiomn.legendarysurvivaloverhaul.util.AttachmentUtil;
 
 import javax.annotation.Nullable;
 
@@ -44,7 +44,7 @@ public class RenderBlurOverlay
         if (player != null && player.isAlive() && !player.isCreative() && !player.isSpectator())
         {
 
-            ThirstCapability thirstCap = CapabilityUtil.getThirstCapability(player);
+            ThirstAttachment thirstCap = AttachmentUtil.getThirstAttachment(player);
             // hydration is 0 - 20
             int hydration = thirstCap.getHydrationLevel();
 

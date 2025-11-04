@@ -19,15 +19,15 @@ import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonThirstBlock;
 import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonThirstConsumable;
 import sfiomn.legendarysurvivaloverhaul.api.data.manager.ThirstDataManager;
 import sfiomn.legendarysurvivaloverhaul.api.thirst.HydrationEnum;
-import sfiomn.legendarysurvivaloverhaul.api.thirst.IThirstCapability;
+import sfiomn.legendarysurvivaloverhaul.api.thirst.IThirstAttachment;
 import sfiomn.legendarysurvivaloverhaul.api.thirst.IThirstUtil;
 import sfiomn.legendarysurvivaloverhaul.api.thirst.ThirstUtil;
-import sfiomn.legendarysurvivaloverhaul.common.capabilities.thirst.ThirstCapability;
+import sfiomn.legendarysurvivaloverhaul.common.attachments.thirst.ThirstAttachment;
 import sfiomn.legendarysurvivaloverhaul.common.integration.curios.CuriosUtil;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
 import sfiomn.legendarysurvivaloverhaul.registry.ItemRegistry;
 import sfiomn.legendarysurvivaloverhaul.registry.MobEffectRegistry;
-import sfiomn.legendarysurvivaloverhaul.util.CapabilityUtil;
+import sfiomn.legendarysurvivaloverhaul.util.AttachmentUtil;
 
 import java.util.*;
 
@@ -136,7 +136,7 @@ public class ThirstUtilInternal implements IThirstUtil
         if (!Config.Baked.thirstEnabled || !ThirstUtil.isThirstActive(player))
             return;
 
-        IThirstCapability capability = CapabilityUtil.getThirstCapability(player);
+        IThirstAttachment capability = AttachmentUtil.getThirstAttachment(player);
 
         if (!capability.isHydrationLevelAtMax())
         {
@@ -177,7 +177,7 @@ public class ThirstUtilInternal implements IThirstUtil
     @Override
     public void addExhaustion(Player player, float exhaustion)
     {
-        ThirstCapability thirstCap = CapabilityUtil.getThirstCapability(player);
+        ThirstAttachment thirstCap = AttachmentUtil.getThirstAttachment(player);
         thirstCap.addThirstExhaustion(exhaustion);
     }
 
@@ -295,7 +295,7 @@ public class ThirstUtilInternal implements IThirstUtil
     @Override
     public void deactivateThirst(Player player)
     {
-        ThirstCapability cap = CapabilityUtil.getThirstCapability(player);
+        ThirstAttachment cap = AttachmentUtil.getThirstAttachment(player);
         cap.setThirstTickTimer(-1);
         cap.setDirty();
     }
@@ -303,7 +303,7 @@ public class ThirstUtilInternal implements IThirstUtil
     @Override
     public void activateThirst(Player player)
     {
-        ThirstCapability cap = CapabilityUtil.getThirstCapability(player);
+        ThirstAttachment cap = AttachmentUtil.getThirstAttachment(player);
         if (cap.getThirstTickTimer() == -1)
         {
             cap.setThirstTickTimer(0);
@@ -314,6 +314,6 @@ public class ThirstUtilInternal implements IThirstUtil
     @Override
     public boolean isThirstActive(Player player)
     {
-        return CapabilityUtil.getThirstCapability(player).getThirstTickTimer() != -1;
+        return AttachmentUtil.getThirstAttachment(player).getThirstTickTimer() != -1;
     }
 }

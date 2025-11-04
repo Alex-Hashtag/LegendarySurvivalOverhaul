@@ -13,12 +13,12 @@ import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.Level;
 import sfiomn.legendarysurvivaloverhaul.api.bodydamage.BodyDamageUtil;
 import sfiomn.legendarysurvivaloverhaul.api.bodydamage.BodyPartEnum;
-import sfiomn.legendarysurvivaloverhaul.api.bodydamage.IBodyDamageCapability;
+import sfiomn.legendarysurvivaloverhaul.api.bodydamage.IBodyDamageAttachment;
 import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonHealingConsumable;
 import sfiomn.legendarysurvivaloverhaul.api.data.manager.BodyDamageDataManager;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
 import sfiomn.legendarysurvivaloverhaul.registry.MobEffectRegistry;
-import sfiomn.legendarysurvivaloverhaul.util.CapabilityUtil;
+import sfiomn.legendarysurvivaloverhaul.util.AttachmentUtil;
 
 public class BodyHealingItem extends Item
 {
@@ -57,7 +57,7 @@ public class BodyHealingItem extends Item
 
         if (jsonConsumableHeal != null)
         {
-            IBodyDamageCapability capability = CapabilityUtil.getBodyDamageCapability(player);
+            IBodyDamageAttachment capability = AttachmentUtil.getBodyDamageAttachment(player);
             // 0 healing charge = heal all body parts => only allow healing if one wounded limb is not yet healing
             if (jsonConsumableHeal.healingCharges == 0)
             {

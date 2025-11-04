@@ -7,7 +7,7 @@ import org.apache.commons.lang3.RandomUtils;
 import sfiomn.legendarysurvivaloverhaul.api.temperature.TemperatureEnum;
 import sfiomn.legendarysurvivaloverhaul.registry.MobEffectRegistry;
 import sfiomn.legendarysurvivaloverhaul.registry.SoundRegistry;
-import sfiomn.legendarysurvivaloverhaul.util.CapabilityUtil;
+import sfiomn.legendarysurvivaloverhaul.util.AttachmentUtil;
 
 public class TemperatureBreathSound
 {
@@ -28,7 +28,7 @@ public class TemperatureBreathSound
             return;
         }
 
-        TemperatureEnum temperatureEnum = CapabilityUtil.getTempCapability(player).getTemperatureEnum();
+        TemperatureEnum temperatureEnum = AttachmentUtil.getTempAttachment(player).getTemperatureEnum();
 
         if ((temperatureEnum != TemperatureEnum.FROSTBITE || player.hasEffect(MobEffectRegistry.COLD_IMMUNITY)) &&
                 (temperatureEnum != TemperatureEnum.HEAT_STROKE || player.hasEffect(MobEffectRegistry.HEAT_IMMUNITY)))

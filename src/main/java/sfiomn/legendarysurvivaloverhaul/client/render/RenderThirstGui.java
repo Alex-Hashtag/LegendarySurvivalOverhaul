@@ -14,10 +14,10 @@ import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonThirstConsumable;
 import sfiomn.legendarysurvivaloverhaul.api.data.manager.ThirstDataManager;
 import sfiomn.legendarysurvivaloverhaul.api.thirst.ThirstUtil;
-import sfiomn.legendarysurvivaloverhaul.common.capabilities.thirst.ThirstCapability;
+import sfiomn.legendarysurvivaloverhaul.common.attachments.thirst.ThirstAttachment;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
 import sfiomn.legendarysurvivaloverhaul.registry.MobEffectRegistry;
-import sfiomn.legendarysurvivaloverhaul.util.CapabilityUtil;
+import sfiomn.legendarysurvivaloverhaul.util.AttachmentUtil;
 
 import java.util.Random;
 
@@ -28,7 +28,7 @@ public class RenderThirstGui
     // Dimensions of the icon
     private static final int THIRST_TEXTURE_WIDTH = 9;
     private static final int THIRST_TEXTURE_HEIGHT = 9;
-    private static ThirstCapability THIRST_CAP = null;
+    private static ThirstAttachment THIRST_CAP = null;
     @Nullable
     private static Item heldItemOnPreview;
     private static int heldItemHydration;
@@ -69,7 +69,7 @@ public class RenderThirstGui
     {
         // Update player's thirst capability every 20 ticks
         if (THIRST_CAP == null || player.tickCount % 20 == 0)
-            THIRST_CAP = CapabilityUtil.getThirstCapability(player);
+            THIRST_CAP = AttachmentUtil.getThirstAttachment(player);
 
         // Calculation of hydration preview
         ItemStack currentHeldItemStack = player.getMainHandItem();

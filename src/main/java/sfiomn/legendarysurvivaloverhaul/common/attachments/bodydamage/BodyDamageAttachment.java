@@ -1,4 +1,4 @@
-package sfiomn.legendarysurvivaloverhaul.common.capabilities.bodydamage;
+package sfiomn.legendarysurvivaloverhaul.common.attachments.bodydamage;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
@@ -13,7 +13,7 @@ import net.neoforged.neoforge.common.util.INBTSerializable;
 import org.apache.commons.lang3.tuple.Pair;
 import sfiomn.legendarysurvivaloverhaul.api.bodydamage.BodyDamageUtil;
 import sfiomn.legendarysurvivaloverhaul.api.bodydamage.BodyPartEnum;
-import sfiomn.legendarysurvivaloverhaul.api.bodydamage.IBodyDamageCapability;
+import sfiomn.legendarysurvivaloverhaul.api.bodydamage.IBodyDamageAttachment;
 import sfiomn.legendarysurvivaloverhaul.api.bodydamage.MalusBodyPartEnum;
 import sfiomn.legendarysurvivaloverhaul.api.health.HealthUtil;
 import sfiomn.legendarysurvivaloverhaul.common.integration.curios.CuriosUtil;
@@ -31,9 +31,9 @@ import java.util.Map;
 import java.util.function.BiConsumer;
 
 /**
- * Capability that handles body damage for a player.
+ * Attachment that handles body damage for a player.
  */
-public class BodyDamageCapability implements IBodyDamageCapability, INBTSerializable<CompoundTag>
+public class BodyDamageAttachment implements IBodyDamageAttachment, INBTSerializable<CompoundTag>
 {
     // Saved data
     private Map<BodyPartEnum, BodyPart> bodyParts;
@@ -54,7 +54,7 @@ public class BodyDamageCapability implements IBodyDamageCapability, INBTSerializ
     private int packetTimer;
     private Map<MobEffect, Integer> malus;
 
-    public BodyDamageCapability()
+    public BodyDamageAttachment()
     {
         this.init();
     }

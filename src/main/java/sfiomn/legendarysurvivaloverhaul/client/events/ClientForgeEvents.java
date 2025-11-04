@@ -31,14 +31,14 @@ import sfiomn.legendarysurvivaloverhaul.client.effects.TemperatureBreathEffect;
 import sfiomn.legendarysurvivaloverhaul.client.integration.sereneseasons.RenderSeasonCards;
 import sfiomn.legendarysurvivaloverhaul.client.render.*;
 import sfiomn.legendarysurvivaloverhaul.client.sounds.TemperatureBreathSound;
-import sfiomn.legendarysurvivaloverhaul.common.capabilities.thirst.ThirstCapability;
+import sfiomn.legendarysurvivaloverhaul.common.attachments.thirst.ThirstAttachment;
 import sfiomn.legendarysurvivaloverhaul.common.integration.curios.CuriosUtil;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
 import sfiomn.legendarysurvivaloverhaul.network.packets.DrinkBlockFluidMessage;
 import sfiomn.legendarysurvivaloverhaul.registry.ItemRegistry;
 import sfiomn.legendarysurvivaloverhaul.registry.KeyMappingRegistry;
 import sfiomn.legendarysurvivaloverhaul.registry.MobEffectRegistry;
-import sfiomn.legendarysurvivaloverhaul.util.CapabilityUtil;
+import sfiomn.legendarysurvivaloverhaul.util.AttachmentUtil;
 
 import java.util.ListIterator;
 
@@ -116,8 +116,8 @@ public class ClientForgeEvents
             {
                 Player player = event.getEntity();
 
-                ThirstCapability thirstCapability = CapabilityUtil.getThirstCapability(player);
-                if (!thirstCapability.isHydrationLevelAtMax())
+                ThirstAttachment thirstAttachment = AttachmentUtil.getThirstAttachment(player);
+                if (!thirstAttachment.isHydrationLevelAtMax())
                 {
                     JsonThirstBlock jsonFluidThirst = ThirstUtil.getFluidThirstLookedAt(player, (float) (player.getAttributeValue(Attributes.BLOCK_INTERACTION_RANGE) / 2));
 

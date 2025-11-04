@@ -10,8 +10,8 @@ import net.minecraft.world.entity.player.Player;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.temperature.TemperatureEnum;
 import sfiomn.legendarysurvivaloverhaul.api.temperature.TemperatureUtil;
-import sfiomn.legendarysurvivaloverhaul.common.capabilities.temperature.TemperatureCapability;
-import sfiomn.legendarysurvivaloverhaul.util.CapabilityUtil;
+import sfiomn.legendarysurvivaloverhaul.common.attachments.temperature.TemperatureAttachment;
+import sfiomn.legendarysurvivaloverhaul.util.AttachmentUtil;
 import sfiomn.legendarysurvivaloverhaul.util.MathUtil;
 
 public class TemperatureCommand extends CommandBase
@@ -33,7 +33,7 @@ public class TemperatureCommand extends CommandBase
             if (source.getEntity() instanceof Player player)
             {
                 float targetTemperature = TemperatureUtil.getPlayerTargetTemperature(player);
-                TemperatureCapability cap = CapabilityUtil.getTempCapability(player);
+                TemperatureAttachment cap = AttachmentUtil.getTempAttachment(player);
                 float playerTemp = MathUtil.round(cap.getTemperatureLevel(), 2);
                 float worldTemp = TemperatureUtil.getWorldTemperature(player.level(), player.blockPosition());
 
@@ -50,7 +50,7 @@ public class TemperatureCommand extends CommandBase
 
     private int set(CommandSourceStack src, int temp) throws CommandSyntaxException
     {
-        CapabilityUtil.getTempCapability(src.getPlayerOrException()).setTemperatureLevel(temp);
+        AttachmentUtil.getTempAttachment(src.getPlayerOrException()).setTemperatureLevel(temp);
         return Command.SINGLE_SUCCESS;
     }
 }

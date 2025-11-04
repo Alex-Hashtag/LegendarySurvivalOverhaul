@@ -9,9 +9,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
-import sfiomn.legendarysurvivaloverhaul.api.thirst.IThirstCapability;
+import sfiomn.legendarysurvivaloverhaul.api.thirst.IThirstAttachment;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
-import sfiomn.legendarysurvivaloverhaul.util.CapabilityUtil;
+import sfiomn.legendarysurvivaloverhaul.util.AttachmentUtil;
 
 public class DrinkItem extends Item
 {
@@ -50,7 +50,7 @@ public class DrinkItem extends Item
             return InteractionResultHolder.success(stack);
         }
 
-        IThirstCapability capability = CapabilityUtil.getThirstCapability(player);
+        IThirstAttachment capability = AttachmentUtil.getThirstAttachment(player);
         if (!capability.isHydrationLevelAtMax())
         {
             player.startUsingItem(hand);

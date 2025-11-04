@@ -1,4 +1,4 @@
-package sfiomn.legendarysurvivaloverhaul.common.capabilities.temperature;
+package sfiomn.legendarysurvivaloverhaul.common.attachments.temperature;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -6,22 +6,22 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.common.util.INBTSerializable;
-import sfiomn.legendarysurvivaloverhaul.api.temperature.ITemperatureItemCapability;
+import sfiomn.legendarysurvivaloverhaul.api.temperature.ITemperatureItemAttachment;
 import sfiomn.legendarysurvivaloverhaul.registry.DataComponentRegistry;
 import sfiomn.legendarysurvivaloverhaul.registry.DataComponentRegistry.TemperatureData;
 import sfiomn.legendarysurvivaloverhaul.util.WorldUtil;
 
-public class TemperatureItemCapability implements ITemperatureItemCapability, INBTSerializable<CompoundTag>
+public class TemperatureItemAttachment implements ITemperatureItemAttachment, INBTSerializable<CompoundTag>
 {
     private final ItemStack itemStack;
 
-    public TemperatureItemCapability(ItemStack itemStack)
+    public TemperatureItemAttachment(ItemStack itemStack)
     {
         this.itemStack = itemStack;
     }
 
     // Legacy constructor for backward compatibility (creates a detached instance)
-    public TemperatureItemCapability()
+    public TemperatureItemAttachment()
     {
         this.itemStack = ItemStack.EMPTY;
     }

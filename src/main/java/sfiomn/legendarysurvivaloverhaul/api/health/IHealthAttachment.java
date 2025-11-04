@@ -1,6 +1,6 @@
 package sfiomn.legendarysurvivaloverhaul.api.health;
 
-public interface IHealthCapability
+public interface IHealthAttachment
 {
     void addAdditionalHealth(float healthValue);
 

@@ -12,8 +12,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
-import sfiomn.legendarysurvivaloverhaul.common.capabilities.health.HealthCapability;
-import sfiomn.legendarysurvivaloverhaul.util.CapabilityUtil;
+import sfiomn.legendarysurvivaloverhaul.common.attachments.health.HealthAttachment;
+import sfiomn.legendarysurvivaloverhaul.util.AttachmentUtil;
 
 public record UpdateHeartsPacket(
         CompoundTag compound
@@ -38,8 +38,8 @@ public record UpdateHeartsPacket(
             LocalPlayer player = Minecraft.getInstance().player;
             if (player != null)
             {
-                HealthCapability healthCapability = CapabilityUtil.getHealthCapability(player);
-                healthCapability.readNBT(pkt.compound());
+                HealthAttachment healthAttachment = AttachmentUtil.getHealthAttachment(player);
+                healthAttachment.readNBT(pkt.compound());
             }
         });
     }

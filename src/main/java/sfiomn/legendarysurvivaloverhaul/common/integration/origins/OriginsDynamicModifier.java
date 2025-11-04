@@ -21,8 +21,8 @@ public class OriginsDynamicModifier extends DynamicModifierBase
         float effectiveResistance = 0.0f;
         float diffToAverage = currentTemperature - TemperatureEnum.NORMAL.getMiddle();
 
-        // NeoForge: getCapability now returns the instance or null (LazyOptional removed)
-//        IOriginContainer origins = player.getCapability(OriginsAPI.ORIGIN_CONTAINER);
+        // NeoForge: getAttachment now returns the instance or null (LazyOptional removed)
+//        IOriginContainer origins = player.getAttachment(OriginsAPI.ORIGIN_CONTAINER);
 //        if (origins != null) {
 //            for (ResourceKey<Origin> origin : origins.getOrigins().values()) {
 //                JsonTemperatureResistance config = TemperatureDataManager.getOrigin(origin.location());

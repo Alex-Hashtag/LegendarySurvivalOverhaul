@@ -9,12 +9,12 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.temperature.TemperatureEnum;
-import sfiomn.legendarysurvivaloverhaul.common.capabilities.temperature.TemperatureCapability;
+import sfiomn.legendarysurvivaloverhaul.common.attachments.temperature.TemperatureAttachment;
 import sfiomn.legendarysurvivaloverhaul.common.effects.FrostbiteEffect;
 import sfiomn.legendarysurvivaloverhaul.common.effects.HeatStrokeEffect;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
 import sfiomn.legendarysurvivaloverhaul.registry.SoundRegistry;
-import sfiomn.legendarysurvivaloverhaul.util.CapabilityUtil;
+import sfiomn.legendarysurvivaloverhaul.util.AttachmentUtil;
 import sfiomn.legendarysurvivaloverhaul.util.MathUtil;
 
 import static sfiomn.legendarysurvivaloverhaul.util.RenderUtil.renderTextureOverlay;
@@ -24,7 +24,7 @@ public class RenderTemperatureOverlay
 {
     private static final ResourceLocation FROSTBITE_EFFECT = ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "textures/gui/freeze_effect.png");
     private static final ResourceLocation HEAT_STROKE_EFFECT = ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "textures/gui/heat_effect.png");
-    private static TemperatureCapability TEMPERATURE_CAP = null;
+    private static TemperatureAttachment TEMPERATURE_CAP = null;
     private static ResourceLocation temperatureEffect = null;
     private static float fadeLevel = 0;
     private static boolean triggerTemperatureSoundEffect;
@@ -50,7 +50,7 @@ public class RenderTemperatureOverlay
         {
 
             if (TEMPERATURE_CAP == null || player.tickCount % 20 == 0)
-                TEMPERATURE_CAP = CapabilityUtil.getTempCapability(player);
+                TEMPERATURE_CAP = AttachmentUtil.getTempAttachment(player);
 
             float temperature = TEMPERATURE_CAP.getTemperatureLevel();
             TemperatureEnum tempEnum = TEMPERATURE_CAP.getTemperatureEnum();

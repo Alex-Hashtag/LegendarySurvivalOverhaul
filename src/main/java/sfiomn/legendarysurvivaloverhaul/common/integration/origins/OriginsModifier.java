@@ -18,7 +18,7 @@ public class OriginsModifier extends ModifierBase
         if (!LegendarySurvivalOverhaul.originsLoaded)
             return 0.0f;
 
-//        LazyOptional<IOriginContainer> optionalOrigin = player.getCapability(OriginsAPI.ORIGIN_CONTAINER);
+//        LazyOptional<IOriginContainer> optionalOrigin = player.getAttachment(OriginsAPI.ORIGIN_CONTAINER);
 //
         float temp = 0.0f;
 //

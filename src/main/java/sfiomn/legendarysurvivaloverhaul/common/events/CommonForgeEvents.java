@@ -57,8 +57,8 @@ import sfiomn.legendarysurvivaloverhaul.api.health.HealthUtil;
 import sfiomn.legendarysurvivaloverhaul.api.temperature.AttributeModifierBase;
 import sfiomn.legendarysurvivaloverhaul.api.temperature.TemperatureUtil;
 import sfiomn.legendarysurvivaloverhaul.api.thirst.ThirstUtil;
-import sfiomn.legendarysurvivaloverhaul.common.capabilities.health.HealthCapability;
-import sfiomn.legendarysurvivaloverhaul.common.capabilities.thirst.ThirstCapability;
+import sfiomn.legendarysurvivaloverhaul.common.attachments.health.HealthAttachment;
+import sfiomn.legendarysurvivaloverhaul.common.attachments.thirst.ThirstAttachment;
 import sfiomn.legendarysurvivaloverhaul.common.integration.curios.CuriosUtil;
 import sfiomn.legendarysurvivaloverhaul.common.integration.medsandherbs.MedsAndHerbsUtil;
 import sfiomn.legendarysurvivaloverhaul.common.integration.supplementaries.SupplementariesUtil;
@@ -69,7 +69,7 @@ import sfiomn.legendarysurvivaloverhaul.registry.ItemRegistry;
 import sfiomn.legendarysurvivaloverhaul.registry.MobEffectRegistry;
 import sfiomn.legendarysurvivaloverhaul.registry.SoundRegistry;
 import sfiomn.legendarysurvivaloverhaul.registry.TemperatureModifierRegistry;
-import sfiomn.legendarysurvivaloverhaul.util.CapabilityUtil;
+import sfiomn.legendarysurvivaloverhaul.util.AttachmentUtil;
 import sfiomn.legendarysurvivaloverhaul.util.ItemUtil;
 import sfiomn.legendarysurvivaloverhaul.util.PlayerModelUtil;
 
@@ -160,8 +160,8 @@ public class CommonForgeEvents
             {
                 Player player = event.getEntity();
 
-                ThirstCapability thirstCapability = CapabilityUtil.getThirstCapability(player);
-                if (!thirstCapability.isHydrationLevelAtMax())
+                ThirstAttachment thirstAttachment = AttachmentUtil.getThirstAttachment(player);
+                if (!thirstAttachment.isHydrationLevelAtMax())
                 {
 
                     boolean hasMenu = event.getLevel().getBlockEntity(event.getHitVec().getBlockPos()) instanceof MenuProvider;
@@ -423,7 +423,7 @@ public class CommonForgeEvents
                         double healthRecovered = BodyDamageUtil.getMaxHealth(player, bodyPart) * Config.Baked.bodyHealthRatioRecoveredFromSleep;
                         BodyDamageUtil.healBodyPart(player, bodyPart, (float) healthRecovered);
                     }
-                    CapabilityUtil.getBodyDamageCapability(player).updateBrokenHearts(player);
+                    AttachmentUtil.getBodyDamageAttachment(player).updateBrokenHearts(player);
                     BodyDamageUtil.updatePlayerBrokenHeartAttribute(player);
                 }
 
@@ -447,8 +447,8 @@ public class CommonForgeEvents
                     Config.Baked.absorptionEffectOverride)
             {
 
-                HealthCapability healthCapability = CapabilityUtil.getHealthCapability(player);
-                healthCapability.addShieldHealth(2);
+                HealthAttachment healthAttachment = AttachmentUtil.getHealthAttachment(player);
+                healthAttachment.addShieldHealth(2);
                 event.setResult(MobEffectEvent.Applicable.Result.DO_NOT_APPLY);
             }
             if (event.getEffectInstance().getEffect() == MobEffectRegistry.THIRST.get() &&
@@ -493,35 +493,35 @@ public class CommonForgeEvents
         {
             if (Config.Baked.temperatureEnabled)
             {
-                var tempCap = CapabilityUtil.getTempCapability(serverPlayer);
+                var tempCap = AttachmentUtil.getTempAttachment(serverPlayer);
                 sfiomn.legendarysurvivaloverhaul.network.packets.UpdateTemperaturesPacket.sendToPlayer(
                         serverPlayer, tempCap.writeNBT()
                 );
             }
             if (Config.Baked.thirstEnabled)
             {
-                var thirstCap = CapabilityUtil.getThirstCapability(serverPlayer);
+                var thirstCap = AttachmentUtil.getThirstAttachment(serverPlayer);
                 sfiomn.legendarysurvivaloverhaul.network.packets.UpdateThirstPacket.sendToPlayer(
                         serverPlayer, thirstCap.writeNBT()
                 );
             }
             if (Config.Baked.wetnessEnabled)
             {
-                var wetnessCap = CapabilityUtil.getWetnessCapability(serverPlayer);
+                var wetnessCap = AttachmentUtil.getWetnessAttachment(serverPlayer);
                 sfiomn.legendarysurvivaloverhaul.network.packets.UpdateWetnessPacket.sendToPlayer(
                         serverPlayer, wetnessCap.writeNBT()
                 );
             }
             if (Config.Baked.localizedBodyDamageEnabled)
             {
-                var bodyCap = CapabilityUtil.getBodyDamageCapability(serverPlayer);
+                var bodyCap = AttachmentUtil.getBodyDamageAttachment(serverPlayer);
                 sfiomn.legendarysurvivaloverhaul.network.packets.UpdateBodyDamagePacket.sendToPlayer(
                         serverPlayer, bodyCap.writeNBT()
                 );
             }
             if (Config.Baked.healthOverhaulEnabled)
             {
-                var healthCap = CapabilityUtil.getHealthCapability(serverPlayer);
+                var healthCap = AttachmentUtil.getHealthAttachment(serverPlayer);
                 sfiomn.legendarysurvivaloverhaul.network.packets.UpdateHeartsPacket.sendToPlayer(
                         serverPlayer, healthCap.writeNBT()
                 );
@@ -577,7 +577,7 @@ public class CommonForgeEvents
         // Update Temperature
         if (Config.Baked.temperatureEnabled)
         {
-            var tempCap = CapabilityUtil.getTempCapability(player);
+            var tempCap = AttachmentUtil.getTempAttachment(player);
             tempCap.tickUpdate(player, level, isStart);
             if (tempCap.isDirty())
             {
@@ -591,7 +591,7 @@ public class CommonForgeEvents
         // Update Thirst
         if (Config.Baked.thirstEnabled)
         {
-            var thirstCap = CapabilityUtil.getThirstCapability(player);
+            var thirstCap = AttachmentUtil.getThirstAttachment(player);
             thirstCap.tickUpdate(player, level, isStart);
             if (thirstCap.isDirty())
             {
@@ -605,7 +605,7 @@ public class CommonForgeEvents
         // Update Wetness
         if (Config.Baked.wetnessEnabled)
         {
-            var wetnessCap = CapabilityUtil.getWetnessCapability(player);
+            var wetnessCap = AttachmentUtil.getWetnessAttachment(player);
             wetnessCap.tickUpdate(player, level, isStart);
             if (wetnessCap.isDirty())
             {
@@ -619,13 +619,13 @@ public class CommonForgeEvents
         // Update Food (temperature effects on hunger)
         if (Config.Baked.temperatureEnabled)
         {
-            CapabilityUtil.getFoodCapability(player).tickUpdate(player, level, isStart);
+            AttachmentUtil.getFoodAttachment(player).tickUpdate(player, level, isStart);
         }
 
         // Update Body Damage
         if (Config.Baked.localizedBodyDamageEnabled)
         {
-            var bodyCap = CapabilityUtil.getBodyDamageCapability(player);
+            var bodyCap = AttachmentUtil.getBodyDamageAttachment(player);
             bodyCap.tickUpdate(player, level, isStart);
             if (bodyCap.isDirty())
             {
@@ -639,7 +639,7 @@ public class CommonForgeEvents
         // Update Health
         if (Config.Baked.healthOverhaulEnabled)
         {
-            var healthCap = CapabilityUtil.getHealthCapability(player);
+            var healthCap = AttachmentUtil.getHealthAttachment(player);
             if (healthCap.isDirty())
             {
                 sfiomn.legendarysurvivaloverhaul.network.packets.UpdateHeartsPacket.sendToPlayer(

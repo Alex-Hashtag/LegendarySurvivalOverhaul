@@ -4,9 +4,9 @@ import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
-import sfiomn.legendarysurvivaloverhaul.common.capabilities.thirst.ThirstCapability;
+import sfiomn.legendarysurvivaloverhaul.common.attachments.thirst.ThirstAttachment;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
-import sfiomn.legendarysurvivaloverhaul.util.CapabilityUtil;
+import sfiomn.legendarysurvivaloverhaul.util.AttachmentUtil;
 
 public class HeatThirstEffect extends IncurableMobEffect
 {
@@ -20,10 +20,10 @@ public class HeatThirstEffect extends IncurableMobEffect
     {
         if (entity instanceof Player)
         {
-            ThirstCapability thirstCapability = CapabilityUtil.getThirstCapability((Player) entity);
+            ThirstAttachment thirstAttachment = AttachmentUtil.getThirstAttachment((Player) entity);
 
             // Twice strength of Hunger effect
-            thirstCapability.addThirstExhaustion((float) (Config.Baked.heatThirstEffectModifier * (amplifier + 1)));
+            thirstAttachment.addThirstExhaustion((float) (Config.Baked.heatThirstEffectModifier * (amplifier + 1)));
         }
         return true;
     }

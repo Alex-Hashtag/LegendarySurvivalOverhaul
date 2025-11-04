@@ -23,7 +23,7 @@ import sfiomn.legendarysurvivaloverhaul.registry.AttributeRegistry;
 import sfiomn.legendarysurvivaloverhaul.registry.MobEffectRegistry;
 import sfiomn.legendarysurvivaloverhaul.registry.SoundRegistry;
 import sfiomn.legendarysurvivaloverhaul.util.AttributeBuilder;
-import sfiomn.legendarysurvivaloverhaul.util.CapabilityUtil;
+import sfiomn.legendarysurvivaloverhaul.util.AttachmentUtil;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -235,7 +235,7 @@ public class BodyDamageUtilInternal implements IBodyDamageUtil
         if (!Config.Baked.localizedBodyDamageEnabled || bodyPartEnum == null)
             return;
 
-        IBodyDamageCapability capability = CapabilityUtil.getBodyDamageCapability(player);
+        IBodyDamageAttachment capability = AttachmentUtil.getBodyDamageAttachment(player);
 
         int remainingHealingTicks = capability.getRemainingHealingTicks(bodyPartEnum);
         float healingPerTicks = capability.getHealingPerTicks(bodyPartEnum);
@@ -252,7 +252,7 @@ public class BodyDamageUtilInternal implements IBodyDamageUtil
         if (!Config.Baked.localizedBodyDamageEnabled)
             return;
 
-        IBodyDamageCapability capability = CapabilityUtil.getBodyDamageCapability(player);
+        IBodyDamageAttachment capability = AttachmentUtil.getBodyDamageAttachment(player);
 
         capability.heal(bodyPartEnum, healingValue);
     }
@@ -264,7 +264,7 @@ public class BodyDamageUtilInternal implements IBodyDamageUtil
         if (!Config.Baked.localizedBodyDamageEnabled || bodyPartEnum == null)
             return;
 
-        IBodyDamageCapability capability = CapabilityUtil.getBodyDamageCapability(player);
+        IBodyDamageAttachment capability = AttachmentUtil.getBodyDamageAttachment(player);
         double bodyResistance = BODY_RESISTANCE.getAttribute(player).getValue();
         double limbResistance = bodyPartResistanceAttribute.get(bodyPartEnum).getAttribute(player).getValue();
 
@@ -318,7 +318,7 @@ public class BodyDamageUtilInternal implements IBodyDamageUtil
         if (!Config.Baked.localizedBodyDamageEnabled || bodyPartEnum == null)
             return 0.0f;
 
-        IBodyDamageCapability capability = CapabilityUtil.getBodyDamageCapability(player);
+        IBodyDamageAttachment capability = AttachmentUtil.getBodyDamageAttachment(player);
 
         return capability.getBodyPartHealthRatio(bodyPartEnum);
     }
@@ -329,7 +329,7 @@ public class BodyDamageUtilInternal implements IBodyDamageUtil
         if (!Config.Baked.localizedBodyDamageEnabled || bodyPartEnum == null)
             return 0.0f;
 
-        IBodyDamageCapability capability = CapabilityUtil.getBodyDamageCapability(player);
+        IBodyDamageAttachment capability = AttachmentUtil.getBodyDamageAttachment(player);
 
         return capability.getRemainingHealingTicks(bodyPartEnum) * capability.getHealingPerTicks(bodyPartEnum);
     }
@@ -340,7 +340,7 @@ public class BodyDamageUtilInternal implements IBodyDamageUtil
         if (!Config.Baked.localizedBodyDamageEnabled || bodyPartEnum == null)
             return 0.0f;
 
-        IBodyDamageCapability capability = CapabilityUtil.getBodyDamageCapability(player);
+        IBodyDamageAttachment capability = AttachmentUtil.getBodyDamageAttachment(player);
 
         return capability.getBodyPartMaxHealth(bodyPartEnum);
     }
@@ -351,7 +351,7 @@ public class BodyDamageUtilInternal implements IBodyDamageUtil
         int expectedBrokenHearts = 0;
         if (Config.Baked.localizedBodyDamageEnabled && Config.Baked.healthOverhaulEnabled)
         {
-            IBodyDamageCapability capability = CapabilityUtil.getBodyDamageCapability(player);
+            IBodyDamageAttachment capability = AttachmentUtil.getBodyDamageAttachment(player);
 
             expectedBrokenHearts = capability.getExpectedBrokenHearts();
         }

@@ -12,8 +12,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
-import sfiomn.legendarysurvivaloverhaul.common.capabilities.wetness.WetnessCapability;
-import sfiomn.legendarysurvivaloverhaul.util.CapabilityUtil;
+import sfiomn.legendarysurvivaloverhaul.common.attachments.wetness.WetnessAttachment;
+import sfiomn.legendarysurvivaloverhaul.util.AttachmentUtil;
 
 public record UpdateWetnessPacket(
         CompoundTag compound
@@ -39,7 +39,7 @@ public record UpdateWetnessPacket(
             LocalPlayer player = Minecraft.getInstance().player;
             if (player != null)
             {
-                WetnessCapability wetness = CapabilityUtil.getWetnessCapability(player);
+                WetnessAttachment wetness = AttachmentUtil.getWetnessAttachment(player);
                 wetness.readNBT(pkt.compound());
             }
         });

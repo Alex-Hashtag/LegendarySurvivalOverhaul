@@ -5,7 +5,7 @@ import net.minecraft.world.level.Level;
 
 import java.util.List;
 
-public interface ITemperatureCapability
+public interface ITemperatureAttachment
 {
     float getTemperatureLevel();
 

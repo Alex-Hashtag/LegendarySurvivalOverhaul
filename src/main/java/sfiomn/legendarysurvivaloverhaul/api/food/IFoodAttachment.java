@@ -11,7 +11,7 @@ import net.minecraft.world.level.Level;
  * @param world
  * @param isStart
  */
-public interface IFoodCapability
+public interface IFoodAttachment
 {
     void tickUpdate(Player player, Level world, boolean isStart);
 }

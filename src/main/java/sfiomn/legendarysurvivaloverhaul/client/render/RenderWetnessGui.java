@@ -7,10 +7,10 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
-import sfiomn.legendarysurvivaloverhaul.common.capabilities.wetness.WetnessCapability;
+import sfiomn.legendarysurvivaloverhaul.common.attachments.wetness.WetnessAttachment;
 import sfiomn.legendarysurvivaloverhaul.common.integration.curios.CuriosUtil;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
-import sfiomn.legendarysurvivaloverhaul.util.CapabilityUtil;
+import sfiomn.legendarysurvivaloverhaul.util.AttachmentUtil;
 
 import java.util.Random;
 
@@ -21,7 +21,7 @@ public class RenderWetnessGui
     private static final int WETNESS_TEXTURE_POS_Y = 96;
     private static final int WETNESS_TEXTURE_WIDTH = 10;
     private static final int WETNESS_TEXTURE_HEIGHT = 10;
-    private static WetnessCapability WETNESS_CAP = null;
+    private static WetnessAttachment WETNESS_CAP = null;
     private static int frameCounter = -1;
     private static boolean startAnimation = false;
     private static WetnessIcon lastWetnessIcon;
@@ -50,7 +50,7 @@ public class RenderWetnessGui
     public static void drawWetness(GuiGraphics gui, Player player, int width, int height)
     {
         if (WETNESS_CAP == null || player.tickCount % 20 == 0)
-            WETNESS_CAP = CapabilityUtil.getWetnessCapability(player);
+            WETNESS_CAP = AttachmentUtil.getWetnessAttachment(player);
 
         int wetness = WETNESS_CAP.getWetness();
         if (wetness == 0)
@@ -103,7 +103,7 @@ public class RenderWetnessGui
 
         public static WetnessIcon get(int wetness)
         {
-            float wetnessRation = wetness / (float) WetnessCapability.WETNESS_LIMIT;
+            float wetnessRation = wetness / (float) WetnessAttachment.WETNESS_LIMIT;
             if (wetnessRation <= 0.25f)
                 return WETNESS_0;
             else if (wetnessRation <= 0.5f)

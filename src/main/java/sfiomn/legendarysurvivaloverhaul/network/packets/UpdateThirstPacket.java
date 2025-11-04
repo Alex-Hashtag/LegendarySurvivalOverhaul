@@ -12,8 +12,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
-import sfiomn.legendarysurvivaloverhaul.common.capabilities.thirst.ThirstCapability;
-import sfiomn.legendarysurvivaloverhaul.util.CapabilityUtil;
+import sfiomn.legendarysurvivaloverhaul.common.attachments.thirst.ThirstAttachment;
+import sfiomn.legendarysurvivaloverhaul.util.AttachmentUtil;
 
 public record UpdateThirstPacket(
         CompoundTag compound
@@ -39,7 +39,7 @@ public record UpdateThirstPacket(
             LocalPlayer player = Minecraft.getInstance().player;
             if (player != null)
             {
-                ThirstCapability thirst = CapabilityUtil.getThirstCapability(player);
+                ThirstAttachment thirst = AttachmentUtil.getThirstAttachment(player);
                 thirst.readNBT(pkt.compound());
             }
         });

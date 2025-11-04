@@ -12,7 +12,7 @@ import net.minecraft.world.entity.player.Player;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
 import sfiomn.legendarysurvivaloverhaul.registry.AttributeRegistry;
-import sfiomn.legendarysurvivaloverhaul.util.CapabilityUtil;
+import sfiomn.legendarysurvivaloverhaul.util.AttachmentUtil;
 
 import java.util.Collection;
 
@@ -52,7 +52,7 @@ public class HealthCommand extends CommandBase
                 if (entity instanceof Player player && src.getEntity() instanceof Player)
                 {
                     reply.append("Player ").append(player.getName().getString()).append(" ");
-                    float shieldValue = CapabilityUtil.getHealthCapability(player).getShieldHealth();
+                    float shieldValue = AttachmentUtil.getHealthAttachment(player).getShieldHealth();
 
                     reply.append("Shield: ")
                             .append(shieldValue)
@@ -78,7 +78,7 @@ public class HealthCommand extends CommandBase
                 if (entity instanceof Player player && src.getEntity() instanceof Player)
                 {
                     reply.append("Player ").append(player.getName().getString()).append(" ");
-                    float healthValue = CapabilityUtil.getHealthCapability(player).getAdditionalHealth();
+                    float healthValue = AttachmentUtil.getHealthAttachment(player).getAdditionalHealth();
 
                     reply.append("Additional Health: ")
                             .append(healthValue)
@@ -126,7 +126,7 @@ public class HealthCommand extends CommandBase
         {
             if (entity instanceof Player player)
             {
-                CapabilityUtil.getHealthCapability(player).setShieldHealth((float) shieldValue);
+                AttachmentUtil.getHealthAttachment(player).setShieldHealth((float) shieldValue);
             }
         }
         return Command.SINGLE_SUCCESS;
@@ -138,7 +138,7 @@ public class HealthCommand extends CommandBase
         {
             if (entity instanceof Player player)
             {
-                CapabilityUtil.getHealthCapability(player).setAdditionalHealth((float) healthValue);
+                AttachmentUtil.getHealthAttachment(player).setAdditionalHealth((float) healthValue);
             }
         }
         return Command.SINGLE_SUCCESS;

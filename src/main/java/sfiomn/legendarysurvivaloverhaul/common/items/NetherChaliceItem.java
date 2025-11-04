@@ -17,7 +17,7 @@ import org.jetbrains.annotations.Nullable;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.thirst.ThirstUtil;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
-import sfiomn.legendarysurvivaloverhaul.util.CapabilityUtil;
+import sfiomn.legendarysurvivaloverhaul.util.AttachmentUtil;
 
 import java.util.List;
 
@@ -36,7 +36,7 @@ public class NetherChaliceItem extends WearableCurioItem
 
         ItemStack itemstack = player.getItemInHand(usedHand);
 
-        if (CapabilityUtil.getThirstCapability(player).isHydrationLevelAtMax())
+        if (AttachmentUtil.getThirstAttachment(player).isHydrationLevelAtMax())
             return InteractionResultHolder.fail(itemstack);
 
         HitResult positionLookedAt = player.pick(player.getAttributeValue(Attributes.BLOCK_INTERACTION_RANGE) / 2, 0.0F, true);

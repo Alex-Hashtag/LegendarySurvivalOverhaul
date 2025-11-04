@@ -13,8 +13,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import sfiomn.legendarysurvivaloverhaul.api.temperature.TemperatureEnum;
 import sfiomn.legendarysurvivaloverhaul.api.temperature.TemperatureUtil;
-import sfiomn.legendarysurvivaloverhaul.common.capabilities.temperature.TemperatureItemCapability;
-import sfiomn.legendarysurvivaloverhaul.util.CapabilityUtil;
+import sfiomn.legendarysurvivaloverhaul.common.attachments.temperature.TemperatureItemAttachment;
+import sfiomn.legendarysurvivaloverhaul.util.AttachmentUtil;
 
 
 public class ThermometerProperty implements ClampedItemPropertyFunction
@@ -39,7 +39,7 @@ public class ThermometerProperty implements ClampedItemPropertyFunction
         {
             try
             {
-                TemperatureItemCapability tempItemCap = CapabilityUtil.getTempItemCapability(itemStack);
+                TemperatureItemAttachment tempItemCap = AttachmentUtil.getTempItemAttachment(itemStack);
                 if (holder != null && tempItemCap.shouldUpdate(level.getGameTime()))
                 {
                     tempItemCap.updateWorldTemperature(level, holder, level.getGameTime());

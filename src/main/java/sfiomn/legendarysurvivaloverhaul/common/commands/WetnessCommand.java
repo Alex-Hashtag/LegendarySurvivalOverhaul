@@ -8,8 +8,8 @@ import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
-import sfiomn.legendarysurvivaloverhaul.common.capabilities.wetness.WetnessCapability;
-import sfiomn.legendarysurvivaloverhaul.util.CapabilityUtil;
+import sfiomn.legendarysurvivaloverhaul.common.attachments.wetness.WetnessAttachment;
+import sfiomn.legendarysurvivaloverhaul.util.AttachmentUtil;
 
 public class WetnessCommand extends CommandBase
 {
@@ -19,7 +19,7 @@ public class WetnessCommand extends CommandBase
                 .requires((p_198521_0_) -> p_198521_0_.hasPermission(2))
                 .then(Commands.literal("get").executes(src -> new WetnessCommand().get(src.getSource())))
                 .then(Commands.literal("set")
-                        .then(Commands.argument("value", IntegerArgumentType.integer(0, WetnessCapability.WETNESS_LIMIT))
+                        .then(Commands.argument("value", IntegerArgumentType.integer(0, WetnessAttachment.WETNESS_LIMIT))
                                 .executes(src -> new WetnessCommand().setWetness(src.getSource(), IntegerArgumentType.getInteger(src, "value")))))
         );
     }
@@ -31,12 +31,12 @@ public class WetnessCommand extends CommandBase
         {
             if (source.getEntity() instanceof Player player)
             {
-                WetnessCapability cap = CapabilityUtil.getWetnessCapability(player);
+                WetnessAttachment cap = AttachmentUtil.getWetnessAttachment(player);
 
                 int wetness = cap.getWetness();
                 int ticksWet = cap.getWetnessTickTimer();
 
-                String reply = "Wetness: " + wetness + "/" + WetnessCapability.WETNESS_LIMIT + "\nTicks Wet: " + ticksWet;
+                String reply = "Wetness: " + wetness + "/" + WetnessAttachment.WETNESS_LIMIT + "\nTicks Wet: " + ticksWet;
 
                 source.sendSuccess(() -> Component.literal(reply), false);
             }
@@ -49,7 +49,7 @@ public class WetnessCommand extends CommandBase
 
     private int setWetness(CommandSourceStack src, int value) throws CommandSyntaxException
     {
-        WetnessCapability cap = CapabilityUtil.getWetnessCapability(src.getPlayerOrException());
+        WetnessAttachment cap = AttachmentUtil.getWetnessAttachment(src.getPlayerOrException());
         cap.setWetness(value);
         src.sendSuccess(() -> Component.literal("Set wetness to " + value), false);
         return Command.SINGLE_SUCCESS;

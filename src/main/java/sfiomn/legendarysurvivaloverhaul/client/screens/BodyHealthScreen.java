@@ -14,10 +14,10 @@ import org.jetbrains.annotations.NotNull;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.bodydamage.BodyDamageUtil;
 import sfiomn.legendarysurvivaloverhaul.api.bodydamage.BodyPartEnum;
-import sfiomn.legendarysurvivaloverhaul.common.capabilities.bodydamage.BodyDamageCapability;
+import sfiomn.legendarysurvivaloverhaul.common.attachments.bodydamage.BodyDamageAttachment;
 import sfiomn.legendarysurvivaloverhaul.network.packets.BodyPartHealingTimeMessage;
 import sfiomn.legendarysurvivaloverhaul.registry.KeyMappingRegistry;
-import sfiomn.legendarysurvivaloverhaul.util.CapabilityUtil;
+import sfiomn.legendarysurvivaloverhaul.util.AttachmentUtil;
 import sfiomn.legendarysurvivaloverhaul.util.MathUtil;
 
 import java.util.HashMap;
@@ -94,7 +94,7 @@ public class BodyHealthScreen extends Screen
 
         flashCounters.clear();
 
-        BodyDamageCapability cap = CapabilityUtil.getBodyDamageCapability(player);
+        BodyDamageAttachment cap = AttachmentUtil.getBodyDamageAttachment(player);
         bodyPartHealth.clear();
         for (BodyPartEnum bodyPart : BodyPartEnum.values())
         {
@@ -129,7 +129,7 @@ public class BodyHealthScreen extends Screen
                 iter.remove();
         }
 
-        BodyDamageCapability cap = CapabilityUtil.getBodyDamageCapability(player);
+        BodyDamageAttachment cap = AttachmentUtil.getBodyDamageAttachment(player);
         for (BodyPartEnum bodyPart : BodyPartEnum.values())
         {
             if (bodyPartHealth.get(bodyPart) != cap.getBodyPartDamage(bodyPart))

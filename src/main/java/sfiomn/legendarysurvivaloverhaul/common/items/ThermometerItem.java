@@ -15,10 +15,10 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
-import sfiomn.legendarysurvivaloverhaul.common.capabilities.temperature.TemperatureItemCapability;
+import sfiomn.legendarysurvivaloverhaul.common.attachments.temperature.TemperatureItemAttachment;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
 import sfiomn.legendarysurvivaloverhaul.registry.KeyMappingRegistry;
-import sfiomn.legendarysurvivaloverhaul.util.CapabilityUtil;
+import sfiomn.legendarysurvivaloverhaul.util.AttachmentUtil;
 import sfiomn.legendarysurvivaloverhaul.util.WorldUtil;
 
 import javax.annotation.Nullable;
@@ -37,7 +37,7 @@ public class ThermometerItem extends Item
     {
         if (level.isClientSide())
         {
-            TemperatureItemCapability tempCap = CapabilityUtil.getTempItemCapability(player.getMainHandItem());
+            TemperatureItemAttachment tempCap = AttachmentUtil.getTempItemAttachment(player.getMainHandItem());
 
             float temperature = tempCap.getWorldTemperatureLevel();
             Component temperatureComponent;

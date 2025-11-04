@@ -1,4 +1,4 @@
-package sfiomn.legendarysurvivaloverhaul.common.capabilities.temperature;
+package sfiomn.legendarysurvivaloverhaul.common.attachments.temperature;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -9,7 +9,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.common.util.INBTSerializable;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
-import sfiomn.legendarysurvivaloverhaul.api.temperature.ITemperatureCapability;
+import sfiomn.legendarysurvivaloverhaul.api.temperature.ITemperatureAttachment;
 import sfiomn.legendarysurvivaloverhaul.api.temperature.TemperatureEnum;
 import sfiomn.legendarysurvivaloverhaul.api.temperature.TemperatureUtil;
 import sfiomn.legendarysurvivaloverhaul.common.effects.FrostbiteEffect;
@@ -21,9 +21,9 @@ import java.util.List;
 import java.util.Set;
 
 // Code adapted from 
-// https://github.com/Charles445/SimpleDifficulty/blob/v0.3.4/src/main/java/com/charles445/simpledifficulty/capability/TemperatureCapability.java
+// https://github.com/Charles445/SimpleDifficulty/blob/v0.3.4/src/main/java/com/charles445/simpledifficulty/capability/TemperatureAttachment.java
 
-public class TemperatureCapability implements ITemperatureCapability, INBTSerializable<CompoundTag>
+public class TemperatureAttachment implements ITemperatureAttachment, INBTSerializable<CompoundTag>
 {
     private float temperature;
     private Set<Integer> temperatureImmunities;
@@ -36,7 +36,7 @@ public class TemperatureCapability implements ITemperatureCapability, INBTSerial
     private boolean manualDirty;
     private int packetTimer;
 
-    public TemperatureCapability()
+    public TemperatureAttachment()
     {
         this.init();
     }

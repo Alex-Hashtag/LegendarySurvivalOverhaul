@@ -6,7 +6,7 @@ import net.minecraft.world.level.Level;
 /**
  * Interface for thirst capability
  */
-public interface IThirstCapability
+public interface IThirstAttachment
 {
     float getThirstExhaustion();
 

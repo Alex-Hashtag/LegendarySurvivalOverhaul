@@ -4,7 +4,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import sfiomn.legendarysurvivaloverhaul.api.temperature.ModifierBase;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
-import sfiomn.legendarysurvivaloverhaul.util.CapabilityUtil;
+import sfiomn.legendarysurvivaloverhaul.util.AttachmentUtil;
 
 public class FreezeModifier extends ModifierBase
 {
@@ -19,7 +19,7 @@ public class FreezeModifier extends ModifierBase
         if (Config.Baked.maxFreezeTemperatureModifier == 0)
             return 0.0f;
 
-        int freezeTickTimer = CapabilityUtil.getTempCapability(player).getFreezeTickTimer();
+        int freezeTickTimer = AttachmentUtil.getTempAttachment(player).getFreezeTickTimer();
 
         if (freezeTickTimer > 0)
         {

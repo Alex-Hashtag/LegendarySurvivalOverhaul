@@ -1,4 +1,4 @@
-package sfiomn.legendarysurvivaloverhaul.common.capabilities.wetness;
+package sfiomn.legendarysurvivaloverhaul.common.attachments.wetness;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
@@ -22,7 +22,7 @@ import net.minecraft.world.level.material.LavaFluid;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.util.INBTSerializable;
-import sfiomn.legendarysurvivaloverhaul.api.wetness.IWetnessCapability;
+import sfiomn.legendarysurvivaloverhaul.api.wetness.IWetnessAttachment;
 import sfiomn.legendarysurvivaloverhaul.common.integration.curios.CuriosUtil;
 import sfiomn.legendarysurvivaloverhaul.common.integration.meadow.MeadowUtil;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
@@ -30,7 +30,7 @@ import sfiomn.legendarysurvivaloverhaul.registry.ItemRegistry;
 import sfiomn.legendarysurvivaloverhaul.util.MathUtil;
 import sfiomn.legendarysurvivaloverhaul.util.WorldUtil;
 
-public class WetnessCapability implements IWetnessCapability, INBTSerializable<CompoundTag>
+public class WetnessAttachment implements IWetnessAttachment, INBTSerializable<CompoundTag>
 {
     public static final int WETNESS_LIMIT = 400;
 
@@ -41,7 +41,7 @@ public class WetnessCapability implements IWetnessCapability, INBTSerializable<C
     private int oldWetness;
     private boolean dirty = false;
 
-    public WetnessCapability()
+    public WetnessAttachment()
     {
         this.init();
     }

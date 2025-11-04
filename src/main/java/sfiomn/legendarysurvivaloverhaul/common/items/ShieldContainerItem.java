@@ -12,10 +12,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
-import sfiomn.legendarysurvivaloverhaul.common.capabilities.health.HealthCapability;
+import sfiomn.legendarysurvivaloverhaul.common.attachments.health.HealthAttachment;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
 import sfiomn.legendarysurvivaloverhaul.registry.SoundRegistry;
-import sfiomn.legendarysurvivaloverhaul.util.CapabilityUtil;
+import sfiomn.legendarysurvivaloverhaul.util.AttachmentUtil;
 
 public class ShieldContainerItem extends Item
 {
@@ -41,7 +41,7 @@ public class ShieldContainerItem extends Item
     {
         if (Config.Baked.healthOverhaulEnabled)
         {
-            HealthCapability cap = CapabilityUtil.getHealthCapability(player);
+            HealthAttachment cap = AttachmentUtil.getHealthAttachment(player);
 
             if (cap.getShieldHealth() > Config.Baked.maxShieldHealth)
             {
@@ -65,7 +65,7 @@ public class ShieldContainerItem extends Item
 
             if (Config.Baked.healthOverhaulEnabled)
             {
-                HealthCapability cap = CapabilityUtil.getHealthCapability(player);
+                HealthAttachment cap = AttachmentUtil.getHealthAttachment(player);
 
                 cap.addShieldHealth(2);
 

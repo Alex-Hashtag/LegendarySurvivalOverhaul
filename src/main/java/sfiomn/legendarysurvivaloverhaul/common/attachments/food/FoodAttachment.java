@@ -1,19 +1,19 @@
-package sfiomn.legendarysurvivaloverhaul.common.capabilities.food;
+package sfiomn.legendarysurvivaloverhaul.common.attachments.food;
 
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import sfiomn.legendarysurvivaloverhaul.api.food.IFoodCapability;
+import sfiomn.legendarysurvivaloverhaul.api.food.IFoodAttachment;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
 
-public class FoodCapability implements IFoodCapability
+public class FoodAttachment implements IFoodAttachment
 {
     //Unsaved data
     private Vec3 oldPos;
     private boolean wasSprinting;
     private int updateTickTimer; // Update immediately first time around
 
-    public FoodCapability()
+    public FoodAttachment()
     {
         this.init();
     }

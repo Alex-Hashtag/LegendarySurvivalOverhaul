@@ -1,4 +1,4 @@
-package sfiomn.legendarysurvivaloverhaul.common.capabilities.bodydamage;
+package sfiomn.legendarysurvivaloverhaul.common.attachments.bodydamage;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;

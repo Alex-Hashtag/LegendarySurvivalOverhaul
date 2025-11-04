@@ -4,9 +4,9 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
 /**
- * Capability for handling localized body damage
+ * Attachment for handling localized body damage
  */
-public interface IBodyDamageCapability
+public interface IBodyDamageAttachment
 {
     int getExpectedBrokenHearts();
 

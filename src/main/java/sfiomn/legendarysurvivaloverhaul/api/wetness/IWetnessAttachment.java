@@ -3,7 +3,7 @@ package sfiomn.legendarysurvivaloverhaul.api.wetness;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
-public interface IWetnessCapability
+public interface IWetnessAttachment
 {
     int getWetness();
 

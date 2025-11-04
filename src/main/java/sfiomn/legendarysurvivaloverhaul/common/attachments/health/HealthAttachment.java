@@ -1,13 +1,13 @@
-package sfiomn.legendarysurvivaloverhaul.common.capabilities.health;
+package sfiomn.legendarysurvivaloverhaul.common.attachments.health;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
 import net.neoforged.neoforge.common.util.INBTSerializable;
-import sfiomn.legendarysurvivaloverhaul.api.health.IHealthCapability;
+import sfiomn.legendarysurvivaloverhaul.api.health.IHealthAttachment;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
 
-public class HealthCapability implements IHealthCapability, INBTSerializable<CompoundTag>
+public class HealthAttachment implements IHealthAttachment, INBTSerializable<CompoundTag>
 {
     private float additionalHealth;
     private float shieldHealth;
@@ -17,7 +17,7 @@ public class HealthCapability implements IHealthCapability, INBTSerializable<Com
     private float oldShieldHealth;
     private int packetTimer;
 
-    public HealthCapability()
+    public HealthAttachment()
     {
         this.init();
     }

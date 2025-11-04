@@ -2,9 +2,9 @@ package sfiomn.legendarysurvivaloverhaul.util.internal;
 
 import net.minecraft.world.entity.player.Player;
 import sfiomn.legendarysurvivaloverhaul.api.wetness.IWetnessUtil;
-import sfiomn.legendarysurvivaloverhaul.common.capabilities.wetness.WetnessCapability;
+import sfiomn.legendarysurvivaloverhaul.common.attachments.wetness.WetnessAttachment;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
-import sfiomn.legendarysurvivaloverhaul.util.CapabilityUtil;
+import sfiomn.legendarysurvivaloverhaul.util.AttachmentUtil;
 
 public class WetnessUtilInternal implements IWetnessUtil
 {
@@ -14,7 +14,7 @@ public class WetnessUtilInternal implements IWetnessUtil
         if (!isWetnessActive(player))
             return;
 
-        WetnessCapability cap = CapabilityUtil.getWetnessCapability(player);
+        WetnessAttachment cap = AttachmentUtil.getWetnessAttachment(player);
         cap.addWetness(wetness);
     }
 
@@ -24,7 +24,7 @@ public class WetnessUtilInternal implements IWetnessUtil
         if (!Config.Baked.wetnessEnabled)
             return;
 
-        WetnessCapability cap = CapabilityUtil.getWetnessCapability(player);
+        WetnessAttachment cap = AttachmentUtil.getWetnessAttachment(player);
         cap.setWetnessTickTimer(-1);
         cap.setDirty();
     }
@@ -35,7 +35,7 @@ public class WetnessUtilInternal implements IWetnessUtil
         if (!Config.Baked.wetnessEnabled)
             return;
 
-        WetnessCapability cap = CapabilityUtil.getWetnessCapability(player);
+        WetnessAttachment cap = AttachmentUtil.getWetnessAttachment(player);
         if (cap.getWetnessTickTimer() == -1)
         {
             cap.setWetnessTickTimer(0);
@@ -49,6 +49,6 @@ public class WetnessUtilInternal implements IWetnessUtil
         if (!Config.Baked.wetnessEnabled)
             return false;
 
-        return CapabilityUtil.getWetnessCapability(player).getWetnessTickTimer() != -1;
+        return AttachmentUtil.getWetnessAttachment(player).getWetnessTickTimer() != -1;
     }
 }

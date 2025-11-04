@@ -9,9 +9,9 @@ import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.player.Player;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.bodydamage.BodyPartEnum;
-import sfiomn.legendarysurvivaloverhaul.common.capabilities.bodydamage.BodyDamageCapability;
+import sfiomn.legendarysurvivaloverhaul.common.attachments.bodydamage.BodyDamageAttachment;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
-import sfiomn.legendarysurvivaloverhaul.util.CapabilityUtil;
+import sfiomn.legendarysurvivaloverhaul.util.AttachmentUtil;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -24,7 +24,7 @@ public class RenderBodyDamageGui
     private static final int BODY_MODEL_TEXTURE_HEIGHT = 32;
     private static final Map<BodyPartEnum, Integer> flashCounters = new HashMap<>();
     private static final Map<BodyPartEnum, Float> bodyPartHealth = new HashMap<>();
-    private static BodyDamageCapability BODY_DAMAGE_CAP = null;
+    private static BodyDamageAttachment BODY_DAMAGE_CAP = null;
 
     public static void render(Gui gui, GuiGraphics guiGraphics, float partialTicks, int width, int height)
     {
@@ -40,7 +40,7 @@ public class RenderBodyDamageGui
                 RenderSystem.defaultBlendFunc();
 
                 if (BODY_DAMAGE_CAP == null || player.tickCount % 20 == 0)
-                    BODY_DAMAGE_CAP = CapabilityUtil.getBodyDamageCapability(player);
+                    BODY_DAMAGE_CAP = AttachmentUtil.getBodyDamageAttachment(player);
 
                 if (BODY_DAMAGE_CAP.isWoundedBelow((float) Config.Baked.bodyDamageIndicatorRenderHealthLimit))
                 {
@@ -54,7 +54,7 @@ public class RenderBodyDamageGui
         }
     }
 
-    public static void drawBodyDamage(GuiGraphics gui, Player player, BodyDamageCapability cap, int width, int height)
+    public static void drawBodyDamage(GuiGraphics gui, Player player, BodyDamageAttachment cap, int width, int height)
     {
         int x = width / 2 + 92 + Config.Baked.bodyDamageIndicatorOffsetX;
         int y = height - 33 + Config.Baked.bodyDamageIndicatorOffsetY;

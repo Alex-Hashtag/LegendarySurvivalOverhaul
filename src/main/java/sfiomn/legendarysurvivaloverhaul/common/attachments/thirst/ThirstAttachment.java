@@ -1,4 +1,4 @@
-package sfiomn.legendarysurvivaloverhaul.common.capabilities.thirst;
+package sfiomn.legendarysurvivaloverhaul.common.attachments.thirst;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -8,12 +8,12 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.util.INBTSerializable;
 import sfiomn.legendarysurvivaloverhaul.api.ModDamageTypes;
-import sfiomn.legendarysurvivaloverhaul.api.thirst.IThirstCapability;
+import sfiomn.legendarysurvivaloverhaul.api.thirst.IThirstAttachment;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
 import sfiomn.legendarysurvivaloverhaul.registry.MobEffectRegistry;
 import sfiomn.legendarysurvivaloverhaul.util.DifficultyUtil;
 
-public class ThirstCapability implements IThirstCapability, INBTSerializable<CompoundTag>
+public class ThirstAttachment implements IThirstAttachment, INBTSerializable<CompoundTag>
 {
     public static int MAX_HYDRATION = 20;
     public static float MAX_SATURATION = 20.0f;
@@ -34,7 +34,7 @@ public class ThirstCapability implements IThirstCapability, INBTSerializable<Com
     private boolean dirty;
     private int packetTimer;
 
-    public ThirstCapability()
+    public ThirstAttachment()
     {
         this.init();
     }

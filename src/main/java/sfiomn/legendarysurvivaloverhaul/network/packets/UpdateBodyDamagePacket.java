@@ -12,8 +12,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
-import sfiomn.legendarysurvivaloverhaul.common.capabilities.bodydamage.BodyDamageCapability;
-import sfiomn.legendarysurvivaloverhaul.util.CapabilityUtil;
+import sfiomn.legendarysurvivaloverhaul.common.attachments.bodydamage.BodyDamageAttachment;
+import sfiomn.legendarysurvivaloverhaul.util.AttachmentUtil;
 
 public record UpdateBodyDamagePacket(
         CompoundTag compound
@@ -38,8 +38,8 @@ public record UpdateBodyDamagePacket(
             LocalPlayer player = Minecraft.getInstance().player;
             if (player != null)
             {
-                BodyDamageCapability bodyDamageCapability = CapabilityUtil.getBodyDamageCapability(player);
-                bodyDamageCapability.readNBT(pkt.compound());
+                BodyDamageAttachment bodyDamageAttachment = AttachmentUtil.getBodyDamageAttachment(player);
+                bodyDamageAttachment.readNBT(pkt.compound());
             }
         });
     }

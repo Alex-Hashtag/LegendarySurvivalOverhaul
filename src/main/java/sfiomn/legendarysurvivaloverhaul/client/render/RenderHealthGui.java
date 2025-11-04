@@ -11,10 +11,10 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.health.HealthUtil;
-import sfiomn.legendarysurvivaloverhaul.common.capabilities.health.HealthCapability;
+import sfiomn.legendarysurvivaloverhaul.common.attachments.health.HealthAttachment;
 import sfiomn.legendarysurvivaloverhaul.common.integration.overflowingbars.OverflowingBarsUtil;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
-import sfiomn.legendarysurvivaloverhaul.util.CapabilityUtil;
+import sfiomn.legendarysurvivaloverhaul.util.AttachmentUtil;
 
 import java.util.Random;
 
@@ -26,7 +26,7 @@ public class RenderHealthGui
     // Since 1.20.6+ vanilla GUI icons.png was split into individual sprites under hud/heart/*.
     // We now use the sprite-based rendering API via GuiGraphics.blitSprite.
     private static final int HEART_TEXTURE_HEIGHT = 9;
-    private static HealthCapability HEALTH_CAP = null;
+    private static HealthAttachment HEALTH_CAP = null;
 
     public static void render(Gui gui, GuiGraphics guiGraphics, float partialTicks, int width, int height)
     {
@@ -61,7 +61,7 @@ public class RenderHealthGui
     public static int drawHealthBar(GuiGraphics gui, Player player, int width, int height, int leftHeight)
     {
         if (HEALTH_CAP == null || player.tickCount % 20 == 0)
-            HEALTH_CAP = CapabilityUtil.getHealthCapability(player);
+            HEALTH_CAP = AttachmentUtil.getHealthAttachment(player);
 
         int brokenHearts = HealthUtil.getEffectiveBrokenHearts(player);
         float shieldHealth = HEALTH_CAP.getShieldHealth();

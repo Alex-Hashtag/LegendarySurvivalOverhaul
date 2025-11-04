@@ -11,11 +11,11 @@ import net.minecraft.world.entity.player.Player;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.temperature.TemperatureEnum;
 import sfiomn.legendarysurvivaloverhaul.api.temperature.TemperatureUtil;
-import sfiomn.legendarysurvivaloverhaul.common.capabilities.temperature.TemperatureCapability;
+import sfiomn.legendarysurvivaloverhaul.common.attachments.temperature.TemperatureAttachment;
 import sfiomn.legendarysurvivaloverhaul.common.integration.curios.CuriosUtil;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
 import sfiomn.legendarysurvivaloverhaul.registry.MobEffectRegistry;
-import sfiomn.legendarysurvivaloverhaul.util.CapabilityUtil;
+import sfiomn.legendarysurvivaloverhaul.util.AttachmentUtil;
 import sfiomn.legendarysurvivaloverhaul.util.EnumUtil;
 import sfiomn.legendarysurvivaloverhaul.util.MathUtil;
 import sfiomn.legendarysurvivaloverhaul.util.WorldUtil;
@@ -41,7 +41,7 @@ public class RenderTemperatureGui
     private static final int BODY_TEMPERATURE_NUMBER_TEXTURE_HEIGHT = 5;
     private static final int HUNGER_TEXTURE_WIDTH = 9;
     private static final int HUNGER_TEXTURE_HEIGHT = 9;
-    private static TemperatureCapability TEMPERATURE_CAP = null;
+    private static TemperatureAttachment TEMPERATURE_CAP = null;
     private static int frameCounter = -1;
     private static boolean risingTemperature = false;
     private static boolean startAnimation = false;
@@ -103,7 +103,7 @@ public class RenderTemperatureGui
     {
 
         if (TEMPERATURE_CAP == null || player.tickCount % 20 == 0)
-            TEMPERATURE_CAP = CapabilityUtil.getTempCapability(player);
+            TEMPERATURE_CAP = AttachmentUtil.getTempAttachment(player);
 
         int x = width / 2 - (TEMPERATURE_TEXTURE_WIDTH / 2);
         int y = height - 52;
@@ -217,7 +217,7 @@ public class RenderTemperatureGui
     {
 
         if (TEMPERATURE_CAP == null || player.tickCount % 20 == 0)
-            TEMPERATURE_CAP = CapabilityUtil.getTempCapability(player);
+            TEMPERATURE_CAP = AttachmentUtil.getTempAttachment(player);
 
         int x = width / 2 - 92 - 32 + Config.Baked.bodyTemperatureDisplayOffsetX;
         int y = height - 14 + Config.Baked.bodyTemperatureDisplayOffsetY;

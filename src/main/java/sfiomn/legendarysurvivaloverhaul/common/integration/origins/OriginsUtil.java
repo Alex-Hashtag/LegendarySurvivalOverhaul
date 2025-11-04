@@ -18,14 +18,14 @@ public class OriginsUtil
 
 //    public static boolean isOrigin(Player player, ResourceKey<Origin> origin) {
 //        return LegendarySurvivalOverhaul.originsLoaded &&
-//                player.getCapability(OriginsAPI.ORIGIN_CONTAINER).isPresent() &&
-//                player.getCapability(OriginsAPI.ORIGIN_CONTAINER).resolve().isPresent() &&
-//                player.getCapability(OriginsAPI.ORIGIN_CONTAINER).resolve().get().getOrigins().containsValue(origin);
+//                player.getAttachment(OriginsAPI.ORIGIN_CONTAINER).isPresent() &&
+//                player.getAttachment(OriginsAPI.ORIGIN_CONTAINER).resolve().isPresent() &&
+//                player.getAttachment(OriginsAPI.ORIGIN_CONTAINER).resolve().get().getOrigins().containsValue(origin);
 //    }
 
     public static void assignOriginsFeatures(Player player)
     {
-//        player.getCapability(OriginsAPI.ORIGIN_CONTAINER).ifPresent(
+//        player.getAttachment(OriginsAPI.ORIGIN_CONTAINER).ifPresent(
 //                origins -> {
 //                    if (origins.getOrigins().containsValue(MERLING)) {
 //                        removeThirstEffect(player);

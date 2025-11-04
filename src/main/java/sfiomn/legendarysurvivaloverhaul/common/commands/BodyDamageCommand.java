@@ -12,8 +12,8 @@ import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.server.command.EnumArgument;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.bodydamage.BodyPartEnum;
-import sfiomn.legendarysurvivaloverhaul.common.capabilities.bodydamage.BodyDamageCapability;
-import sfiomn.legendarysurvivaloverhaul.util.CapabilityUtil;
+import sfiomn.legendarysurvivaloverhaul.common.attachments.bodydamage.BodyDamageAttachment;
+import sfiomn.legendarysurvivaloverhaul.util.AttachmentUtil;
 
 import java.util.Collection;
 
@@ -55,7 +55,7 @@ public class BodyDamageCommand extends CommandBase
             {
                 if (entity instanceof Player player && source.getEntity() instanceof Player)
                 {
-                    BodyDamageCapability cap = CapabilityUtil.getBodyDamageCapability(player);
+                    BodyDamageAttachment cap = AttachmentUtil.getBodyDamageAttachment(player);
                     float bodyPartMaxHealth = cap.getBodyPartMaxHealth(bodyPart);
                     float bodyPartHealth = bodyPartMaxHealth - cap.getBodyPartDamage(bodyPart);
 
@@ -83,7 +83,7 @@ public class BodyDamageCommand extends CommandBase
             {
                 if (entity instanceof Player player && source.getEntity() instanceof Player)
                 {
-                    BodyDamageCapability cap = CapabilityUtil.getBodyDamageCapability(player);
+                    BodyDamageAttachment cap = AttachmentUtil.getBodyDamageAttachment(player);
                     reply.append("Player ").append(player.getName().getString()).append("\n");
                     for (BodyPartEnum bodyPart : BodyPartEnum.values())
                     {
@@ -114,7 +114,7 @@ public class BodyDamageCommand extends CommandBase
         {
             if (entity instanceof Player player)
             {
-                BodyDamageCapability cap = CapabilityUtil.getBodyDamageCapability(player);
+                BodyDamageAttachment cap = AttachmentUtil.getBodyDamageAttachment(player);
                 cap.setBodyPartDamage(bodyPart, cap.getBodyPartMaxHealth(bodyPart) - healthValue);
             }
         }
@@ -128,7 +128,7 @@ public class BodyDamageCommand extends CommandBase
         {
             if (entity instanceof Player player)
             {
-                BodyDamageCapability cap = CapabilityUtil.getBodyDamageCapability(player);
+                BodyDamageAttachment cap = AttachmentUtil.getBodyDamageAttachment(player);
                 for (BodyPartEnum bodyPart : BodyPartEnum.values())
                     cap.setBodyPartDamage(bodyPart, cap.getBodyPartMaxHealth(bodyPart) - healthValue);
             }
@@ -143,7 +143,7 @@ public class BodyDamageCommand extends CommandBase
         {
             if (entity instanceof Player player)
             {
-                BodyDamageCapability cap = CapabilityUtil.getBodyDamageCapability(player);
+                BodyDamageAttachment cap = AttachmentUtil.getBodyDamageAttachment(player);
                 cap.setBodyPartDamage(bodyPart, cap.getBodyPartDamage(bodyPart) - healthValue);
             }
         }
@@ -157,7 +157,7 @@ public class BodyDamageCommand extends CommandBase
         {
             if (entity instanceof Player player)
             {
-                BodyDamageCapability cap = CapabilityUtil.getBodyDamageCapability(player);
+                BodyDamageAttachment cap = AttachmentUtil.getBodyDamageAttachment(player);
                 for (BodyPartEnum bodyPart : BodyPartEnum.values())
                     cap.setBodyPartDamage(bodyPart, cap.getBodyPartDamage(bodyPart) - healthValue);
             }

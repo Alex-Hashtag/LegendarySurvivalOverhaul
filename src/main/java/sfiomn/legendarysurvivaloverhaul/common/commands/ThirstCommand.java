@@ -9,8 +9,8 @@ import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
-import sfiomn.legendarysurvivaloverhaul.common.capabilities.thirst.ThirstCapability;
-import sfiomn.legendarysurvivaloverhaul.util.CapabilityUtil;
+import sfiomn.legendarysurvivaloverhaul.common.attachments.thirst.ThirstAttachment;
+import sfiomn.legendarysurvivaloverhaul.util.AttachmentUtil;
 import sfiomn.legendarysurvivaloverhaul.util.MathUtil;
 
 public class ThirstCommand extends CommandBase
@@ -40,7 +40,7 @@ public class ThirstCommand extends CommandBase
         {
             if (source.getEntity() instanceof Player player)
             {
-                ThirstCapability cap = CapabilityUtil.getThirstCapability(player);
+                ThirstAttachment cap = AttachmentUtil.getThirstAttachment(player);
 
                 int hydration = cap.getHydrationLevel();
                 float saturation = MathUtil.round(cap.getSaturationLevel(), 2);
@@ -59,7 +59,7 @@ public class ThirstCommand extends CommandBase
 
     private int setHydration(CommandSourceStack src, int value) throws CommandSyntaxException
     {
-        ThirstCapability cap = CapabilityUtil.getThirstCapability(src.getPlayerOrException());
+        ThirstAttachment cap = AttachmentUtil.getThirstAttachment(src.getPlayerOrException());
         cap.setHydrationLevel(value);
         src.sendSuccess(() -> Component.literal("Set hydration to " + value), false);
         return Command.SINGLE_SUCCESS;
@@ -67,7 +67,7 @@ public class ThirstCommand extends CommandBase
 
     private int setSaturation(CommandSourceStack src, float value) throws CommandSyntaxException
     {
-        ThirstCapability cap = CapabilityUtil.getThirstCapability(src.getPlayerOrException());
+        ThirstAttachment cap = AttachmentUtil.getThirstAttachment(src.getPlayerOrException());
         cap.setThirstSaturation(value);
         src.sendSuccess(() -> Component.literal("Set saturation to " + value), false);
         return Command.SINGLE_SUCCESS;
@@ -75,7 +75,7 @@ public class ThirstCommand extends CommandBase
 
     private int setExhaustion(CommandSourceStack src, float value) throws CommandSyntaxException
     {
-        ThirstCapability cap = CapabilityUtil.getThirstCapability(src.getPlayerOrException());
+        ThirstAttachment cap = AttachmentUtil.getThirstAttachment(src.getPlayerOrException());
         cap.setThirstExhaustion(value);
         src.sendSuccess(() -> Component.literal("Set exhaustion to " + value), false);
         return Command.SINGLE_SUCCESS;

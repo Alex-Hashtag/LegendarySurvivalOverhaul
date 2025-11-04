@@ -12,8 +12,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
-import sfiomn.legendarysurvivaloverhaul.common.capabilities.temperature.TemperatureCapability;
-import sfiomn.legendarysurvivaloverhaul.util.CapabilityUtil;
+import sfiomn.legendarysurvivaloverhaul.common.attachments.temperature.TemperatureAttachment;
+import sfiomn.legendarysurvivaloverhaul.util.AttachmentUtil;
 
 public record UpdateTemperaturesPacket(
         CompoundTag compound
@@ -39,7 +39,7 @@ public record UpdateTemperaturesPacket(
             LocalPlayer player = Minecraft.getInstance().player;
             if (player != null)
             {
-                TemperatureCapability temperature = CapabilityUtil.getTempCapability(player);
+                TemperatureAttachment temperature = AttachmentUtil.getTempAttachment(player);
                 temperature.readNBT(pkt.compound());
             }
         });

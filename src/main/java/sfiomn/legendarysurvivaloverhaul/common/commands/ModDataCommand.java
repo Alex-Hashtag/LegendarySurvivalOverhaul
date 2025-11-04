@@ -9,13 +9,13 @@ import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.bodydamage.BodyPartEnum;
 import sfiomn.legendarysurvivaloverhaul.api.temperature.TemperatureEnum;
 import sfiomn.legendarysurvivaloverhaul.api.temperature.TemperatureUtil;
-import sfiomn.legendarysurvivaloverhaul.common.capabilities.bodydamage.BodyDamageCapability;
-import sfiomn.legendarysurvivaloverhaul.common.capabilities.health.HealthCapability;
-import sfiomn.legendarysurvivaloverhaul.common.capabilities.temperature.TemperatureCapability;
-import sfiomn.legendarysurvivaloverhaul.common.capabilities.thirst.ThirstCapability;
-import sfiomn.legendarysurvivaloverhaul.common.capabilities.wetness.WetnessCapability;
+import sfiomn.legendarysurvivaloverhaul.common.attachments.bodydamage.BodyDamageAttachment;
+import sfiomn.legendarysurvivaloverhaul.common.attachments.health.HealthAttachment;
+import sfiomn.legendarysurvivaloverhaul.common.attachments.temperature.TemperatureAttachment;
+import sfiomn.legendarysurvivaloverhaul.common.attachments.thirst.ThirstAttachment;
+import sfiomn.legendarysurvivaloverhaul.common.attachments.wetness.WetnessAttachment;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
-import sfiomn.legendarysurvivaloverhaul.util.CapabilityUtil;
+import sfiomn.legendarysurvivaloverhaul.util.AttachmentUtil;
 import sfiomn.legendarysurvivaloverhaul.util.MathUtil;
 
 public class ModDataCommand extends CommandBase
@@ -48,7 +48,7 @@ public class ModDataCommand extends CommandBase
                 // Temperature Data
                 if (Config.Baked.temperatureEnabled)
                 {
-                    TemperatureCapability tempCap = CapabilityUtil.getTempCapability(player);
+                    TemperatureAttachment tempCap = AttachmentUtil.getTempAttachment(player);
                     float bodyTemp = MathUtil.round(tempCap.getTemperatureLevel(), 2);
                     float targetTemp = MathUtil.round(TemperatureUtil.getPlayerTargetTemperature(player), 2);
                     float worldTemp = MathUtil.round(TemperatureUtil.getWorldTemperature(player.level(), player.blockPosition()), 2);
@@ -64,7 +64,7 @@ public class ModDataCommand extends CommandBase
                 // Thirst Data
                 if (Config.Baked.thirstEnabled)
                 {
-                    ThirstCapability thirstCap = CapabilityUtil.getThirstCapability(player);
+                    ThirstAttachment thirstCap = AttachmentUtil.getThirstAttachment(player);
                     int hydration = thirstCap.getHydrationLevel();
                     float saturation = MathUtil.round(thirstCap.getSaturationLevel(), 2);
                     float exhaustion = MathUtil.round(thirstCap.getThirstExhaustion(), 2);
@@ -79,12 +79,12 @@ public class ModDataCommand extends CommandBase
                 // Wetness Data
                 if (Config.Baked.wetnessEnabled)
                 {
-                    WetnessCapability wetnessCap = CapabilityUtil.getWetnessCapability(player);
+                    WetnessAttachment wetnessCap = AttachmentUtil.getWetnessAttachment(player);
                     int wetness = wetnessCap.getWetness();
                     int ticksWet = wetnessCap.getWetnessTickTimer();
 
                     output.append("║ 🌊 WETNESS                             ║\n");
-                    output.append("║   Wetness:     ").append(String.format("%-23s", wetness + "/" + WetnessCapability.WETNESS_LIMIT)).append("║\n");
+                    output.append("║   Wetness:     ").append(String.format("%-23s", wetness + "/" + WetnessAttachment.WETNESS_LIMIT)).append("║\n");
                     output.append("║   Ticks Wet:   ").append(String.format("%-23s", ticksWet)).append("║\n");
                     output.append("╠════════════════════════════════════════╣\n");
                 }
@@ -92,7 +92,7 @@ public class ModDataCommand extends CommandBase
                 // Health Data
                 if (Config.Baked.healthOverhaulEnabled)
                 {
-                    HealthCapability healthCap = CapabilityUtil.getHealthCapability(player);
+                    HealthAttachment healthCap = AttachmentUtil.getHealthAttachment(player);
                     float currentHealth = MathUtil.round(player.getHealth(), 2);
                     float maxHealth = MathUtil.round(player.getMaxHealth(), 2);
                     float additionalHealth = MathUtil.round(healthCap.getAdditionalHealth(), 2);
@@ -108,7 +108,7 @@ public class ModDataCommand extends CommandBase
                 // Body Damage Data
                 if (Config.Baked.localizedBodyDamageEnabled)
                 {
-                    BodyDamageCapability bodyCap = CapabilityUtil.getBodyDamageCapability(player);
+                    BodyDamageAttachment bodyCap = AttachmentUtil.getBodyDamageAttachment(player);
 
                     output.append("║ 🩹 BODY DAMAGE                         ║\n");
                     for (BodyPartEnum bodyPart : BodyPartEnum.values())

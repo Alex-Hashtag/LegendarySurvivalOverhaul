@@ -3,7 +3,7 @@ package sfiomn.legendarysurvivaloverhaul.api.temperature;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 
-public interface ITemperatureItemCapability
+public interface ITemperatureItemAttachment
 {
     float getWorldTemperatureLevel();
 

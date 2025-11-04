@@ -8,11 +8,11 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.health.IHealthUtil;
-import sfiomn.legendarysurvivaloverhaul.common.capabilities.health.HealthCapability;
+import sfiomn.legendarysurvivaloverhaul.common.attachments.health.HealthAttachment;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
 import sfiomn.legendarysurvivaloverhaul.registry.AttributeRegistry;
 import sfiomn.legendarysurvivaloverhaul.util.AttributeBuilder;
-import sfiomn.legendarysurvivaloverhaul.util.CapabilityUtil;
+import sfiomn.legendarysurvivaloverhaul.util.AttachmentUtil;
 
 import java.util.Objects;
 import java.util.UUID;
@@ -48,8 +48,8 @@ public class HealthUtilInternal implements IHealthUtil
 
         if (Config.Baked.healthOverhaulEnabled)
         {
-            HealthCapability healthCapability = CapabilityUtil.getHealthCapability(player);
-            float additionalHealth = healthCapability.getAdditionalHealth();
+            HealthAttachment healthAttachment = AttachmentUtil.getHealthAttachment(player);
+            float additionalHealth = healthAttachment.getAdditionalHealth();
             int minhHearthLimitWithBrokenHearth = (int) player.getAttributeValue(AttributeRegistry.BROKEN_HEART_RESILIENCE);
 
             maxHealth += additionalHealth - Mth.clamp(((int) player.getAttributeValue(AttributeRegistry.BROKEN_HEART)) * 2, 0, maxHealth + additionalHealth - minhHearthLimitWithBrokenHearth * 2);
@@ -65,8 +65,8 @@ public class HealthUtilInternal implements IHealthUtil
 
         if (Config.Baked.healthOverhaulEnabled)
         {
-            HealthCapability healthCapability = CapabilityUtil.getHealthCapability(player);
-            maxHealth += healthCapability.getAdditionalHealth();
+            HealthAttachment healthAttachment = AttachmentUtil.getHealthAttachment(player);
+            maxHealth += healthAttachment.getAdditionalHealth();
         }
         return maxHealth;
     }
@@ -93,10 +93,10 @@ public class HealthUtilInternal implements IHealthUtil
     @Override
     public float hurtPlayer(Player player, float damageValue)
     {
-        HealthCapability healthCapability = CapabilityUtil.getHealthCapability(player);
+        HealthAttachment healthAttachment = AttachmentUtil.getHealthAttachment(player);
 
-        float shieldValue = Math.max(healthCapability.getShieldHealth(), 0);
-        healthCapability.addShieldHealth(-damageValue);
+        float shieldValue = Math.max(healthAttachment.getShieldHealth(), 0);
+        healthAttachment.addShieldHealth(-damageValue);
 
         return Math.max(damageValue - shieldValue, 0);
     }
@@ -104,7 +104,7 @@ public class HealthUtilInternal implements IHealthUtil
     @Override
     public void loseHearth(Player player, int amountLost)
     {
-        HealthCapability healthCapability = CapabilityUtil.getHealthCapability(player);
+        HealthAttachment healthAttachment = AttachmentUtil.getHealthAttachment(player);
 
         int minhHearthLimit = (int) player.getAttributeValue(Holder.direct(AttributeRegistry.PERMANENT_HEART.get()));
         // max losable heart amount = max player health - minhHearthLimit
@@ -112,7 +112,7 @@ public class HealthUtilInternal implements IHealthUtil
 
         if (actuallyLostHearts > 0)
         {
-            healthCapability.setAdditionalHealth(healthCapability.getAdditionalHealth() - actuallyLostHearts * 2);
+            healthAttachment.setAdditionalHealth(healthAttachment.getAdditionalHealth() - actuallyLostHearts * 2);
         }
         updatePlayerMaxHealthAttribute(player);
     }

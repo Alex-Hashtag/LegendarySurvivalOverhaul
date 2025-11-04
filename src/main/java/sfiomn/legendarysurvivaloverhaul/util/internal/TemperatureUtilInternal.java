@@ -19,11 +19,11 @@ import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonTemperatureConsumable;
 import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonTemperatureConsumableBlock;
 import sfiomn.legendarysurvivaloverhaul.api.data.manager.TemperatureDataManager;
 import sfiomn.legendarysurvivaloverhaul.api.temperature.*;
-import sfiomn.legendarysurvivaloverhaul.common.capabilities.temperature.TemperatureCapability;
+import sfiomn.legendarysurvivaloverhaul.common.attachments.temperature.TemperatureAttachment;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
 import sfiomn.legendarysurvivaloverhaul.registry.AttributeRegistry;
 import sfiomn.legendarysurvivaloverhaul.util.AttributeBuilder;
-import sfiomn.legendarysurvivaloverhaul.util.CapabilityUtil;
+import sfiomn.legendarysurvivaloverhaul.util.AttachmentUtil;
 import sfiomn.legendarysurvivaloverhaul.util.MathUtil;
 import sfiomn.legendarysurvivaloverhaul.util.WorldUtil;
 
@@ -133,7 +133,7 @@ public class TemperatureUtilInternal implements ITemperatureUtil
         if (!Config.Baked.temperatureEnabled)
             return false;
 
-        TemperatureCapability cap = CapabilityUtil.getTempCapability(player);
+        TemperatureAttachment cap = AttachmentUtil.getTempAttachment(player);
         return cap.getTemperatureImmunities().contains(immunity.id);
     }
 
@@ -143,7 +143,7 @@ public class TemperatureUtilInternal implements ITemperatureUtil
         if (!Config.Baked.temperatureEnabled)
             return;
 
-        TemperatureCapability cap = CapabilityUtil.getTempCapability(player);
+        TemperatureAttachment cap = AttachmentUtil.getTempAttachment(player);
         cap.addTemperatureImmunityId(immunity.id);
     }
 
@@ -153,7 +153,7 @@ public class TemperatureUtilInternal implements ITemperatureUtil
         if (!Config.Baked.temperatureEnabled)
             return;
 
-        TemperatureCapability cap = CapabilityUtil.getTempCapability(player);
+        TemperatureAttachment cap = AttachmentUtil.getTempAttachment(player);
         cap.removeTemperatureImmunityId(immunity.id);
     }
 
