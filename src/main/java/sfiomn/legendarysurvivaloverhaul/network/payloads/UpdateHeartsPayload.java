@@ -1,7 +1,6 @@
 package sfiomn.legendarysurvivaloverhaul.network.payloads;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -35,7 +34,7 @@ public record UpdateHeartsPayload(
     {
         if (ctx.flow() != PacketFlow.CLIENTBOUND) return;
         ctx.enqueueWork(() -> {
-            LocalPlayer player = Minecraft.getInstance().player;
+            Player player = ctx.player();
             if (player != null)
             {
                 HealthAttachment healthAttachment = AttachmentUtil.getHealthAttachment(player);

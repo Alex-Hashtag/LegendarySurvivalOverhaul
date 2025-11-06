@@ -1,7 +1,6 @@
 package sfiomn.legendarysurvivaloverhaul.network.payloads;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -34,9 +33,8 @@ public record UpdateThirstPayload(
     // Handler
     public static void handle(UpdateThirstPayload pkt, IPayloadContext ctx)
     {
-        if (ctx.flow() != PacketFlow.CLIENTBOUND) return;
         ctx.enqueueWork(() -> {
-            LocalPlayer player = Minecraft.getInstance().player;
+            Player player = ctx.player();
             if (player != null)
             {
                 ThirstAttachment thirst = AttachmentUtil.getThirstAttachment(player);
