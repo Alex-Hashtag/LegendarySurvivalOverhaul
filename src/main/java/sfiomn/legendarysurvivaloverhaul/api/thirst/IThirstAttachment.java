@@ -10,7 +10,7 @@ public interface IThirstAttachment
 {
     float getThirstExhaustion();
 
-    void setThirstExhaustion(float exhaustion);
+    void setExhaustion(float exhaustion);
 
     int getHydrationLevel();
 
@@ -18,9 +18,9 @@ public interface IThirstAttachment
 
     float getSaturationLevel();
 
-    int getThirstTickTimer();
+    int getTickTimer();
 
-    void setThirstTickTimer(int ticktimer);
+    void setTickTimer(int ticktimer);
 
     int getThirstDamageTickTimer();
 
@@ -30,7 +30,7 @@ public interface IThirstAttachment
 
     void setThirstDamageCounter(int damagecounter);
 
-    void setThirstSaturation(float saturation);
+    void setSaturation(float saturation);
 
     void addThirstExhaustion(float exhaustion);
 
@@ -38,7 +38,7 @@ public interface IThirstAttachment
 
     void addSaturationLevel(float saturation);
 
-    void addThirstTickTimer(int ticktimer);
+    void addTickTimer(int ticktimer);
 
     void addThirstDamageTickTimer(int ticktimer);
 

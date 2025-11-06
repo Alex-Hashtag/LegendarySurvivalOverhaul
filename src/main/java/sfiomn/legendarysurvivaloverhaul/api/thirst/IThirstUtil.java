@@ -21,7 +21,7 @@ public interface IThirstUtil
 
     JsonThirstBlock getBlockThirstLookedAt(Player player, double finalDistance);
 
-    void setThirstEnumTag(final ItemStack stack, HydrationEnum hydrationEnum);
+    void setHydrationEnumTag(final ItemStack stack, HydrationEnum hydrationEnum);
 
     HydrationEnum getHydrationEnumTag(final ItemStack stack);
 

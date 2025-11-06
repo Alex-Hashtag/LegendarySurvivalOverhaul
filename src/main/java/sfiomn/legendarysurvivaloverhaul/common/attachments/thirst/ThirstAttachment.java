@@ -183,7 +183,6 @@ public class ThirstAttachment implements IThirstAttachment, INBTSerializable<Com
         return exhaustion;
     }
 
-    @Override
     public void setThirstExhaustion(float exhaustion)
     {
         setExhaustion(exhaustion);
@@ -208,23 +207,18 @@ public class ThirstAttachment implements IThirstAttachment, INBTSerializable<Com
         return saturation;
     }
 
+    @Override
     public int getTickTimer()
     {
         return tickTimer;
     }
 
+    @Override
     public void setTickTimer(int ticktimer)
     {
         this.tickTimer = ticktimer;
     }
 
-    @Override
-    public int getThirstTickTimer()
-    {
-        return getTickTimer();
-    }
-
-    @Override
     public void setThirstTickTimer(int ticktimer)
     {
         setTickTimer(ticktimer);
@@ -254,6 +248,7 @@ public class ThirstAttachment implements IThirstAttachment, INBTSerializable<Com
         this.damageCounter = damageCounter;
     }
 
+    @Override
     public void setExhaustion(float exhaustion)
     {
         this.exhaustion = Math.max(exhaustion, 0.0f);
@@ -262,6 +257,7 @@ public class ThirstAttachment implements IThirstAttachment, INBTSerializable<Com
             this.exhaustion = 0.0f;
     }
 
+    @Override
     public void setSaturation(float saturation)
     {
         this.saturation = Mth.clamp(saturation, 0.0f, MAX_SATURATION);
@@ -270,7 +266,6 @@ public class ThirstAttachment implements IThirstAttachment, INBTSerializable<Com
             this.saturation = 0.0f;
     }
 
-    @Override
     public void setThirstSaturation(float saturation)
     {
         setSaturation(saturation);
@@ -295,12 +290,12 @@ public class ThirstAttachment implements IThirstAttachment, INBTSerializable<Com
         this.setSaturation(Math.max(Math.round((this.getSaturationLevel() + saturation) * 100.0f) / 100.0f, 0.0f));
     }
 
+    @Override
     public void addTickTimer(int ticktimer)
     {
         this.setTickTimer(this.getTickTimer() + ticktimer);
     }
 
-    @Override
     public void addThirstTickTimer(int ticktimer)
     {
         addTickTimer(ticktimer);

@@ -13,7 +13,6 @@ public class CommandRegistry
     public static final CommandBase HEALTH_COMMAND = new HealthCommand();
     public static final CommandBase THIRST = new ThirstCommand();
     public static final CommandBase WETNESS = new WetnessCommand();
-    public static final CommandBase MOD_DATA = new ModDataCommand();
 
     public static void registerCommandsEvent(RegisterCommandsEvent event)
     {
@@ -24,6 +23,5 @@ public class CommandRegistry
         dispatcher.register(HEALTH_COMMAND.getBuilder());
         dispatcher.register(THIRST.getBuilder());
         dispatcher.register(WETNESS.getBuilder());
-        dispatcher.register(MOD_DATA.getBuilder());
     }
 }
