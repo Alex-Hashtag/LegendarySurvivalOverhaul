@@ -172,7 +172,7 @@ public class BodyDamageUtilInternal implements IBodyDamageUtil
 
             if (jsonConsumableHeal.recoveryEffectDuration > 0)
             {
-                player.addEffect(new MobEffectInstance(MobEffectRegistry.RECOVERY, jsonConsumableHeal.recoveryEffectDuration, jsonConsumableHeal.recoveryEffectAmplifier, false, true, true));
+                player.addEffect(new MobEffectInstance(MobEffectRegistry.RECOVERY, jsonConsumableHeal.recoveryEffectDuration, jsonConsumableHeal.recoveryEffectAmplifier, false, false, true));
             }
 
             player.level().playSound(null, player, SoundRegistry.HEAL_BODY_PART.get(), SoundSource.PLAYERS, 1.0f, 1.0f);

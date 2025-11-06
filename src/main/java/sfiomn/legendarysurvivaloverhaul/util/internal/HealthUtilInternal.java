@@ -50,9 +50,9 @@ public class HealthUtilInternal implements IHealthUtil
         {
             HealthAttachment healthAttachment = AttachmentUtil.getHealthAttachment(player);
             float additionalHealth = healthAttachment.getAdditionalHealth();
-            int minhHearthLimitWithBrokenHearth = (int) player.getAttributeValue(AttributeRegistry.BROKEN_HEART_RESILIENCE);
-
-            maxHealth += additionalHealth - Mth.clamp(((int) player.getAttributeValue(AttributeRegistry.BROKEN_HEART)) * 2, 0, maxHealth + additionalHealth - minhHearthLimitWithBrokenHearth * 2);
+            // Apply effective broken hearts (resilience already accounted for inside getEffectiveBrokenHearts)
+            int effectiveBrokenHearts = getEffectiveBrokenHearts(player);
+            maxHealth += additionalHealth - (effectiveBrokenHearts * 2);
         }
         return maxHealth;
     }
