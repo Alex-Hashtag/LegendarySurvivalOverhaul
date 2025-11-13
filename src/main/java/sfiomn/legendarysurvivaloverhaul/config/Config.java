@@ -898,10 +898,10 @@ public class Config
             builder.push("passive-regeneration");
             passiveLimbRegenerationOnFullHealth = builder
                     .comment(" The limbs will be healed when the player is at max health.")
-                    .define(" Passive Limb Regeneration On Full Health", true);
+                    .define(" Passive Limb Regeneration On Full Health", false);
             passiveLimbRegenerationEffects = builder
                     .comment(" The limbs will be healed when the player is under one of the mentioned effect, the most damaged limb first.")
-                    .defineListAllowEmpty("Passive Limb Regeneration On Effects", List.of("minecraft:regeneration", "farmersdelight:comfort"), Config::validateEffectName);
+                    .defineListAllowEmpty("Passive Limb Regeneration On Effects", List.of("minecraft:regeneration"), Config::validateEffectName);
             passiveLimbRegenerationAmplificationEnabled = builder
                     .comment(" Whether the amplification of the effect increase the limb regeneration speed.",
                             " The speed increase follows the same logic as the Regeneration Effect Amplification :",

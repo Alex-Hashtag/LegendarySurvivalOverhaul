@@ -110,7 +110,7 @@ dependencies {
 
     // Serene Seasons & GlitchCore (NeoForge 1.21.1)
     compileOnly("maven.modrinth:serene-seasons:10.1.0.3-neoforge")
-    runtimeOnly("maven.modrinth:serene-seasons:10.1.0.3-neoforge")
+//    runtimeOnly("maven.modrinth:serene-seasons:10.1.0.3-neoforge")
     compileOnly("maven.modrinth:glitchcore:2.1.0.0-neoforge")
     runtimeOnly("maven.modrinth:glitchcore:2.1.0.0-neoforge")
     compileOnly("curse.maven:terrafirmacraft-302973:6187491")

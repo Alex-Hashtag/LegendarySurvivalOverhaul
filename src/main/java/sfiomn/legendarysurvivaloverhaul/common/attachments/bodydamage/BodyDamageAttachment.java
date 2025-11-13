@@ -11,6 +11,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.common.util.INBTSerializable;
 import org.apache.commons.lang3.tuple.Pair;
+import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.bodydamage.BodyDamageUtil;
 import sfiomn.legendarysurvivaloverhaul.api.bodydamage.BodyPartEnum;
 import sfiomn.legendarysurvivaloverhaul.api.bodydamage.IBodyDamageAttachment;
@@ -196,6 +197,8 @@ public class BodyDamageAttachment implements IBodyDamageAttachment, INBTSerializ
                 BodyPart bodyPart = bodyPartPair.getValue();
                 if (bodyPart.getRemainingHealingTicks() > 0)
                 {
+                    LegendarySurvivalOverhaul.LOGGER.info("[ITEM HEALING] {} has {} healing ticks remaining, healing {} per tick", 
+                        bodyPartPair.getKey(), bodyPart.getRemainingHealingTicks(), bodyPart.getHealingPerTicks());
                     int healingTick = Math.min(20, bodyPart.getRemainingHealingTicks());
                     healWithFoodExhaustion(player, bodyPartPair.getKey(), healingTick * bodyPart.getHealingPerTicks());
                     if (bodyPart.isMaxHealth())
@@ -218,8 +221,14 @@ public class BodyDamageAttachment implements IBodyDamageAttachment, INBTSerializ
             } else
             {
                 this.passiveLimbRegenerationEffects = BodyDamageUtil.getPlayerPassiveLimbRegenerationEffect(player);
+                boolean atFullHealth = HealthUtil.getPlayerStableMaxHealth(player) == player.getHealth();
                 this.passiveLimbRegenerationEnabled = this.passiveLimbRegenerationEffects != null ||
-                        (Config.Baked.passiveLimbRegenerationOnFullHealth && HealthUtil.getPlayerStableMaxHealth(player) == player.getHealth());
+                        (Config.Baked.passiveLimbRegenerationOnFullHealth && atFullHealth);
+                if (this.passiveLimbRegenerationEnabled) {
+                    LegendarySurvivalOverhaul.LOGGER.info("[PASSIVE REGEN] Enabled! hasEffect={}, fullHealthEnabled={}, atFullHealth={}, playerHealth={}/{}",
+                        this.passiveLimbRegenerationEffects != null, Config.Baked.passiveLimbRegenerationOnFullHealth, atFullHealth,
+                        player.getHealth(), HealthUtil.getPlayerStableMaxHealth(player));
+                }
             }
         }
 
@@ -245,6 +254,7 @@ public class BodyDamageAttachment implements IBodyDamageAttachment, INBTSerializ
             if (healingTickTimer >= Config.Baked.firstAidSuppliesTickTimer)
             {
                 healingTickTimer = 0;
+                LegendarySurvivalOverhaul.LOGGER.info("[FIRST AID HEALING] Healing most damaged limb");
 
                 healMostDamaged(player,
                         Config.Baked.limbRegenerationMode,
@@ -261,6 +271,7 @@ public class BodyDamageAttachment implements IBodyDamageAttachment, INBTSerializ
             if (healingTickTimer++ >= passiveTickTimer)
             {
                 healingTickTimer = 0;
+                LegendarySurvivalOverhaul.LOGGER.info("[PASSIVE REGEN HEALING] Healing most damaged limb");
 
                 healMostDamaged(player,
                         EnumUtil.limbRegenerationMode.SIMPLE,

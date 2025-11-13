@@ -60,12 +60,18 @@ public class AttributeBuilder
         AttributeInstance instance = player.getAttribute(attribute);
         if (instance != null)
         {
+            // Create a unique ResourceLocation using the UUID to avoid conflicts
+            ResourceLocation modifierId = ResourceLocation.fromNamespaceAndPath(
+                    descriptionId.getNamespace(),
+                    descriptionId.getPath() + "_" + uuid.toString().substring(0, 8)
+            );
+            
             // Remove existing modifier with this ID if present
-            if (instance.getModifier(descriptionId) != null)
+            if (instance.getModifier(modifierId) != null)
             {
-                instance.removeModifier(descriptionId);
+                instance.removeModifier(modifierId);
             }
-            instance.addPermanentModifier(new AttributeModifier(descriptionId, value, AttributeModifier.Operation.ADD_VALUE));
+            instance.addPermanentModifier(new AttributeModifier(modifierId, value, AttributeModifier.Operation.ADD_VALUE));
         }
     }
 
