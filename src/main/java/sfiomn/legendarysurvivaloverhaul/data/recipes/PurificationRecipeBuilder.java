@@ -30,11 +30,12 @@ public class PurificationRecipeBuilder
     private final int cookingTime;
     private final Advancement.Builder advancement = Advancement.Builder.advancement();
     private final RecipeSerializer<? extends AbstractCookingRecipe> serializer;
+    private final Kind kind;
     private boolean hasCriterion = false;
     @Nullable
     private String group;
 
-    private PurificationRecipeBuilder(RecipeCategory pCategory, CookingBookCategory pBookCategory, ItemLike pResult, Ingredient pIngredient, float pExperience, int pCookingTime, RecipeSerializer<? extends AbstractCookingRecipe> pSerializer)
+    private PurificationRecipeBuilder(RecipeCategory pCategory, CookingBookCategory pBookCategory, ItemLike pResult, Ingredient pIngredient, float pExperience, int pCookingTime, RecipeSerializer<? extends AbstractCookingRecipe> pSerializer, Kind kind)
     {
         this.category = pCategory;
         this.bookCategory = pBookCategory;
@@ -43,16 +44,17 @@ public class PurificationRecipeBuilder
         this.experience = pExperience;
         this.cookingTime = pCookingTime;
         this.serializer = pSerializer;
+        this.kind = kind;
     }
 
     public static PurificationRecipeBuilder blasting(Ingredient pIngredient, RecipeCategory pCategory, ItemLike pResult, float pExperience, int pCookingTime)
     {
-        return new PurificationRecipeBuilder(pCategory, determineBlastingRecipeCategory(pResult), pResult, pIngredient, pExperience, pCookingTime, RecipeRegistry.PURIFICATION_BLASTING_SERIALIZER.get());
+        return new PurificationRecipeBuilder(pCategory, determineBlastingRecipeCategory(pResult), pResult, pIngredient, pExperience, pCookingTime, RecipeRegistry.PURIFICATION_BLASTING_SERIALIZER.get(), Kind.BLASTING);
     }
 
     public static PurificationRecipeBuilder smelting(Ingredient pIngredient, RecipeCategory pCategory, ItemLike pResult, float pExperience, int pCookingTime)
     {
-        return new PurificationRecipeBuilder(pCategory, determineSmeltingRecipeCategory(pResult), pResult, pIngredient, pExperience, pCookingTime, RecipeRegistry.PURIFICATION_SMELTING_SERIALIZER.get());
+        return new PurificationRecipeBuilder(pCategory, determineSmeltingRecipeCategory(pResult), pResult, pIngredient, pExperience, pCookingTime, RecipeRegistry.PURIFICATION_SMELTING_SERIALIZER.get(), Kind.SMELTING);
     }
 
     private static CookingBookCategory determineSmeltingRecipeCategory(ItemLike pResult)
@@ -101,7 +103,7 @@ public class PurificationRecipeBuilder
                 .addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(recipeId))
                 .build(recipeId.withPrefix("recipes/" + this.category.getFolderName() + "/"));
 
-        AbstractCookingRecipe recipe = this.serializer.getClass().getSimpleName().contains("Smelting")
+        AbstractCookingRecipe recipe = (this.kind == Kind.SMELTING)
                 ? new sfiomn.legendarysurvivaloverhaul.common.recipe.PurificationSmeltingRecipe(
                 this.group == null ? "" : this.group, this.bookCategory, this.ingredient,
                 new net.minecraft.world.item.ItemStack(this.result), this.experience, this.cookingTime)
@@ -121,4 +123,6 @@ public class PurificationRecipeBuilder
     }
 
     // Note: 1.20.4 RecipeOutput path used; no FinishedRecipe implementation needed.
+
+    private enum Kind { SMELTING, BLASTING }
 }

@@ -1,6 +1,7 @@
 package sfiomn.legendarysurvivaloverhaul.common.items;
 
 import com.mojang.blaze3d.platform.InputConstants;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.language.I18n;
@@ -59,7 +60,19 @@ public class ThermometerItem extends Item
         super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
         List<MutableComponent> text = new ArrayList<>();
 
-        if (InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), KeyMappingRegistry.showAddedDesc.getKey().getValue()))
+        // Tooltips can be built off the render thread (e.g., creative search trees). Avoid GLFW calls off-thread.
+        boolean showDetails = false;
+        if (RenderSystem.isOnRenderThread())
+        {
+            long windowHandle = Minecraft.getInstance().getWindow().getWindow();
+            int key = KeyMappingRegistry.showAddedDesc.getKey().getValue();
+            if (windowHandle != 0L && key != -1)
+            {
+                showDetails = InputConstants.isKeyDown(windowHandle, key);
+            }
+        }
+
+        if (showDetails)
         {
             text.add(Component.translatable("tooltip." + LegendarySurvivalOverhaul.MOD_ID + ".thermometer.description"));
             if (LegendarySurvivalOverhaul.curiosLoaded)

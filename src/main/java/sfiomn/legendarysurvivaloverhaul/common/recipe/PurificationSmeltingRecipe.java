@@ -7,7 +7,6 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
@@ -23,17 +22,34 @@ public class PurificationSmeltingRecipe extends SmeltingRecipe
         super(group, pCategory, ingredient, result, experience, cookingTime);
     }
 
-    public boolean matches(Container inventory, Level level)
+    @Override
+    public boolean matches(SingleRecipeInput input, Level level)
     {
-        return this.ingredient.test(inventory.getItem(0)) && ThirstUtil.getCapacityTag(inventory.getItem(0)) > 0;
+        ItemStack inputStack = input.item();
+        if (!this.ingredient.test(inputStack)) {
+            return false;
+        }
+        
+        int capacity = ThirstUtil.getCapacityTag(inputStack);
+        HydrationEnum hydration = ThirstUtil.getHydrationEnumTag(inputStack);
+        
+        // Debug logging
+        System.out.println("PurificationSmeltingRecipe.matches - Capacity: " + capacity + ", Hydration: " + hydration);
+        
+        return capacity > 0 && hydration == HydrationEnum.NORMAL;
     }
 
-    public ItemStack assemble(Container inventory, @NotNull HolderLookup.Provider provider)
+    @Override
+    public ItemStack assemble(SingleRecipeInput input, @NotNull HolderLookup.Provider provider)
     {
-        int hydrationCapacity = ThirstUtil.getCapacityTag(inventory.getItem(0));
+        int hydrationCapacity = ThirstUtil.getCapacityTag(input.item());
+        System.out.println("PurificationSmeltingRecipe.assemble - Input capacity: " + hydrationCapacity);
+        
         ItemStack result = this.result.copy();
         ThirstUtil.setHydrationEnumTag(result, HydrationEnum.PURIFIED);
         ThirstUtil.setCapacityTag(result, hydrationCapacity);
+        
+        System.out.println("PurificationSmeltingRecipe.assemble - Output capacity: " + ThirstUtil.getCapacityTag(result) + ", Hydration: " + ThirstUtil.getHydrationEnumTag(result));
         return result;
     }
 
@@ -61,10 +77,6 @@ public class PurificationSmeltingRecipe extends SmeltingRecipe
     public @NotNull RecipeType<?> getType()
     {
         return RecipeType.SMELTING;
-    }
-
-    public static class Type implements RecipeType<SewingRecipe>
-    {
     }
 
     public static class Serializer implements RecipeSerializer<PurificationSmeltingRecipe>

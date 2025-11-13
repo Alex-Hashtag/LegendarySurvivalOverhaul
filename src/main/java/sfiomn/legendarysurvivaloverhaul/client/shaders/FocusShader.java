@@ -8,7 +8,12 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
 public class FocusShader {
-    public static final ResourceLocation BLUR_SHADER = ResourceLocation.parse("shaders/post/blobs2.json");
+    public static final ResourceLocation BLOBS2_SHADER = ResourceLocation.parse("shaders/post/blobs2.json");
+    public static final ResourceLocation BLUR_SHADER = ResourceLocation.parse("shaders/post/blur.json");
+
+    private static boolean shaderLoadAttempted = false;
+    private static boolean shaderAvailable = false;
+    private static String loadedShaderName = null;
 
     public FocusShader() {}
 
@@ -18,13 +23,32 @@ public class FocusShader {
         var mc = Minecraft.getInstance();
         PostChain effect = mc.gameRenderer.currentEffect();
 
-        if (effect == null || !effect.getName().equals("minecraft:shaders/post/blobs2.json")) {
+        // Load once: try blobs2.json first, then blur.json; remember result to prevent repeated attempts/log spam
+        if (!shaderLoadAttempted) {
+            shaderLoadAttempted = true;
             try {
-                mc.gameRenderer.loadEffect(BLUR_SHADER);
+                mc.gameRenderer.loadEffect(BLOBS2_SHADER);
                 effect = mc.gameRenderer.currentEffect();
-            } catch (NullPointerException e) {
-                return;
+                shaderAvailable = (effect != null);
+                loadedShaderName = shaderAvailable ? effect.getName() : null;
+            } catch (Throwable t) {
+                // Fallback to blur.json on 1.21.x where blobs2.json was removed
+                try {
+                    mc.gameRenderer.loadEffect(BLUR_SHADER);
+                    effect = mc.gameRenderer.currentEffect();
+                    shaderAvailable = (effect != null);
+                    loadedShaderName = shaderAvailable ? effect.getName() : null;
+                } catch (Throwable ignored) {
+                    shaderAvailable = false;
+                }
             }
+        }
+
+        if (!shaderAvailable) return;
+
+        // Ensure the effect is still active; if some other mod shut it down, don't spam reloads
+        if (effect == null || (loadedShaderName != null && !effect.getName().equals(loadedShaderName))) {
+            return;
         }
 
         updateIntensity(intensity);
@@ -33,7 +57,7 @@ public class FocusShader {
     public void stopRender() {
         var mc = Minecraft.getInstance();
         PostChain effect = mc.gameRenderer.currentEffect();
-        if (effect != null && effect.getName().equals("minecraft:shaders/post/blobs2.json")) {
+        if (effect != null) {
             mc.gameRenderer.shutdownEffect();
         }
     }

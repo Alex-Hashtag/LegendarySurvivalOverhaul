@@ -42,7 +42,7 @@ import sfiomn.legendarysurvivaloverhaul.util.AttachmentUtil;
 
 import java.util.ListIterator;
 
-import static sfiomn.legendarysurvivaloverhaul.common.events.CommonForgeEvents.playerDrinkEffect;
+import static sfiomn.legendarysurvivaloverhaul.common.events.CommonNeoForgeEvents.playerDrinkEffect;
 import static sfiomn.legendarysurvivaloverhaul.common.integration.sereneseasons.SereneSeasonsUtil.plantCanGrow;
 import static sfiomn.legendarysurvivaloverhaul.common.integration.sereneseasons.SereneSeasonsUtil.seasonTooltip;
 import static sfiomn.legendarysurvivaloverhaul.util.ItemUtil.compassLocation;

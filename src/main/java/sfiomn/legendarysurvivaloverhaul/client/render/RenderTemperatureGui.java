@@ -85,13 +85,15 @@ public class RenderTemperatureGui
         if (!Minecraft.getInstance().options.hideGui)
         {
             Player player = Minecraft.getInstance().player;
-            if (player != null && player.hasEffect(MobEffectRegistry.COLD_HUNGER))
+            if (player != null && !player.isCreative() && !player.isSpectator() && player.hasEffect(MobEffectRegistry.COLD_HUNGER))
             {
                 RenderSystem.enableBlend();
                 RenderSystem.defaultBlendFunc();
 
                 Minecraft.getInstance().getProfiler().push("temperature_gui");
-                drawFoodBarColdEffect(guiGraphics, player, width, height);
+                int rightHeight = gui.rightHeight;
+                drawFoodBarColdEffect(guiGraphics, player, width, height, rightHeight);
+                gui.rightHeight += 10;
                 Minecraft.getInstance().getProfiler().pop();
 
                 RenderSystem.disableBlend();
@@ -282,14 +284,14 @@ public class RenderTemperatureGui
                 thermometerActualHeight + 5);
     }
 
-    public static void drawFoodBarColdEffect(GuiGraphics gui, Player player, int width, int height)
+    public static void drawFoodBarColdEffect(GuiGraphics gui, Player player, int width, int height, int rightHeight)
     {
 
         int foodLevel = player.getFoodData().getFoodLevel();
         float saturationLevelInt = (int) player.getFoodData().getSaturationLevel();
 
         int left = width / 2 + 91; // Same x offset as the hunger bar
-        int top = height - 39;
+        int top = height - rightHeight; // Use rightHeight to position correctly with other overlays
 
         // Draw the 10 hunger meats
         for (int i = 0; i < 10; i++)

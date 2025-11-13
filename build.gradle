@@ -104,6 +104,9 @@ dependencies {
     compileOnly("mezz.jei:jei-1.21.1-common-api:${jei_version}")
     compileOnly("mezz.jei:jei-1.21.1-neoforge-api:${jei_version}")
     runtimeOnly("mezz.jei:jei-1.21.1-neoforge:${jei_version}")
+    
+    // EMI (Embedded Module Interface) for 1.21.1
+    implementation "curse.maven:emi-580555:6420931"
 
     // Serene Seasons & GlitchCore (NeoForge 1.21.1)
     compileOnly("maven.modrinth:serene-seasons:10.1.0.3-neoforge")
@@ -116,12 +119,12 @@ dependencies {
     compileOnly("curse.maven:mutantmonsters-852665:5107399")
     // Vampirism (NeoForge 1.21.1)
     compileOnly("maven.modrinth:vampirism:1.21-1.10.1")
-    runtimeOnly("maven.modrinth:vampirism:1.21-1.10.1")
+//    runtimeOnly("maven.modrinth:vampirism:1.21-1.10.1")
     // Supplementaries 1.21.x (NeoForge) and its dependency Moonlight Lib
     compileOnly("maven.modrinth:moonlight:1.21-2.22.1-neoforge")
     runtimeOnly("maven.modrinth:moonlight:1.21-2.22.1-neoforge")
     compileOnly("maven.modrinth:supplementaries:neoforge_1.21-3.2.1")
-    runtimeOnly("maven.modrinth:supplementaries:neoforge_1.21-3.2.1")
+//    runtimeOnly("maven.modrinth:supplementaries:neoforge_1.21-3.2.1")
     compileOnly("curse.maven:beachparty-858691:6458692")
     compileOnly("curse.maven:meadow-821483:6467344")
     // Architectury API (NeoForge) 1.21.1

@@ -14,7 +14,6 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.core.Holder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -29,7 +28,6 @@ import net.minecraft.world.level.storage.PrimaryLevelData;
 import net.neoforged.api.distmarker.Dist;
 //import net.neoforged.neoforge.common.ForgeMod;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
-import net.neoforged.bus.api.Event;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.loading.FMLEnvironment;
@@ -42,10 +40,8 @@ import net.neoforged.neoforge.event.level.LevelEvent;
 import net.neoforged.neoforge.event.level.SleepFinishedTimeEvent;
 //import net.neoforged.neoforge.eventbus.api.Event;
 import net.neoforged.bus.api.EventPriority;
-import net.neoforged.fml.common.Mod;
 //import net.neoforged.neoforge.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
-import net.minecraft.core.registries.Registries;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.ModDamageTypes;
 import sfiomn.legendarysurvivaloverhaul.api.bodydamage.BodyDamageUtil;
@@ -87,7 +83,8 @@ import static sfiomn.legendarysurvivaloverhaul.util.internal.TemperatureUtilInte
         modid = LegendarySurvivalOverhaul.MOD_ID,
         bus = EventBusSubscriber.Bus.GAME
 )
-public class CommonForgeEvents {
+public class CommonNeoForgeEvents
+{
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onItemUse(PlayerInteractEvent.RightClickItem event) {
@@ -529,7 +526,7 @@ public class CommonForgeEvents {
         boolean isStart = player.tickCount < 20;
 
         // Update Temperature
-        if (Config.Baked.temperatureEnabled) {
+        if (Config.Baked.temperatureEnabled && !player.isCreative() && !player.isSpectator()) {
             var tempCap = AttachmentUtil.getTempAttachment(player);
             tempCap.tickUpdate(player, level, isStart);
             if (tempCap.isDirty()) {

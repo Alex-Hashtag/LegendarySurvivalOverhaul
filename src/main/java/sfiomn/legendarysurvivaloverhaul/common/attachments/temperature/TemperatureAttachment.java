@@ -3,6 +3,7 @@ package sfiomn.legendarysurvivaloverhaul.common.attachments.temperature;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Items;
@@ -13,7 +14,9 @@ import sfiomn.legendarysurvivaloverhaul.api.temperature.ITemperatureAttachment;
 import sfiomn.legendarysurvivaloverhaul.api.temperature.TemperatureEnum;
 import sfiomn.legendarysurvivaloverhaul.api.temperature.TemperatureUtil;
 import sfiomn.legendarysurvivaloverhaul.common.effects.FrostbiteEffect;
+import sfiomn.legendarysurvivaloverhaul.common.effects.HeatStrokeEffect;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
+import sfiomn.legendarysurvivaloverhaul.registry.MobEffectRegistry;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -163,7 +166,8 @@ public class TemperatureAttachment implements ITemperatureAttachment, INBTSerial
                 LegendarySurvivalOverhaul.LOGGER.info(tempEnum + ", " + getTemperatureLevel() + " -> " + this.targetTemp);
             }
 
-            // Effects application is handled elsewhere; no direct calls here on 1.21
+            // Apply temperature effects based on current temperature
+            applyTemperatureEffects(player, tempEnum);
         }
     }
 
@@ -179,8 +183,95 @@ public class TemperatureAttachment implements ITemperatureAttachment, INBTSerial
 
     private void shakePlayer(Player player)
     {
-        // PI * 0.4 = 1.25663706144
         player.setYBodyRot(player.getYRot() + (float) (Math.cos((double) player.tickCount * 3.25D) * 1.25663706144));
+    }
+
+    private void applyTemperatureEffects(Player player, TemperatureEnum tempEnum)
+    {
+        // Ensure effects stick for at least 5 seconds and are refreshed when close to expiring
+        // Duration in ticks
+        int effectDuration = 100;            // 5 seconds
+        int refreshThreshold = 40;           // 2 seconds
+        
+        // Apply or remove FROSTBITE effect
+        if (tempEnum == TemperatureEnum.FROSTBITE)
+        {
+            if (!FrostbiteEffect.playerIsImmuneToFrost(player))
+            {
+                var current = player.getEffect(MobEffectRegistry.FROSTBITE);
+                if (current == null || current.getDuration() <= refreshThreshold)
+                {
+                    player.addEffect(new MobEffectInstance(MobEffectRegistry.FROSTBITE, effectDuration, 0, false, false, true));
+                }
+            }
+        }
+        else
+        {
+            if (player.hasEffect(MobEffectRegistry.FROSTBITE))
+            {
+                player.removeEffect(MobEffectRegistry.FROSTBITE);
+            }
+        }
+
+        // Apply or remove COLD_HUNGER effect
+        if (tempEnum == TemperatureEnum.COLD || tempEnum == TemperatureEnum.FROSTBITE)
+        {
+            if (!FrostbiteEffect.playerIsImmuneToFrost(player))
+            {
+                var current = player.getEffect(MobEffectRegistry.COLD_HUNGER);
+                if (current == null || current.getDuration() <= refreshThreshold)
+                {
+                    player.addEffect(new MobEffectInstance(MobEffectRegistry.COLD_HUNGER, effectDuration, 0, false, false, true));
+                }
+            }
+        }
+        else
+        {
+            if (player.hasEffect(MobEffectRegistry.COLD_HUNGER))
+            {
+                player.removeEffect(MobEffectRegistry.COLD_HUNGER);
+            }
+        }
+
+        // Apply or remove HEAT_STROKE effect
+        if (tempEnum == TemperatureEnum.HEAT_STROKE)
+        {
+            if (!HeatStrokeEffect.playerIsImmuneToHeat(player))
+            {
+                var current = player.getEffect(MobEffectRegistry.HEAT_STROKE);
+                if (current == null || current.getDuration() <= refreshThreshold)
+                {
+                    player.addEffect(new MobEffectInstance(MobEffectRegistry.HEAT_STROKE, effectDuration, 0, false, false, true));
+                }
+            }
+        }
+        else
+        {
+            if (player.hasEffect(MobEffectRegistry.HEAT_STROKE))
+            {
+                player.removeEffect(MobEffectRegistry.HEAT_STROKE);
+            }
+        }
+
+        // Apply or remove HEAT_THIRST effect
+        if (tempEnum == TemperatureEnum.HOT || tempEnum == TemperatureEnum.HEAT_STROKE)
+        {
+            if (!HeatStrokeEffect.playerIsImmuneToHeat(player))
+            {
+                var current = player.getEffect(MobEffectRegistry.HEAT_THIRST);
+                if (current == null || current.getDuration() <= refreshThreshold)
+                {
+                    player.addEffect(new MobEffectInstance(MobEffectRegistry.HEAT_THIRST, effectDuration, 0, false, false, true));
+                }
+            }
+        }
+        else
+        {
+            if (player.hasEffect(MobEffectRegistry.HEAT_THIRST))
+            {
+                player.removeEffect(MobEffectRegistry.HEAT_THIRST);
+            }
+        }
     }
 
     private void tickTemperature(float currentTemp, float destination)
