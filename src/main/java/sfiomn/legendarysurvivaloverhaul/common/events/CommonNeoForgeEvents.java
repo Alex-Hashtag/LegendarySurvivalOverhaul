@@ -356,8 +356,11 @@ public class CommonNeoForgeEvents
                 }
             }
 
-            if (!hitBodyParts.isEmpty())
+            if (!hitBodyParts.isEmpty()) {
                 BodyDamageUtil.balancedHurtBodyParts(player, hitBodyParts, bodyPartDamageValue);
+                // Update broken hearts after dealing damage
+                AttachmentUtil.getBodyDamageAttachment(player).updateBrokenHearts(player);
+            }
 
             if (source.is(DamageTypeTags.IS_PROJECTILE)
                     && hitBodyParts.contains(BodyPartEnum.HEAD)
@@ -378,8 +381,8 @@ public class CommonNeoForgeEvents
                         double healthRecovered = BodyDamageUtil.getMaxHealth(player, bodyPart) * Config.Baked.bodyHealthRatioRecoveredFromSleep;
                         BodyDamageUtil.healBodyPart(player, bodyPart, (float) healthRecovered);
                     }
+                    // Update broken hearts after healing from sleep
                     AttachmentUtil.getBodyDamageAttachment(player).updateBrokenHearts(player);
-                    BodyDamageUtil.updatePlayerBrokenHeartAttribute(player);
                 }
 
                 if (Config.Baked.healthRatioRecoveredFromSleep > 0) {

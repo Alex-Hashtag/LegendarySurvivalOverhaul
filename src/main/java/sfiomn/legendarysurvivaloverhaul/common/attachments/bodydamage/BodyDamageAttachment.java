@@ -192,6 +192,7 @@ public class BodyDamageAttachment implements IBodyDamageAttachment, INBTSerializ
             }
 
             // Heal each body limb of the player
+            boolean anyLimbHealed = false;
             for (Map.Entry<BodyPartEnum, BodyPart> bodyPartPair : this.bodyParts.entrySet())
             {
                 BodyPart bodyPart = bodyPartPair.getValue();
@@ -201,6 +202,7 @@ public class BodyDamageAttachment implements IBodyDamageAttachment, INBTSerializ
                         bodyPartPair.getKey(), bodyPart.getRemainingHealingTicks(), bodyPart.getHealingPerTicks());
                     int healingTick = Math.min(20, bodyPart.getRemainingHealingTicks());
                     healWithFoodExhaustion(player, bodyPartPair.getKey(), healingTick * bodyPart.getHealingPerTicks());
+                    anyLimbHealed = true;
                     if (bodyPart.isMaxHealth())
                         bodyPart.reduceRemainingHealingTicks(bodyPart.getRemainingHealingTicks());
                     else
@@ -208,10 +210,14 @@ public class BodyDamageAttachment implements IBodyDamageAttachment, INBTSerializ
                 }
             }
 
-            updateBrokenHearts(player);
+            // Only update broken hearts if limbs were actually healed, not just from dynamic max health changes
+            if (anyLimbHealed)
+            {
+                updateBrokenHearts(player);
+            }
         }
 
-        if (updateTickTimer % 10 == 0)
+        if (updateTickTimer % 10 == 0 && updateTickTimer != 0)
         {
             this.headacheEffect = player.getEffect(MobEffectRegistry.HEADACHE);
             this.hasFirstAidSupplies = CuriosUtil.isCurioItemEquipped(player, ItemRegistry.FIRST_AID_SUPPLIES.get());
@@ -261,6 +267,7 @@ public class BodyDamageAttachment implements IBodyDamageAttachment, INBTSerializ
                         (float) Config.Baked.firstAidSuppliesLimbHealthRegenerated,
                         Config.Baked.firstAidSuppliesHealingOverflow,
                         Config.Baked.firstAidSuppliesExhaustsFood);
+                updateBrokenHearts(player);
             }
         } else if (this.passiveLimbRegenerationEnabled)
         {
@@ -278,6 +285,7 @@ public class BodyDamageAttachment implements IBodyDamageAttachment, INBTSerializ
                         (float) Config.Baked.passiveLimbHealthRegenerated,
                         true,
                         true);
+                updateBrokenHearts(player);
             }
         } else
         {
@@ -348,11 +356,13 @@ public class BodyDamageAttachment implements IBodyDamageAttachment, INBTSerializ
             return;
 
         double expectedBrokenHearts = 0;
+        int brokenLimbCount = 0;
         for (Map.Entry<BodyPartEnum, BodyPart> bodyPartPair : this.bodyParts.entrySet())
         {
             BodyPart bodyPart = bodyPartPair.getValue();
             if (Config.Baked.healthOverhaulEnabled && bodyPart.getDamage() >= bodyPart.getMaxHealth())
             {
+                brokenLimbCount++;
                 expectedBrokenHearts += switch (Config.Baked.brokenHeartsPerInjuredLimbMode)
                 {
                     case PLAYER_DYNAMIC:
@@ -500,9 +510,24 @@ public class BodyDamageAttachment implements IBodyDamageAttachment, INBTSerializ
         {
             float newMaxHealth = Math.round(bodyPart.getHealthMultiplier() * maxHealth * 100) / 100.0f;
             float oldMaxHealth = bodyPart.getMaxHealth();
+            float oldDamage = bodyPart.getDamage();
+            
             bodyPart.setMaxHealth(newMaxHealth);
             if (oldMaxHealth != 0 && oldMaxHealth != newMaxHealth)
-                bodyPart.setDamage(bodyPart.getDamage() + newMaxHealth - oldMaxHealth);
+            {
+                // If limb is fully broken (damage >= maxHealth), keep it fully broken
+                if (oldDamage >= oldMaxHealth)
+                {
+                    bodyPart.setDamage(newMaxHealth);
+                }
+                else
+                {
+                    // Scale damage proportionally to maintain the same health ratio
+                    float damageRatio = oldDamage / oldMaxHealth;
+                    float newDamage = newMaxHealth * damageRatio;
+                    bodyPart.setDamage(newDamage);
+                }
+            }
         }
     }
 
