@@ -75,12 +75,38 @@ public class Config
 
     private static boolean validateEffectName(final Object obj)
     {
-        return obj instanceof final String effectName && BuiltInRegistries.MOB_EFFECT.containsKey(ResourceLocation.parse(effectName));
+        if (!(obj instanceof final String effectName))
+            return false;
+        
+        try
+        {
+            // Only validate that it's a valid ResourceLocation format
+            // Don't check if it exists in registry as modded effects may not be loaded yet
+            ResourceLocation.parse(effectName);
+            return true;
+        }
+        catch (Exception e)
+        {
+            return false;
+        }
     }
 
     private static boolean validateEntityType(final Object obj)
     {
-        return obj instanceof final String entityName && BuiltInRegistries.ENTITY_TYPE.containsKey(ResourceLocation.parse(entityName));
+        if (!(obj instanceof final String entityName))
+            return false;
+
+        try
+        {
+            // Only validate that it's a valid ResourceLocation format
+            // Don't check if it exists in registry as modded entities may not be loaded yet
+            ResourceLocation.parse(entityName);
+            return true;
+        }
+        catch (Exception e)
+        {
+            return false;
+        }
     }
 
     public static class Common
@@ -909,29 +935,29 @@ public class Config
                     .define("Passive Limb Regeneration Amplification Enabled", true);
             passiveLimbHealthRegenerated = builder
                     .comment(" Amount of limb health regenerated, the most damaged limb first.")
-                    .defineInRange("Passive Limb Health Regenerated", 0.5, 0, 1000);
+                    .defineInRange("Passive Limb Health Regenerated", 0.01, 0, 1000);
             passiveLimbRegenerationTickTimer = builder
                     .comment(" How fast in ticks the limbs regenerate passively. 20 ticks = 1s")
-                    .defineInRange("Passive Limb Regeneration Tick Timer", 50, 0, 10000);
+                    .defineInRange("Passive Limb Regeneration Tick Timer", 200, 0, 10000);
             builder.pop();
             builder.comment(" The First Aid Supplies overrides the passive limb regeneration as its effects is meant to be stronger.").push("first-aid-supplies");
             firstAidSuppliesLimbHealthRegenerated = builder
                     .comment(" The First Aid Supplies regenerate limb health passively, either by holding it or using Curios mod, the most damaged limb first.")
-                    .defineInRange("First Aid Supplies Limb Health Regenerated", 0.25, 0, 1000);
+                    .defineInRange("First Aid Supplies Limb Health Regenerated", 0.01, 0, 1000);
             firstAidSuppliesLimbRegenerationMode = builder
                     .comment(" How a player's limb health regenerated is defined. Accepted values are as follows:",
                             "   SIMPLE - The limb health regenerated is a fixed value defined in First Aid Supplies Limb Health Regenerated.",
                             "   PLAYER_DYNAMIC - The limb health regenerated is a percentage value of the player max health using the percentage value defined in First Aid Supplies Limb Health Regenerated.",
                             "   LIMB_DYNAMIC - The limb health regenerated is a percentage value of the limb max health using the percentage value defined in First Aid Supplies Limb Health Regenerated.",
                             " Any other value will default to SIMPLE.")
-                    .defineEnum("First Aid Supplies Limb Regeneration Mode", EnumUtil.limbRegenerationMode.LIMB_DYNAMIC);
+                    .defineEnum("First Aid Supplies Limb Regeneration Mode", EnumUtil.limbRegenerationMode.PLAYER_DYNAMIC);
             firstAidSuppliesHealingOverflow = builder
                     .comment(" Whether the exceeded limb health regenerated will heal the next most damaged limb.",
                             " Only available for Regeneration Mode SIMPLE or PLAYER_DYNAMIC.")
-                    .define("First Aid Supplies Healing Overflow", false);
+                    .define("First Aid Supplies Healing Overflow", true);
             firstAidSuppliesTickTimer = builder
                     .comment(" How fast in ticks the First Aid Supplies will heal limbs. 20 ticks = 1s")
-                    .defineInRange("First Aid Supplies Tick Timer", 300, 0, 10000);
+                    .defineInRange("First Aid Supplies Tick Timer", 100, 0, 10000);
             firstAidSuppliesExhaustsFood = builder
                     .comment(" Whether the First Aid Supplies exhaust food when healing limbs, such as the other healing items.")
                     .define("First Aid Supplies Exhausts Food", true);
@@ -941,7 +967,7 @@ public class Config
             firstAidSuppliesBoostedTickTimerMultiplier = builder
                     .comment(" How much the First Aid Supplies tick timer is multiplied when boosted. ",
                             " A value of 1 would deactivate the speed boost. 0.5 makes the heal twice faster.")
-                    .defineInRange("First Aid Supplies Tick Timer Multiplier", 0.75, 0.1, 1);
+                    .defineInRange("First Aid Supplies Tick Timer Multiplier", 0.5, 0.1, 1);
             builder.pop();
             builder.push("healing-items");
             recoveryEffectHealingValue = builder
