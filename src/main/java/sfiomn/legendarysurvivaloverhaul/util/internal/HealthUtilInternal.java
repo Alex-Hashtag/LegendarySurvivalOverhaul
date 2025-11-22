@@ -133,8 +133,12 @@ public class HealthUtilInternal implements IHealthUtil
 
         for (AttributeModifier attributeModifier : Objects.requireNonNull(player.getAttribute(Attributes.MAX_HEALTH)).getModifiers())
         {
-            if (!attributeModifier.id().equals(HEALTH_ATTRIBUTE_UUID))
-                defaultMaxHealth += attributeModifier.amount();
+            ResourceLocation id = attributeModifier.id();
+            if (id != null && id.getNamespace().equals(LegendarySurvivalOverhaul.MOD_ID) && id.getPath().startsWith("max_health_"))
+            {
+                continue;
+            }
+            defaultMaxHealth += attributeModifier.amount();
         }
 
         return defaultMaxHealth;

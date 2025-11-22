@@ -192,7 +192,6 @@ public class BodyDamageAttachment implements IBodyDamageAttachment, INBTSerializ
             }
 
             // Heal each body limb of the player
-            boolean anyLimbHealed = false;
             for (Map.Entry<BodyPartEnum, BodyPart> bodyPartPair : this.bodyParts.entrySet())
             {
                 BodyPart bodyPart = bodyPartPair.getValue();
@@ -202,19 +201,14 @@ public class BodyDamageAttachment implements IBodyDamageAttachment, INBTSerializ
                         bodyPartPair.getKey(), bodyPart.getRemainingHealingTicks(), bodyPart.getHealingPerTicks());
                     int healingTick = Math.min(20, bodyPart.getRemainingHealingTicks());
                     healWithFoodExhaustion(player, bodyPartPair.getKey(), healingTick * bodyPart.getHealingPerTicks());
-                    anyLimbHealed = true;
                     if (bodyPart.isMaxHealth())
                         bodyPart.reduceRemainingHealingTicks(bodyPart.getRemainingHealingTicks());
                     else
                         bodyPart.reduceRemainingHealingTicks(healingTick);
                 }
             }
-
-            // Only update broken hearts if limbs were actually healed, not just from dynamic max health changes
-            if (anyLimbHealed)
-            {
-                updateBrokenHearts(player);
-            }
+            // Always refresh broken hearts each second to keep HUD in sync (and after potential limb state changes)
+            updateBrokenHearts(player);
         }
 
         if (updateTickTimer % 10 == 0 && updateTickTimer != 0)
