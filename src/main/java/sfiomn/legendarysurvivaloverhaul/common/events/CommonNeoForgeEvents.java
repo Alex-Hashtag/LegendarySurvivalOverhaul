@@ -36,6 +36,8 @@ import net.neoforged.neoforge.event.OnDatapackSyncEvent;
 import net.neoforged.neoforge.event.entity.living.*;
 import net.neoforged.neoforge.event.entity.player.*;
 import net.neoforged.neoforge.event.level.BlockEvent;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.Set;
 import net.neoforged.neoforge.event.level.LevelEvent;
 import net.neoforged.neoforge.event.level.SleepFinishedTimeEvent;
 //import net.neoforged.neoforge.eventbus.api.Event;
@@ -85,6 +87,8 @@ import static sfiomn.legendarysurvivaloverhaul.util.internal.TemperatureUtilInte
 )
 public class CommonNeoForgeEvents
 {
+    // Track players who just blocked with a shield to prevent limb damage
+    private static final Set<Player> recentlyBlockedPlayers = ConcurrentHashMap.newKeySet();
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onItemUse(PlayerInteractEvent.RightClickItem event) {
@@ -314,6 +318,13 @@ public class CommonNeoForgeEvents
         }
     }
 
+    @SubscribeEvent
+    public static void onShieldBlock(LivingShieldBlockEvent event) {
+        if (event.getEntity() instanceof Player player) {
+            recentlyBlockedPlayers.add(player);
+        }
+    }
+
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onEntityHurtDamage(LivingIncomingDamageEvent event) {
         Player player;
@@ -324,7 +335,12 @@ public class CommonNeoForgeEvents
         if (player.level().isClientSide)
             return;
 
-        // Skip if damage was blocked (e.g., by shield)
+        // Skip if damage was blocked by shield
+        if (recentlyBlockedPlayers.remove(player)) {
+            return;
+        }
+
+        // Skip if damage was fully negated
         if (event.getAmount() <= 0)
             return;
 
