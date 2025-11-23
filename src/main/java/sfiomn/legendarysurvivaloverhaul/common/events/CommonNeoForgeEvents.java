@@ -324,6 +324,10 @@ public class CommonNeoForgeEvents
         if (player.level().isClientSide)
             return;
 
+        // Skip if damage was blocked (e.g., by shield)
+        if (event.getAmount() <= 0)
+            return;
+
         if (shouldApplyHealthOverhaul(player))
             event.setAmount(HealthUtil.hurtPlayer(player, event.getAmount()));
 
@@ -417,13 +421,14 @@ public class CommonNeoForgeEvents
         if (event.isEndConquered())
             return;
 
+        Player player = event.getEntity();
+
         if (Config.Baked.temperatureImmunityOnDeathEnabled && Config.Baked.temperatureEnabled) {
-            event.getEntity().addEffect(new MobEffectInstance(MobEffectRegistry.TEMPERATURE_IMMUNITY, Config.Baked.temperatureImmunityOnDeathTime, 0, false, false, true));
+            player.addEffect(new MobEffectInstance(MobEffectRegistry.TEMPERATURE_IMMUNITY, Config.Baked.temperatureImmunityOnDeathTime, 0, false, false, true));
         }
 
         // Reset all limb health to full on respawn
         if (Config.Baked.localizedBodyDamageEnabled) {
-            Player player = event.getEntity();
             var bodyCap = AttachmentUtil.getBodyDamageAttachment(player);
             for (BodyPartEnum part : BodyPartEnum.values()) {
                 bodyCap.setBodyPartDamage(part, 0);
@@ -434,6 +439,19 @@ public class CommonNeoForgeEvents
             if (player instanceof ServerPlayer serverPlayer) {
                 sfiomn.legendarysurvivaloverhaul.network.payloads.UpdateBodyDamagePayload.sendToPlayer(
                     serverPlayer, bodyCap.writeNBT()
+                );
+            }
+        }
+
+        // Reset thirst to full on respawn
+        if (Config.Baked.thirstEnabled && shouldApplyThirst(player)) {
+            var thirstCap = AttachmentUtil.getThirstAttachment(player);
+            thirstCap.init();
+            thirstCap.setDirty();
+
+            if (player instanceof ServerPlayer serverPlayer) {
+                sfiomn.legendarysurvivaloverhaul.network.payloads.UpdateThirstPayload.sendToPlayer(
+                    serverPlayer, thirstCap.writeNBT()
                 );
             }
         }
