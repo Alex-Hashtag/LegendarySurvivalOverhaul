@@ -194,7 +194,7 @@ public class TemperatureAttachment implements ITemperatureAttachment, INBTSerial
         int refreshThreshold = 40;           // 2 seconds
         
         // Apply or remove FROSTBITE effect
-        if (tempEnum == TemperatureEnum.FROSTBITE)
+        if (tempEnum == TemperatureEnum.FROSTBITE && Config.Baked.dangerousColdTemperature)
         {
             if (!FrostbiteEffect.playerIsImmuneToFrost(player))
             {
@@ -214,7 +214,7 @@ public class TemperatureAttachment implements ITemperatureAttachment, INBTSerial
         }
 
         // Apply or remove COLD_HUNGER effect
-        if (tempEnum == TemperatureEnum.COLD || tempEnum == TemperatureEnum.FROSTBITE)
+        if ((tempEnum == TemperatureEnum.COLD || tempEnum == TemperatureEnum.FROSTBITE) && Config.Baked.coldTemperatureSecondaryEffects)
         {
             if (!FrostbiteEffect.playerIsImmuneToFrost(player))
             {
@@ -234,7 +234,7 @@ public class TemperatureAttachment implements ITemperatureAttachment, INBTSerial
         }
 
         // Apply or remove HEAT_STROKE effect
-        if (tempEnum == TemperatureEnum.HEAT_STROKE)
+        if (tempEnum == TemperatureEnum.HEAT_STROKE && Config.Baked.dangerousHeatTemperature)
         {
             if (!HeatStrokeEffect.playerIsImmuneToHeat(player))
             {
@@ -254,7 +254,7 @@ public class TemperatureAttachment implements ITemperatureAttachment, INBTSerial
         }
 
         // Apply or remove HEAT_THIRST effect
-        if (tempEnum == TemperatureEnum.HOT || tempEnum == TemperatureEnum.HEAT_STROKE)
+        if ((tempEnum == TemperatureEnum.HOT || tempEnum == TemperatureEnum.HEAT_STROKE) && Config.Baked.heatTemperatureSecondaryEffects)
         {
             if (!HeatStrokeEffect.playerIsImmuneToHeat(player))
             {
