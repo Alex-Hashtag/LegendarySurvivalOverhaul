@@ -12,6 +12,7 @@ import sfiomn.legendarysurvivaloverhaul.common.loot_modifiers.AdditionalLootTabl
 
 import java.util.concurrent.CompletableFuture;
 
+import static sfiomn.legendarysurvivaloverhaul.data.loot.ModBarteringLootTables.barteringInjectedLootTables;
 import static sfiomn.legendarysurvivaloverhaul.data.loot.ModChestLootTables.chestInjectedLootTables;
 import static sfiomn.legendarysurvivaloverhaul.data.loot.ModEntityLootTables.entityInjectedLootTables;
 import static sfiomn.legendarysurvivaloverhaul.data.loot.ModFishingLootTables.fishingInjectedLootTables;
@@ -47,6 +48,14 @@ public class ModGlobalLootModifierProvider extends GlobalLootModifierProvider
         }
 
         for (ResourceLocation lootTable : fishingInjectedLootTables)
+        {
+            this.add(lootTable.getPath(), new AdditionalLootTable(
+                    new LootItemCondition[]{LootTableIdCondition.builder(lootTable).build()},
+                    ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "inject/" + lootTable.getPath()),
+                    false));
+        }
+
+        for (ResourceLocation lootTable : barteringInjectedLootTables)
         {
             this.add(lootTable.getPath(), new AdditionalLootTable(
                     new LootItemCondition[]{LootTableIdCondition.builder(lootTable).build()},

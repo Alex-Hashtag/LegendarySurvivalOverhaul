@@ -360,11 +360,11 @@ public class BodyDamageAttachment implements IBodyDamageAttachment, INBTSerializ
                 expectedBrokenHearts += switch (Config.Baked.brokenHeartsPerInjuredLimbMode)
                 {
                     case PLAYER_DYNAMIC:
-                        yield Config.Baked.brokenHeartsPerInjuredLimb * this.playerMaxHealth;
+                        yield Config.Baked.brokenHeartsPerInjuredLimb * this.playerMaxHealth / 2.0;
                     case LIMB_DYNAMIC:
-                        yield Config.Baked.brokenHeartsPerInjuredLimb * bodyPart.getMaxHealth();
+                        yield Config.Baked.brokenHeartsPerInjuredLimb * bodyPart.getMaxHealth() / 2.0;
                     default:
-                        yield Config.Baked.brokenHeartsPerInjuredLimb;
+                        yield Config.Baked.brokenHeartsPerInjuredLimb / 2.0;
                 };
             }
         }
