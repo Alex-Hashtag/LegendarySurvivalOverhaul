@@ -282,22 +282,21 @@ public class BodyDamageCapability implements IBodyDamageCapability
 		if (Config.Baked.brokenHeartsPerInjuredLimb == 0)
 			return;
 
-		double expectedBrokenHearts = 0;
+		int expectedBrokenHearts = 0;
 		for (Map.Entry<BodyPartEnum, BodyPart> bodyPartPair: this.bodyParts.entrySet()) {
 			BodyPart bodyPart = bodyPartPair.getValue();
 			if (Config.Baked.healthOverhaulEnabled && bodyPart.getDamage() >= bodyPart.getMaxHealth()) {
-				expectedBrokenHearts += switch (Config.Baked.brokenHeartsPerInjuredLimbMode) {
-					case PLAYER_DYNAMIC:
-						yield Config.Baked.brokenHeartsPerInjuredLimb * this.playerMaxHealth;
-					case LIMB_DYNAMIC:
-						yield Config.Baked.brokenHeartsPerInjuredLimb * bodyPart.getMaxHealth();
-                    default:
-						yield Config.Baked.brokenHeartsPerInjuredLimb;
+				expectedBrokenHearts += (int) switch (Config.Baked.brokenHeartsPerInjuredLimbMode)
+                {
+                    case PLAYER_DYNAMIC -> (Config.Baked.brokenHeartsPerInjuredLimb * this.playerMaxHealth) / 2.0;
+                    case LIMB_DYNAMIC ->
+                            (Config.Baked.brokenHeartsPerInjuredLimb * bodyPart.getMaxHealth()) / 2.0;
+                    default -> Config.Baked.brokenHeartsPerInjuredLimb / 2.0;
                 };
 			}
 		}
 
-		this.expectedBrokenHearts = (int) expectedBrokenHearts;
+		this.expectedBrokenHearts = expectedBrokenHearts;
 		BodyDamageUtil.updatePlayerBrokenHeartAttribute(player);
 	}
 
