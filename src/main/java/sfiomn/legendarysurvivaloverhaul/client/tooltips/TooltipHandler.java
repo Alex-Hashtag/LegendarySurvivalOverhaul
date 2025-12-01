@@ -33,10 +33,13 @@ import sfiomn.legendarysurvivaloverhaul.api.item.CoatEnum;
 import sfiomn.legendarysurvivaloverhaul.api.temperature.TemperatureUtil;
 import sfiomn.legendarysurvivaloverhaul.common.integration.artifacts.ArtifactsUtil;
 import sfiomn.legendarysurvivaloverhaul.common.integration.beachparty.BeachpartyUtil;
+import sfiomn.legendarysurvivaloverhaul.common.items.drink.CanteenItem;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
 import sfiomn.legendarysurvivaloverhaul.registry.AttributeRegistry;
+import sfiomn.legendarysurvivaloverhaul.registry.EnchantmentRegistry;
 import sfiomn.legendarysurvivaloverhaul.registry.MobEffectRegistry;
 import sfiomn.legendarysurvivaloverhaul.util.MathUtil;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -218,7 +221,19 @@ public class TooltipHandler
 		List<MutableComponent> hydrationEffectComponents = new ArrayList<>();
 
 		if (jsonThirstConsumable != null) {
-			hydrationTooltipComponent = new HydrationTooltipComponent(jsonThirstConsumable.hydration, jsonThirstConsumable.saturation);
+			int hydration = jsonThirstConsumable.hydration;
+			float saturation = jsonThirstConsumable.saturation;
+			
+			// Add Refreshing enchantment bonus for canteens
+			if (stack.getItem() instanceof CanteenItem && CanteenItem.canDrink(stack)) {
+				int refreshingLevel = EnchantmentHelper.getItemEnchantmentLevel(EnchantmentRegistry.REFRESHING.get(), stack);
+				if (refreshingLevel > 0) {
+					hydration += refreshingLevel;
+					saturation += Math.max(0, refreshingLevel - 1);
+				}
+			}
+			
+			hydrationTooltipComponent = new HydrationTooltipComponent(hydration, saturation);
 			for (JsonMobEffect effect: jsonThirstConsumable.effects) {
 				if (effect.chance > 0 && effect.duration > 0 && !effect.name.isEmpty()) {
 					hydrationEffectComponents.add(getHydrationEffectTooltip(effect.chance, effect.name, effect.amplifier, effect.duration));

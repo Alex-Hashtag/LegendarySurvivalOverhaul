@@ -14,6 +14,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.BlockHitResult;
@@ -29,6 +30,7 @@ import sfiomn.legendarysurvivaloverhaul.api.thirst.HydrationEnum;
 import sfiomn.legendarysurvivaloverhaul.api.thirst.ThirstUtil;
 import sfiomn.legendarysurvivaloverhaul.api.wetness.WetnessUtil;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
+import sfiomn.legendarysurvivaloverhaul.registry.EnchantmentRegistry;
 import sfiomn.legendarysurvivaloverhaul.registry.MobEffectRegistry;
 import sfiomn.legendarysurvivaloverhaul.registry.SoundRegistry;
 import sfiomn.legendarysurvivaloverhaul.util.CapabilityUtil;
@@ -43,6 +45,12 @@ public class CanteenItem extends DrinkItem {
         return Config.Baked.canteenCapacity;
     }
 
+    public int getMaxCapacity(ItemStack stack) {
+        int baseCapacity = getMaxCapacity();
+        int reservoirLevel = EnchantmentHelper.getItemEnchantmentLevel(EnchantmentRegistry.RESERVOIR.get(), stack);
+        return baseCapacity + reservoirLevel;
+    }
+
     @Override
     public int getUseDuration(@NotNull ItemStack stack) {
         return canDrink(stack) ? 40 : 0;
@@ -55,13 +63,15 @@ public class CanteenItem extends DrinkItem {
     public boolean canFill(ItemStack stack) {
         // Prevent filling if canteen contains other than normal water
         return Config.Baked.allowOverridePurifiedWater ?
-                ThirstUtil.getCapacityTag(stack) < getMaxCapacity() :
-                ThirstUtil.getCapacityTag(stack) < getMaxCapacity() && ThirstUtil.getHydrationEnumTag(stack) != HydrationEnum.PURIFIED;
+                ThirstUtil.getCapacityTag(stack) < getMaxCapacity(stack) :
+                ThirstUtil.getCapacityTag(stack) < getMaxCapacity(stack) && ThirstUtil.getHydrationEnumTag(stack) != HydrationEnum.PURIFIED;
     }
 
     public void fill(ItemStack stack) {
-        ThirstUtil.setCapacityTag(stack,  Math.min(getMaxCapacity(), ThirstUtil.getCapacityTag(stack) + 1));
-        ThirstUtil.setHydrationEnumTag(stack, HydrationEnum.NORMAL);
+        ThirstUtil.setCapacityTag(stack,  Math.min(getMaxCapacity(stack), ThirstUtil.getCapacityTag(stack) + 1));
+        // Check if canteen has Purity enchantment
+        boolean hasPurity = EnchantmentHelper.getItemEnchantmentLevel(EnchantmentRegistry.PURITY.get(), stack) > 0;
+        ThirstUtil.setHydrationEnumTag(stack, hasPurity ? HydrationEnum.PURIFIED : HydrationEnum.NORMAL);
     }
 
     public boolean isWater(Level level, BlockPos blockPos) {
@@ -143,6 +153,15 @@ public class CanteenItem extends DrinkItem {
             return stack;
 
         runSecondaryEffect(player, stack);
+        
+        // Apply Refreshing enchantment bonus
+        int refreshingLevel = EnchantmentHelper.getItemEnchantmentLevel(EnchantmentRegistry.REFRESHING.get(), stack);
+        if (refreshingLevel > 0) {
+            // Each level gives X additional thirst half bars and (X - 1) additional saturation
+            int bonusHydration = refreshingLevel;
+            float bonusSaturation = Math.max(0, refreshingLevel - 1);
+            ThirstUtil.takeDrink(player, bonusHydration, bonusSaturation);
+        }
 
         shrinkCapacity(stack);
 
@@ -176,7 +195,7 @@ public class CanteenItem extends DrinkItem {
     @Override
     public int getBarWidth(@NotNull ItemStack stack)
     {
-        float max = getMaxCapacity();
+        float max = getMaxCapacity(stack);
         if(max == 0.0f)
             return 0;
 
@@ -185,7 +204,26 @@ public class CanteenItem extends DrinkItem {
 
     @Override
     public int getBarColor(@NotNull ItemStack stack) {
-        float f = Math.max(0.0F, ThirstUtil.getCapacityTag(stack) / (float)this.getMaxCapacity());
+        float f = Math.max(0.0F, ThirstUtil.getCapacityTag(stack) / (float)this.getMaxCapacity(stack));
         return Mth.hsvToRgb(f / 3.0F, 1.0F, 1.0F);
+    }
+    
+    @Override
+    public boolean isEnchantable(@NotNull ItemStack stack) {
+        return true;
+    }
+    
+    @Override
+    public int getEnchantmentValue() {
+        return 10;
+    }
+    
+    /**
+     * Called when Purity enchantment is applied to immediately purify existing water
+     */
+    public static void onPurityApplied(ItemStack stack) {
+        if (ThirstUtil.getCapacityTag(stack) > 0 && ThirstUtil.getHydrationEnumTag(stack) == HydrationEnum.NORMAL) {
+            ThirstUtil.setHydrationEnumTag(stack, HydrationEnum.PURIFIED);
+        }
     }
 }

@@ -8,6 +8,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraftforge.client.gui.overlay.ForgeGui;
 import net.minecraftforge.client.gui.overlay.IGuiOverlay;
 import org.jetbrains.annotations.Nullable;
@@ -16,7 +17,9 @@ import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonThirstConsumable;
 import sfiomn.legendarysurvivaloverhaul.api.data.manager.ThirstDataManager;
 import sfiomn.legendarysurvivaloverhaul.api.thirst.ThirstUtil;
 import sfiomn.legendarysurvivaloverhaul.common.capabilities.thirst.ThirstCapability;
+import sfiomn.legendarysurvivaloverhaul.common.items.drink.CanteenItem;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
+import sfiomn.legendarysurvivaloverhaul.registry.EnchantmentRegistry;
 import sfiomn.legendarysurvivaloverhaul.registry.MobEffectRegistry;
 import sfiomn.legendarysurvivaloverhaul.util.CapabilityUtil;
 
@@ -84,6 +87,15 @@ public class RenderThirstGui
 				heldItemHydration = (jsonThirstConsumable != null) ? jsonThirstConsumable.hydration : 0;
 				heldItemSaturation = (jsonThirstConsumable != null) ? jsonThirstConsumable.saturation : 0;
 				heldItemThirst = jsonThirstConsumable != null && jsonThirstConsumable.effects.stream().anyMatch(jsonEffectParameter -> jsonEffectParameter.name.equals(LegendarySurvivalOverhaul.MOD_ID + ":thirst"));
+				
+				// Add Refreshing enchantment bonus for canteens
+				if (currentHeldItemStack.getItem() instanceof CanteenItem && CanteenItem.canDrink(currentHeldItemStack)) {
+					int refreshingLevel = EnchantmentHelper.getItemEnchantmentLevel(EnchantmentRegistry.REFRESHING.get(), currentHeldItemStack);
+					if (refreshingLevel > 0) {
+						heldItemHydration += refreshingLevel;
+						heldItemSaturation += Math.max(0, refreshingLevel - 1);
+					}
+				}
 			}
 
 			// Force a reset flash when item becomes edible && avoid this reset if moving from edible to edible

@@ -133,6 +133,7 @@ public class LegendarySurvivalOverhaul
 		BlockEntityRegistry.register(modBus);
 		FeatureRegistry.register(modBus);
 		CreativeTabRegistry.register(modBus);
+		EnchantmentRegistry.register(modBus);
 
 		forgeBus.addListener(CommandRegistry::registerCommandsEvent);
 		forgeBus.addListener(this::registerCapabilities);
