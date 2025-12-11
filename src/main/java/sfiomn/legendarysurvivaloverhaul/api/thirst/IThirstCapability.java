@@ -35,6 +35,18 @@ public interface IThirstCapability
 	public boolean isHydrationLevelAtMax();
 
 	/**
+	 * Check if the blur warning has been shown
+	 * @return boolean blur warning has been shown
+	 */
+	public boolean hasShownBlurWarning();
+
+	/**
+	 * Set whether the blur warning has been shown
+	 * @param shown whether the warning has been shown
+	 */
+	public void setShownBlurWarning(boolean shown);
+
+	/**
 	 * (Don't use this!) <br>
 	 * Checks if the capability needs an update
 	 * @return boolean has thirst changed

@@ -24,6 +24,7 @@ public class ThirstCapability implements IThirstCapability
 	private int tickTimer;
 	private int damageTickTimer; // Update immediately first time around
 	private int damageCounter;
+	private boolean hasShownBlurWarning = false;
 
 	//Unsaved data
 	private int oldHydration;
@@ -54,6 +55,7 @@ public class ThirstCapability implements IThirstCapability
 		this.dirty = false;
 		this.damageTickTimer = 0;
 		this.packetTimer = 0;
+		this.hasShownBlurWarning = false;
 	}
 
 	@Override
@@ -297,6 +299,18 @@ public class ThirstCapability implements IThirstCapability
 	}
 
 	@Override
+	public boolean hasShownBlurWarning()
+	{
+		return this.hasShownBlurWarning;
+	}
+
+	@Override
+	public void setShownBlurWarning(boolean shown)
+	{
+		this.hasShownBlurWarning = shown;
+	}
+
+	@Override
 	public int getPacketTimer()
 	{
 		return packetTimer;
@@ -311,6 +325,7 @@ public class ThirstCapability implements IThirstCapability
 		compound.putInt("tickTimer", this.getTickTimer());
 		compound.putInt("thirstDamageTickTimer", this.getThirstDamageTickTimer());
 		compound.putInt("thirstDamageCounter", this.getThirstDamageCounter());
+		compound.putBoolean("hasShownBlurWarning", this.hasShownBlurWarning());
 		return compound;
 	}
 
@@ -329,5 +344,7 @@ public class ThirstCapability implements IThirstCapability
 			this.setThirstDamageTickTimer(nbt.getInt("thirstDamageTickTimer"));
 		if(nbt.contains("thirstDamageCounter"))
 			this.setThirstDamageCounter(nbt.getInt("thirstDamageCounter"));
+		if(nbt.contains("hasShownBlurWarning"))
+			this.setShownBlurWarning(nbt.getBoolean("hasShownBlurWarning"));
 	}
 }
