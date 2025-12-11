@@ -1,0 +1,21 @@
+{
+  "anvil_cost": 1,
+  "description": {
+    "translate": "enchantment.legendarysurvivaloverhaul.reservoir"
+  },
+  "max_cost": {
+    "base": 16,
+    "per_level_above_first": 8
+  },
+  "max_level": 5,
+  "min_cost": {
+    "base": 1,
+    "per_level_above_first": 8
+  },
+  "primary_items": "#legendarysurvivaloverhaul:enchantable/canteen",
+  "slots": [
+    "any"
+  ],
+  "supported_items": "#legendarysurvivaloverhaul:enchantable/canteen",
+  "weight": 10
+}

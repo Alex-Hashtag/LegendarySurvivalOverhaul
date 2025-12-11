@@ -27,3 +27,5 @@ so_changelog.txt
 src/generated/resources/.cache/cache
 /run-data/
 /src/generated/resources/.cache/
+/runs/
+/docs/

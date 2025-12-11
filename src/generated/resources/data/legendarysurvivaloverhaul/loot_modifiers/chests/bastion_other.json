@@ -1,0 +1,10 @@
+{
+  "type": "legendarysurvivaloverhaul:additional_loot_table",
+  "conditions": [
+    {
+      "condition": "neoforge:loot_table_id",
+      "loot_table_id": "minecraft:chests/bastion_other"
+    }
+  ],
+  "lootTable": "legendarysurvivaloverhaul:inject/chests/bastion_other"
+}

@@ -29,18 +29,21 @@ public final class DataGenerators
         gen.addProvider(event.includeClient(), new ModItemModelProvider(packOutput, existingFileHelper));
         //gen.addProvider(event.includeClient(), new ModParticleProvider(packOutput, existingFileHelper));
 
-        gen.addProvider(event.includeServer(), new ModDatapackBuiltinEntriesProvider(packOutput, lookupProvider));
-        gen.addProvider(event.includeServer(), new ModEntityTypesTagProvider(packOutput, lookupProvider, existingFileHelper));
-        gen.addProvider(event.includeServer(), new ModDamageTypeTagsProvider(packOutput, lookupProvider, existingFileHelper));
-        gen.addProvider(event.includeServer(), new ModRecipeProvider(packOutput, lookupProvider));
-        gen.addProvider(event.includeServer(), ModLootTableProvider.createLootTables(packOutput, lookupProvider));
-        gen.addProvider(event.includeServer(), new ModAdvancementProvider(packOutput, lookupProvider, existingFileHelper));
+        ModDatapackBuiltinEntriesProvider datapackProvider = gen.addProvider(event.includeServer(), new ModDatapackBuiltinEntriesProvider(packOutput, lookupProvider));
+        CompletableFuture<HolderLookup.Provider> lookupWithCustom = datapackProvider.getRegistryProvider();
+        
+        gen.addProvider(event.includeServer(), new ModEntityTypesTagProvider(packOutput, lookupWithCustom, existingFileHelper));
+        gen.addProvider(event.includeServer(), new ModDamageTypeTagsProvider(packOutput, lookupWithCustom, existingFileHelper));
+        gen.addProvider(event.includeServer(), new ModEnchantmentTagProvider(packOutput, lookupWithCustom, existingFileHelper));
+        gen.addProvider(event.includeServer(), new ModRecipeProvider(packOutput, lookupWithCustom));
+        gen.addProvider(event.includeServer(), ModLootTableProvider.createLootTables(packOutput, lookupWithCustom));
+        gen.addProvider(event.includeServer(), new ModAdvancementProvider(packOutput, lookupWithCustom, existingFileHelper));
 
         ModBlockTagProvider blockTagProvider = gen.addProvider(event.includeServer(),
-                new ModBlockTagProvider(packOutput, lookupProvider, existingFileHelper));
-        gen.addProvider(event.includeServer(), new ModItemTagProvider(packOutput, lookupProvider, blockTagProvider.contentsGetter(), existingFileHelper));
+                new ModBlockTagProvider(packOutput, lookupWithCustom, existingFileHelper));
+        gen.addProvider(event.includeServer(), new ModItemTagProvider(packOutput, lookupWithCustom, blockTagProvider.contentsGetter(), existingFileHelper));
 
-        gen.addProvider(event.includeServer(), new ModGlobalLootModifierProvider(packOutput, lookupProvider));
+        gen.addProvider(event.includeServer(), new ModGlobalLootModifierProvider(packOutput, lookupWithCustom));
         gen.addProvider(event.includeServer(), new ModTemperatureProvider(packOutput, lookupProvider, existingFileHelper));
         gen.addProvider(event.includeServer(), new ModThirstProvider(packOutput, lookupProvider, existingFileHelper));
         gen.addProvider(event.includeServer(), new ModBodyDamageProvider(packOutput, lookupProvider, existingFileHelper));

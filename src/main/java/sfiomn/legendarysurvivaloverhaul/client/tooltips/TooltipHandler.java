@@ -30,8 +30,10 @@ import sfiomn.legendarysurvivaloverhaul.api.data.manager.TemperatureDataManager;
 import sfiomn.legendarysurvivaloverhaul.api.data.manager.ThirstDataManager;
 import sfiomn.legendarysurvivaloverhaul.api.item.CoatEnum;
 import sfiomn.legendarysurvivaloverhaul.api.temperature.TemperatureUtil;
+import sfiomn.legendarysurvivaloverhaul.common.enchantments.ModEnchantments;
 import sfiomn.legendarysurvivaloverhaul.common.integration.artifacts.ArtifactsUtil;
 import sfiomn.legendarysurvivaloverhaul.common.integration.beachparty.BeachpartyUtil;
+import sfiomn.legendarysurvivaloverhaul.common.items.drink.CanteenItem;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
 import sfiomn.legendarysurvivaloverhaul.registry.AttributeRegistry;
 import sfiomn.legendarysurvivaloverhaul.registry.MobEffectRegistry;
@@ -248,7 +250,25 @@ public class TooltipHandler
 
         if (jsonThirstConsumable != null)
         {
-            hydrationTooltipComponent = new HydrationTooltipComponent(jsonThirstConsumable.hydration, jsonThirstConsumable.saturation);
+            int hydration = jsonThirstConsumable.hydration;
+            float saturation = jsonThirstConsumable.saturation;
+            
+            // Add Refreshing enchantment bonus for canteens
+            if (stack.getItem() instanceof CanteenItem && CanteenItem.canDrink(stack))
+            {
+                Minecraft mc = Minecraft.getInstance();
+                if (mc.player != null && mc.player.level() != null)
+                {
+                    int refreshingLevel = stack.getEnchantmentLevel(mc.player.level().registryAccess().lookupOrThrow(net.minecraft.core.registries.Registries.ENCHANTMENT).getOrThrow(ModEnchantments.REFRESHING));
+                    if (refreshingLevel > 0)
+                    {
+                        hydration += refreshingLevel;
+                        saturation += Math.max(0, refreshingLevel - 1);
+                    }
+                }
+            }
+            
+            hydrationTooltipComponent = new HydrationTooltipComponent(hydration, saturation);
             for (JsonMobEffect effect : jsonThirstConsumable.effects)
             {
                 if (effect.chance > 0 && effect.duration > 0 && !effect.name.isEmpty())

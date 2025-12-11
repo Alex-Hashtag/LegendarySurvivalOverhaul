@@ -1,0 +1,16 @@
+{
+  "values": [
+    {
+      "id": "legendarysurvivaloverhaul:refreshing",
+      "required": false
+    },
+    {
+      "id": "legendarysurvivaloverhaul:purity",
+      "required": false
+    },
+    {
+      "id": "legendarysurvivaloverhaul:reservoir",
+      "required": false
+    }
+  ]
+}

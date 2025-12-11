@@ -21,6 +21,8 @@ public class ModItemTagProvider extends ItemTagsProvider
     @Override
     protected void addTags(HolderLookup.Provider provider)
     {
-
+        tag(sfiomn.legendarysurvivaloverhaul.common.tags.ModItemTags.CANTEEN_ENCHANTABLE)
+                .add(sfiomn.legendarysurvivaloverhaul.registry.ItemRegistry.CANTEEN.get())
+                .add(sfiomn.legendarysurvivaloverhaul.registry.ItemRegistry.LARGE_CANTEEN.get());
     }
 }
