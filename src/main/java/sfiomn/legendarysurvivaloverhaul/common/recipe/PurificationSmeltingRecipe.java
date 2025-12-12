@@ -32,10 +32,7 @@ public class PurificationSmeltingRecipe extends SmeltingRecipe
         
         int capacity = ThirstUtil.getCapacityTag(inputStack);
         HydrationEnum hydration = ThirstUtil.getHydrationEnumTag(inputStack);
-        
-        // Debug logging
-        System.out.println("PurificationSmeltingRecipe.matches - Capacity: " + capacity + ", Hydration: " + hydration);
-        
+
         return capacity > 0 && hydration == HydrationEnum.NORMAL;
     }
 
