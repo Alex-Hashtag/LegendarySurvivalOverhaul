@@ -2,6 +2,7 @@ package sfiomn.legendarysurvivaloverhaul.client.render;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.DeathScreen;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
@@ -51,6 +52,12 @@ public class RenderBlurOverlay
             if (hydration <= HYDRATION_LEVEL_MIN_EFFECT)
             {
                 targetShaderIntensity = (1 - ((float) (hydration - HYDRATION_LEVEL_MAX_EFFECT) / (float) (HYDRATION_LEVEL_MIN_EFFECT - HYDRATION_LEVEL_MAX_EFFECT))) * MAX_SHADER_INTENSITY;
+
+                if (!thirstCap.hasShownBlurWarning() && targetShaderIntensity > 0)
+                {
+                    player.displayClientMessage(Component.literal("Vision is getting blurry. Drink some water"), true);
+                    thirstCap.setShownBlurWarning(true);
+                }
             }
 
             if (updateTimer++ % 2 == 0)

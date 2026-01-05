@@ -24,6 +24,7 @@ public class ThirstAttachment implements IThirstAttachment, INBTSerializable<Com
     private int tickTimer;
     private int damageTickTimer; // Update immediately first time around
     private int damageCounter;
+    private boolean hasShownBlurWarning = false;
 
     //Unsaved data
     private int oldHydration;
@@ -45,6 +46,7 @@ public class ThirstAttachment implements IThirstAttachment, INBTSerializable<Com
         this.saturation = 5.0f;
         this.tickTimer = 0;
         this.damageCounter = 0;
+        this.hasShownBlurWarning = false;
 
         this.oldHydration = 0;
         this.oldSaturation = 0.0f;
@@ -320,6 +322,18 @@ public class ThirstAttachment implements IThirstAttachment, INBTSerializable<Com
     }
 
     @Override
+    public boolean hasShownBlurWarning()
+    {
+        return this.hasShownBlurWarning;
+    }
+
+    @Override
+    public void setShownBlurWarning(boolean shown)
+    {
+        this.hasShownBlurWarning = shown;
+    }
+
+    @Override
     public int getPacketTimer()
     {
         return packetTimer;
@@ -334,6 +348,7 @@ public class ThirstAttachment implements IThirstAttachment, INBTSerializable<Com
         compound.putInt("tickTimer", this.getTickTimer());
         compound.putInt("thirstDamageTickTimer", this.getThirstDamageTickTimer());
         compound.putInt("thirstDamageCounter", this.getThirstDamageCounter());
+        compound.putBoolean("hasShownBlurWarning", this.hasShownBlurWarning());
         return compound;
     }
 
@@ -352,6 +367,8 @@ public class ThirstAttachment implements IThirstAttachment, INBTSerializable<Com
             this.setThirstDamageTickTimer(nbt.getInt("thirstDamageTickTimer"));
         if (nbt.contains("thirstDamageCounter"))
             this.setThirstDamageCounter(nbt.getInt("thirstDamageCounter"));
+        if (nbt.contains("hasShownBlurWarning"))
+            this.setShownBlurWarning(nbt.getBoolean("hasShownBlurWarning"));
     }
 
     @Override

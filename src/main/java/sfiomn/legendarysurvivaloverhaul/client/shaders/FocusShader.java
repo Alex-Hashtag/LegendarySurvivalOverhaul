@@ -8,8 +8,8 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
 public class FocusShader {
-    public static final ResourceLocation BLOBS2_SHADER = ResourceLocation.parse("shaders/post/blobs2.json");
-    public static final ResourceLocation BLUR_SHADER = ResourceLocation.parse("shaders/post/blur.json");
+    public static final ResourceLocation BLOBS2_SHADER = ResourceLocation.withDefaultNamespace("shaders/post/blobs2.json");
+    public static final ResourceLocation BLUR_SHADER = ResourceLocation.withDefaultNamespace("shaders/post/blur.json");
 
     private static boolean shaderLoadAttempted = false;
     private static boolean shaderAvailable = false;

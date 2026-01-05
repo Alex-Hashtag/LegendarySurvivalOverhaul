@@ -52,6 +52,10 @@ public interface IThirstAttachment
      */
     boolean isHydrationLevelAtMax();
 
+    boolean hasShownBlurWarning();
+
+    void setShownBlurWarning(boolean shown);
+
     /**
      * (Don't use this!) <br>
      * Checks if the capability needs an update
