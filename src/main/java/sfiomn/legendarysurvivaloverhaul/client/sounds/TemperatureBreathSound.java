@@ -26,8 +26,12 @@ public class TemperatureBreathSound {
 
         TemperatureEnum temperatureEnum = CapabilityUtil.getTempCapability(player).getTemperatureEnum();
 
-        if ((temperatureEnum != TemperatureEnum.FROSTBITE || player.hasEffect(MobEffectRegistry.COLD_IMMUNITY.get())) &&
-                (temperatureEnum != TemperatureEnum.HEAT_STROKE || player.hasEffect(MobEffectRegistry.HEAT_IMMUNITY.get()))) {
+        boolean isFrostbite = temperatureEnum == TemperatureEnum.FROSTBITE;
+        boolean isHeatStroke = temperatureEnum == TemperatureEnum.HEAT_STROKE;
+        boolean hasColdImmunity = player.hasEffect(MobEffectRegistry.COLD_IMMUNITY.get());
+        boolean hasHeatImmunity = player.hasEffect(MobEffectRegistry.HEAT_IMMUNITY.get());
+
+        if ((isFrostbite && hasColdImmunity) || (isHeatStroke && hasHeatImmunity) || (!isFrostbite && !isHeatStroke)) {
             reset(player);
             return;
         }
@@ -36,7 +40,7 @@ public class TemperatureBreathSound {
 
         if (delay-- <= 0) {
             delay = 200 + player.getRandom().nextInt(200);
-            if (temperatureEnum == TemperatureEnum.FROSTBITE) {
+            if (isFrostbite) {
                 Minecraft.getInstance().getSoundManager().play(new DynamicPositionSound(SoundRegistry.SHIVERING.get(), player));
             } else
                 Minecraft.getInstance().getSoundManager().play(new DynamicPositionSound(SoundRegistry.PANTING.get(), player));
