@@ -320,7 +320,7 @@ public class CommonNeoForgeEvents
 
     @SubscribeEvent
     public static void onShieldBlock(LivingShieldBlockEvent event) {
-        if (event.getEntity() instanceof Player player) {
+        if (event.getBlocked() && event.getEntity() instanceof Player player) {
             recentlyBlockedPlayers.add(player);
         }
     }
