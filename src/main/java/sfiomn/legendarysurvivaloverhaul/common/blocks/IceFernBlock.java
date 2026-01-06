@@ -6,6 +6,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.CropBlock;
@@ -59,6 +60,7 @@ public class IceFernBlock extends CropBlock
     @Override
     public void growCrops(Level level, BlockPos pos, BlockState blockState)
     {
+        int previousAge = this.getAge(blockState);
         int i = this.getAge(blockState) + this.getBonemealAgeIncrease(level);
         int j = this.getMaxAge();
         if (i > j)
@@ -66,7 +68,7 @@ public class IceFernBlock extends CropBlock
             i = j;
         }
 
-        if (i == MAX_AGE)
+        if (previousAge < MAX_AGE && i == MAX_AGE)
         {
             if (level.getRandom().nextFloat() < Config.Baked.goldFernChance)
             {
@@ -76,6 +78,27 @@ public class IceFernBlock extends CropBlock
         }
 
         level.setBlock(pos, this.getStateForAge(i), 2);
+    }
+
+    @Override
+    public void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random)
+    {
+        int previousAge = this.getAge(state);
+        super.randomTick(state, level, pos, random);
+
+        if (previousAge >= MAX_AGE)
+        {
+            return;
+        }
+
+        BlockState newState = level.getBlockState(pos);
+        if (this.getAge(newState) == MAX_AGE)
+        {
+            if (random.nextFloat() < Config.Baked.goldFernChance)
+            {
+                level.setBlock(pos, BlockRegistry.ICE_FERN_GOLD.get().defaultBlockState(), 2);
+            }
+        }
     }
 
     @Override
