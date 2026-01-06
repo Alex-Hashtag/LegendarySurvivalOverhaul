@@ -36,7 +36,7 @@ public class ModConfiguredFeatures {
                 Feature.RANDOM_PATCH,
                 new RandomPatchConfiguration(5, 5, 3,
                         PlacementUtils.filtered(
-                                Feature.SIMPLE_BLOCK,
+                                FeatureRegistry.GOLD_FERN.get(),
                                 new SimpleBlockConfiguration(BlockStateProvider.simple(blockState)),
                                 BlockPredicate.replaceable())));
     }
