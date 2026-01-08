@@ -14,6 +14,7 @@ import net.neoforged.neoforge.common.Tags;
 import org.jetbrains.annotations.NotNull;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.thirst.HydrationEnum;
+import sfiomn.legendarysurvivaloverhaul.common.recipe.RemoveCoatRecipe;
 import sfiomn.legendarysurvivaloverhaul.data.recipes.PurificationRecipeBuilder;
 import sfiomn.legendarysurvivaloverhaul.data.recipes.SewingRecipeBuilder;
 import sfiomn.legendarysurvivaloverhaul.registry.BlockRegistry;
@@ -464,5 +465,8 @@ public class ModRecipeProvider extends RecipeProvider
 
         sewing(output, Ingredient.of(Items.STRING), Ingredient.of(ItemRegistry.ICE_FERN.get()), new ItemStack(ItemRegistry.COLD_STRING.get()), "cold_string");
         sewing(output, Ingredient.of(Items.STRING), Ingredient.of(ItemRegistry.SUN_FERN.get()), new ItemStack(ItemRegistry.WARM_STRING.get()), "warm_string");
+
+        SpecialRecipeBuilder.special(RemoveCoatRecipe::new)
+                .save(output, LegendarySurvivalOverhaul.MOD_ID + ":remove_coat");
     }
 }
