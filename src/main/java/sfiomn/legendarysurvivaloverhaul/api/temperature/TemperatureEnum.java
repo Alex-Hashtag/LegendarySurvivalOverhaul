@@ -2,6 +2,7 @@ package sfiomn.legendarysurvivaloverhaul.api.temperature;
 
 // Stolen shamelessly from Charles445's SimpleDifficulty mod
 // https://github.com/Charles445/SimpleDifficulty/blob/v0.3.4/src/main/java/com/charles445/simpledifficulty/api/temperature/TemperatureEnum.java
+/// Every value uses the avarage of the 2 values for the bound!!!
 public enum TemperatureEnum
 {
 	FROSTBITE(0, 10), // You start dying.
