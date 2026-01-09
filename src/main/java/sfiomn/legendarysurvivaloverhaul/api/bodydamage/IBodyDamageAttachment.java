@@ -73,6 +73,13 @@ public interface IBodyDamageAttachment
      * @return int packetTimer
      */
     int getPacketTimer();
+    
+    /**
+     * (Don't use this!) <br>
+     * Gets the health blink timer for rendering
+     * @return int healthBlinkTimer
+     */
+    int getHealthBlinkTimer();
 
     /**
      * (Don't use this!) <br>

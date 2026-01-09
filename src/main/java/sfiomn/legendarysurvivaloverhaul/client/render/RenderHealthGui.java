@@ -10,6 +10,7 @@ import net.minecraft.world.entity.player.Player;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
+import sfiomn.legendarysurvivaloverhaul.api.bodydamage.IBodyDamageAttachment;
 import sfiomn.legendarysurvivaloverhaul.api.health.HealthUtil;
 import sfiomn.legendarysurvivaloverhaul.common.attachments.health.HealthAttachment;
 import sfiomn.legendarysurvivaloverhaul.common.integration.overflowingbars.OverflowingBarsUtil;
@@ -65,6 +66,13 @@ public class RenderHealthGui
 
         int brokenHearts = HealthUtil.getEffectiveBrokenHearts(player);
         float shieldHealth = HEALTH_CAP.getShieldHealth();
+        
+        // Check if we should blink the health bar
+        IBodyDamageAttachment bodyDamageCap = null;
+        if (Config.Baked.localizedBodyDamageEnabled)
+        {
+            bodyDamageCap = AttachmentUtil.getBodyDamageAttachment(player);
+        }
 
         if (brokenHearts + shieldHealth == 0)
             return 0;
@@ -96,7 +104,8 @@ public class RenderHealthGui
         int healthRows = Mth.ceil(totalHearts / 10.0F);
 
         // Render
-        renderHearts(gui, left, top, 10, playerHearts, brokenHearts, Mth.ceil(player.getHealth()), shieldHealth);
+        int healthBlinkTimer = bodyDamageCap != null ? bodyDamageCap.getHealthBlinkTimer() : 0;
+        renderHearts(gui, left, top, 10, playerHearts, brokenHearts, Mth.ceil(player.getHealth()), shieldHealth, healthBlinkTimer);
 
         // Report how much vertical space we actually used on the left HUD stack.
         // Matches old Forge logic: start -10 when we appended the extra player row, then add rows * 10.
@@ -104,9 +113,16 @@ public class RenderHealthGui
         return Math.max(used, 0);
     }
 
-    public static void renderHearts(GuiGraphics gui, int left, int top, int rowHeight, int playerHearts, int brokenHearts, int health, float shieldHealth)
+    public static void renderHearts(GuiGraphics gui, int left, int top, int rowHeight, int playerHearts, int brokenHearts, int health, float shieldHealth, int healthBlinkTimer)
     {
         int shieldHearts = Mth.ceil((double) shieldHealth / 2.0);
+        
+        // Calculate blink effect (oscillate between 9 and 45 for y texture offset)
+        int blinkOffset = 0;
+        if (healthBlinkTimer > 0)
+        {
+            blinkOffset = (healthBlinkTimer % 10 < 5) ? 45 : 9;
+        }
 
         for (int i1 = playerHearts + shieldHearts + brokenHearts - 1; i1 >= playerHearts; --i1)
         {
@@ -122,11 +138,11 @@ public class RenderHealthGui
             boolean flag = i1 >= brokenHearts + playerHearts;
             if (flag)
             {
-                renderHeart(gui, HeartType.CONTAINER, x, y, 0, false);
-                renderHeart(gui, HeartType.SHIELD, x, y, 0, shieldHealth < shieldHearts * 2 && i1 == shieldHearts - 1);
+                renderHeart(gui, HeartType.CONTAINER, x, y, blinkOffset, false);
+                renderHeart(gui, HeartType.SHIELD, x, y, blinkOffset, shieldHealth < shieldHearts * 2 && i1 == shieldHearts - 1);
             } else
             {
-                renderHeart(gui, HeartType.BROKEN, x, y, 0, false);
+                renderHeart(gui, HeartType.BROKEN, x, y, blinkOffset, false);
             }
         }
     }

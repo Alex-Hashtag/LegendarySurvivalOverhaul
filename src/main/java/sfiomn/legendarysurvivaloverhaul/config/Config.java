@@ -287,6 +287,17 @@ public class Config
         public final ModConfigSpec.DoubleValue passiveLimbHealthRegenerated;
         public final ModConfigSpec.IntValue passiveLimbRegenerationTickTimer;
 
+        public final ModConfigSpec.DoubleValue proportionalLimbRegenMinThreshold;
+        public final ModConfigSpec.DoubleValue proportionalLimbRegenMinHealValue;
+        public final ModConfigSpec.DoubleValue proportionalLimbRegenMaxHealValue;
+        public final ModConfigSpec.IntValue proportionalLimbRegenTickRate;
+        public final ModConfigSpec.DoubleValue proportionalLimbRegenIncreaseRate;
+
+        public final ModConfigSpec.BooleanValue customHealthRegenEnabled;
+        public final ModConfigSpec.DoubleValue customHealthRegenRate;
+        public final ModConfigSpec.IntValue customHealthRegenTickRate;
+        public final ModConfigSpec.DoubleValue customHealthRegenFoodExhaustion;
+
         public final ModConfigSpec.DoubleValue firstAidSuppliesLimbHealthRegenerated;
         public final ModConfigSpec.EnumValue<EnumUtil.limbRegenerationMode> firstAidSuppliesLimbRegenerationMode;
         public final ModConfigSpec.BooleanValue firstAidSuppliesHealingOverflow;
@@ -391,7 +402,7 @@ public class Config
                     .define("Hide Info From Debug", true);
             naturalRegenerationEnabled = builder
                     .comment(" If enabled, the player can regenerate health naturally if their hunger is full enough (doesn't affect external healing, such as golden apples, the Regeneration effect, etc.)")
-                    .define("Natural Regeneration Enabled", true);
+                    .define("Natural Regeneration Enabled", false);
             vanillaFreezeEnabled = builder
                     .comment(" If enabled, the player suffers vanilla freeze when inside powder snow.")
                     .define("Vanilla Freeze Enabled", false);
@@ -940,6 +951,37 @@ public class Config
                     .comment(" How fast in ticks the limbs regenerate passively. 20 ticks = 1s")
                     .defineInRange("Passive Limb Regeneration Tick Timer", 200, 0, 10000);
             builder.pop();
+            builder.push("proportional-regeneration");
+            proportionalLimbRegenMinThreshold = builder
+                    .comment(" Minimum health threshold (as ratio of max health minus broken hearts) to start regenerating limbs.")
+                    .defineInRange("Proportional Limb Regen Min Threshold", 0.5, 0, 1);
+            proportionalLimbRegenMinHealValue = builder
+                    .comment(" Minimum limb heal value per tick rate when at min threshold. Spread proportionally across all body parts.")
+                    .defineInRange("Proportional Limb Regen Min Heal Value", 0.0, 0, 1000);
+            proportionalLimbRegenMaxHealValue = builder
+                    .comment(" Maximum limb heal value per tick rate when at full health. Spread proportionally across all body parts.")
+                    .defineInRange("Proportional Limb Regen Max Heal Value", 4.0, 0, 1000);
+            proportionalLimbRegenTickRate = builder
+                    .comment(" How often in ticks the proportional regeneration occurs. 20 ticks = 1s")
+                    .defineInRange("Proportional Limb Regen Tick Rate", 100, 1, 10000);
+            proportionalLimbRegenIncreaseRate = builder
+                    .comment(" Rate at which healing increases from min to max. 1.0 = linear, >1 = exponential.")
+                    .defineInRange("Proportional Limb Regen Increase Rate", 1.0, 0.1, 10);
+            builder.pop();
+            builder.push("custom-health-regen");
+            customHealthRegenEnabled = builder
+                    .comment(" Enable custom health regeneration when natural regen is off. Consumes saturation and hunger.")
+                    .define("Custom Health Regen Enabled", true);
+            customHealthRegenRate = builder
+                    .comment(" Amount of health to regenerate per tick rate.")
+                    .defineInRange("Custom Health Regen Rate", 0.5, 0, 1000);
+            customHealthRegenTickRate = builder
+                    .comment(" How often in ticks health regenerates. 20 ticks = 1s")
+                    .defineInRange("Custom Health Regen Tick Rate", 50, 1, 10000);
+            customHealthRegenFoodExhaustion = builder
+                    .comment(" Food exhaustion per health point regenerated.")
+                    .defineInRange("Custom Health Regen Food Exhaustion", 6.0, 0, 100);
+            builder.pop();
             builder.comment(" The First Aid Supplies overrides the passive limb regeneration as its effects is meant to be stronger.").push("first-aid-supplies");
             firstAidSuppliesLimbHealthRegenerated = builder
                     .comment(" The First Aid Supplies regenerate limb health passively, either by holding it or using Curios mod, the most damaged limb first.")
@@ -1453,6 +1495,17 @@ public class Config
         public static double passiveLimbHealthRegenerated;
         public static int passiveLimbRegenerationTickTimer;
 
+        public static double proportionalLimbRegenMinThreshold;
+        public static double proportionalLimbRegenMinHealValue;
+        public static double proportionalLimbRegenMaxHealValue;
+        public static int proportionalLimbRegenTickRate;
+        public static double proportionalLimbRegenIncreaseRate;
+
+        public static boolean customHealthRegenEnabled;
+        public static double customHealthRegenRate;
+        public static int customHealthRegenTickRate;
+        public static double customHealthRegenFoodExhaustion;
+
         public static double firstAidSuppliesLimbHealthRegenerated;
         public static EnumUtil.limbRegenerationMode limbRegenerationMode;
         public static boolean firstAidSuppliesHealingOverflow;
@@ -1727,6 +1780,17 @@ public class Config
                 passiveLimbRegenerationAmplificationEnabled = COMMON.passiveLimbRegenerationAmplificationEnabled.get();
                 passiveLimbHealthRegenerated = COMMON.passiveLimbHealthRegenerated.get();
                 passiveLimbRegenerationTickTimer = COMMON.passiveLimbRegenerationTickTimer.get();
+
+                proportionalLimbRegenMinThreshold = COMMON.proportionalLimbRegenMinThreshold.get();
+                proportionalLimbRegenMinHealValue = COMMON.proportionalLimbRegenMinHealValue.get();
+                proportionalLimbRegenMaxHealValue = COMMON.proportionalLimbRegenMaxHealValue.get();
+                proportionalLimbRegenTickRate = COMMON.proportionalLimbRegenTickRate.get();
+                proportionalLimbRegenIncreaseRate = COMMON.proportionalLimbRegenIncreaseRate.get();
+
+                customHealthRegenEnabled = COMMON.customHealthRegenEnabled.get();
+                customHealthRegenRate = COMMON.customHealthRegenRate.get();
+                customHealthRegenTickRate = COMMON.customHealthRegenTickRate.get();
+                customHealthRegenFoodExhaustion = COMMON.customHealthRegenFoodExhaustion.get();
 
                 firstAidSuppliesLimbHealthRegenerated = COMMON.firstAidSuppliesLimbHealthRegenerated.get();
                 limbRegenerationMode = COMMON.firstAidSuppliesLimbRegenerationMode.get();
