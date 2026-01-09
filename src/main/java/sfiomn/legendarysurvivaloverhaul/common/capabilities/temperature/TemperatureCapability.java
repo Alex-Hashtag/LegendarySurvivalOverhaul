@@ -47,7 +47,7 @@ public class TemperatureCapability implements ITemperatureCapability
 	
 	public void init()
 	{
-		this.temperature = TemperatureEnum.NORMAL.getMiddle();
+		this.temperature = TemperatureEnum.NORMAL.getValue();
 		this.temperatureImmunities = new HashSet<>();
 		this.temperatureTickTimer = 0;
 		this.freezeTickTimer = 0;
@@ -182,14 +182,14 @@ public class TemperatureCapability implements ITemperatureCapability
 
 	private void applyDangerousEffects(Player player, TemperatureEnum tempEnum) {
 		if (Config.Baked.dangerousHeatTemperature && ThirstUtil.isThirstActive(player) && tempEnum == TemperatureEnum.HEAT_STROKE) {
-			if (TemperatureEnum.HEAT_STROKE.getMiddle() <= getTemperatureLevel() && !HeatStrokeEffect.playerIsImmuneToHeat(player)) {
+			if (TemperatureEnum.HEAT_STROKE.getValue() <= getTemperatureLevel() && !HeatStrokeEffect.playerIsImmuneToHeat(player)) {
 				// Apply hyperthermia
 				if (!player.hasEffect(MobEffectRegistry.HEAT_STROKE.get()))
 					player.addEffect(new MobEffectInstance(MobEffectRegistry.HEAT_STROKE.get(), -1, 0, false, true));
 				return;
 			}
 		} else if (Config.Baked.dangerousColdTemperature && tempEnum == TemperatureEnum.FROSTBITE) {
-			if (TemperatureEnum.FROSTBITE.getMiddle() >= getTemperatureLevel() && !FrostbiteEffect.playerIsImmuneToFrost(player)) {
+			if (TemperatureEnum.FROSTBITE.getValue() >= getTemperatureLevel() && !FrostbiteEffect.playerIsImmuneToFrost(player)) {
 				// Apply hypothermia.json
 				if (!player.hasEffect(MobEffectRegistry.FROSTBITE.get()))
 					player.addEffect(new MobEffectInstance(MobEffectRegistry.FROSTBITE.get(), -1, 0, false, true));
@@ -233,7 +233,7 @@ public class TemperatureCapability implements ITemperatureCapability
 	{
 		float diff = Math.abs(destination - currentTemp);
 		
-		double temperatureTowards = ((diff * (Config.Baked.maxTemperatureModification - Config.Baked.minTemperatureModification)) / (TemperatureEnum.HEAT_STROKE.getUpperBound() - TemperatureEnum.FROSTBITE.getLowerBound())) + Config.Baked.minTemperatureModification;
+		double temperatureTowards = ((diff * (Config.Baked.maxTemperatureModification - Config.Baked.minTemperatureModification)) / (TemperatureEnum.HEAT_STROKE.getValue() - TemperatureEnum.FROSTBITE.getValue())) + Config.Baked.minTemperatureModification;
 
 		temperatureTowards = Math.min(temperatureTowards, diff);
 		

@@ -115,58 +115,40 @@ public class RenderTemperatureGui
 		IconPair icon;
 		
 		byte shakeFrequency = 0;
+
+        switch (tempEnum)
+        {
+            case HEAT_STROKE ->
+            {
+                icon = IconPair.FIRE;
+
+                if (temperature >= TemperatureEnum.HEAT_STROKE.getValue())
+                {
+                    shakeFrequency = 1;
+                } else
+                {
+                    shakeFrequency = 0;
+                }
+            }
+            case HOT -> icon = IconPair.ABOVE_NORMAL;
+            case NORMAL -> icon = IconPair.NORMAL;
+            case COLD -> icon = IconPair.BELOW_NORMAL;
+            case FROSTBITE ->
+            {
+                icon = IconPair.SNOWFLAKE;
+
+                if (temperature <= TemperatureEnum.FROSTBITE.getValue())
+                {
+                    shakeFrequency = 1;
+                } else
+                {
+                    shakeFrequency = 0;
+                }
+            }
+            default -> icon = IconPair.UNKNOWN;
+        }
 		
-		switch (tempEnum)
-		{
-		case HEAT_STROKE:
-			icon = IconPair.FIRE;
-			
-			if ((int) temperature == TemperatureEnum.HEAT_STROKE.getLowerBound())
-			{
-				shakeFrequency = 0;
-			}
-			else if (temperature >= TemperatureEnum.HEAT_STROKE.getMiddle())
-			{
-				shakeFrequency = 1;
-			}
-			else
-			{
-				shakeFrequency = 2;
-			}
-			
-			break;
-		case HOT:
-			icon = IconPair.ABOVE_NORMAL;
-			break;
-		case NORMAL:
-			icon = IconPair.NORMAL;
-			break;
-		case COLD:
-			icon = IconPair.BELOW_NORMAL;
-			break;
-		case FROSTBITE:
-			icon = IconPair.SNOWFLAKE;
-			
-			if ((int) temperature == TemperatureEnum.FROSTBITE.getUpperBound())
-			{
-				shakeFrequency = 0;
-			}
-			else if (temperature > TemperatureEnum.FROSTBITE.getMiddle() + 1)
-			{
-				shakeFrequency = 2;
-			}
-			else
-			{
-				shakeFrequency = 1;
-			}
-			
-			break;
-		default:
-			icon = IconPair.UNKNOWN;
-			break;
-		}
-		
-		boolean isDying = (TemperatureEnum.FROSTBITE.getMiddle() >= TEMPERATURE_CAP.getTemperatureLevel()  || TemperatureEnum.HEAT_STROKE.getMiddle() < TEMPERATURE_CAP.getTemperatureLevel());
+		boolean isDying = (TemperatureEnum.FROSTBITE.getValue() >= TEMPERATURE_CAP.getTemperatureLevel()  || TemperatureEnum.HEAT_STROKE.getValue() < TEMPERATURE_CAP.getTemperatureLevel());
 		
 		if (shakeFrequency > 0)
 		{
@@ -224,7 +206,7 @@ public class RenderTemperatureGui
 			x -= 31;
 
 		float bodyTemperature = TemperatureUtil.clampTemperature(TEMPERATURE_CAP.getTemperatureLevel());
-		float tempRatio = (bodyTemperature - TemperatureEnum.FROSTBITE.getLowerBound()) / (TemperatureEnum.HEAT_STROKE.getUpperBound() - TemperatureEnum.FROSTBITE.getLowerBound());
+		float tempRatio = (bodyTemperature - TemperatureEnum.FROSTBITE.getValue()) / (TemperatureEnum.HEAT_STROKE.getValue() - TemperatureEnum.FROSTBITE.getValue());
 
 		// Temperature Frame rendering
 		gui.blit(ICONS, x, y,

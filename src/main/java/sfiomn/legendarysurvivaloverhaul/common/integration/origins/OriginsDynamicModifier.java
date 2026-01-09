@@ -23,7 +23,7 @@ public class OriginsDynamicModifier extends DynamicModifierBase {
             return 0.0f;
 
         float effectiveResistance = 0.0f;
-        float diffToAverage = currentTemperature - TemperatureEnum.NORMAL.getMiddle();
+        float diffToAverage = currentTemperature - TemperatureEnum.NORMAL.getValue();
 
         LazyOptional<IOriginContainer> optionalOrigin = player.getCapability(OriginsAPI.ORIGIN_CONTAINER);
         if (optionalOrigin.isPresent() && optionalOrigin.resolve().isPresent()) {

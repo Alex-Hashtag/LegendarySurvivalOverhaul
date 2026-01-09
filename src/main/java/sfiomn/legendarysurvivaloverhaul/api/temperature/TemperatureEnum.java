@@ -1,56 +1,35 @@
 package sfiomn.legendarysurvivaloverhaul.api.temperature;
 
-// Stolen shamelessly from Charles445's SimpleDifficulty mod
-// https://github.com/Charles445/SimpleDifficulty/blob/v0.3.4/src/main/java/com/charles445/simpledifficulty/api/temperature/TemperatureEnum.java
-/// Every value uses the avarage of the 2 values for the bound!!!
 public enum TemperatureEnum
 {
-	FROSTBITE(0, 10), // You start dying.
-	COLD(10, 16),
-	NORMAL(16, 24),
-	HOT(24,30), // The player will begin to sweat. This grows in intensity as the player gets hotter.
-	HEAT_STROKE(30,40); // You start dying.
+	FROSTBITE(5),
+	COLD(10),
+	NORMAL(20),
+	HOT(30),
+	HEAT_STROKE(35);
 	
-	private final int lowerBound;
-	private final int upperBound;
+	private final float value;
 	
-	TemperatureEnum(int lowerBound, int upperBound)
+	TemperatureEnum(float value)
 	{
-		this.lowerBound = lowerBound;
-		this.upperBound = upperBound;
-	}
-	
-	public boolean matches(float temperature)
-	{
-		temperature = TemperatureUtil.clampTemperature(temperature);
-		return (temperature >= this.lowerBound && temperature < this.upperBound);
+		this.value = value;
 	}
 
 	public static TemperatureEnum get(float temperature) {
-		if (temperature < FROSTBITE.upperBound)
+		if (temperature < (FROSTBITE.value + COLD.value) / 2)
 			return FROSTBITE;
-		else if (temperature >= COLD.lowerBound && temperature < COLD.upperBound)
+		else if (temperature < (COLD.value + NORMAL.value) / 2)
 			return COLD;
-		else if (temperature >= NORMAL.lowerBound && temperature < NORMAL.upperBound)
+		else if (temperature < (NORMAL.value + HOT.value) / 2)
 			return NORMAL;
-		else if (temperature >= HOT.lowerBound && temperature < HOT.upperBound)
+		else if (temperature < (HOT.value + HEAT_STROKE.value) / 2)
 			return HOT;
 		else
 			return HEAT_STROKE;
 	}
 	
-	public float getMiddle()
+	public float getValue()
 	{
-		return (this.upperBound + this.lowerBound) / 2.0f;
-	}
-	
-	public int getLowerBound() 
-	{
-		return this.lowerBound;
-	}
-	
-	public int getUpperBound() 
-	{
-		return this.upperBound;
+		return this.value;
 	}
 }

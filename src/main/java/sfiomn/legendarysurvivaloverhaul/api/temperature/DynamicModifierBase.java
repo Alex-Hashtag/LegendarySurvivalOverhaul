@@ -25,7 +25,7 @@ public class DynamicModifierBase
 	}
 
 	public float getEffectiveResistance(float currentTemperature, float currentResistance, JsonTemperatureResistance jsonTemperatureResistance) {
-		float diffToAverage = currentTemperature - TemperatureEnum.NORMAL.getMiddle();
+		float diffToAverage = currentTemperature - TemperatureEnum.NORMAL.getValue();
 
 		if (diffToAverage == 0) {
 			return 0.0f;

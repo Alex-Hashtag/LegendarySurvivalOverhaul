@@ -21,7 +21,7 @@ public class TemperatureItemCapability implements ITemperatureItemCapability {
     }
 
     private void init() {
-        this.temperature = TemperatureEnum.NORMAL.getMiddle();
+        this.temperature = TemperatureEnum.NORMAL.getValue();
         this.updateTick = 0;
     }
 
