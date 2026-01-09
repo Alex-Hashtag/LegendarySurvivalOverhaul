@@ -25,7 +25,7 @@ public class DimensionModifier extends ModifierBase
 
         JsonTemperatureDimension dimensionTemperature = TemperatureDataManager.getDimension(level.dimension().location());
         if (dimensionTemperature == null)
-            return TemperatureEnum.NORMAL.getMiddle();
+            return TemperatureEnum.NORMAL.getValue();
 
         return dimensionTemperature.temperature;
     }

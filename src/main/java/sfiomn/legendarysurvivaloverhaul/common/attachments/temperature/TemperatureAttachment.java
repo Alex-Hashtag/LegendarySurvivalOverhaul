@@ -46,7 +46,7 @@ public class TemperatureAttachment implements ITemperatureAttachment, INBTSerial
 
     public void init()
     {
-        this.temperature = TemperatureEnum.NORMAL.getMiddle();
+        this.temperature = TemperatureEnum.NORMAL.getValue();
         this.temperatureImmunities = new HashSet<>();
         this.temperatureTickTimer = 0;
         this.freezeTickTimer = 0;
@@ -278,7 +278,7 @@ public class TemperatureAttachment implements ITemperatureAttachment, INBTSerial
     {
         float diff = Math.abs(destination - currentTemp);
 
-        double temperatureTowards = ((diff * (Config.Baked.maxTemperatureModification - Config.Baked.minTemperatureModification)) / (TemperatureEnum.HEAT_STROKE.getUpperBound() - TemperatureEnum.FROSTBITE.getLowerBound())) + Config.Baked.minTemperatureModification;
+        double temperatureTowards = ((diff * (Config.Baked.maxTemperatureModification - Config.Baked.minTemperatureModification)) / (TemperatureEnum.HEAT_STROKE.getValue() - TemperatureEnum.FROSTBITE.getValue())) + Config.Baked.minTemperatureModification;
 
         temperatureTowards = Math.min(temperatureTowards, diff);
 

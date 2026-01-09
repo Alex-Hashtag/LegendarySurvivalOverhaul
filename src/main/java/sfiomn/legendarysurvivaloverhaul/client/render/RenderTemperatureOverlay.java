@@ -55,8 +55,8 @@ public class RenderTemperatureOverlay
             float temperature = TEMPERATURE_CAP.getTemperatureLevel();
             TemperatureEnum tempEnum = TEMPERATURE_CAP.getTemperatureEnum();
 
-            boolean frostbiteLimit = temperature <= TemperatureEnum.FROSTBITE.getMiddle() + 1;
-            boolean heatstrokeLimit = temperature >= TemperatureEnum.HEAT_STROKE.getMiddle() - 1;
+            boolean frostbiteLimit = temperature <= TemperatureEnum.FROSTBITE.getValue() + 1;
+            boolean heatstrokeLimit = temperature >= TemperatureEnum.HEAT_STROKE.getValue() - 1;
 
             float targetFadeLevel;
             if (Config.Baked.coldTemperatureOverlay && tempEnum == TemperatureEnum.FROSTBITE && !FrostbiteEffect.playerIsImmuneToFrost(player))

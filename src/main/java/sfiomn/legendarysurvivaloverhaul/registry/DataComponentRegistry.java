@@ -52,7 +52,7 @@ public class DataComponentRegistry
 
         public TemperatureData()
         {
-            this(TemperatureEnum.NORMAL.getMiddle(), 0L);
+            this(TemperatureEnum.NORMAL.getValue(), 0L);
         }
 
         public TemperatureData withTemperature(float newTemperature)
