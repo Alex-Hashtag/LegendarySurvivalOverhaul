@@ -20,6 +20,11 @@ public class HeatThirstEffect extends IncurableMobEffect
     {
         if (entity instanceof Player)
         {
+            // For infinite duration effects, check if enough ticks have passed
+            int interval = 50 >> amplifier;
+            if (interval > 0 && entity.tickCount % interval != 0)
+                return true;
+            
             ThirstAttachment thirstAttachment = AttachmentUtil.getThirstAttachment((Player) entity);
 
             // Twice strength of Hunger effect
@@ -31,8 +36,15 @@ public class HeatThirstEffect extends IncurableMobEffect
     @Override
     public boolean shouldApplyEffectTickThisTick(int duration, int amplifier)
     {
+        // For infinite duration (-1), always return true and let applyEffectTick handle timing
+        if (duration < 0)
+            return true;
+        
         // Apply thirsty effect every 50 ticks for amplifier 0
         int time = 50 >> amplifier;
-        return time == 0 || duration % time == 0;
+        if (time <= 0)
+            return true;
+        
+        return duration % time == 0;
     }
 }
