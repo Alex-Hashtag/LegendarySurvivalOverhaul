@@ -33,6 +33,8 @@ public class BodyDamageCapability implements IBodyDamageCapability
 	private int headacheTimer;
 	private int expectedBrokenHearts;
 	private float healingTickTimer;
+	private float proportionalRegenTimer;
+	private float customHealthRegenTimer;
 
 	// Unsaved data
 	private MobEffectInstance headacheEffect;
@@ -46,6 +48,7 @@ public class BodyDamageCapability implements IBodyDamageCapability
 	private boolean manualDirty;
 	private int packetTimer;
 	private Map<MobEffect, Integer> malus;
+	private int healthBlinkTimer;
 
 	public BodyDamageCapability()
 	{
@@ -64,6 +67,9 @@ public class BodyDamageCapability implements IBodyDamageCapability
 		this.playerMaxHealth = 0;
 		this.manualDirty = false;
 		this.healingTickTimer = 0;
+		this.proportionalRegenTimer = 0;
+		this.customHealthRegenTimer = 0;
+		this.healthBlinkTimer = 0;
 
 		this.bodyParts = new HashMap<>();
 		this.malus = new HashMap<>();
@@ -110,6 +116,11 @@ public class BodyDamageCapability implements IBodyDamageCapability
 	@Override
 	public int getPacketTimer() {
 		return this.packetTimer;
+	}
+	
+	@Override
+	public int getHealthBlinkTimer() {
+		return this.healthBlinkTimer;
 	}
 
 	@Override
@@ -184,8 +195,7 @@ public class BodyDamageCapability implements IBodyDamageCapability
 				this.hasFirstAidSuppliesBoosted = BodyDamageUtil.hasPlayerFirstAidSuppliesBoostingEffect(player);
 			} else {
 				this.passiveLimbRegenerationEffects = BodyDamageUtil.getPlayerPassiveLimbRegenerationEffect(player);
-				this.passiveLimbRegenerationEnabled = this.passiveLimbRegenerationEffects != null ||
-						(Config.Baked.passiveLimbRegenerationOnFullHealth && HealthUtil.getPlayerStableMaxHealth(player) == player.getHealth());
+				this.passiveLimbRegenerationEnabled = this.passiveLimbRegenerationEffects != null;
 			}
 		}
 
@@ -228,6 +238,31 @@ public class BodyDamageCapability implements IBodyDamageCapability
 			}
 		} else {
 			healingTickTimer = 0;
+		}
+		
+		// Proportional limb regeneration system
+		if (Config.Baked.proportionalLimbRegenTickRate > 0 && !this.hasFirstAidSupplies) {
+			if (proportionalRegenTimer++ >= Config.Baked.proportionalLimbRegenTickRate) {
+				proportionalRegenTimer = 0;
+				applyProportionalLimbRegeneration(player);
+			}
+		} else {
+			proportionalRegenTimer = 0;
+		}
+		
+		// Custom health regeneration when natural regen is off
+		if (!Config.Baked.naturalRegenerationEnabled && Config.Baked.customHealthRegenEnabled) {
+			if (customHealthRegenTimer++ >= Config.Baked.customHealthRegenTickRate) {
+				customHealthRegenTimer = 0;
+				applyCustomHealthRegeneration(player);
+			}
+		} else {
+			customHealthRegenTimer = 0;
+		}
+		
+		// Decrement health blink timer
+		if (this.healthBlinkTimer > 0) {
+			this.healthBlinkTimer--;
 		}
 	}
 
@@ -275,6 +310,82 @@ public class BodyDamageCapability implements IBodyDamageCapability
 				.min((entry1, entry2) -> Float.compare(getBodyPartHealthRatio(entry1.getKey()), getBodyPartHealthRatio(entry2.getKey())))
 				.map(Map.Entry::getValue)
 				.orElse(null); // or throw an exception if you prefer
+	}
+	
+	private void applyProportionalLimbRegeneration(Player player) {
+		double stableMaxHealth = HealthUtil.getPlayerStableMaxHealth(player);
+		double currentHealth = player.getHealth();
+		double effectiveBrokenHearts = HealthUtil.getEffectiveBrokenHearts(player) * 2.0;
+		double adjustedMaxHealth = stableMaxHealth - effectiveBrokenHearts;
+		
+		if (adjustedMaxHealth <= 0) return;
+		
+		double healthRatio = currentHealth / adjustedMaxHealth;
+		healthRatio = Math.max(0, Math.min(1, healthRatio));
+		
+		if (healthRatio < Config.Baked.proportionalLimbRegenMinThreshold) {
+			return;
+		}
+		
+		double normalizedRatio = (healthRatio - Config.Baked.proportionalLimbRegenMinThreshold) / (1.0 - Config.Baked.proportionalLimbRegenMinThreshold);
+		normalizedRatio = Math.pow(normalizedRatio, Config.Baked.proportionalLimbRegenIncreaseRate);
+		
+		double healAmount = Config.Baked.proportionalLimbRegenMinHealValue + 
+				(Config.Baked.proportionalLimbRegenMaxHealValue - Config.Baked.proportionalLimbRegenMinHealValue) * normalizedRatio;
+		
+		if (healAmount <= 0) return;
+		
+		float totalDamage = 0;
+		for (BodyPart bodyPart : this.bodyParts.values()) {
+			if (bodyPart.getDamage() < bodyPart.getMaxHealth()) {
+				totalDamage += bodyPart.getDamage();
+			}
+		}
+		
+		if (totalDamage <= 0) return;
+		
+		boolean healedAtMaxHealth = currentHealth >= stableMaxHealth - 0.01;
+		
+		if (healedAtMaxHealth) {
+			player.level().playSound(null, player.blockPosition(), SoundRegistry.HEAL_BODY_PART.get(), SoundSource.PLAYERS, 0.3f, 1.5f);
+			this.healthBlinkTimer = 40; // Blink for 2 seconds
+			this.setManualDirty(); // Force packet sync
+		}
+		
+		for (Map.Entry<BodyPartEnum, BodyPart> entry : this.bodyParts.entrySet()) {
+			BodyPart bodyPart = entry.getValue();
+			float damage = bodyPart.getDamage();
+			
+			if (damage >= bodyPart.getMaxHealth()) {
+				continue;
+			}
+			
+			float proportionalHeal = (float) ((damage / totalDamage) * healAmount);
+			healWithFoodExhaustion(player, entry.getKey(), proportionalHeal);
+		}
+		
+	}
+	
+	private void applyCustomHealthRegeneration(Player player) {
+		if (player.getFoodData().getFoodLevel() <= 0) return;
+		
+		double totalLimbHealthRatio = 0;
+		for (BodyPart bodyPart : this.bodyParts.values()) {
+			totalLimbHealthRatio += (bodyPart.getMaxHealth() - bodyPart.getDamage()) / bodyPart.getMaxHealth();
+		}
+		totalLimbHealthRatio /= this.bodyParts.size();
+		
+		double maxHealthToRegen = player.getMaxHealth() * totalLimbHealthRatio;
+		
+		if (player.getHealth() >= maxHealthToRegen - 0.01) return;
+		
+		float healthToHeal = (float) Math.min(Config.Baked.customHealthRegenRate, maxHealthToRegen - player.getHealth());
+		
+		if (healthToHeal > 0) {
+			player.heal(healthToHeal);
+			player.getFoodData().addExhaustion((float) (healthToHeal * Config.Baked.customHealthRegenFoodExhaustion));
+			
+		}
 	}
 
 	@Override
@@ -413,6 +524,8 @@ public class BodyDamageCapability implements IBodyDamageCapability
 		compound.putInt("headacheTimer", this.headacheTimer);
 		compound.putInt("expectedBrokenHearts", this.expectedBrokenHearts);
 		compound.putFloat("healingTickTimer", this.healingTickTimer);
+		compound.putFloat("proportionalRegenTimer", this.proportionalRegenTimer);
+		compound.putFloat("customHealthRegenTimer", this.customHealthRegenTimer);
 
 		return compound;
 	}
@@ -427,5 +540,7 @@ public class BodyDamageCapability implements IBodyDamageCapability
 		this.headacheTimer = compound.getInt("headacheTimer");
 		this.expectedBrokenHearts = compound.getInt("expectedBrokenHearts");
 		this.healingTickTimer = compound.getFloat("healingTickTimer");
+		this.proportionalRegenTimer = compound.contains("proportionalRegenTimer") ? compound.getFloat("proportionalRegenTimer") : 0;
+		this.customHealthRegenTimer = compound.contains("customHealthRegenTimer") ? compound.getFloat("customHealthRegenTimer") : 0;
 	}
 }

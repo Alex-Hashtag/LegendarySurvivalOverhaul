@@ -68,6 +68,13 @@ public interface IBodyDamageCapability
 	 * @return int packetTimer
 	 */
 	public int getPacketTimer();
+	
+	/**
+	 * (Don't use this!) <br>
+	 * Gets the health blink timer for rendering
+	 * @return int healthBlinkTimer
+	 */
+	public int getHealthBlinkTimer();
 
 	/**
 	 * (Don't use this!) <br>
