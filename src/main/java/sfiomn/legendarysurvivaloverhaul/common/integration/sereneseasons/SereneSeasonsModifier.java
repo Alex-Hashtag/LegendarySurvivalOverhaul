@@ -127,22 +127,22 @@ public class SereneSeasonsModifier extends ModifierBase
                 switch (seasonState.getTropicalSeason())
                 {
                     case EARLY_DRY:
-                        value += getSeasonModifier(Config.Baked.ssLateWetSeasonModifier, Config.Baked.earlyDrySeasonModifier, Config.Baked.midDrySeasonModifier, timeInSubSeason, seasonState.getSubSeasonDuration() * 2);
+                        value += getSeasonModifier(Config.Baked.ssLateWetSeasonModifier, Config.Baked.ssEarlyDrySeasonModifier, Config.Baked.ssMidDrySeasonModifier, timeInSubSeason, seasonState.getSubSeasonDuration() * 2);
                         break;
                     case MID_DRY:
-                        value += getSeasonModifier(Config.Baked.earlyDrySeasonModifier, Config.Baked.midDrySeasonModifier, Config.Baked.lateDrySeasonModifier, timeInSubSeason, seasonState.getSubSeasonDuration() * 2);
+                        value += getSeasonModifier(Config.Baked.ssEarlyDrySeasonModifier, Config.Baked.ssMidDrySeasonModifier, Config.Baked.ssLateDrySeasonModifier, timeInSubSeason, seasonState.getSubSeasonDuration() * 2);
                         break;
                     case LATE_DRY:
-                        value += getSeasonModifier(Config.Baked.midDrySeasonModifier, Config.Baked.lateDrySeasonModifier, Config.Baked.ssEarlyWetSeasonModifier, timeInSubSeason, seasonState.getSubSeasonDuration() * 2);
+                        value += getSeasonModifier(Config.Baked.ssMidDrySeasonModifier, Config.Baked.ssLateDrySeasonModifier, Config.Baked.ssEarlyWetSeasonModifier, timeInSubSeason, seasonState.getSubSeasonDuration() * 2);
                         break;
                     case EARLY_WET:
-                        value += getSeasonModifier(Config.Baked.lateDrySeasonModifier, Config.Baked.ssEarlyWetSeasonModifier, Config.Baked.ssMidWetSeasonModifier, timeInSubSeason, seasonState.getSubSeasonDuration() * 2);
+                        value += getSeasonModifier(Config.Baked.ssLateDrySeasonModifier, Config.Baked.ssEarlyWetSeasonModifier, Config.Baked.ssMidWetSeasonModifier, timeInSubSeason, seasonState.getSubSeasonDuration() * 2);
                         break;
                     case MID_WET:
                         value += getSeasonModifier(Config.Baked.ssEarlyWetSeasonModifier, Config.Baked.ssMidWetSeasonModifier, Config.Baked.ssLateWetSeasonModifier, timeInSubSeason, seasonState.getSubSeasonDuration() * 2);
                         break;
                     case LATE_WET:
-                        value += getSeasonModifier(Config.Baked.ssMidWetSeasonModifier, Config.Baked.ssLateWetSeasonModifier, Config.Baked.earlyDrySeasonModifier, timeInSubSeason, seasonState.getSubSeasonDuration() * 2);
+                        value += getSeasonModifier(Config.Baked.ssMidWetSeasonModifier, Config.Baked.ssLateWetSeasonModifier, Config.Baked.ssEarlyDrySeasonModifier, timeInSubSeason, seasonState.getSubSeasonDuration() * 2);
                         break;
                 }
             }

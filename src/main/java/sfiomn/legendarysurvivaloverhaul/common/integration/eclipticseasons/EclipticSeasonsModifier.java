@@ -41,33 +41,17 @@ public class EclipticSeasonsModifier extends ModifierBase
 
     public float getUncaughtWorldInfluence(Level level, BlockPos pos)
     {
-        boolean hasSeasons = hasDimensionSeason(level);
-        boolean isSeasonEnabled = EclipticSeasonsCompat.isSeasonEnabled(level);
-        boolean isSolarTermNone = EclipticSeasonsCompat.isSolarTermNone(level);
-        
-        LegendarySurvivalOverhaul.LOGGER.debug("Ecliptic Seasons Debug - hasSeasons: {}, isSeasonEnabled: {}, isSolarTermNone: {}", 
-            hasSeasons, isSeasonEnabled, isSolarTermNone);
-        
-        if (!hasSeasons)
-        {
-            LegendarySurvivalOverhaul.LOGGER.debug("Ecliptic Seasons: Dimension does not have seasons enabled");
+        if (!hasDimensionSeason(level))
             return 0.0f;
-        }
 
-        if (isSolarTermNone)
-        {
-            LegendarySurvivalOverhaul.LOGGER.debug("Ecliptic Seasons: Solar term is NONE");
+        if (EclipticSeasonsCompat.isSolarTermNone(level))
             return 0.0f;
-        }
 
         int timeInSubSeason = (int) (EclipticSeasonsCompat.getTimeInTerm(level) * 24000 + level.getLevelData().getDayTime() % 24000);
         int subSeasonDuration = EclipticSeasonsUtil.getDaysInSolarTerm(level) * 24000;
         int ordinal = EclipticSeasonsCompat.getSolarTermOrdinal(level);
         float value = getBlendedSeasonModifier(getSeasonModifier(ordinal - 1), getSeasonModifier(ordinal), getSeasonModifier(ordinal + 1), timeInSubSeason, subSeasonDuration);
         double targetUndergroundTemperature = 0;
-
-        LegendarySurvivalOverhaul.LOGGER.debug("Ecliptic Seasons: ordinal={}, timeInSubSeason={}, subSeasonDuration={}, value={}", 
-            ordinal, timeInSubSeason, subSeasonDuration, value);
 
         return applyUndergroundEffect(value, level, pos, (float) targetUndergroundTemperature);
     }

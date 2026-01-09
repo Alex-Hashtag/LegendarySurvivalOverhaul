@@ -443,6 +443,19 @@ public class CommonNeoForgeEvents
             player.addEffect(new MobEffectInstance(MobEffectRegistry.TEMPERATURE_IMMUNITY, Config.Baked.temperatureImmunityOnDeathTime, 0, false, false, true));
         }
 
+        // Reset temperature to NORMAL on respawn
+        if (Config.Baked.temperatureEnabled) {
+            var tempCap = AttachmentUtil.getTempAttachment(player);
+            tempCap.setTemperatureLevel(sfiomn.legendarysurvivaloverhaul.api.temperature.TemperatureEnum.NORMAL.getValue());
+            tempCap.setTargetTemperatureLevel(sfiomn.legendarysurvivaloverhaul.api.temperature.TemperatureEnum.NORMAL.getValue());
+            
+            if (player instanceof ServerPlayer serverPlayer) {
+                sfiomn.legendarysurvivaloverhaul.network.payloads.UpdateTemperaturesPayload.sendToPlayer(
+                    serverPlayer, tempCap.writeNBT()
+                );
+            }
+        }
+
         // Reset all limb health to full on respawn
         if (Config.Baked.localizedBodyDamageEnabled) {
             var bodyCap = AttachmentUtil.getBodyDamageAttachment(player);

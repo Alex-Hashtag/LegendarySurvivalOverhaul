@@ -1433,9 +1433,9 @@ public class Config
         public static double ssMidWetSeasonModifier;
         public static double ssLateWetSeasonModifier;
 
-        public static double earlyDrySeasonModifier;
-        public static double midDrySeasonModifier;
-        public static double lateDrySeasonModifier;
+        public static double ssEarlyDrySeasonModifier;
+        public static double ssMidDrySeasonModifier;
+        public static double ssLateDrySeasonModifier;
 
         public static boolean eclipticSeasonsEnabled;
         public static List<? extends Double> esSpringModifier;
@@ -1717,9 +1717,9 @@ public class Config
                 ssMidWetSeasonModifier = COMMON.ssMidWetSeasonModifier.get();
                 ssLateWetSeasonModifier = COMMON.ssLateWetSeasonModifier.get();
 
-                earlyDrySeasonModifier = COMMON.ssEarlyDrySeasonModifier.get();
-                midDrySeasonModifier = COMMON.ssMidDrySeasonModifier.get();
-                lateDrySeasonModifier = COMMON.ssLateDrySeasonModifier.get();
+                ssEarlyDrySeasonModifier = COMMON.ssEarlyDrySeasonModifier.get();
+                ssMidDrySeasonModifier = COMMON.ssMidDrySeasonModifier.get();
+                ssLateDrySeasonModifier = COMMON.ssLateDrySeasonModifier.get();
 
                 eclipticSeasonsEnabled = COMMON.eclipticSeasonsEnabled.get();
                 esSpringModifier = COMMON.esSpringModifier.get();

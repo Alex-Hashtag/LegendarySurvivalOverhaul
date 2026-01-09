@@ -13,6 +13,7 @@ import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.temperature.ITemperatureAttachment;
 import sfiomn.legendarysurvivaloverhaul.api.temperature.TemperatureEnum;
 import sfiomn.legendarysurvivaloverhaul.api.temperature.TemperatureUtil;
+import sfiomn.legendarysurvivaloverhaul.api.thirst.ThirstUtil;
 import sfiomn.legendarysurvivaloverhaul.common.effects.FrostbiteEffect;
 import sfiomn.legendarysurvivaloverhaul.common.effects.HeatStrokeEffect;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
@@ -188,90 +189,95 @@ public class TemperatureAttachment implements ITemperatureAttachment, INBTSerial
 
     private void applyTemperatureEffects(Player player, TemperatureEnum tempEnum)
     {
-        // Ensure effects stick for at least 5 seconds and are refreshed when close to expiring
-        // Duration in ticks
-        int effectDuration = 100;            // 5 seconds
-        int refreshThreshold = 40;           // 2 seconds
+        // Apply primary dangerous effects (Frostbite / Heat Stroke)
+        applyDangerousEffects(player, tempEnum);
         
+        // Apply secondary effects (Cold Hunger / Heat Thirst)
+        applySecondaryEffects(player, tempEnum);
+    }
+    
+    private void applyDangerousEffects(Player player, TemperatureEnum tempEnum)
+    {
         // Apply or remove FROSTBITE effect
-        if (tempEnum == TemperatureEnum.FROSTBITE && Config.Baked.dangerousColdTemperature)
+        if (Config.Baked.dangerousColdTemperature && tempEnum == TemperatureEnum.FROSTBITE)
         {
-            if (!FrostbiteEffect.playerIsImmuneToFrost(player))
+            if (TemperatureEnum.FROSTBITE.getValue() >= getTemperatureLevel() 
+                && !FrostbiteEffect.playerIsImmuneToFrost(player))
             {
-                var current = player.getEffect(MobEffectRegistry.FROSTBITE);
-                if (current == null || current.getDuration() <= refreshThreshold)
-                {
-                    player.addEffect(new MobEffectInstance(MobEffectRegistry.FROSTBITE, effectDuration, 0, false, false, true));
-                }
+                if (!player.hasEffect(MobEffectRegistry.FROSTBITE))
+                    player.addEffect(new MobEffectInstance(
+                        MobEffectRegistry.FROSTBITE, 
+                        -1,    // INFINITE duration
+                        0,     // Amplifier 0
+                        false, // Not ambient
+                        true   // Show particles
+                    ));
+                return;
             }
         }
-        else
-        {
-            if (player.hasEffect(MobEffectRegistry.FROSTBITE))
-            {
-                player.removeEffect(MobEffectRegistry.FROSTBITE);
-            }
-        }
-
-        // Apply or remove COLD_HUNGER effect
-        if ((tempEnum == TemperatureEnum.COLD || tempEnum == TemperatureEnum.FROSTBITE) && Config.Baked.coldTemperatureSecondaryEffects)
-        {
-            if (!FrostbiteEffect.playerIsImmuneToFrost(player))
-            {
-                var current = player.getEffect(MobEffectRegistry.COLD_HUNGER);
-                if (current == null || current.getDuration() <= refreshThreshold)
-                {
-                    player.addEffect(new MobEffectInstance(MobEffectRegistry.COLD_HUNGER, effectDuration, 0, false, false, true));
-                }
-            }
-        }
-        else
-        {
-            if (player.hasEffect(MobEffectRegistry.COLD_HUNGER))
-            {
-                player.removeEffect(MobEffectRegistry.COLD_HUNGER);
-            }
-        }
+        if (player.hasEffect(MobEffectRegistry.FROSTBITE))
+            player.removeEffect(MobEffectRegistry.FROSTBITE);
 
         // Apply or remove HEAT_STROKE effect
-        if (tempEnum == TemperatureEnum.HEAT_STROKE && Config.Baked.dangerousHeatTemperature)
+        if (Config.Baked.dangerousHeatTemperature && ThirstUtil.isThirstActive(player) && tempEnum == TemperatureEnum.HEAT_STROKE)
         {
-            if (!HeatStrokeEffect.playerIsImmuneToHeat(player))
+            if (TemperatureEnum.HEAT_STROKE.getValue() <= getTemperatureLevel() 
+                && !HeatStrokeEffect.playerIsImmuneToHeat(player))
             {
-                var current = player.getEffect(MobEffectRegistry.HEAT_STROKE);
-                if (current == null || current.getDuration() <= refreshThreshold)
-                {
-                    player.addEffect(new MobEffectInstance(MobEffectRegistry.HEAT_STROKE, effectDuration, 0, false, false, true));
-                }
+                if (!player.hasEffect(MobEffectRegistry.HEAT_STROKE))
+                    player.addEffect(new MobEffectInstance(
+                        MobEffectRegistry.HEAT_STROKE, 
+                        -1,    // INFINITE duration
+                        0,     // Amplifier 0
+                        false, // Not ambient
+                        true   // Show particles
+                    ));
+                return;
             }
         }
-        else
+        if (player.hasEffect(MobEffectRegistry.HEAT_STROKE))
+            player.removeEffect(MobEffectRegistry.HEAT_STROKE);
+    }
+    
+    private void applySecondaryEffects(Player player, TemperatureEnum tempEnum)
+    {
+        // Apply or remove COLD_HUNGER effect (only at FROSTBITE level)
+        if (Config.Baked.coldTemperatureSecondaryEffects && tempEnum == TemperatureEnum.FROSTBITE)
         {
-            if (player.hasEffect(MobEffectRegistry.HEAT_STROKE))
+            if (!FrostbiteEffect.playerIsImmuneToFrost(player))
             {
-                player.removeEffect(MobEffectRegistry.HEAT_STROKE);
+                if (!player.hasEffect(MobEffectRegistry.COLD_HUNGER))
+                    player.addEffect(new MobEffectInstance(
+                        MobEffectRegistry.COLD_HUNGER, 
+                        -1,    // INFINITE duration
+                        0,     // Amplifier 0
+                        false, // Not ambient
+                        false  // No particles
+                    ));
+                return;
             }
         }
+        if (player.hasEffect(MobEffectRegistry.COLD_HUNGER))
+            player.removeEffect(MobEffectRegistry.COLD_HUNGER);
 
-        // Apply or remove HEAT_THIRST effect
-        if ((tempEnum == TemperatureEnum.HOT || tempEnum == TemperatureEnum.HEAT_STROKE) && Config.Baked.heatTemperatureSecondaryEffects)
+        // Apply or remove HEAT_THIRST effect (only at HEAT_STROKE level)
+        if (Config.Baked.heatTemperatureSecondaryEffects && tempEnum == TemperatureEnum.HEAT_STROKE)
         {
             if (!HeatStrokeEffect.playerIsImmuneToHeat(player))
             {
-                var current = player.getEffect(MobEffectRegistry.HEAT_THIRST);
-                if (current == null || current.getDuration() <= refreshThreshold)
-                {
-                    player.addEffect(new MobEffectInstance(MobEffectRegistry.HEAT_THIRST, effectDuration, 0, false, false, true));
-                }
+                if (!player.hasEffect(MobEffectRegistry.HEAT_THIRST))
+                    player.addEffect(new MobEffectInstance(
+                        MobEffectRegistry.HEAT_THIRST, 
+                        -1,    // INFINITE duration
+                        0,     // Amplifier 0
+                        false, // Not ambient
+                        false  // No particles
+                    ));
+                return;
             }
         }
-        else
-        {
-            if (player.hasEffect(MobEffectRegistry.HEAT_THIRST))
-            {
-                player.removeEffect(MobEffectRegistry.HEAT_THIRST);
-            }
-        }
+        if (player.hasEffect(MobEffectRegistry.HEAT_THIRST))
+            player.removeEffect(MobEffectRegistry.HEAT_THIRST);
     }
 
     private void tickTemperature(float currentTemp, float destination)

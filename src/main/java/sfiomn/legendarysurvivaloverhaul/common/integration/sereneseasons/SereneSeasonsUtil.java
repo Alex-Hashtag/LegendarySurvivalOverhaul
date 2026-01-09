@@ -143,11 +143,11 @@ public class SereneSeasonsUtil
         averageSeasonTemperature /= 12;
 
         averageTropicalSeasonTemperature += Config.Baked.ssEarlyWetSeasonModifier;
-        averageTropicalSeasonTemperature += Config.Baked.earlyDrySeasonModifier;
+        averageTropicalSeasonTemperature += Config.Baked.ssEarlyDrySeasonModifier;
         averageTropicalSeasonTemperature += Config.Baked.ssMidWetSeasonModifier;
-        averageTropicalSeasonTemperature += Config.Baked.midDrySeasonModifier;
+        averageTropicalSeasonTemperature += Config.Baked.ssMidDrySeasonModifier;
         averageTropicalSeasonTemperature += Config.Baked.ssLateWetSeasonModifier;
-        averageTropicalSeasonTemperature += Config.Baked.lateDrySeasonModifier;
+        averageTropicalSeasonTemperature += Config.Baked.ssLateDrySeasonModifier;
         averageTropicalSeasonTemperature /= 6;
     }
 
