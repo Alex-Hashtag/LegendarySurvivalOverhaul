@@ -115,7 +115,7 @@ dependencies {
     runtimeOnly("maven.modrinth:glitchcore:2.1.0.0-neoforge")
     // Ecliptic Seasons (NeoForge 1.21.1)
     compileOnly("curse.maven:ecliptic-seasons-1118306:7252549")
-//    runtimeOnly("curse.maven:ecliptic-seasons-1118306:7252549")
+    runtimeOnly("curse.maven:ecliptic-seasons-1118306:7252549")
     compileOnly("curse.maven:terrafirmacraft-302973:6187491")
     // Origins (Forge) has no 1.21.1 NeoForge build; keep disabled to avoid Forge capability linkage
     // compileOnly("curse.maven:origins-474438:<1.21.1_file_id>") // TODO: add when available
