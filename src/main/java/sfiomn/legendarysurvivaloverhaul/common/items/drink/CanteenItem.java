@@ -15,6 +15,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.LayeredCauldronBlock;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -27,6 +31,7 @@ import sfiomn.legendarysurvivaloverhaul.api.thirst.HydrationEnum;
 import sfiomn.legendarysurvivaloverhaul.api.thirst.ThirstUtil;
 import sfiomn.legendarysurvivaloverhaul.api.wetness.WetnessUtil;
 import sfiomn.legendarysurvivaloverhaul.common.enchantments.ModEnchantments;
+import sfiomn.legendarysurvivaloverhaul.common.integration.crayfish.CrayfishFurnitureUtil;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
 import sfiomn.legendarysurvivaloverhaul.registry.MobEffectRegistry;
 import sfiomn.legendarysurvivaloverhaul.registry.SoundRegistry;
@@ -57,6 +62,11 @@ public class CanteenItem extends DrinkItem
     public int getMaxCapacity()
     {
         return Config.Baked.canteenCapacity;
+    }
+
+    public int getMaxCapacity(ItemStack stack)
+    {
+        return getMaxCapacity();
     }
 
     public int getMaxCapacity(ItemStack stack, Level level)
@@ -111,12 +121,101 @@ public class CanteenItem extends DrinkItem
     @Override
     public @NotNull InteractionResult useOn(UseOnContext useOnContext)
     {
-        Level level = useOnContext.getLevel();
-        boolean isWater = isWater(level, useOnContext.getClickedPos());
         ItemStack canteen = useOnContext.getItemInHand();
         Player player = useOnContext.getPlayer();
-        if (canFill(canteen, level) && isWater && player != null)
-        {
+        Level level = useOnContext.getLevel();
+        BlockPos clickedPos = useOnContext.getClickedPos();
+        BlockState blockState = level.getBlockState(clickedPos);
+
+        if (player == null) {
+            return InteractionResult.PASS;
+        }
+
+        int currentCapacity = ThirstUtil.getCapacityTag(canteen);
+        int maxCapacity = getMaxCapacity(canteen);
+        boolean isFullCanteen = currentCapacity >= maxCapacity;
+
+        // Priority 1: If canteen is 100% full, always empty into cauldron first
+        if (isFullCanteen && canDrink(canteen)) {
+            // Empty into empty cauldron
+            if (blockState.is(Blocks.CAULDRON)) {
+                if (!level.isClientSide) {
+                    shrinkCapacity(canteen);
+                    level.setBlockAndUpdate(clickedPos, Blocks.WATER_CAULDRON.defaultBlockState().setValue(LayeredCauldronBlock.LEVEL, 1));
+                    level.playSound(null, clickedPos, SoundEvents.BOTTLE_EMPTY, SoundSource.BLOCKS, 1.0F, 1.0F);
+                    level.gameEvent(null, GameEvent.FLUID_PLACE, clickedPos);
+                }
+                player.swing(InteractionHand.MAIN_HAND, true);
+                return InteractionResult.sidedSuccess(level.isClientSide);
+            }
+            
+            // Empty into partial water cauldron
+            if (blockState.is(Blocks.WATER_CAULDRON)) {
+                int currentLevel = blockState.getValue(LayeredCauldronBlock.LEVEL);
+                if (currentLevel < 3) {
+                    if (!level.isClientSide) {
+                        shrinkCapacity(canteen);
+                        level.setBlockAndUpdate(clickedPos, blockState.setValue(LayeredCauldronBlock.LEVEL, currentLevel + 1));
+                        level.playSound(null, clickedPos, SoundEvents.BOTTLE_EMPTY, SoundSource.BLOCKS, 1.0F, 1.0F);
+                        level.gameEvent(null, GameEvent.FLUID_PLACE, clickedPos);
+                    }
+                    player.swing(InteractionHand.MAIN_HAND, true);
+                    return InteractionResult.sidedSuccess(level.isClientSide);
+                }
+            }
+        }
+
+        // Priority 2: Try Crayfish furniture for filling (always check first)
+        if (LegendarySurvivalOverhaul.crayfishFurnitureLoaded) {
+            InteractionResult result = CrayfishFurnitureUtil.tryFillCanteenFromSinkOrBasin(level, clickedPos, player, canteen);
+            if (result.consumesAction()) {
+                player.swing(InteractionHand.MAIN_HAND, true);
+                return result;
+            }
+        }
+
+        // Priority 3: Handle vanilla water cauldron - fill canteen from it
+        if (blockState.is(Blocks.WATER_CAULDRON) && canFill(canteen, level)) {
+            if (!level.isClientSide) {
+                this.fill(canteen, level);
+                LayeredCauldronBlock.lowerFillLevel(blockState, level, clickedPos);
+                level.playSound(null, clickedPos, SoundEvents.BOTTLE_FILL, SoundSource.BLOCKS, 1.0F, 1.0F);
+                level.gameEvent(null, GameEvent.FLUID_PICKUP, clickedPos);
+            }
+            player.swing(InteractionHand.MAIN_HAND, true);
+            return InteractionResult.sidedSuccess(level.isClientSide);
+        }
+
+        // Priority 4: Empty partial canteen into empty cauldron
+        if (blockState.is(Blocks.CAULDRON) && canDrink(canteen)) {
+            if (!level.isClientSide) {
+                shrinkCapacity(canteen);
+                level.setBlockAndUpdate(clickedPos, Blocks.WATER_CAULDRON.defaultBlockState().setValue(LayeredCauldronBlock.LEVEL, 1));
+                level.playSound(null, clickedPos, SoundEvents.BOTTLE_EMPTY, SoundSource.BLOCKS, 1.0F, 1.0F);
+                level.gameEvent(null, GameEvent.FLUID_PLACE, clickedPos);
+            }
+            player.swing(InteractionHand.MAIN_HAND, true);
+            return InteractionResult.sidedSuccess(level.isClientSide);
+        }
+        
+        // Priority 5: Empty partial canteen into partial water cauldron
+        if (blockState.is(Blocks.WATER_CAULDRON) && canDrink(canteen)) {
+            int currentLevel = blockState.getValue(LayeredCauldronBlock.LEVEL);
+            if (currentLevel < 3) {
+                if (!level.isClientSide) {
+                    shrinkCapacity(canteen);
+                    level.setBlockAndUpdate(clickedPos, blockState.setValue(LayeredCauldronBlock.LEVEL, currentLevel + 1));
+                    level.playSound(null, clickedPos, SoundEvents.BOTTLE_EMPTY, SoundSource.BLOCKS, 1.0F, 1.0F);
+                    level.gameEvent(null, GameEvent.FLUID_PLACE, clickedPos);
+                }
+                player.swing(InteractionHand.MAIN_HAND, true);
+                return InteractionResult.sidedSuccess(level.isClientSide);
+            }
+        }
+
+        // Handle other water sources
+        boolean isWater = isWater(level, clickedPos);
+        if (canFill(canteen, level) && isWater) {
             player.swing(InteractionHand.MAIN_HAND, true);
 
             // Play fill sound
@@ -133,13 +232,20 @@ public class CanteenItem extends DrinkItem
     {
         HitResult positionLookedAt = player.pick(player.getAttributeValue(Attributes.BLOCK_INTERACTION_RANGE) / 2, 0.0F, true);
 
-        boolean isWater = false;
-        if (positionLookedAt.getType() == HitResult.Type.BLOCK)
-        {
-            isWater = isWater(level, ((BlockHitResult) positionLookedAt).getBlockPos());
+        ItemStack canteen = player.getItemInHand(hand);
+
+        // If looking at a block, let useOn() handle it first
+        // This allows useOn() to handle cauldrons, sinks, etc.
+        if (positionLookedAt.getType() == HitResult.Type.BLOCK) {
+            // Don't consume here - let useOn() handle block interactions
+            return InteractionResultHolder.pass(canteen);
         }
 
-        ItemStack canteen = player.getItemInHand(hand);
+        // Only handle water sources when not clicking on a specific block
+        boolean isWater = false;
+        if (positionLookedAt.getType() == HitResult.Type.BLOCK) {
+            isWater = isWater(level, ((BlockHitResult) positionLookedAt).getBlockPos());
+        }
 
         if (canFill(canteen, level) && isWater)
         {
