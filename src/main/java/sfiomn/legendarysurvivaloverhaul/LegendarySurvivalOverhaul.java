@@ -100,6 +100,7 @@ public class LegendarySurvivalOverhaul
 	public static boolean overflowingbarsLoaded = false;
 	public static boolean weather2Loaded = false;
 	public static boolean medsandherbsLoaded = false;
+	public static boolean crayfishFurnitureLoaded = false;
 
 	public static Path configPath = FMLPaths.CONFIGDIR.get();
 	public static Path modConfigPath = Paths.get(configPath.toAbsolutePath().toString(), "legendarysurvivaloverhaul");
@@ -158,6 +159,7 @@ public class LegendarySurvivalOverhaul
 		meadowLoaded = ModList.get().isLoaded("meadow");
 		overflowingbarsLoaded = ModList.get().isLoaded("overflowingbars");
 		medsandherbsLoaded = ModList.get().isLoaded("meds_and_herbs");
+		crayfishFurnitureLoaded = ModList.get().isLoaded("refurbished_furniture");
 
 		weather2Loaded = ModList.get().isLoaded("weather2");
 		surviveLoaded = ModList.get().isLoaded("survive");
@@ -210,6 +212,9 @@ public class LegendarySurvivalOverhaul
 
 		if (medsandherbsLoaded)
 			LOGGER.debug("Meds And Herbs is loaded, enabling compatibility");
+
+		if (crayfishFurnitureLoaded)
+			LOGGER.debug("MrCrayfish's Furniture Mod: Refurbished is loaded, enabling compatibility");
 
 		if (weather2Loaded)
 			LOGGER.debug("Weather2 is loaded, no compatibility for now");
