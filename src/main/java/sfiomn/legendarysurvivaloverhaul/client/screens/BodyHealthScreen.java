@@ -35,9 +35,9 @@ public class BodyHealthScreen extends Screen {
     public static final int TEX_HEALTH_BAR_Y = 0;
 
     // Tutorial toggle button constants (relative to body_health_screen.png)
-    public static final int TUTORIAL_TOGGLE_BUTTON_X = 158;
+    public static final int TUTORIAL_TOGGLE_BUTTON_X = 155;
     public static final int TUTORIAL_TOGGLE_BUTTON_Y = 8;
-    public static final int TUTORIAL_TOGGLE_BUTTON_WIDTH = 12;
+    public static final int TUTORIAL_TOGGLE_BUTTON_WIDTH = 15;
     public static final int TUTORIAL_TOGGLE_BUTTON_HEIGHT = 16;
 
     // Tutorial page constants (relative to body_health_screen.png)
@@ -70,11 +70,11 @@ public class BodyHealthScreen extends Screen {
     public static final int[] ARROW_RIGHT_TEX_COORD = {0, 354};   // Right arrow
     public static final int[] ARROW_LEFT_TEX_COORD = {15, 354};    // Left arrow
 
-    // Toggle button texture coordinates on tutorial_pages.png (12x16)
-    public static final int TOGGLE_BUTTON_TEX_WIDTH = 12;
+    // Toggle button texture coordinates on tutorial_pages.png (15x16)
+    public static final int TOGGLE_BUTTON_TEX_WIDTH = 15;
     public static final int TOGGLE_BUTTON_TEX_HEIGHT = 16;
     public static final int[] TOGGLE_BUTTON_OFF_TEX_COORD = {0, 365};  // Button OFF
-    public static final int[] TOGGLE_BUTTON_ON_TEX_COORD = {12, 365};  // Button ON
+    public static final int[] TOGGLE_BUTTON_ON_TEX_COORD = {15, 365};  // Button ON
 
     // Tutorial texture atlas dimensions
     public static final int TUTORIAL_TEXTURE_WIDTH = 512;
