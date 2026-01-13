@@ -27,12 +27,59 @@ import java.util.Map;
 public class BodyHealthScreen extends Screen
 {
     public static final ResourceLocation BODY_HEALTH_SCREEN = ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "textures/gui/body_health_screen.png");
+    public static final ResourceLocation TUTORIAL_PAGES = ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "textures/gui/tutorial_pages.png");
     public static final int HEALTH_SCREEN_WIDTH = 176;
     public static final int HEALTH_SCREEN_HEIGHT = 183;
     public static final int HEALTH_BAR_WIDTH = 30;
     public static final int HEALTH_BAR_HEIGHT = 5;
     public static final int TEX_HEALTH_BAR_X = 176;
     public static final int TEX_HEALTH_BAR_Y = 0;
+
+    // Tutorial toggle button constants (relative to body_health_screen.png)
+    public static final int TUTORIAL_TOGGLE_BUTTON_X = 155;
+    public static final int TUTORIAL_TOGGLE_BUTTON_Y = 8;
+    public static final int TUTORIAL_TOGGLE_BUTTON_WIDTH = 15;
+    public static final int TUTORIAL_TOGGLE_BUTTON_HEIGHT = 16;
+
+    // Tutorial page constants (relative to body_health_screen.png)
+    public static final int TUTORIAL_PAGE_X = 176;
+    public static final int TUTORIAL_PAGE_Y = 3;
+    public static final int TUTORIAL_PAGE_WIDTH = 118;
+    public static final int TUTORIAL_PAGE_HEIGHT = 177;
+
+    // Tutorial navigation button constants (relative to tutorial page)
+    public static final int TUTORIAL_NAV_LEFT_BUTTON_X = 5;
+    public static final int TUTORIAL_NAV_RIGHT_BUTTON_X = 96;
+    public static final int TUTORIAL_NAV_BUTTON_Y = 160;
+    public static final int TUTORIAL_NAV_BUTTON_WIDTH = 15;
+    public static final int TUTORIAL_NAV_BUTTON_HEIGHT = 11;
+
+    // Tutorial page texture coordinates on tutorial_pages.png
+    // Each tutorial page is 118x177, stored at these coordinates
+    public static final int[][] TUTORIAL_PAGE_TEX_COORDS = {
+            {0, 0},      // Page 1
+            {118, 0},    // Page 2
+            {236, 0},    // Page 3
+            {354, 0},    // Page 4
+            {0, 177}     // Page 5
+    };
+    public static final int TUTORIAL_PAGE_COUNT = TUTORIAL_PAGE_TEX_COORDS.length;
+
+    // Arrow texture coordinates on tutorial_pages.png (15x11)
+    public static final int ARROW_TEX_WIDTH = 15;
+    public static final int ARROW_TEX_HEIGHT = 11;
+    public static final int[] ARROW_RIGHT_TEX_COORD = {0, 354};   // Right arrow
+    public static final int[] ARROW_LEFT_TEX_COORD = {15, 354};    // Left arrow
+
+    // Toggle button texture coordinates on tutorial_pages.png (15x16)
+    public static final int TOGGLE_BUTTON_TEX_WIDTH = 15;
+    public static final int TOGGLE_BUTTON_TEX_HEIGHT = 16;
+    public static final int[] TOGGLE_BUTTON_OFF_TEX_COORD = {0, 365};  // Button OFF
+    public static final int[] TOGGLE_BUTTON_ON_TEX_COORD = {15, 365};  // Button ON
+
+    // Tutorial texture atlas dimensions
+    public static final int TUTORIAL_TEXTURE_WIDTH = 512;
+    public static final int TUTORIAL_TEXTURE_HEIGHT = 512;
 
     private final Map<BodyPartEnum, BodyPartButton> bodyPartButtons = new HashMap<>();
 
@@ -47,6 +94,14 @@ public class BodyHealthScreen extends Screen
     private int healingCharges;
     private boolean consumeItem;
     private boolean applyEffect;
+
+    private boolean tutorialOpen = false;
+    private int currentTutorialPage = 0;
+    private TutorialToggleButton tutorialToggleButton;
+    private TutorialNavButton tutorialLeftButton;
+    private TutorialNavButton tutorialRightButton;
+    private int leftArrowPressCounter = 0;
+    private int rightArrowPressCounter = 0;
 
     public BodyHealthScreen(Player player, InteractionHand hand, boolean alreadyConsumed, int healingCharges, float healingValue, int healingTime)
     {
@@ -78,6 +133,37 @@ public class BodyHealthScreen extends Screen
         addWidget(new BodyPartButton(BodyPartEnum.RIGHT_FOOT, this.leftPos + 87, this.topPos + 153, 49, 10, button -> sendBodyPartHeal(BodyPartEnum.RIGHT_FOOT)));
         addWidget(new BodyPartButton(BodyPartEnum.LEFT_LEG, this.leftPos + 38, this.topPos + 117, 49, 36, button -> sendBodyPartHeal(BodyPartEnum.LEFT_LEG)));
         addWidget(new BodyPartButton(BodyPartEnum.LEFT_FOOT, this.leftPos + 38, this.topPos + 153, 49, 10, button -> sendBodyPartHeal(BodyPartEnum.LEFT_FOOT)));
+
+        tutorialToggleButton = new TutorialToggleButton(
+            this.leftPos + TUTORIAL_TOGGLE_BUTTON_X,
+            this.topPos + TUTORIAL_TOGGLE_BUTTON_Y,
+            TUTORIAL_TOGGLE_BUTTON_WIDTH,
+            TUTORIAL_TOGGLE_BUTTON_HEIGHT,
+            button -> toggleTutorial()
+        );
+        addWidget(tutorialToggleButton);
+
+        int navButtonBaseY = this.topPos + TUTORIAL_PAGE_Y + TUTORIAL_NAV_BUTTON_Y;
+
+        tutorialLeftButton = new TutorialNavButton(
+            this.leftPos + TUTORIAL_PAGE_X + TUTORIAL_NAV_LEFT_BUTTON_X,
+            navButtonBaseY,
+            TUTORIAL_NAV_BUTTON_WIDTH,
+            TUTORIAL_NAV_BUTTON_HEIGHT,
+            true,
+            button -> previousTutorialPage()
+        );
+        addWidget(tutorialLeftButton);
+
+        tutorialRightButton = new TutorialNavButton(
+            this.leftPos + TUTORIAL_PAGE_X + TUTORIAL_NAV_RIGHT_BUTTON_X,
+            navButtonBaseY,
+            TUTORIAL_NAV_BUTTON_WIDTH,
+            TUTORIAL_NAV_BUTTON_HEIGHT,
+            false,
+            button -> nextTutorialPage()
+        );
+        addWidget(tutorialRightButton);
 
         bodyPartButtons.clear();
         for (GuiEventListener button : this.children())
@@ -138,6 +224,12 @@ public class BodyHealthScreen extends Screen
                 bodyPartHealth.put(bodyPart, cap.getBodyPartDamage(bodyPart));
             }
         }
+
+        if (leftArrowPressCounter > 0)
+            leftArrowPressCounter--;
+        if (rightArrowPressCounter > 0)
+            rightArrowPressCounter--;
+
         super.tick();
     }
 
@@ -187,9 +279,15 @@ public class BodyHealthScreen extends Screen
         RenderSystem.setShaderColor(1, 1, 1, 1);
         gui.blit(BODY_HEALTH_SCREEN, leftPos, topPos, 0, 0, HEALTH_SCREEN_WIDTH, HEALTH_SCREEN_HEIGHT);
 
+        renderTutorialToggleButton(gui);
+
         // Render health bars on top
         for (BodyPartEnum bodyPart : BodyPartEnum.values())
             renderBodyPartHealth(gui, bodyPart, mouseX, mouseY, partialTicks);
+
+        if (tutorialOpen) {
+            renderTutorial(gui, mouseX, mouseY, partialTicks);
+        }
 
         // Render buttons and widgets on top
         super.render(gui, mouseX, mouseY, partialTicks);
@@ -208,6 +306,74 @@ public class BodyHealthScreen extends Screen
     public void renderBackground(@NotNull GuiGraphics gui, int mouseX, int mouseY, float partialTick)
     {
         // Don't render background blur - we handle rendering in render() method
+    }
+
+    private void renderTutorialToggleButton(GuiGraphics gui) {
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShaderColor(1, 1, 1, 1);
+
+        int[] texCoord = tutorialOpen ? TOGGLE_BUTTON_ON_TEX_COORD : TOGGLE_BUTTON_OFF_TEX_COORD;
+        gui.blit(TUTORIAL_PAGES,
+            leftPos + TUTORIAL_TOGGLE_BUTTON_X,
+            topPos + TUTORIAL_TOGGLE_BUTTON_Y,
+            texCoord[0], texCoord[1],
+            TOGGLE_BUTTON_TEX_WIDTH, TOGGLE_BUTTON_TEX_HEIGHT,
+            TUTORIAL_TEXTURE_WIDTH, TUTORIAL_TEXTURE_HEIGHT);
+    }
+
+    private void renderTutorial(GuiGraphics gui, int mouseX, int mouseY, float partialTicks) {
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShaderColor(1, 1, 1, 1);
+
+        int[] texCoord = TUTORIAL_PAGE_TEX_COORDS[currentTutorialPage];
+        gui.blit(TUTORIAL_PAGES,
+            leftPos + TUTORIAL_PAGE_X,
+            topPos + TUTORIAL_PAGE_Y,
+            texCoord[0], texCoord[1],
+            TUTORIAL_PAGE_WIDTH, TUTORIAL_PAGE_HEIGHT,
+            TUTORIAL_TEXTURE_WIDTH, TUTORIAL_TEXTURE_HEIGHT);
+
+        tutorialLeftButton.visible = currentTutorialPage > 0;
+        tutorialRightButton.visible = currentTutorialPage < TUTORIAL_PAGE_COUNT - 1;
+
+        if (tutorialLeftButton.visible && (tutorialLeftButton.isHovered() || leftArrowPressCounter > 0)) {
+            gui.blit(TUTORIAL_PAGES,
+                tutorialLeftButton.getX(),
+                tutorialLeftButton.getY(),
+                ARROW_LEFT_TEX_COORD[0], ARROW_LEFT_TEX_COORD[1],
+                ARROW_TEX_WIDTH, ARROW_TEX_HEIGHT,
+                TUTORIAL_TEXTURE_WIDTH, TUTORIAL_TEXTURE_HEIGHT);
+        }
+
+        if (tutorialRightButton.visible && (tutorialRightButton.isHovered() || rightArrowPressCounter > 0)) {
+            gui.blit(TUTORIAL_PAGES,
+                tutorialRightButton.getX(),
+                tutorialRightButton.getY(),
+                ARROW_RIGHT_TEX_COORD[0], ARROW_RIGHT_TEX_COORD[1],
+                ARROW_TEX_WIDTH, ARROW_TEX_HEIGHT,
+                TUTORIAL_TEXTURE_WIDTH, TUTORIAL_TEXTURE_HEIGHT);
+        }
+    }
+
+    private void toggleTutorial() {
+        tutorialOpen = !tutorialOpen;
+        if (!tutorialOpen) {
+            currentTutorialPage = 0;
+        }
+    }
+
+    private void previousTutorialPage() {
+        if (currentTutorialPage > 0) {
+            leftArrowPressCounter = 4;
+            currentTutorialPage--;
+        }
+    }
+
+    private void nextTutorialPage() {
+        if (currentTutorialPage < TUTORIAL_PAGE_COUNT - 1) {
+            rightArrowPressCounter = 4;
+            currentTutorialPage++;
+        }
     }
 
     private void renderBodyPartHealth(GuiGraphics gui, BodyPartEnum bodyPart, int mouseX, int mouseY, float partialTicks)
@@ -391,6 +557,30 @@ public class BodyHealthScreen extends Screen
                 case DEAD -> DEAD_PREVIEW;
                 default -> this;
             };
+        }
+    }
+
+    private static class TutorialToggleButton extends net.minecraft.client.gui.components.Button {
+        public TutorialToggleButton(int x, int y, int width, int height, OnPress onPress) {
+            super(x, y, width, height, Component.empty(), onPress, DEFAULT_NARRATION);
+        }
+
+        @Override
+        public void renderWidget(@NotNull GuiGraphics gui, int mouseX, int mouseY, float partialTicks) {
+        }
+    }
+
+    private static class TutorialNavButton extends net.minecraft.client.gui.components.Button {
+        private final boolean isLeft;
+
+        public TutorialNavButton(int x, int y, int width, int height, boolean isLeft, OnPress onPress) {
+            super(x, y, width, height, Component.empty(), onPress, DEFAULT_NARRATION);
+            this.isLeft = isLeft;
+            this.visible = false;
+        }
+
+        @Override
+        public void renderWidget(@NotNull GuiGraphics gui, int mouseX, int mouseY, float partialTicks) {
         }
     }
 }
