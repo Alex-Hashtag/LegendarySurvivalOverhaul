@@ -42,7 +42,7 @@ public class ThermometerProperty implements ClampedItemPropertyFunction {
                 if (holder != null && tempItemCap.shouldUpdate(level.getGameTime())) {
                     tempItemCap.updateWorldTemperature(level, holder, level.getGameTime());
                 }
-                return Mth.positiveModulo(TemperatureUtil.clampTemperature((int) tempItemCap.getWorldTemperatureLevel()) / TemperatureEnum.HEAT_STROKE.getValue(), 1.0333333f);
+                return Mth.positiveModulo(TemperatureUtil.clampTemperature((int) tempItemCap.getWorldTemperatureLevel()) / TemperatureEnum.getMax(), 1.0333333f);
             }
             catch (NullPointerException e)
             {

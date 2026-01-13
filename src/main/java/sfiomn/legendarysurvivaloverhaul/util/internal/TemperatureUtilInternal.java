@@ -112,7 +112,7 @@ public class TemperatureUtilInternal implements ITemperatureUtil
 	@Override
 	public float clampTemperature(float temperature)
 	{
-		return Mth.clamp(temperature, TemperatureEnum.FROSTBITE.getValue(), TemperatureEnum.HEAT_STROKE.getValue());
+		return Mth.clamp(temperature, TemperatureEnum.getMin(), TemperatureEnum.getMax());
 	}
 
 	@Override

@@ -32,4 +32,14 @@ public enum TemperatureEnum
 	{
 		return this.value;
 	}
+	
+	public static float getMin()
+	{
+		return 0;
+	}
+	
+	public static float getMax()
+	{
+		return 40;
+	}
 }

@@ -206,7 +206,7 @@ public class RenderTemperatureGui
 			x -= 31;
 
 		float bodyTemperature = TemperatureUtil.clampTemperature(TEMPERATURE_CAP.getTemperatureLevel());
-		float tempRatio = (bodyTemperature - TemperatureEnum.FROSTBITE.getValue()) / (TemperatureEnum.HEAT_STROKE.getValue() - TemperatureEnum.FROSTBITE.getValue());
+		float tempRatio = (bodyTemperature - TemperatureEnum.getMin()) / (TemperatureEnum.getMax() - TemperatureEnum.getMin());
 
 		// Temperature Frame rendering
 		gui.blit(ICONS, x, y,

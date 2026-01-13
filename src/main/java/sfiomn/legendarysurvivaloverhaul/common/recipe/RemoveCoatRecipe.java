@@ -6,7 +6,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
+import net.minecraft.world.item.ShearsItem;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -32,7 +32,7 @@ public class RemoveCoatRecipe extends CustomRecipe {
                 continue;
             }
 
-            if (stack.is(Items.SHEARS)) {
+            if (stack.getItem() instanceof ShearsItem) {
                 if (shearsSlot != -1) {
                     return false;
                 }
@@ -81,7 +81,7 @@ public class RemoveCoatRecipe extends CustomRecipe {
 
         for (int i = 0; i < craftingContainer.getContainerSize(); i++) {
             ItemStack stack = craftingContainer.getItem(i);
-            if (stack.is(Items.SHEARS)) {
+            if (stack.getItem() instanceof ShearsItem) {
                 ItemStack shears = stack.copy();
                 if (shears.hurt(1, random, null)) {
                     shears = ItemStack.EMPTY;

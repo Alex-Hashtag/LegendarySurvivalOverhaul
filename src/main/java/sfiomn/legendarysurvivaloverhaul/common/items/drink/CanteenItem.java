@@ -213,24 +213,24 @@ public class CanteenItem extends DrinkItem {
 
         ItemStack canteen = player.getItemInHand(hand);
 
-        // If looking at a block, let useOn() handle it first
-        // This allows useOn() to handle cauldrons, sinks, etc.
-        if (positionLookedAt.getType() == HitResult.Type.BLOCK) {
-            // Don't consume here - let useOn() handle block interactions
-            return InteractionResultHolder.pass(canteen);
-        }
-
-        // Only handle water sources when not clicking on a specific block
+        // Check if looking at a water block
         boolean isWater = false;
         if (positionLookedAt.getType() == HitResult.Type.BLOCK) {
             isWater = isWater(level, ((BlockHitResult) positionLookedAt).getBlockPos());
         }
 
+        // If it's a water source block, fill the canteen
         if (canFill(canteen) && isWater) {
             player.swing(InteractionHand.MAIN_HAND);
             player.playSound(SoundEvents.BOTTLE_FILL, 1.0f, 1.0f);
             this.fill(canteen);
             return InteractionResultHolder.consume(canteen);
+        }
+
+        // If looking at a block (but not water), let useOn() handle it
+        // This allows useOn() to handle cauldrons, sinks, etc.
+        if (positionLookedAt.getType() == HitResult.Type.BLOCK) {
+            return InteractionResultHolder.pass(canteen);
         }
 
         if (player.isCrouching() && player.getViewXRot(1.0f) < -60.0f && canDrink(canteen) && Config.Baked.selfWateringCanteenEnabled) {
