@@ -284,7 +284,7 @@ public class TemperatureAttachment implements ITemperatureAttachment, INBTSerial
     {
         float diff = Math.abs(destination - currentTemp);
 
-        double temperatureTowards = ((diff * (Config.Baked.maxTemperatureModification - Config.Baked.minTemperatureModification)) / (TemperatureEnum.HEAT_STROKE.getValue() - TemperatureEnum.FROSTBITE.getValue())) + Config.Baked.minTemperatureModification;
+        double temperatureTowards = ((diff * (Config.Baked.maxTemperatureModification - Config.Baked.minTemperatureModification)) / (TemperatureEnum.getMax() - TemperatureEnum.getMin())) + Config.Baked.minTemperatureModification;
 
         temperatureTowards = Math.min(temperatureTowards, diff);
 

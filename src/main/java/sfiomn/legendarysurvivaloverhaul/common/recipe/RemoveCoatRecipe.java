@@ -8,7 +8,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
+import net.minecraft.world.item.ShearsItem;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
@@ -40,7 +40,7 @@ public class RemoveCoatRecipe extends CustomRecipe
             if (!stack.isEmpty())
             {
                 itemCount++;
-                if (stack.is(Items.SHEARS))
+                if (stack.getItem() instanceof ShearsItem)
                 {
                     shearsStack = stack;
                 }
@@ -62,7 +62,7 @@ public class RemoveCoatRecipe extends CustomRecipe
         for (int i = 0; i < input.size(); i++)
         {
             ItemStack stack = input.getItem(i);
-            if (!stack.isEmpty() && !stack.is(Items.SHEARS) && !TemperatureUtil.getArmorCoatTag(stack).isEmpty())
+            if (!stack.isEmpty() && !(stack.getItem() instanceof ShearsItem) && !TemperatureUtil.getArmorCoatTag(stack).isEmpty())
             {
                 armorStack = stack;
                 break;

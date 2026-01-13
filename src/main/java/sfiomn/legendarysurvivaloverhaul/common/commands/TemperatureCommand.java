@@ -20,7 +20,7 @@ public class TemperatureCommand extends CommandBase
     {
         super(Commands.literal("temperature")
                 .requires((p_198521_0_) -> p_198521_0_.hasPermission(2))
-                .then(Commands.literal("set").then(Commands.argument("Temperature", IntegerArgumentType.integer((int) TemperatureEnum.FROSTBITE.getValue(), (int) TemperatureEnum.HEAT_STROKE.getValue())).executes(src -> new TemperatureCommand().set(src.getSource(), IntegerArgumentType.getInteger(src, "Temperature")))))
+                .then(Commands.literal("set").then(Commands.argument("Temperature", IntegerArgumentType.integer((int) TemperatureEnum.getMin(), (int) TemperatureEnum.getMax())).executes(src -> new TemperatureCommand().set(src.getSource(), IntegerArgumentType.getInteger(src, "Temperature")))))
                 .then(Commands.literal("get").executes(src -> new TemperatureCommand().get(src.getSource())))
         );
     }

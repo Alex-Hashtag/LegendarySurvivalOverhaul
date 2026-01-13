@@ -24,6 +24,7 @@ public class RenderBlurOverlay
     private static FocusShader focusShader;
     private static float shaderIntensity = 0;
     private static int updateTimer = 0;
+    private static boolean hasShownBlurWarning = false;
 
     public static void render(Player player)
     {
@@ -52,11 +53,12 @@ public class RenderBlurOverlay
             if (hydration <= HYDRATION_LEVEL_MIN_EFFECT)
             {
                 targetShaderIntensity = (1 - ((float) (hydration - HYDRATION_LEVEL_MAX_EFFECT) / (float) (HYDRATION_LEVEL_MIN_EFFECT - HYDRATION_LEVEL_MAX_EFFECT))) * MAX_SHADER_INTENSITY;
-
-                if (!thirstCap.hasShownBlurWarning() && targetShaderIntensity > 0)
+                
+                // Show first-time blur warning
+                if (!hasShownBlurWarning && targetShaderIntensity > 0)
                 {
                     player.displayClientMessage(Component.literal("Vision is getting blurry. Drink some water"), true);
-                    thirstCap.setShownBlurWarning(true);
+                    hasShownBlurWarning = true;
                 }
             }
 
