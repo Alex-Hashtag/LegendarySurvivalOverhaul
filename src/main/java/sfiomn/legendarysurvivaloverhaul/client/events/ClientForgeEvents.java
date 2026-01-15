@@ -111,7 +111,7 @@ public class ClientForgeEvents {
 
                 ThirstCapability thirstCapability = CapabilityUtil.getThirstCapability(player);
                 if (!thirstCapability.isHydrationLevelAtMax()) {
-                    JsonThirstBlock jsonFluidThirst = ThirstUtil.getFluidThirstLookedAt(player, player.getAttributeValue(ForgeMod.BLOCK_REACH.get()) / 2);
+                    JsonThirstBlock jsonFluidThirst = ThirstUtil.getFluidThirstLookedAt(player, Math.max(3.0, player.getAttributeValue(ForgeMod.BLOCK_REACH.get()) / 2));
 
                     if (jsonFluidThirst != null && (jsonFluidThirst.hydration != 0 || jsonFluidThirst.saturation != 0)) {
                         playerDrinkEffect(event.getEntity());

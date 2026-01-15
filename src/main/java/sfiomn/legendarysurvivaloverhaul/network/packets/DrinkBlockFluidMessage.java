@@ -41,7 +41,7 @@ public class DrinkBlockFluidMessage
     }
 
     public static void DrinkWaterOnServer(ServerPlayer player) {
-        JsonThirstBlock jsonFluidThirst = ThirstUtil.getFluidThirstLookedAt(player, player.getAttributeValue(ForgeMod.BLOCK_REACH.get()) / 2);
+        JsonThirstBlock jsonFluidThirst = ThirstUtil.getFluidThirstLookedAt(player, Math.max(3.0, player.getAttributeValue(ForgeMod.BLOCK_REACH.get()) / 2));
 
         if (jsonFluidThirst == null)
             return;
