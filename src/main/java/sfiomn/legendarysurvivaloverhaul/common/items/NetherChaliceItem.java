@@ -36,7 +36,7 @@ public class NetherChaliceItem extends WearableCurioItem {
         if (CapabilityUtil.getThirstCapability(player).isHydrationLevelAtMax())
             return InteractionResultHolder.fail(itemstack);
 
-        HitResult positionLookedAt = player.pick(player.getAttributeValue(ForgeMod.BLOCK_REACH.get()) / 2, 0.0F, true);
+        HitResult positionLookedAt = player.pick(Math.max(3.0, player.getAttributeValue(ForgeMod.BLOCK_REACH.get()) / 2), 0.0F, true);
         FluidState fluidState = null;
 
         if (positionLookedAt.getType() == HitResult.Type.BLOCK) {

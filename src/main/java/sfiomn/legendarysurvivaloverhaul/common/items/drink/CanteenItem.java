@@ -209,7 +209,7 @@ public class CanteenItem extends DrinkItem {
 
     @Override
     public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level level, Player player, @NotNull InteractionHand hand) {
-        HitResult positionLookedAt = player.pick(player.getAttributeValue(ForgeMod.BLOCK_REACH.get()) / 2, 0.0F, true);
+        HitResult positionLookedAt = player.pick(Math.max(3.0, player.getAttributeValue(ForgeMod.BLOCK_REACH.get()) / 2), 0.0F, true);
 
         ItemStack canteen = player.getItemInHand(hand);
 
