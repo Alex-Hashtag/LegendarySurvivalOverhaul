@@ -39,7 +39,7 @@ public class NetherChaliceItem extends WearableCurioItem
         if (AttachmentUtil.getThirstAttachment(player).isHydrationLevelAtMax())
             return InteractionResultHolder.fail(itemstack);
 
-        HitResult positionLookedAt = player.pick(player.getAttributeValue(Attributes.BLOCK_INTERACTION_RANGE) / 2, 0.0F, true);
+        HitResult positionLookedAt = player.pick(Math.max(3.0, player.getAttributeValue(Attributes.BLOCK_INTERACTION_RANGE) / 2), 0.0F, true);
         FluidState fluidState = null;
 
         if (positionLookedAt.getType() == HitResult.Type.BLOCK)
