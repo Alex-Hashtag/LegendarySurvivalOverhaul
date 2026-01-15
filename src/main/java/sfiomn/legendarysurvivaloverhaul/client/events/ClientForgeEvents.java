@@ -119,7 +119,7 @@ public class ClientForgeEvents
                 ThirstAttachment thirstAttachment = AttachmentUtil.getThirstAttachment(player);
                 if (!thirstAttachment.isHydrationLevelAtMax())
                 {
-                    JsonThirstBlock jsonFluidThirst = ThirstUtil.getFluidThirstLookedAt(player, (float) (player.getAttributeValue(Attributes.BLOCK_INTERACTION_RANGE) / 2));
+                    JsonThirstBlock jsonFluidThirst = ThirstUtil.getFluidThirstLookedAt(player, (float) Math.max(3.0, player.getAttributeValue(Attributes.BLOCK_INTERACTION_RANGE) / 2));
 
                     if (jsonFluidThirst != null && (jsonFluidThirst.hydration != 0 || jsonFluidThirst.saturation != 0))
                     {

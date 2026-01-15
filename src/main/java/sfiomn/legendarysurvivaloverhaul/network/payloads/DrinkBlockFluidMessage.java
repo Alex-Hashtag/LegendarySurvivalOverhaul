@@ -33,7 +33,7 @@ public record DrinkBlockFluidMessage() implements CustomPacketPayload
 
     public static void DrinkWaterOnServer(Player player)
     {
-        JsonThirstBlock jsonFluidThirst = ThirstUtil.getFluidThirstLookedAt(player, player.blockInteractionRange() / 2);
+        JsonThirstBlock jsonFluidThirst = ThirstUtil.getFluidThirstLookedAt(player, (float) Math.max(3.0, player.blockInteractionRange() / 2));
 
         if (jsonFluidThirst == null)
             return;
