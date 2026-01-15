@@ -894,7 +894,7 @@ public class Config
 					.defineInRange("Passive Limb Health Regenerated", 0.5, 0, 1000);
 			passiveLimbRegenerationTickTimer = builder
 					.comment(" How fast in ticks the limbs regenerate passively. 20 ticks = 1s")
-					.defineInRange("Passive Limb Regeneration Tick Timer", 50, 0, 10000);
+					.defineInRange("Passive Limb Regeneration Tick Timer", 200, 0, 10000);
 			builder.pop();
 			builder.push("proportional-regeneration");
 			proportionalLimbRegenMinThreshold = builder
