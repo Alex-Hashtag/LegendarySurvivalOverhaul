@@ -974,10 +974,10 @@ public class Config
                     .define("Custom Health Regen Enabled", true);
             customHealthRegenRate = builder
                     .comment(" Amount of health to regenerate per tick rate.")
-                    .defineInRange("Custom Health Regen Rate", 0.5, 0, 1000);
+                    .defineInRange("Custom Health Regen Rate", 1, 0, 1000);
             customHealthRegenTickRate = builder
                     .comment(" How often in ticks health regenerates. 20 ticks = 1s")
-                    .defineInRange("Custom Health Regen Tick Rate", 50, 1, 10000);
+                    .defineInRange("Custom Health Regen Tick Rate", 200, 1, 10000);
             customHealthRegenFoodExhaustion = builder
                     .comment(" Food exhaustion per health point regenerated.")
                     .defineInRange("Custom Health Regen Food Exhaustion", 6.0, 0, 100);
