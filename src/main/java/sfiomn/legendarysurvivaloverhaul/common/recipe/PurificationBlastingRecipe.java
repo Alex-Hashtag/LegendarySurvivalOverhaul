@@ -42,10 +42,11 @@ public class PurificationBlastingRecipe extends BlastingRecipe
     @Override
     public @NotNull ItemStack assemble(SingleRecipeInput input, @NotNull HolderLookup.Provider provider)
     {
-        int hydrationCapacity = ThirstUtil.getCapacityTag(input.item());
+        ItemStack inputStack = input.item();
+        int hydrationCapacity = ThirstUtil.getCapacityTag(inputStack);
         System.out.println("PurificationBlastingRecipe.assemble - Input capacity: " + hydrationCapacity);
         
-        ItemStack result = this.result.copy();
+        ItemStack result = inputStack.copy();
         ThirstUtil.setHydrationEnumTag(result, HydrationEnum.PURIFIED);
         ThirstUtil.setCapacityTag(result, hydrationCapacity);
         
