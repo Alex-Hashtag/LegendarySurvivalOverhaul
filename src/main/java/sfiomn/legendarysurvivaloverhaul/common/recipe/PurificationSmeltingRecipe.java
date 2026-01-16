@@ -31,8 +31,12 @@ public class PurificationSmeltingRecipe extends SmeltingRecipe {
 
     @Override
     public ItemStack assemble(Container inventory, @NotNull RegistryAccess access) {
-        int hydrationCapacity = ThirstUtil.getCapacityTag(inventory.getItem(0));
+        ItemStack input = inventory.getItem(0);
+        int hydrationCapacity = ThirstUtil.getCapacityTag(input);
         ItemStack result = this.result.copy();
+        ThirstUtil.setHydrationEnumTag(result, HydrationEnum.PURIFIED);
+        ThirstUtil.setCapacityTag(result, hydrationCapacity);
+        result.setTag(input.getTag().copy());
         ThirstUtil.setHydrationEnumTag(result, HydrationEnum.PURIFIED);
         ThirstUtil.setCapacityTag(result, hydrationCapacity);
         return result;
