@@ -4,11 +4,13 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
+import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import sfiomn.legendarysurvivaloverhaul.api.thirst.HydrationEnum;
@@ -26,17 +28,8 @@ public class PurificationBlastingRecipe extends BlastingRecipe
     public boolean matches(SingleRecipeInput input, @NotNull Level level)
     {
         ItemStack inputStack = input.item();
-        if (!this.ingredient.test(inputStack)) {
-            return false;
-        }
-        
-        int capacity = ThirstUtil.getCapacityTag(inputStack);
-        HydrationEnum hydration = ThirstUtil.getHydrationEnumTag(inputStack);
-        
-        // Debug logging
-        System.out.println("PurificationBlastingRecipe.matches - Capacity: " + capacity + ", Hydration: " + hydration);
-        
-        return capacity > 0 && hydration == HydrationEnum.NORMAL;
+        // Check if item type matches (ignoring NBT/enchantments) and has water
+        return inputStack.getItem() instanceof CanteenItem && ThirstUtil.getCapacityTag(inputStack) > 0;
     }
 
     @Override
@@ -44,13 +37,20 @@ public class PurificationBlastingRecipe extends BlastingRecipe
     {
         ItemStack inputStack = input.item();
         int hydrationCapacity = ThirstUtil.getCapacityTag(inputStack);
-        System.out.println("PurificationBlastingRecipe.assemble - Input capacity: " + hydrationCapacity);
         
-        ItemStack result = inputStack.copy();
+        // Create result with the SAME item type as input (preserves large vs regular canteen)
+        ItemStack result = new ItemStack(inputStack.getItem());
+        
+        // Copy enchantments from input to result using DataComponents
+        ItemEnchantments enchantments = inputStack.getOrDefault(DataComponents.ENCHANTMENTS, ItemEnchantments.EMPTY);
+        if (!enchantments.isEmpty()) {
+            result.set(DataComponents.ENCHANTMENTS, enchantments);
+        }
+        
+        // Set the purified hydration values
         ThirstUtil.setHydrationEnumTag(result, HydrationEnum.PURIFIED);
         ThirstUtil.setCapacityTag(result, hydrationCapacity);
         
-        System.out.println("PurificationBlastingRecipe.assemble - Output capacity: " + ThirstUtil.getCapacityTag(result) + ", Hydration: " + ThirstUtil.getHydrationEnumTag(result));
         return result;
     }
 

@@ -259,11 +259,20 @@ public class TooltipHandler
                 Minecraft mc = Minecraft.getInstance();
                 if (mc.player != null && mc.player.level() != null)
                 {
-                    int refreshingLevel = stack.getEnchantmentLevel(mc.player.level().registryAccess().lookupOrThrow(net.minecraft.core.registries.Registries.ENCHANTMENT).getOrThrow(ModEnchantments.REFRESHING));
-                    if (refreshingLevel > 0)
-                    {
-                        hydration += refreshingLevel;
-                        saturation += Math.max(0, refreshingLevel - 1);
+                    try {
+                        // Safely lookup the enchantment - will throw if not available
+                        var enchantmentRegistry = mc.player.level().registryAccess().lookupOrThrow(net.minecraft.core.registries.Registries.ENCHANTMENT);
+                        var refreshingEnchOpt = enchantmentRegistry.get(ModEnchantments.REFRESHING);
+                        if (refreshingEnchOpt.isPresent()) {
+                            int refreshingLevel = stack.getEnchantmentLevel(refreshingEnchOpt.get());
+                            if (refreshingLevel > 0)
+                            {
+                                hydration += refreshingLevel;
+                                saturation += Math.max(0, refreshingLevel - 1);
+                            }
+                        }
+                    } catch (IllegalStateException e) {
+                        // Enchantment registry not available yet, skip bonus calculation
                     }
                 }
             }
