@@ -215,8 +215,10 @@ public class CanteenItem extends DrinkItem {
 
         // Check if looking at a water block
         boolean isWater = false;
+        BlockPos blockPos = null;
         if (positionLookedAt.getType() == HitResult.Type.BLOCK) {
-            isWater = isWater(level, ((BlockHitResult) positionLookedAt).getBlockPos());
+            blockPos = ((BlockHitResult) positionLookedAt).getBlockPos();
+            isWater = isWater(level, blockPos);
         }
 
         // If it's a water source block, fill the canteen
@@ -227,10 +229,21 @@ public class CanteenItem extends DrinkItem {
             return InteractionResultHolder.consume(canteen);
         }
 
-        // If looking at a block (but not water), let useOn() handle it
-        // This allows useOn() to handle cauldrons, sinks, etc.
-        if (positionLookedAt.getType() == HitResult.Type.BLOCK) {
-            return InteractionResultHolder.pass(canteen);
+        // Only pass to useOn() for blocks that it actually handles:
+        // - Cauldrons (both empty and water-filled)
+        // - Modded blocks (sinks, basins, etc.)
+        // This prevents blocking drinking when looking at regular blocks
+        if (positionLookedAt.getType() == HitResult.Type.BLOCK && blockPos != null) {
+            BlockState blockState = level.getBlockState(blockPos);
+            // Check if it's a block that useOn() can handle
+            boolean isHandledByUseOn = blockState.is(Blocks.CAULDRON) || 
+                                       blockState.is(Blocks.WATER_CAULDRON) ||
+                                       (LegendarySurvivalOverhaul.crayfishFurnitureLoaded && 
+                                        CrayfishFurnitureUtil.isSinkOrBasin(blockState));
+            
+            if (isHandledByUseOn) {
+                return InteractionResultHolder.pass(canteen);
+            }
         }
 
         if (player.isCrouching() && player.getViewXRot(1.0f) < -60.0f && canDrink(canteen) && Config.Baked.selfWateringCanteenEnabled) {
@@ -303,7 +316,8 @@ public class CanteenItem extends DrinkItem {
         if(max == 0.0f)
             return 0;
 
-        return Math.round(ThirstUtil.getCapacityTag(stack) / max * 13);
+        // Clamp to maximum of 13 to prevent visual overflow
+        return Math.min(13, Math.round(ThirstUtil.getCapacityTag(stack) / max * 13));
     }
 
     @Override

@@ -12,6 +12,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.material.Fluids;
@@ -171,6 +172,24 @@ public class CrayfishFurnitureUtil {
         } catch (Exception e) {
             LegendarySurvivalOverhaul.LOGGER.error("Error occurred while trying to empty canteen into Crayfish furniture", e);
             return InteractionResult.PASS;
+        }
+    }
+
+    /**
+     * Checks if the given BlockState is a Kitchen Sink or Basin from Crayfish Furniture mod.
+     * Used to determine if a block should be handled by useOn() method.
+     */
+    public static boolean isSinkOrBasin(BlockState blockState) {
+        if (!LegendarySurvivalOverhaul.crayfishFurnitureLoaded) {
+            return false;
+        }
+        
+        try {
+            // Check by class name to avoid direct references that might not exist
+            String blockClassName = blockState.getBlock().getClass().getName();
+            return blockClassName.contains("KitchenSinkBlock") || blockClassName.contains("BasinBlock");
+        } catch (Exception e) {
+            return false;
         }
     }
 }

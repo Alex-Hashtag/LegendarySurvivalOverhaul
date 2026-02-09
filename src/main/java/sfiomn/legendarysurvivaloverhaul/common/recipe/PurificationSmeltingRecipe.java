@@ -11,6 +11,7 @@ import net.minecraft.util.GsonHelper;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
@@ -26,19 +27,28 @@ public class PurificationSmeltingRecipe extends SmeltingRecipe {
 
     @Override
     public boolean matches(Container inventory, Level level) {
-        return this.ingredient.test(inventory.getItem(0)) && ThirstUtil.getCapacityTag(inventory.getItem(0)) > 0;
+        ItemStack input = inventory.getItem(0);
+        // Check if item type matches (ignoring NBT/enchantments) and has water
+        return input.getItem() instanceof CanteenItem && ThirstUtil.getCapacityTag(input) > 0;
     }
 
     @Override
     public ItemStack assemble(Container inventory, @NotNull RegistryAccess access) {
         ItemStack input = inventory.getItem(0);
         int hydrationCapacity = ThirstUtil.getCapacityTag(input);
-        ItemStack result = this.result.copy();
+        
+        // Create result with the SAME item type as input (preserves large vs regular canteen)
+        ItemStack result = new ItemStack(input.getItem());
+        
+        // Copy enchantments from input to result
+        if (input.hasTag() && input.getTag().contains("Enchantments")) {
+            result.getOrCreateTag().put("Enchantments", input.getTag().get("Enchantments").copy());
+        }
+        
+        // Set the purified hydration values
         ThirstUtil.setHydrationEnumTag(result, HydrationEnum.PURIFIED);
         ThirstUtil.setCapacityTag(result, hydrationCapacity);
-        result.setTag(input.getTag().copy());
-        ThirstUtil.setHydrationEnumTag(result, HydrationEnum.PURIFIED);
-        ThirstUtil.setCapacityTag(result, hydrationCapacity);
+        
         return result;
     }
 
