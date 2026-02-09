@@ -179,6 +179,23 @@ public class ModCapabilities
 			if (Config.Baked.temperatureEnabled)
 				player.getPersistentData().putBoolean("tempImmuneOnSpawn", orig.getPersistentData().getBoolean("tempImmuneOnSpawn"));
 
+			if (Config.Baked.thirstEnabled)
+			{
+				// Reset thirst to default values on death
+				ThirstCapability newThirstCap = CapabilityUtil.getThirstCapability(player);
+				newThirstCap.init();
+				sendThirstUpdate(player);
+			}
+
+			if (Config.Baked.localizedBodyDamageEnabled)
+			{
+				// Reset body damage to default values on death
+				BodyDamageCapability newBodyDamageCap = CapabilityUtil.getBodyDamageCapability(player);
+				newBodyDamageCap.init();
+				BodyDamageUtil.updatePlayerBrokenHeartAttribute(player);
+				sendBodyDamageUpdate(player);
+			}
+
 			if (Config.Baked.healthOverhaulEnabled)
 			{
 				orig.reviveCaps();
