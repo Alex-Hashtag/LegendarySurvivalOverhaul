@@ -192,7 +192,8 @@ dependencies {
     runtimeOnly(fg.deobf("curse.maven:spark-361579:4738952"))
     runtimeOnly(fg.deobf("curse.maven:sophisticated-backpacks-422301:7591542"))
     runtimeOnly(fg.deobf("curse.maven:sophisticated-core-618298:7591502"))
-//    runtimeOnly fg.deobf("curse.maven:hearth-and-harvest-1212197:6891526")
+    runtimeOnly fg.deobf("curse.maven:hearth-and-harvest-1212197:6891526")
+    implementation(fg.deobf("curse.maven:farmers-delight-398521:7596353"))
 
     // Furniture and decoration mods for canteen compatibility
     implementation(fg.deobf("curse.maven:refurbished-furniture-897116:7110922")) // MrCrayfish's Furniture Mod: Refurbished

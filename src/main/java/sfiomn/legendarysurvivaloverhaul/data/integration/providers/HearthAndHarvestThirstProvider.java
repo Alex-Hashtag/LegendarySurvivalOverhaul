@@ -52,5 +52,10 @@ public class HearthAndHarvestThirstProvider extends ThirstDataProvider {
         consumable("red_grape_wine")
                 .addThirst(thirstData(7, 4.0f)
                         .addEffect(MobEffectRegistry.THIRST.get(), 600,0.2f));
+
+
+        consumable("sweet_berry_wine")
+                .addThirst(thirstData(7, 4.0f)
+                        .addEffect(MobEffectRegistry.THIRST.get(), 600,0.2f));
     }
 }
