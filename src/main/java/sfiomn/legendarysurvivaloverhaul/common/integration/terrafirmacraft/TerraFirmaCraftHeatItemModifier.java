@@ -1,6 +1,6 @@
 package sfiomn.legendarysurvivaloverhaul.common.integration.terrafirmacraft;
 
-import net.dries007.tfc.common.capabilities.heat.HeatCapability;
+import net.dries007.tfc.common.component.heat.HeatCapability;
 import net.minecraft.world.item.ItemStack;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonTemperatureResistance;

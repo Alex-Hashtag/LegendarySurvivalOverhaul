@@ -55,7 +55,7 @@ public class TerraFirmaCraftModifier extends ModifierBase
 
         for (Vec3i offset : posOffsets)
         {
-            value += (float) (Climate.getTemperature(level, pos.offset(offset)) * Config.Baked.tfcTemperatureMultiplier);
+            value += (float) (Climate.getInstantTemperature(level, pos.offset(offset)) * Config.Baked.tfcTemperatureMultiplier);
         }
 
         value /= posOffsets.length;
