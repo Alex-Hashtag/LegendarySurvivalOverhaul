@@ -32,5 +32,6 @@ public class HearthAndHarvestTemperatureProvider extends TemperatureDataProvider
         consumable("raspberry_wine").addTemperature(temperatureConsumable(DRINK).temperatureLevel(-1).duration(2400));
         consumable("red_grape_juice").addTemperature(temperatureConsumable(DRINK).temperatureLevel(-1).duration(1800));
         consumable("red_grape_wine").addTemperature(temperatureConsumable(DRINK).temperatureLevel(-1).duration(2400));
+        consumable("sweet_berry_wine").addTemperature(temperatureConsumable(DRINK).temperatureLevel(-1).duration(2400));
     }
 }

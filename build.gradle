@@ -149,7 +149,10 @@ dependencies {
     // Furniture and decoration mods for canteen compatibility
     implementation("curse.maven:refurbished-furniture-897116:7110929") // MrCrayfish's Furniture Mod: Refurbished
     implementation("curse.maven:moa-decor-bath-853639:7076071") // MOA DECOR: BATH
-    implementation("curse.maven:framework-549225:7421186") // Framework
+    implementation("curse.maven:framework-549225:7421186") // Framework\
+
+    runtimeOnly("curse.maven:farmers-delight-398521:7596366")
+    runtimeOnly("curse.maven:hearth-and-harvest-1212197:7330777")
 
     //implementation fg.deobf("curse.maven:weather2-237746:5244118")
     //implementation(fg.deobf("curse.maven:coroutil-237749:5096038"))

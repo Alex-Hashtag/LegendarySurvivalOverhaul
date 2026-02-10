@@ -1,15 +1,15 @@
 {
   "entries": [
-    "legendarysurvivaloverhaul:chests/pillager_outpost",
-    "legendarysurvivaloverhaul:chests/jungle_temple",
-    "legendarysurvivaloverhaul:chests/nether_bridge",
-    "legendarysurvivaloverhaul:chests/bastion_bridge",
-    "legendarysurvivaloverhaul:chests/bastion_hoglin_stable",
     "legendarysurvivaloverhaul:chests/bastion_other",
     "legendarysurvivaloverhaul:chests/abandoned_mineshaft",
-    "legendarysurvivaloverhaul:chests/buried_treasure",
+    "legendarysurvivaloverhaul:chests/pillager_outpost",
     "legendarysurvivaloverhaul:chests/desert_pyramid",
+    "legendarysurvivaloverhaul:chests/bastion_bridge",
+    "legendarysurvivaloverhaul:chests/nether_bridge",
     "legendarysurvivaloverhaul:chests/bastion_treasure",
+    "legendarysurvivaloverhaul:chests/jungle_temple",
+    "legendarysurvivaloverhaul:chests/buried_treasure",
+    "legendarysurvivaloverhaul:chests/bastion_hoglin_stable",
     "legendarysurvivaloverhaul:entities/drowned",
     "legendarysurvivaloverhaul:gameplay/fishing/treasure",
     "legendarysurvivaloverhaul:gameplay/piglin_bartering"
