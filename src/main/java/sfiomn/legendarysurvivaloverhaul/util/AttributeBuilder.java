@@ -67,10 +67,21 @@ public class AttributeBuilder
             );
             
             // Remove existing modifier with this ID if present
-            if (instance.getModifier(modifierId) != null)
-            {
-                instance.removeModifier(modifierId);
+            // Wrap in try-catch to handle NeoForge 1.21.1 getModifier issues
+            try {
+                AttributeModifier existingModifier = instance.getModifier(modifierId);
+                if (existingModifier != null)
+                {
+                    instance.removeModifier(modifierId);
+                }
+            } catch (ArrayIndexOutOfBoundsException e) {
+                // NeoForge 1.21.1 can throw this when modifier doesn't exist
+                // Safe to continue - modifier doesn't exist, so no need to remove
+            } catch (Exception e) {
+                // Log unexpected errors but continue
+                System.err.println("Error checking for existing attribute modifier: " + e.getMessage());
             }
+            
             instance.addPermanentModifier(new AttributeModifier(modifierId, value, AttributeModifier.Operation.ADD_VALUE));
         }
     }
