@@ -26,19 +26,17 @@ public class AttributeBuilder
 
     public void addModifier(ItemAttributeModifierEvent event, UUID uuid, double value)
     {
-        if (uuid == null || attribute == null || descriptionId == null)
+        addModifier(event, uuid, value, ItemUtil.getEquippableSlot(event.getItemStack()));
+    }
+
+    public void addModifier(ItemAttributeModifierEvent event, UUID uuid, double value, EquipmentSlot slot)
+    {
+        if (uuid == null || attribute == null || descriptionId == null || slot == null)
         {
-            // Skip if any required parameter is null
             return;
         }
         try
         {
-            EquipmentSlot slot = ItemUtil.getEquippableSlot(event.getItemStack());
-            if (slot == null)
-            {
-                return; // Can't add modifier without a valid slot
-            }
-            // Create a unique ResourceLocation using the UUID to avoid conflicts
             ResourceLocation modifierId = ResourceLocation.fromNamespaceAndPath(
                     descriptionId.getNamespace(),
                     descriptionId.getPath() + "_" + uuid.toString().substring(0, 8)
@@ -50,7 +48,6 @@ public class AttributeBuilder
             );
         } catch (Exception e)
         {
-            // Log and skip on any error to prevent crashes
             System.err.println("Error adding attribute modifier: " + e.getMessage());
         }
     }
@@ -65,7 +62,7 @@ public class AttributeBuilder
                     descriptionId.getNamespace(),
                     descriptionId.getPath() + "_" + uuid.toString().substring(0, 8)
             );
-            
+
             // Remove existing modifier with this ID if present
             // Wrap in try-catch to handle NeoForge 1.21.1 getModifier issues
             try {
@@ -81,7 +78,7 @@ public class AttributeBuilder
                 // Log unexpected errors but continue
                 System.err.println("Error checking for existing attribute modifier: " + e.getMessage());
             }
-            
+
             instance.addPermanentModifier(new AttributeModifier(modifierId, value, AttributeModifier.Operation.ADD_VALUE));
         }
     }

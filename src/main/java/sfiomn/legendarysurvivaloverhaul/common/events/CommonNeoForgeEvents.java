@@ -212,6 +212,11 @@ public class CommonNeoForgeEvents
 
         if (ItemUtil.canBeEquippedInSlot(event.getItemStack(), ItemUtil.getEquippableSlot(event.getItemStack()))) {
 
+            EquipmentSlot equippableSlot = ItemUtil.getEquippableSlot(event.getItemStack());
+            List<EquipmentSlot> slots = equippableSlot == EquipmentSlot.MAINHAND
+                    ? List.of(EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND)
+                    : List.of(equippableSlot);
+
             if (Config.Baked.temperatureEnabled) {
                 JsonTemperatureResistance config = new JsonTemperatureResistance();
                 for (AttributeModifierBase attributeModifier : new AttributeModifierBase[] {
@@ -221,52 +226,56 @@ public class CommonNeoForgeEvents
                     config.add(attributeModifier.getItemAttributes(event.getItemStack()));
                 }
 
-                UUID modifierUuid = equipmentSlotTemperatureUuid.get(ItemUtil.getEquippableSlot(event.getItemStack()));
+                for (EquipmentSlot slot : slots) {
+                    UUID modifierUuid = equipmentSlotTemperatureUuid.get(slot);
 
-                if (config.temperature != 0) {
-                    HEATING_TEMPERATURE.addModifier(event, modifierUuid, Math.max(config.temperature, 0));
-                    COOLING_TEMPERATURE.addModifier(event, modifierUuid, Math.min(config.temperature, 0));
+                    if (config.temperature != 0) {
+                        HEATING_TEMPERATURE.addModifier(event, modifierUuid, Math.max(config.temperature, 0), slot);
+                        COOLING_TEMPERATURE.addModifier(event, modifierUuid, Math.min(config.temperature, 0), slot);
+                    }
+
+                    if (config.heatResistance != 0)
+                        HEAT_RESISTANCE.addModifier(event, modifierUuid, config.heatResistance, slot);
+
+                    if (config.coldResistance != 0)
+                        COLD_RESISTANCE.addModifier(event, modifierUuid, config.coldResistance, slot);
+
+                    if (config.thermalResistance != 0)
+                        THERMAL_RESISTANCE.addModifier(event, modifierUuid, config.thermalResistance, slot);
                 }
-
-                if (config.heatResistance != 0)
-                    HEAT_RESISTANCE.addModifier(event, modifierUuid, config.heatResistance);
-
-                if (config.coldResistance != 0)
-                    COLD_RESISTANCE.addModifier(event, modifierUuid, config.coldResistance);
-
-                if (config.thermalResistance != 0)
-                    THERMAL_RESISTANCE.addModifier(event, modifierUuid, config.thermalResistance);
             }
 
-            if ((Config.Baked.localizedBodyDamageEnabled)) {
+            if (Config.Baked.localizedBodyDamageEnabled) {
                 ResourceLocation itemRegistryName = BuiltInRegistries.ITEM.getKey(event.getItemStack().getItem());
                 JsonBodyPartResistance config = BodyDamageDataManager.getBodyResistanceItem(itemRegistryName);
 
                 if (itemRegistryName == null || config == null)
                     return;
 
-                UUID modifierUuid = equipmentSlotBodyResistanceUuid.get(ItemUtil.getEquippableSlot(event.getItemStack()));
+                for (EquipmentSlot slot : slots) {
+                    UUID modifierUuid = equipmentSlotBodyResistanceUuid.get(slot);
 
-                if (config.bodyResistance != 0)
-                    BODY_RESISTANCE.addModifier(event, modifierUuid, config.bodyResistance);
+                    if (config.bodyResistance != 0)
+                        BODY_RESISTANCE.addModifier(event, modifierUuid, config.bodyResistance, slot);
 
-                if (config.headResistance != 0)
-                    HEAD_RESISTANCE.addModifier(event, modifierUuid, config.headResistance);
+                    if (config.headResistance != 0)
+                        HEAD_RESISTANCE.addModifier(event, modifierUuid, config.headResistance, slot);
 
-                if (config.chestResistance != 0)
-                    CHEST_RESISTANCE.addModifier(event, modifierUuid, config.chestResistance);
+                    if (config.chestResistance != 0)
+                        CHEST_RESISTANCE.addModifier(event, modifierUuid, config.chestResistance, slot);
 
-                if (config.rightArmResistance != 0)
-                    RIGHT_ARM_RESISTANCE.addModifier(event, modifierUuid, config.rightArmResistance);
+                    if (config.rightArmResistance != 0)
+                        RIGHT_ARM_RESISTANCE.addModifier(event, modifierUuid, config.rightArmResistance, slot);
 
-                if (config.leftArmResistance != 0)
-                    LEFT_ARM_RESISTANCE.addModifier(event, modifierUuid, config.leftArmResistance);
+                    if (config.leftArmResistance != 0)
+                        LEFT_ARM_RESISTANCE.addModifier(event, modifierUuid, config.leftArmResistance, slot);
 
-                if (config.legsResistance != 0)
-                    LEGS_RESISTANCE.addModifier(event, modifierUuid, config.legsResistance);
+                    if (config.legsResistance != 0)
+                        LEGS_RESISTANCE.addModifier(event, modifierUuid, config.legsResistance, slot);
 
-                if (config.feetResistance != 0)
-                    FEET_RESISTANCE.addModifier(event, modifierUuid, config.feetResistance);
+                    if (config.feetResistance != 0)
+                        FEET_RESISTANCE.addModifier(event, modifierUuid, config.feetResistance, slot);
+                }
             }
         }
     }
@@ -425,7 +434,7 @@ public class CommonNeoForgeEvents
                 healthAttachment.addShieldHealth(2);
                 event.setResult(MobEffectEvent.Applicable.Result.DO_NOT_APPLY);
             }
-            if (event.getEffectInstance().getEffect() == MobEffectRegistry.THIRST.get() &&
+            if (event.getEffectInstance().getEffect().value() == MobEffectRegistry.THIRST.get() &&
                     CuriosUtil.isCurioItemEquipped(player, ItemRegistry.WATER_PURIFIER.get())) {
                 event.setResult(MobEffectEvent.Applicable.Result.DO_NOT_APPLY);
             }

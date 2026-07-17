@@ -28,6 +28,7 @@ runs {
 
     client {
         systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+        programArguments.addAll '--quickPlaySingleplayer', 'New World'
     }
 
     server {
