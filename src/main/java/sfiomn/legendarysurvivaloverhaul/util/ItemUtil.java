@@ -29,7 +29,7 @@ public class ItemUtil {
         if (CuriosUtil.isCuriosItem(stack))
             return false;
 
-        return slot == EquipmentSlot.MAINHAND;
+        return slot == EquipmentSlot.MAINHAND || slot == EquipmentSlot.OFFHAND;
     }
 
     public static EquipmentSlot getEquippableSlot(ItemStack stack) {

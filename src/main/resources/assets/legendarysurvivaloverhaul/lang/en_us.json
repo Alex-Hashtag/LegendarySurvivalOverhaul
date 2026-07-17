@@ -1,4 +1,4 @@
-{
+﻿{
 	"advancement.legendarysurvivaloverhaul": "Legendary Survival Overhaul",
 	"advancement.legendarysurvivaloverhaul.description": "",
 	"advancement.legendarysurvivaloverhaul.get_a_thermometer": "Get a Thermometer",
@@ -43,6 +43,7 @@
 	"tooltip.legendarysurvivaloverhaul.coat_item.heating.effect" : "cold resistance",
 	"tooltip.legendarysurvivaloverhaul.coat_item.thermal.effect" : "thermal resistance",
 	"tooltip.legendarysurvivaloverhaul.coat_item.desc": "When applied to an armor, increase the %s by",
+	"tooltip.legendarysurvivaloverhaul.modifiers.hand": "When in Main/Off Hand:",
 
 	"item.legendarysurvivaloverhaul.thermometer": "Thermometer",
 	"tooltip.legendarysurvivaloverhaul.thermometer.description": "Right click to show the world temperature",
