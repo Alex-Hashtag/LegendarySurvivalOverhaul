@@ -87,8 +87,14 @@ public class SereneSeasonsUtil {
     }
 
     public static double getTimeInSeasonCycle(Level level) {
-        int seasonCycleTicks = SeasonHelper.getSeasonState(level).getSeasonCycleTicks();
-        return (double)((float)seasonCycleTicks / (float) SeasonTime.ZERO.getCycleDuration());
+        try {
+            int seasonCycleTicks = SeasonHelper.getSeasonState(level).getSeasonCycleTicks();
+            return (double)((float)seasonCycleTicks / (float) SeasonTime.ZERO.getCycleDuration());
+        } catch (NoClassDefFoundError e) {
+            // Fix: SeasonTime class not available (e.g. Serene Seasons API Stub used instead of real mod)
+            // Added: 2026-03-10
+            return 0.0;
+        }
     }
 
     public static boolean hasSeasons(Level level) {
