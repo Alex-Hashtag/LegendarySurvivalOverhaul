@@ -212,11 +212,6 @@ public class CommonNeoForgeEvents
 
         if (ItemUtil.canBeEquippedInSlot(event.getItemStack(), ItemUtil.getEquippableSlot(event.getItemStack()))) {
 
-            EquipmentSlot equippableSlot = ItemUtil.getEquippableSlot(event.getItemStack());
-            List<EquipmentSlot> slots = equippableSlot == EquipmentSlot.MAINHAND
-                    ? List.of(EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND)
-                    : List.of(equippableSlot);
-
             if (Config.Baked.temperatureEnabled) {
                 JsonTemperatureResistance config = new JsonTemperatureResistance();
                 for (AttributeModifierBase attributeModifier : new AttributeModifierBase[] {
@@ -226,56 +221,52 @@ public class CommonNeoForgeEvents
                     config.add(attributeModifier.getItemAttributes(event.getItemStack()));
                 }
 
-                for (EquipmentSlot slot : slots) {
-                    UUID modifierUuid = equipmentSlotTemperatureUuid.get(slot);
+                UUID modifierUuid = equipmentSlotTemperatureUuid.get(ItemUtil.getEquippableSlot(event.getItemStack()));
 
-                    if (config.temperature != 0) {
-                        HEATING_TEMPERATURE.addModifier(event, modifierUuid, Math.max(config.temperature, 0), slot);
-                        COOLING_TEMPERATURE.addModifier(event, modifierUuid, Math.min(config.temperature, 0), slot);
-                    }
-
-                    if (config.heatResistance != 0)
-                        HEAT_RESISTANCE.addModifier(event, modifierUuid, config.heatResistance, slot);
-
-                    if (config.coldResistance != 0)
-                        COLD_RESISTANCE.addModifier(event, modifierUuid, config.coldResistance, slot);
-
-                    if (config.thermalResistance != 0)
-                        THERMAL_RESISTANCE.addModifier(event, modifierUuid, config.thermalResistance, slot);
+                if (config.temperature != 0) {
+                    HEATING_TEMPERATURE.addModifier(event, modifierUuid, Math.max(config.temperature, 0));
+                    COOLING_TEMPERATURE.addModifier(event, modifierUuid, Math.min(config.temperature, 0));
                 }
+
+                if (config.heatResistance != 0)
+                    HEAT_RESISTANCE.addModifier(event, modifierUuid, config.heatResistance);
+
+                if (config.coldResistance != 0)
+                    COLD_RESISTANCE.addModifier(event, modifierUuid, config.coldResistance);
+
+                if (config.thermalResistance != 0)
+                    THERMAL_RESISTANCE.addModifier(event, modifierUuid, config.thermalResistance);
             }
 
-            if (Config.Baked.localizedBodyDamageEnabled) {
+            if ((Config.Baked.localizedBodyDamageEnabled)) {
                 ResourceLocation itemRegistryName = BuiltInRegistries.ITEM.getKey(event.getItemStack().getItem());
                 JsonBodyPartResistance config = BodyDamageDataManager.getBodyResistanceItem(itemRegistryName);
 
                 if (itemRegistryName == null || config == null)
                     return;
 
-                for (EquipmentSlot slot : slots) {
-                    UUID modifierUuid = equipmentSlotBodyResistanceUuid.get(slot);
+                UUID modifierUuid = equipmentSlotBodyResistanceUuid.get(ItemUtil.getEquippableSlot(event.getItemStack()));
 
-                    if (config.bodyResistance != 0)
-                        BODY_RESISTANCE.addModifier(event, modifierUuid, config.bodyResistance, slot);
+                if (config.bodyResistance != 0)
+                    BODY_RESISTANCE.addModifier(event, modifierUuid, config.bodyResistance);
 
-                    if (config.headResistance != 0)
-                        HEAD_RESISTANCE.addModifier(event, modifierUuid, config.headResistance, slot);
+                if (config.headResistance != 0)
+                    HEAD_RESISTANCE.addModifier(event, modifierUuid, config.headResistance);
 
-                    if (config.chestResistance != 0)
-                        CHEST_RESISTANCE.addModifier(event, modifierUuid, config.chestResistance, slot);
+                if (config.chestResistance != 0)
+                    CHEST_RESISTANCE.addModifier(event, modifierUuid, config.chestResistance);
 
-                    if (config.rightArmResistance != 0)
-                        RIGHT_ARM_RESISTANCE.addModifier(event, modifierUuid, config.rightArmResistance, slot);
+                if (config.rightArmResistance != 0)
+                    RIGHT_ARM_RESISTANCE.addModifier(event, modifierUuid, config.rightArmResistance);
 
-                    if (config.leftArmResistance != 0)
-                        LEFT_ARM_RESISTANCE.addModifier(event, modifierUuid, config.leftArmResistance, slot);
+                if (config.leftArmResistance != 0)
+                    LEFT_ARM_RESISTANCE.addModifier(event, modifierUuid, config.leftArmResistance);
 
-                    if (config.legsResistance != 0)
-                        LEGS_RESISTANCE.addModifier(event, modifierUuid, config.legsResistance, slot);
+                if (config.legsResistance != 0)
+                    LEGS_RESISTANCE.addModifier(event, modifierUuid, config.legsResistance);
 
-                    if (config.feetResistance != 0)
-                        FEET_RESISTANCE.addModifier(event, modifierUuid, config.feetResistance, slot);
-                }
+                if (config.feetResistance != 0)
+                    FEET_RESISTANCE.addModifier(event, modifierUuid, config.feetResistance);
             }
         }
     }
@@ -311,12 +302,12 @@ public class CommonNeoForgeEvents
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onEntityHurt(LivingIncomingDamageEvent event) {
         if (!event.getSource().is(DamageTypes.FALL) &&
-            !event.getSource().is(DamageTypes.STARVE) &&
-            !event.getSource().is(DamageTypes.FREEZE) &&
-            !event.getSource().is(DamageTypes.DROWN) &&
-            !event.getSource().is(ModDamageTypes.DEHYDRATION) &&
-            !event.getSource().is(ModDamageTypes.HYPOTHERMIA) &&
-            !event.getSource().is(ModDamageTypes.HYPERTHERMIA) && event.getEntity().hasEffect(MobEffectRegistry.VULNERABILITY)) {
+                !event.getSource().is(DamageTypes.STARVE) &&
+                !event.getSource().is(DamageTypes.FREEZE) &&
+                !event.getSource().is(DamageTypes.DROWN) &&
+                !event.getSource().is(ModDamageTypes.DEHYDRATION) &&
+                !event.getSource().is(ModDamageTypes.HYPOTHERMIA) &&
+                !event.getSource().is(ModDamageTypes.HYPERTHERMIA) && event.getEntity().hasEffect(MobEffectRegistry.VULNERABILITY)) {
 
             event.setAmount(event.getAmount() * (1 + 0.2f * Objects.requireNonNull(event.getEntity().getEffect(MobEffectRegistry.VULNERABILITY)).getAmplifier() + 1));
 
@@ -335,7 +326,7 @@ public class CommonNeoForgeEvents
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public static void onEntityHurtDamage(LivingIncomingDamageEvent event) {
+    public static void onEntityHurtDamage(LivingDamageEvent.Pre event) {
         Player player;
         if (event.getEntity() instanceof Player)
             player = (Player) event.getEntity();
@@ -350,14 +341,14 @@ public class CommonNeoForgeEvents
         }
 
         // Skip if damage was fully negated
-        if (event.getAmount() <= 0)
+        if (event.getNewDamage() <= 0)
             return;
 
         if (shouldApplyHealthOverhaul(player))
-            event.setAmount(HealthUtil.hurtPlayer(player, event.getAmount()));
+            event.setNewDamage(HealthUtil.hurtPlayer(player, event.getNewDamage()));
 
         if (shouldApplyLocalizedBodyDamage(player)) {
-            float bodyPartDamageValue = event.getAmount() * (float) Config.Baked.bodyDamageMultiplier;
+            float bodyPartDamageValue = event.getNewDamage() * (float) Config.Baked.bodyDamageMultiplier;
             DamageSource source = event.getSource();
 
             JsonBodyPartsDamageSource damageSourceBodyParts = BodyDamageDataManager.getBodyParts(source.getMsgId());
@@ -395,7 +386,7 @@ public class CommonNeoForgeEvents
                     && hitBodyParts.contains(BodyPartEnum.HEAD)
                     && Config.Baked.headCriticalShotMultiplier > 1
                     && player.getItemBySlot(EquipmentSlot.HEAD).isEmpty()) {
-                event.setAmount(event.getAmount() * (float) Config.Baked.headCriticalShotMultiplier);
+                event.setNewDamage(event.getNewDamage() * (float) Config.Baked.headCriticalShotMultiplier);
                 player.level().playLocalSound(player.blockPosition(), SoundRegistry.HEADSHOT.get(), SoundSource.HOSTILE, 1.0F, 1.0F, false);
             }
         }
@@ -434,7 +425,7 @@ public class CommonNeoForgeEvents
                 healthAttachment.addShieldHealth(2);
                 event.setResult(MobEffectEvent.Applicable.Result.DO_NOT_APPLY);
             }
-            if (event.getEffectInstance().getEffect().value() == MobEffectRegistry.THIRST.get() &&
+            if (event.getEffectInstance().getEffect() == MobEffectRegistry.THIRST.get() &&
                     CuriosUtil.isCurioItemEquipped(player, ItemRegistry.WATER_PURIFIER.get())) {
                 event.setResult(MobEffectEvent.Applicable.Result.DO_NOT_APPLY);
             }
@@ -457,10 +448,10 @@ public class CommonNeoForgeEvents
             var tempCap = AttachmentUtil.getTempAttachment(player);
             tempCap.setTemperatureLevel(sfiomn.legendarysurvivaloverhaul.api.temperature.TemperatureEnum.NORMAL.getValue());
             tempCap.setTargetTemperatureLevel(sfiomn.legendarysurvivaloverhaul.api.temperature.TemperatureEnum.NORMAL.getValue());
-            
+
             if (player instanceof ServerPlayer serverPlayer) {
                 sfiomn.legendarysurvivaloverhaul.network.payloads.UpdateTemperaturesPayload.sendToPlayer(
-                    serverPlayer, tempCap.writeNBT()
+                        serverPlayer, tempCap.writeNBT()
                 );
             }
         }
@@ -476,7 +467,7 @@ public class CommonNeoForgeEvents
 
             if (player instanceof ServerPlayer serverPlayer) {
                 sfiomn.legendarysurvivaloverhaul.network.payloads.UpdateBodyDamagePayload.sendToPlayer(
-                    serverPlayer, bodyCap.writeNBT()
+                        serverPlayer, bodyCap.writeNBT()
                 );
             }
         }
@@ -489,7 +480,7 @@ public class CommonNeoForgeEvents
 
             if (player instanceof ServerPlayer serverPlayer) {
                 sfiomn.legendarysurvivaloverhaul.network.payloads.UpdateThirstPayload.sendToPlayer(
-                    serverPlayer, thirstCap.writeNBT()
+                        serverPlayer, thirstCap.writeNBT()
                 );
             }
         }
@@ -514,31 +505,31 @@ public class CommonNeoForgeEvents
             if (Config.Baked.temperatureEnabled) {
                 var tempCap = AttachmentUtil.getTempAttachment(serverPlayer);
                 sfiomn.legendarysurvivaloverhaul.network.payloads.UpdateTemperaturesPayload.sendToPlayer(
-                    serverPlayer, tempCap.writeNBT()
+                        serverPlayer, tempCap.writeNBT()
                 );
             }
             if (Config.Baked.thirstEnabled) {
                 var thirstCap = AttachmentUtil.getThirstAttachment(serverPlayer);
                 sfiomn.legendarysurvivaloverhaul.network.payloads.UpdateThirstPayload.sendToPlayer(
-                    serverPlayer, thirstCap.writeNBT()
+                        serverPlayer, thirstCap.writeNBT()
                 );
             }
             if (Config.Baked.wetnessEnabled) {
                 var wetnessCap = AttachmentUtil.getWetnessAttachment(serverPlayer);
                 sfiomn.legendarysurvivaloverhaul.network.payloads.UpdateWetnessPayload.sendToPlayer(
-                    serverPlayer, wetnessCap.writeNBT()
+                        serverPlayer, wetnessCap.writeNBT()
                 );
             }
             if (Config.Baked.localizedBodyDamageEnabled) {
                 var bodyCap = AttachmentUtil.getBodyDamageAttachment(serverPlayer);
                 sfiomn.legendarysurvivaloverhaul.network.payloads.UpdateBodyDamagePayload.sendToPlayer(
-                    serverPlayer, bodyCap.writeNBT()
+                        serverPlayer, bodyCap.writeNBT()
                 );
             }
             if (Config.Baked.healthOverhaulEnabled) {
                 var healthCap = AttachmentUtil.getHealthAttachment(serverPlayer);
                 sfiomn.legendarysurvivaloverhaul.network.payloads.UpdateHeartsPayload.sendToPlayer(
-                    serverPlayer, healthCap.writeNBT()
+                        serverPlayer, healthCap.writeNBT()
                 );
             }
         }
@@ -557,7 +548,7 @@ public class CommonNeoForgeEvents
     @SubscribeEvent
     public static void onDataPackSyncEvent(OnDatapackSyncEvent event) {
         final ServerPlayer player = event.getPlayer();
-        
+
         ThirstBlockListener.sendDataToClient(player);
         ThirstConsumableListener.sendDataToClient(player);
 
@@ -590,7 +581,7 @@ public class CommonNeoForgeEvents
             tempCap.tickUpdate(player, level, isStart);
             if (tempCap.isDirty()) {
                 sfiomn.legendarysurvivaloverhaul.network.payloads.UpdateTemperaturesPayload.sendToPlayer(
-                    serverPlayer, tempCap.writeNBT()
+                        serverPlayer, tempCap.writeNBT()
                 );
                 tempCap.setClean();
             }
@@ -602,7 +593,7 @@ public class CommonNeoForgeEvents
             thirstCap.tickUpdate(player, level, isStart);
             if (thirstCap.isDirty()) {
                 sfiomn.legendarysurvivaloverhaul.network.payloads.UpdateThirstPayload.sendToPlayer(
-                    serverPlayer, thirstCap.writeNBT()
+                        serverPlayer, thirstCap.writeNBT()
                 );
                 thirstCap.setClean();
             }
@@ -614,7 +605,7 @@ public class CommonNeoForgeEvents
             wetnessCap.tickUpdate(player, level, isStart);
             if (wetnessCap.isDirty()) {
                 sfiomn.legendarysurvivaloverhaul.network.payloads.UpdateWetnessPayload.sendToPlayer(
-                    serverPlayer, wetnessCap.writeNBT()
+                        serverPlayer, wetnessCap.writeNBT()
                 );
                 wetnessCap.setClean();
             }
@@ -631,7 +622,7 @@ public class CommonNeoForgeEvents
             bodyCap.tickUpdate(player, level, isStart);
             if (bodyCap.isDirty()) {
                 sfiomn.legendarysurvivaloverhaul.network.payloads.UpdateBodyDamagePayload.sendToPlayer(
-                    serverPlayer, bodyCap.writeNBT()
+                        serverPlayer, bodyCap.writeNBT()
                 );
                 bodyCap.setClean();
             }
@@ -642,7 +633,7 @@ public class CommonNeoForgeEvents
             var healthCap = AttachmentUtil.getHealthAttachment(player);
             if (healthCap.isDirty()) {
                 sfiomn.legendarysurvivaloverhaul.network.payloads.UpdateHeartsPayload.sendToPlayer(
-                    serverPlayer, healthCap.writeNBT()
+                        serverPlayer, healthCap.writeNBT()
                 );
                 healthCap.setClean();
             }

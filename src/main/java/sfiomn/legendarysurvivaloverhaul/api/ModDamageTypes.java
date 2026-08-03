@@ -43,6 +43,6 @@ public class ModDamageTypes
     {
         context.register(HYPOTHERMIA, new DamageType(LegendarySurvivalOverhaul.MOD_ID + ".hypothermia", DamageScaling.NEVER, 0.1f, FREEZING));
         context.register(HYPERTHERMIA, new DamageType(LegendarySurvivalOverhaul.MOD_ID + ".hyperthermia", DamageScaling.NEVER, 0.1f, BURNING));
-        context.register(DEHYDRATION, new DamageType(LegendarySurvivalOverhaul.MOD_ID + ".dehydration", DamageScaling.NEVER, 0.1f, POKING));
+        context.register(DEHYDRATION, new DamageType(LegendarySurvivalOverhaul.MOD_ID + ".dehydration", DamageScaling.NEVER, 0.1f, HURT));
     }
 }

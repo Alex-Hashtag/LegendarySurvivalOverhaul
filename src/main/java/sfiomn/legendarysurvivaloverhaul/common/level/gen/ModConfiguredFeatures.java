@@ -37,7 +37,7 @@ public class ModConfiguredFeatures
         FeatureUtils.register(context,
                 resourceKey,
                 Feature.RANDOM_PATCH,
-                new RandomPatchConfiguration(5, 5, 3,
+                new RandomPatchConfiguration(50, 7, 3,
                         PlacementUtils.filtered(
                                 FeatureRegistry.GOLD_FERN.get(),
                                 new SimpleBlockConfiguration(BlockStateProvider.simple(blockState)),
@@ -49,7 +49,7 @@ public class ModConfiguredFeatures
         FeatureUtils.register(context,
                 resourceKey,
                 Feature.RANDOM_PATCH,
-                new RandomPatchConfiguration(10, 5, 3,
+                new RandomPatchConfiguration(64, 6, 3,
                         PlacementUtils.filtered(
                                 FeatureRegistry.DOUBLE_BLOCK.get(),
                                 new SimpleBlockConfiguration(BlockStateProvider.simple(blockState)),

@@ -134,6 +134,7 @@ public class Config
         public final ModConfigSpec.BooleanValue dangerousHeatTemperature;
         public final ModConfigSpec.BooleanValue dangerousColdTemperature;
         public final ModConfigSpec.DoubleValue goldFernChance;
+        public final ModConfigSpec.DoubleValue goldFernWorldgenChance;
         public final ModConfigSpec.BooleanValue temperatureImmunityOnDeathEnabled;
         public final ModConfigSpec.IntValue temperatureImmunityOnDeathTime;
         public final ModConfigSpec.BooleanValue temperatureImmunityOnFirstSpawnEnabled;
@@ -433,7 +434,10 @@ public class Config
                     .define("Dangerous Cold Temperature Effects", true);
             goldFernChance = builder
                     .comment(" Chance of the ferns to become a gold fern when grow mature.")
-                    .defineInRange("Gold Fern Chance", 0.01, 0, 1);
+                    .defineInRange("Gold Fern Chance", 0.01, 0, 2);
+            goldFernWorldgenChance = builder
+                    .comment(" Chance of the ferns to become a gold fern when generated in the world.")
+                    .defineInRange("Gold Fern Worldgen Chance", 0.0002, 0, 2);
 
             builder.push("temperature-immunity");
             temperatureImmunityOnDeathEnabled = builder
@@ -1344,6 +1348,7 @@ public class Config
         public static boolean dangerousHeatTemperature;
         public static boolean dangerousColdTemperature;
         public static double goldFernChance;
+        public static double goldFernWorldgenChance;
 
         public static boolean temperatureImmunityOnDeathEnabled;
         public static int temperatureImmunityOnDeathTime;
@@ -1628,6 +1633,7 @@ public class Config
                 dangerousHeatTemperature = COMMON.dangerousHeatTemperature.get();
                 dangerousColdTemperature = COMMON.dangerousColdTemperature.get();
                 goldFernChance = COMMON.goldFernChance.get();
+                goldFernWorldgenChance = COMMON.goldFernWorldgenChance.get();
 
                 temperatureImmunityOnDeathEnabled = COMMON.temperatureImmunityOnDeathEnabled.get();
                 temperatureImmunityOnDeathTime = COMMON.temperatureImmunityOnDeathTime.get();

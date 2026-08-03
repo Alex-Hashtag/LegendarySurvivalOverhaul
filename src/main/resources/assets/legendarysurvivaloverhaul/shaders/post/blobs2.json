@@ -1,0 +1,16 @@
+{
+  "targets": ["swap"],
+  "passes": [
+    {
+      "name": "legendarysurvivaloverhaul:blobs2",
+      "intarget": "minecraft:main",
+      "outtarget": "swap",
+      "uniforms": [
+        {
+          "name": "Radius",
+          "values": [7.0]
+        }
+      ]
+    }
+  ]
+}

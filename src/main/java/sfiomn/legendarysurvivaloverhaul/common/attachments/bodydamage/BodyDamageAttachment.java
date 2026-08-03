@@ -135,7 +135,7 @@ public class BodyDamageAttachment implements IBodyDamageAttachment, INBTSerializ
     {
         return this.packetTimer;
     }
-    
+
     @Override
     public int getHealthBlinkTimer()
     {
@@ -209,8 +209,8 @@ public class BodyDamageAttachment implements IBodyDamageAttachment, INBTSerializ
                 BodyPart bodyPart = bodyPartPair.getValue();
                 if (bodyPart.getRemainingHealingTicks() > 0)
                 {
-                    LegendarySurvivalOverhaul.LOGGER.info("[ITEM HEALING] {} has {} healing ticks remaining, healing {} per tick", 
-                        bodyPartPair.getKey(), bodyPart.getRemainingHealingTicks(), bodyPart.getHealingPerTicks());
+                    LegendarySurvivalOverhaul.LOGGER.debug("[ITEM HEALING] {} has {} healing ticks remaining, healing {} per tick",
+                            bodyPartPair.getKey(), bodyPart.getRemainingHealingTicks(), bodyPart.getHealingPerTicks());
                     int healingTick = Math.min(20, bodyPart.getRemainingHealingTicks());
                     healWithFoodExhaustion(player, bodyPartPair.getKey(), healingTick * bodyPart.getHealingPerTicks());
                     if (bodyPart.isMaxHealth())
@@ -259,7 +259,7 @@ public class BodyDamageAttachment implements IBodyDamageAttachment, INBTSerializ
             if (healingTickTimer >= Config.Baked.firstAidSuppliesTickTimer)
             {
                 healingTickTimer = 0;
-                LegendarySurvivalOverhaul.LOGGER.info("[FIRST AID HEALING] Healing most damaged limb");
+                LegendarySurvivalOverhaul.LOGGER.debug("[FIRST AID HEALING] Healing most damaged limb");
 
                 healMostDamaged(player,
                         Config.Baked.limbRegenerationMode,
@@ -277,7 +277,7 @@ public class BodyDamageAttachment implements IBodyDamageAttachment, INBTSerializ
             if (healingTickTimer++ >= passiveTickTimer)
             {
                 healingTickTimer = 0;
-                LegendarySurvivalOverhaul.LOGGER.info("[PASSIVE REGEN HEALING] Healing most damaged limb");
+                LegendarySurvivalOverhaul.LOGGER.debug("[PASSIVE REGEN HEALING] Healing most damaged limb");
 
                 healMostDamaged(player,
                         EnumUtil.limbRegenerationMode.SIMPLE,
@@ -290,7 +290,7 @@ public class BodyDamageAttachment implements IBodyDamageAttachment, INBTSerializ
         {
             healingTickTimer = 0;
         }
-        
+
         // Proportional limb regeneration system
         if (Config.Baked.proportionalLimbRegenTickRate > 0 && !this.hasFirstAidSupplies)
         {
@@ -303,7 +303,7 @@ public class BodyDamageAttachment implements IBodyDamageAttachment, INBTSerializ
         {
             proportionalRegenTimer = 0;
         }
-        
+
         // Custom health regeneration when natural regen is off
         if (!Config.Baked.naturalRegenerationEnabled && Config.Baked.customHealthRegenEnabled)
         {
@@ -316,7 +316,7 @@ public class BodyDamageAttachment implements IBodyDamageAttachment, INBTSerializ
         {
             customHealthRegenTimer = 0;
         }
-        
+
         // Decrement health blink timer
         if (this.healthBlinkTimer > 0)
         {
@@ -379,32 +379,32 @@ public class BodyDamageAttachment implements IBodyDamageAttachment, INBTSerializ
                 .map(Map.Entry::getValue)
                 .orElse(null); // or throw an exception if you prefer
     }
-    
+
     private void applyProportionalLimbRegeneration(Player player)
     {
         double stableMaxHealth = HealthUtil.getPlayerStableMaxHealth(player);
         double currentHealth = player.getHealth();
         double effectiveBrokenHearts = HealthUtil.getEffectiveBrokenHearts(player) * 2.0;
         double adjustedMaxHealth = stableMaxHealth - effectiveBrokenHearts;
-        
+
         if (adjustedMaxHealth <= 0) return;
-        
+
         double healthRatio = currentHealth / adjustedMaxHealth;
         healthRatio = Math.max(0, Math.min(1, healthRatio));
-        
+
         if (healthRatio < Config.Baked.proportionalLimbRegenMinThreshold)
         {
             return;
         }
-        
+
         double normalizedRatio = (healthRatio - Config.Baked.proportionalLimbRegenMinThreshold) / (1.0 - Config.Baked.proportionalLimbRegenMinThreshold);
         normalizedRatio = Math.pow(normalizedRatio, Config.Baked.proportionalLimbRegenIncreaseRate);
-        
-        double healAmount = Config.Baked.proportionalLimbRegenMinHealValue + 
+
+        double healAmount = Config.Baked.proportionalLimbRegenMinHealValue +
                 (Config.Baked.proportionalLimbRegenMaxHealValue - Config.Baked.proportionalLimbRegenMinHealValue) * normalizedRatio;
-        
+
         if (healAmount <= 0) return;
-        
+
         float totalDamage = 0;
         for (BodyPart bodyPart : this.bodyParts.values())
         {
@@ -413,50 +413,50 @@ public class BodyDamageAttachment implements IBodyDamageAttachment, INBTSerializ
                 totalDamage += bodyPart.getDamage();
             }
         }
-        
+
         if (totalDamage <= 0) return;
-        
+
         boolean healedAtMaxHealth = currentHealth >= stableMaxHealth - 0.01;
-        
+
         if (healedAtMaxHealth)
         {
             player.level().playSound(null, player.blockPosition(), SoundRegistry.HEAL_BODY_PART.get(), SoundSource.PLAYERS, 0.3f, 1.5f);
             this.healthBlinkTimer = 40; // Blink for 2 seconds
             this.setManualDirty(); // Force packet sync
         }
-        
+
         for (Map.Entry<BodyPartEnum, BodyPart> entry : this.bodyParts.entrySet())
         {
             BodyPart bodyPart = entry.getValue();
             float damage = bodyPart.getDamage();
-            
+
             if (damage >= bodyPart.getMaxHealth())
             {
                 continue;
             }
-            
+
             float proportionalHeal = (float) ((damage / totalDamage) * healAmount);
             healWithFoodExhaustion(player, entry.getKey(), proportionalHeal);
         }
     }
-    
+
     private void applyCustomHealthRegeneration(Player player)
     {
         if (player.getFoodData().getFoodLevel() <= 0) return;
-        
+
         double totalLimbHealthRatio = 0;
         for (BodyPart bodyPart : this.bodyParts.values())
         {
             totalLimbHealthRatio += (bodyPart.getMaxHealth() - bodyPart.getDamage()) / bodyPart.getMaxHealth();
         }
         totalLimbHealthRatio /= this.bodyParts.size();
-        
+
         double maxHealthToRegen = player.getMaxHealth() * totalLimbHealthRatio;
-        
+
         if (player.getHealth() >= maxHealthToRegen - 0.01) return;
-        
+
         float healthToHeal = (float) Math.min(Config.Baked.customHealthRegenRate, maxHealthToRegen - player.getHealth());
-        
+
         if (healthToHeal > 0)
         {
             player.heal(healthToHeal);
@@ -626,7 +626,7 @@ public class BodyDamageAttachment implements IBodyDamageAttachment, INBTSerializ
             float newMaxHealth = Math.round(bodyPart.getHealthMultiplier() * maxHealth * 100) / 100.0f;
             float oldMaxHealth = bodyPart.getMaxHealth();
             float oldDamage = bodyPart.getDamage();
-            
+
             bodyPart.setMaxHealth(newMaxHealth);
             if (oldMaxHealth != 0 && oldMaxHealth != newMaxHealth)
             {
@@ -689,4 +689,3 @@ public class BodyDamageAttachment implements IBodyDamageAttachment, INBTSerializ
         readNBT(nbt);
     }
 }
-

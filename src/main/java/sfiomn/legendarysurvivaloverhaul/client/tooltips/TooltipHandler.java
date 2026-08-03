@@ -82,7 +82,6 @@ public class TooltipHandler
 
             if (Config.Baked.temperatureEnabled)
             {
-                mergeHandModifierSections(tooltips);
 
                 if (stack.getItem() instanceof ArmorItem)
                 {
@@ -98,62 +97,6 @@ public class TooltipHandler
             if (LegendarySurvivalOverhaul.beachpartyLoaded)
                 addShadeText(stack, tooltips);
         }
-    }
-
-    private static void mergeHandModifierSections(List<Component> tooltips)
-    {
-        int mainHandHeader = -1;
-        int offHandHeader = -1;
-        for (int i = 0; i < tooltips.size(); i++)
-        {
-            String key = getTranslationKey(tooltips.get(i));
-            if ("item.modifiers.mainhand".equals(key)) mainHandHeader = i;
-            else if ("item.modifiers.offhand".equals(key)) offHandHeader = i;
-        }
-        if (mainHandHeader == -1 || offHandHeader == -1 || mainHandHeader > offHandHeader) return;
-
-        String[] lsoAttributeKeys = {
-                AttributeRegistry.HEATING_TEMPERATURE.get().getDescriptionId(),
-                AttributeRegistry.COOLING_TEMPERATURE.get().getDescriptionId(),
-                AttributeRegistry.HEAT_RESISTANCE.get().getDescriptionId(),
-                AttributeRegistry.COLD_RESISTANCE.get().getDescriptionId(),
-                AttributeRegistry.THERMAL_RESISTANCE.get().getDescriptionId()
-        };
-
-        List<Component> mainHandLines = getAttributeSection(tooltips, mainHandHeader);
-        List<Component> offHandLines = getAttributeSection(tooltips, offHandHeader);
-
-        if (offHandLines.isEmpty() || mainHandLines.size() != offHandLines.size()) return;
-
-        for (int i = 0; i < offHandLines.size(); i++)
-        {
-            if (!componentHasOneOfKeys(offHandLines.get(i), lsoAttributeKeys)) return;
-            if (!offHandLines.get(i).getString().equals(mainHandLines.get(i).getString())) return;
-        }
-
-        int removeFrom = offHandHeader;
-        if (removeFrom > 0 && tooltips.get(removeFrom - 1).getString().isEmpty()) removeFrom--;
-        tooltips.subList(removeFrom, offHandHeader + 1 + offHandLines.size()).clear();
-        tooltips.set(mainHandHeader, Component.translatable("tooltip.legendarysurvivaloverhaul.modifiers.hand").withStyle(ChatFormatting.GRAY));
-    }
-
-    private static List<Component> getAttributeSection(List<Component> tooltips, int headerIndex)
-    {
-        List<Component> lines = new ArrayList<>();
-        for (int i = headerIndex + 1; i < tooltips.size(); i++)
-        {
-            String key = getTranslationKey(tooltips.get(i));
-            if (key == null || !(key.startsWith("attribute.modifier.") || key.startsWith("neoforge.modifier."))) break;
-            lines.add(tooltips.get(i));
-        }
-        return lines;
-    }
-
-    private static String getTranslationKey(Component component)
-    {
-        if (component.getContents() instanceof TranslatableContents translatableContents)
-            return translatableContents.getKey();
-        return null;
     }
 
     @SuppressWarnings("unused")
@@ -309,7 +252,7 @@ public class TooltipHandler
         {
             int hydration = jsonThirstConsumable.hydration;
             float saturation = jsonThirstConsumable.saturation;
-
+            
             // Add Refreshing enchantment bonus for canteens
             if (stack.getItem() instanceof CanteenItem && CanteenItem.canDrink(stack))
             {
@@ -333,7 +276,7 @@ public class TooltipHandler
                     }
                 }
             }
-
+            
             hydrationTooltipComponent = new HydrationTooltipComponent(hydration, saturation);
             for (JsonMobEffect effect : jsonThirstConsumable.effects)
             {

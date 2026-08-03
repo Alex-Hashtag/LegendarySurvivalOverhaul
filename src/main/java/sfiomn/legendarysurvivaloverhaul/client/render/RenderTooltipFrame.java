@@ -39,18 +39,21 @@ public class RenderTooltipFrame
     private static final int RIGHT_SIDE_FRAME_X_OFFSET = FRAME_WIDTH - RIGHT_SIDE_FRAME_WIDTH;
     private static final int MIDDLE_SIDE_FRAME_MAX_WIDTH = FRAME_WIDTH - (MIDDLE_SIDE_FRAME_X_OFFSET * 2);
     private static Entity ENTITY_LOOKED_AT = null;
+    private static int lastCheckTick = -1;
+
 
     public static void render(Gui gui, GuiGraphics guiGraphics, float partialTicks, int width, int height)
     {
         Player player = Minecraft.getInstance().player;
         if (player != null)
         {
-            if (ENTITY_LOOKED_AT == null || player.tickCount % 4 == 0)
+            if (player.tickCount != lastCheckTick && player.tickCount % 5 == 0)
             {
                 ENTITY_LOOKED_AT = WorldUtil.getEntityLookedAt(
                         player,
                         player.getAttributeValue(Attributes.ENTITY_INTERACTION_RANGE)
                 );
+                lastCheckTick = player.tickCount;
             }
         }
 

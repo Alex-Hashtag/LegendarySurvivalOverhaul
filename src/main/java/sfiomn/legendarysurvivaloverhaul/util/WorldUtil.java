@@ -161,6 +161,7 @@ public final class WorldUtil
         Vec3 eyePosition = player.getEyePosition(0.0f);
 
         distanceFromEye = positionLookedAt.getLocation().distanceTo(eyePosition);
+        distanceFromEye = Math.min(distanceFromEye, finalDistance);
 
         Vec3 lookVector = player.getLookAngle();
         Vec3 reachVector = eyePosition.add(lookVector.x * distanceFromEye, lookVector.y * distanceFromEye, lookVector.z * distanceFromEye);

@@ -26,7 +26,7 @@ public class GoldFernFeature extends Feature<SimpleBlockConfiguration>
 
         BlockState state = config.toPlace().getState(context.random(), pos);
 
-        if (context.random().nextFloat() < Config.Baked.goldFernChance)
+        if (context.random().nextFloat() < Config.Baked.goldFernWorldgenChance)
         {
             if (state.is(BlockRegistry.ICE_FERN_CROP.get()))
             {

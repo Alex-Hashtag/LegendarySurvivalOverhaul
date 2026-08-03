@@ -46,6 +46,27 @@ public final class IntegrationDataGenerators
         gen.addProvider(event.includeServer(), new CrockpotTemperatureProvider(packOutput, lookupProvider, existingFileHelper));
         gen.addProvider(event.includeServer(), new CrockpotThirstProvider(packOutput, lookupProvider, existingFileHelper));
 
+        // --- Eiki Thirst addon compat (generated) ---
+        gen.addProvider(event.includeServer(), new DungeonsDelightThirstProvider(packOutput, lookupProvider, existingFileHelper));
+        gen.addProvider(event.includeServer(), new EndsDelightTemperatureProvider(packOutput, lookupProvider, existingFileHelper));
+        gen.addProvider(event.includeServer(), new EndsDelightThirstProvider(packOutput, lookupProvider, existingFileHelper));
+        gen.addProvider(event.includeServer(), new ExpandedDelightTemperatureProvider(packOutput, lookupProvider, existingFileHelper));
+        gen.addProvider(event.includeServer(), new ExpandedDelightThirstProvider(packOutput, lookupProvider, existingFileHelper));
+        gen.addProvider(event.includeServer(), new ExtraDelightTemperatureProvider(packOutput, lookupProvider, existingFileHelper));
+        gen.addProvider(event.includeServer(), new ExtraDelightThirstProvider(packOutput, lookupProvider, existingFileHelper));
+        gen.addProvider(event.includeServer(), new FruitsDelightTemperatureProvider(packOutput, lookupProvider, existingFileHelper));
+        gen.addProvider(event.includeServer(), new FruitsDelightThirstProvider(packOutput, lookupProvider, existingFileHelper));
+        gen.addProvider(event.includeServer(), new PamHc2CropsTemperatureProvider(packOutput, lookupProvider, existingFileHelper));
+        gen.addProvider(event.includeServer(), new PamHc2CropsThirstProvider(packOutput, lookupProvider, existingFileHelper));
+        gen.addProvider(event.includeServer(), new PamHc2FoodCoreTemperatureProvider(packOutput, lookupProvider, existingFileHelper));
+        gen.addProvider(event.includeServer(), new PamHc2FoodCoreThirstProvider(packOutput, lookupProvider, existingFileHelper));
+        gen.addProvider(event.includeServer(), new PamHc2FoodExtendedTemperatureProvider(packOutput, lookupProvider, existingFileHelper));
+        gen.addProvider(event.includeServer(), new PamHc2FoodExtendedThirstProvider(packOutput, lookupProvider, existingFileHelper));
+        gen.addProvider(event.includeServer(), new PamHc2TreesThirstProvider(packOutput, lookupProvider, existingFileHelper));
+        gen.addProvider(event.includeServer(), new RusticDelightAddonTemperatureProvider(packOutput, lookupProvider, existingFileHelper));
+        gen.addProvider(event.includeServer(), new RusticDelightAddonThirstProvider(packOutput, lookupProvider, existingFileHelper));
+
+
         if (ModList.get().isLoaded("curios"))
         {
             gen.addProvider(event.includeServer(), new CuriosProvider(packOutput, existingFileHelper, lookupProvider));
