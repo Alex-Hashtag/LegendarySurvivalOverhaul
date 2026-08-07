@@ -1,4 +1,5 @@
 legendarysurvivaloverhaul-1.21.1
 2.4.6.2
 ====
-Added back all fixes that were lost from 2.4.4/5
+Fixed water purifier
+Fixed a crash with block temperature check in unloaded chunks
