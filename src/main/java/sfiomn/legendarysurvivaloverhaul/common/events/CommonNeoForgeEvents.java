@@ -425,7 +425,9 @@ public class CommonNeoForgeEvents
                 healthAttachment.addShieldHealth(2);
                 event.setResult(MobEffectEvent.Applicable.Result.DO_NOT_APPLY);
             }
-            if (event.getEffectInstance().getEffect() == MobEffectRegistry.THIRST.get() &&
+            //  getEffect() returns a Holder<MobEffect> since 1.21, so it never equals the raw
+            //  effect instance. Unwrap it before comparing.
+            if (event.getEffectInstance().getEffect().value() == MobEffectRegistry.THIRST.get() &&
                     CuriosUtil.isCurioItemEquipped(player, ItemRegistry.WATER_PURIFIER.get())) {
                 event.setResult(MobEffectEvent.Applicable.Result.DO_NOT_APPLY);
             }

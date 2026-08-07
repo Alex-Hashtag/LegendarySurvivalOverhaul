@@ -2,9 +2,11 @@ package sfiomn.legendarysurvivaloverhaul.api.data.json;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.component.CustomData;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
 
@@ -47,19 +49,39 @@ public class JsonThirstConsumable
         return this.properties.isEmpty();
     }
 
+    //  1.21 moved the potion type out of item NBT and into the POTION_CONTENTS data component.
+    //  Re-expose it under the legacy "Potion" key so the thirst data files keep matching.
+    private static CompoundTag buildLookupTag(ItemStack itemStack)
+    {
+        CustomData custom = itemStack.get(DataComponents.CUSTOM_DATA);
+        CompoundTag tag = custom != null ? custom.copyTag() : new CompoundTag();
+
+        if (!tag.contains("Potion"))
+        {
+            PotionContents potionContents = itemStack.get(DataComponents.POTION_CONTENTS);
+            if (potionContents != null)
+            {
+                tag.putString("Potion", potionContents.potion()
+                        .flatMap(Holder::unwrapKey)
+                        .map(key -> key.location().toString())
+                        .orElse("minecraft:empty"));
+            }
+        }
+
+        return tag;
+    }
+
     public boolean matchesNbt(ItemStack itemStack)
     {
-        boolean hasCustom = itemStack.has(DataComponents.CUSTOM_DATA);
-        if (hasCustom == properties.isEmpty())
+        CompoundTag itemStackTag = buildLookupTag(itemStack);
+        boolean hasData = !itemStackTag.isEmpty();
+
+        //  An entry with no properties only matches items carrying no data, and vice versa.
+        if (hasData == properties.isEmpty())
             return false;
 
-        CustomData custom = itemStack.get(DataComponents.CUSTOM_DATA);
-        CompoundTag itemStackTag = custom != null ? custom.copyTag() : null;
-
-        if (itemStackTag == null && properties.isEmpty())
+        if (!hasData)
             return true;
-
-        assert itemStackTag != null;
 
         for (Map.Entry<String, String> nbtEntry : properties.entrySet())
         {

@@ -21,151 +21,151 @@ import java.util.*;
 
 public class BlockModifier extends ModifierBase
 {
-    private float coldestValue = 0.0f;
-    private float hottestValue = 0.0f;
-    private float hotTotal = 0.0f;
-    private float coldTotal = 0.0f;
+	private float coldestValue = 0.0f;
+	private float hottestValue = 0.0f;
+	private float hotTotal = 0.0f;
+	private float coldTotal = 0.0f;
 
-    public BlockModifier()
-    {
-        super();
-    }
+	public BlockModifier()
+	{
+		super();
+	}
 
-    public int tempInfluenceMaximumDist()
-    {
-        return Config.Baked.tempInfluenceMaximumDist - 1;
-    }
+	public int tempInfluenceMaximumDist()
+	{
+		return Config.Baked.tempInfluenceMaximumDist - 1;
+	}
 
-    @Override
-    public float getWorldInfluence(@Nullable Player player, Level level, BlockPos pos)
-    {
-        coldestValue = 0.0f;
-        hottestValue = 0.0f;
+	@Override
+	public float getWorldInfluence(@Nullable Player player, Level level, BlockPos pos)
+	{
+		coldestValue = 0.0f;
+		hottestValue = 0.0f;
 
-        hotTotal = 0.0f;
-        coldTotal = 0.0f;
+		hotTotal = 0.0f;
+		coldTotal = 0.0f;
 
-        doBlocksAndFluidsRoutine(level, pos);
+		doBlocksAndFluidsRoutine(level, pos);
 
-        hotTotal -= hottestValue;
-        coldTotal -= coldestValue;
+		hotTotal -= hottestValue;
+		coldTotal -= coldestValue;
 
-        float hotLogValue = hottestValue * (float) Math.sqrt(easyLog(hotTotal));
-        float coldLogValue = coldestValue * (float) Math.sqrt(easyLog(coldTotal));
+		float hotLogValue = hottestValue * (float) Math.sqrt(easyLog(hotTotal));
+		float coldLogValue = coldestValue * (float) Math.sqrt(easyLog(coldTotal));
 
-        float result = hotLogValue + coldLogValue;
+		float result = hotLogValue + coldLogValue;
 
-        if (result > hottestValue)
-        {
-            // LegendarySurvivalOverhaul.LOGGER.debug("Block temp influence hotter than max : " + Math.min(hottestValue + 2.5f, result));
-            // Hotter than hottestValue, clamp
-            return Math.min(hottestValue + 2.5f, result);
-        } else if (result < coldestValue)
-        {
-            // LegendarySurvivalOverhaul.LOGGER.debug("Block temp influence hotter than max : " + Math.max(coldestValue - 2.5f, result));
-            // Colder than coldestValue, clamp
-            return Math.max(coldestValue - 2.5f, result);
-        } else
-        {
-            // LegendarySurvivalOverhaul.LOGGER.debug("Block temp influence : " + result);
-            // Within bounds, no need to clamp
-            return result;
-        }
-    }
+		if (result > hottestValue)
+		{
+			// LegendarySurvivalOverhaul.LOGGER.debug("Block temp influence hotter than max : " + Math.min(hottestValue + 2.5f, result));
+			// Hotter than hottestValue, clamp
+			return Math.min(hottestValue + 2.5f, result);
+		} else if (result < coldestValue)
+		{
+			// LegendarySurvivalOverhaul.LOGGER.debug("Block temp influence hotter than max : " + Math.max(coldestValue - 2.5f, result));
+			// Colder than coldestValue, clamp
+			return Math.max(coldestValue - 2.5f, result);
+		} else
+		{
+			// LegendarySurvivalOverhaul.LOGGER.debug("Block temp influence : " + result);
+			// Within bounds, no need to clamp
+			return result;
+		}
+	}
 
-    private void doBlocksAndFluidsRoutine(Level level, BlockPos pos)
-    {
-        HashSet<BlockPos> visitedBlockPos = new HashSet<>();
-        ArrayList<SpreadPoint> visitedSpreadPoints = new ArrayList<>();
-        ArrayList<SpreadPoint> spreadPointsToProcess = new ArrayList<>();
-        Map<Pair<Integer, Integer>, Map<Boolean, Integer>> cachedCanSeeSky = new HashMap<>();
+	private void doBlocksAndFluidsRoutine(Level level, BlockPos pos)
+	{
+		HashSet<BlockPos> visitedBlockPos = new HashSet<>();
+		ArrayList<SpreadPoint> visitedSpreadPoints = new ArrayList<>();
+		ArrayDeque<SpreadPoint> spreadPointsToProcess = new ArrayDeque<>();
+		Map<Pair<Integer, Integer>, Map<Boolean, Integer>> cachedCanSeeSky = new HashMap<>();
 
-        SpreadPoint spreadPointFeetPlayer = new SpreadPoint(pos, Direction.DOWN, tempInfluenceMaximumDist(), 0, level);
-        SpreadPoint spreadPointHeadPlayer = new SpreadPoint(pos.above(), Direction.UP, tempInfluenceMaximumDist(), 0, level);
-        spreadPointsToProcess.add(spreadPointFeetPlayer);
-        spreadPointsToProcess.add(spreadPointHeadPlayer);
+		SpreadPoint spreadPointFeetPlayer = new SpreadPoint(pos, Direction.DOWN, tempInfluenceMaximumDist(), 0, level);
+		SpreadPoint spreadPointHeadPlayer = new SpreadPoint(pos.above(), Direction.UP, tempInfluenceMaximumDist(), 0, level);
+		spreadPointsToProcess.add(spreadPointFeetPlayer);
+		spreadPointsToProcess.add(spreadPointHeadPlayer);
 
-        visitedBlockPos.add(spreadPointFeetPlayer.position());
-        visitedBlockPos.add(spreadPointHeadPlayer.position());
-        visitedSpreadPoints.add(spreadPointFeetPlayer);
-        visitedSpreadPoints.add(spreadPointHeadPlayer);
+		visitedBlockPos.add(spreadPointFeetPlayer.position());
+		visitedBlockPos.add(spreadPointHeadPlayer.position());
+		visitedSpreadPoints.add(spreadPointFeetPlayer);
+		visitedSpreadPoints.add(spreadPointHeadPlayer);
 
-        boolean hasCeiling = level.dimensionType().hasCeiling();
+		boolean hasCeiling = level.dimensionType().hasCeiling();
 
-        while (!spreadPointsToProcess.isEmpty())
-        {
-            SpreadPoint spreadPoint = spreadPointsToProcess.remove(0);
-            spreadPoint.setCanSeeSky(!hasCeiling || level.canSeeSky(pos));
-            Direction oppositeDirection = spreadPoint.originalDirection().getOpposite();
+		while (!spreadPointsToProcess.isEmpty())
+		{
+			SpreadPoint spreadPoint = spreadPointsToProcess.poll();
+			spreadPoint.setCanSeeSky(!hasCeiling || level.canSeeSky(pos));
+			Direction oppositeDirection = spreadPoint.originalDirection().getOpposite();
 
-            for (Direction direction : Direction.values())
-            {
-                //  Avoid spreading to the direction we are coming from
-                if (direction != oppositeDirection)
-                {
-                    if (!spreadPoint.isValidSpreadDirection(direction))
-                        continue;
-                    Vec3i newPosVector = direction.getNormal();
-                    SpreadPoint spreadPoint1 = this.processDirectionTo(spreadPointsToProcess, visitedBlockPos, visitedSpreadPoints, spreadPoint, spreadPoint.position().offset(newPosVector), direction, 1.0f);
+			for (Direction direction : Direction.values())
+			{
+				//  Avoid spreading to the direction we are coming from
+				if (direction != oppositeDirection)
+				{
+					if (!spreadPoint.isValidSpreadDirection(direction))
+						continue;
+					Vec3i newPosVector = direction.getNormal();
+					SpreadPoint spreadPoint1 = this.processDirectionTo(spreadPointsToProcess, visitedBlockPos, visitedSpreadPoints, spreadPoint, spreadPoint.position().offset(newPosVector), direction, 1.0f);
 
-                    if (spreadPoint1 != null)
-                    {
-                        for (Direction direction1 : Direction.values())
-                        {
-                            //  Check plan diagonal blocks
-                            if (direction1.getAxis() != direction.getAxis() && direction1 != oppositeDirection)
-                            {
-                                if (!spreadPoint1.isValidSpreadDirection(direction))
-                                    continue;
-                                newPosVector = newPosVector.relative(direction1, 1);
-                                SpreadPoint spreadPoint2 = this.processDirectionTo(spreadPointsToProcess, visitedBlockPos, visitedSpreadPoints, spreadPoint, spreadPoint.position().offset(newPosVector), direction1, 1.414f);
+					if (spreadPoint1 != null)
+					{
+						for (Direction direction1 : Direction.values())
+						{
+							//  Check plan diagonal blocks
+							if (direction1.getAxis() != direction.getAxis() && direction1 != oppositeDirection)
+							{
+								if (!spreadPoint1.isValidSpreadDirection(direction))
+									continue;
+								newPosVector = newPosVector.relative(direction1, 1);
+								SpreadPoint spreadPoint2 = this.processDirectionTo(spreadPointsToProcess, visitedBlockPos, visitedSpreadPoints, spreadPoint, spreadPoint.position().offset(newPosVector), direction1, 1.414f);
 
-                                if (spreadPoint2 != null)
-                                {
-                                    for (Direction direction2 : Direction.values())
-                                    {
-                                        //  Check 3D diagonal blocks
-                                        if (direction2.getAxis() != direction1.getAxis() && direction2.getAxis() != direction.getAxis() && direction2 != oppositeDirection)
-                                        {
-                                            if (!spreadPoint2.isValidSpreadDirection(direction))
-                                                continue;
-                                            newPosVector = newPosVector.relative(direction2, 1);
-                                            this.processDirectionTo(spreadPointsToProcess, visitedBlockPos, visitedSpreadPoints, spreadPoint, spreadPoint.position().offset(newPosVector), direction2, 1.732f);
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
+								if (spreadPoint2 != null)
+								{
+									for (Direction direction2 : Direction.values())
+									{
+										//  Check 3D diagonal blocks
+										if (direction2.getAxis() != direction1.getAxis() && direction2.getAxis() != direction.getAxis() && direction2 != oppositeDirection)
+										{
+											if (!spreadPoint2.isValidSpreadDirection(direction))
+												continue;
+											newPosVector = newPosVector.relative(direction2, 1);
+											this.processDirectionTo(spreadPointsToProcess, visitedBlockPos, visitedSpreadPoints, spreadPoint, spreadPoint.position().offset(newPosVector), direction2, 1.732f);
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
 
-        Map<ResourceLocation, List<JsonTemperatureBlock>> cachedTemperatureBlocks = new HashMap<>();
+		Map<ResourceLocation, List<JsonTemperatureBlock>> cachedTemperatureBlocks = new HashMap<>();
 
-        for (SpreadPoint spreadPoint : visitedSpreadPoints)
-        {
-            processTemp(getTemperatureFromSpreadPoint(level, spreadPoint, cachedTemperatureBlocks));
-        }
-    }
+		for (SpreadPoint spreadPoint : visitedSpreadPoints)
+		{
+			processTemp(getTemperatureFromSpreadPoint(level, spreadPoint, cachedTemperatureBlocks));
+		}
+	}
 
-    private SpreadPoint processDirectionTo(ArrayList<SpreadPoint> spreadPointsToProcess, HashSet<BlockPos> visitedBlockPos, ArrayList<SpreadPoint> visitedSpreadPoints, SpreadPoint parentSpreadPoint, BlockPos newBlockPos, Direction originDirection, float distance)
-    {
-        //  Check that the new spread location isn't an already processed location
-        if (!visitedBlockPos.contains(newBlockPos))
-        {
+	private SpreadPoint processDirectionTo(ArrayDeque<SpreadPoint> spreadPointsToProcess, HashSet<BlockPos> visitedBlockPos, ArrayList<SpreadPoint> visitedSpreadPoints, SpreadPoint parentSpreadPoint, BlockPos newBlockPos, Direction originDirection, float distance)
+	{
+		//  Check that the new spread location isn't an already processed location
+		if (!visitedBlockPos.contains(newBlockPos))
+		{
 
-            SpreadPoint newSpreadPoint = parentSpreadPoint.spreadTo(newBlockPos, originDirection, distance);
-            visitedBlockPos.add(newSpreadPoint.position());
-            visitedSpreadPoints.add(newSpreadPoint);
+			SpreadPoint newSpreadPoint = parentSpreadPoint.spreadTo(newBlockPos, originDirection, distance);
+			visitedBlockPos.add(newSpreadPoint.position());
+			visitedSpreadPoints.add(newSpreadPoint);
 
-            //  If it is a valid spreadPoint (= not colliding block), store the spreadPoint as to be processed
-            if (newSpreadPoint.isValidSpreadPoint(originDirection))
-            {
-                spreadPointsToProcess.add(newSpreadPoint);
-                return newSpreadPoint;
-            }
-        } /*else {
+			//  If it is a valid spreadPoint (= not colliding block), store the spreadPoint as to be processed
+			if (newSpreadPoint.isValidSpreadPoint(originDirection))
+			{
+				spreadPointsToProcess.add(newSpreadPoint);
+				return newSpreadPoint;
+			}
+		} /*else {
 			double newSpreadCapacity = spreadPoint.newSpreadCapacity(directionVector);
 			if ((newSpreadCapacity - spreadBlockPos.get(newBlockPos).spreadCapacity()) > 0.2) {
 				SpreadPoint newSpreadPoint = spreadPoint.spreadTo(directionVector);
@@ -179,84 +179,89 @@ public class BlockModifier extends ModifierBase
 				}
 			}
 		}*/
-        return null;
-    }
+		return null;
+	}
 
-    private void processTemp(float temp)
-    {
-        if (temp == 0.0f)
-            return;
+	private void processTemp(float temp)
+	{
+		if (temp == 0.0f)
+			return;
 
-        if (temp >= 0.0f)
-        {
-            hotTotal += temp;
-            if (temp > hottestValue)
-            {
-                hottestValue = temp;
-            }
-        } else
-        {
-            coldTotal += temp;
-            if (temp < coldestValue)
-            {
-                coldestValue = temp;
-            }
-        }
-    }
+		if (temp >= 0.0f)
+		{
+			hotTotal += temp;
+			if (temp > hottestValue)
+			{
+				hottestValue = temp;
+			}
+		} else
+		{
+			coldTotal += temp;
+			if (temp < coldestValue)
+			{
+				coldestValue = temp;
+			}
+		}
+	}
 
-    private float easyLog(float f)
-    {
-        if (f >= 0.0f)
-        {
-            return (float) Math.log10(f + 10.0f);
-        } else
-        {
-            return (float) Math.log10(-1.0f * f + 10.0f);
-        }
-    }
+	private float easyLog(float f)
+	{
+		if (f >= 0.0f)
+		{
+			return (float) Math.log10(f + 10.0f);
+		} else
+		{
+			return (float) Math.log10(-1.0f * f + 10.0f);
+		}
+	}
 
-    private float getTemperatureFromSpreadPoint(Level level, SpreadPoint spreadPoint, Map<ResourceLocation, List<JsonTemperatureBlock>> cachedTemperatureBlocks)
-    {
-        BlockState blockState = level.getBlockState(spreadPoint.position());
-        float temperature = 0.0f;
-        ResourceLocation registryName = BuiltInRegistries.BLOCK.getKey(blockState.getBlock());
+	private float getTemperatureFromSpreadPoint(Level level, SpreadPoint spreadPoint, Map<ResourceLocation, List<JsonTemperatureBlock>> cachedTemperatureBlocks)
+	{
+		//  Reuse the state cached on the SpreadPoint. Re-reading it here was a second blocking
+		//  chunk load on the server thread.
+		if (!spreadPoint.isLoaded())
+			return 0.0f;
 
-        if (registryName == null || blockState.isAir())
-        {
-            return 0.0f;
-        }
+		BlockState blockState = spreadPoint.blockState();
+		float temperature = 0.0f;
+		ResourceLocation registryName = BuiltInRegistries.BLOCK.getKey(blockState.getBlock());
 
-        // List of combination of a temperature and a list of properties a block must have in order to generate this temperature
-        List<JsonTemperatureBlock> tempPropertyList;
+		if (registryName == null || blockState.isAir())
+		{
+			return 0.0f;
+		}
 
-        if (cachedTemperatureBlocks.containsKey(registryName))
-        {
-            tempPropertyList = cachedTemperatureBlocks.get(registryName);
-        } else
-        {
-            tempPropertyList = TemperatureDataManager.getBlock(registryName);
-            cachedTemperatureBlocks.put(registryName, tempPropertyList);
-        }
+		// List of combination of a temperature and a list of properties a block must have in order to generate this temperature
+		List<JsonTemperatureBlock> tempPropertyList;
 
-        if (tempPropertyList == null)
-        {
-            return 0.0f;
-        }
+		if (cachedTemperatureBlocks.containsKey(registryName))
+		{
+			tempPropertyList = cachedTemperatureBlocks.get(registryName);
+		} else
+		{
+			tempPropertyList = TemperatureDataManager.getBlock(registryName);
+			cachedTemperatureBlocks.put(registryName, tempPropertyList);
+		}
 
-        for (JsonTemperatureBlock tempInfo : tempPropertyList)
-        {
-            if (tempInfo == null)
-                continue;
+		if (tempPropertyList == null)
+		{
+			return 0.0f;
+		}
 
-            if (tempInfo.matchesState(blockState))
-            {
-                temperature = tempInfo.temperature;
-                break;
-            }
-        }
+		for (JsonTemperatureBlock tempInfo : tempPropertyList)
+		{
+			if (tempInfo == null)
+				continue;
 
-        return temperature == 0.0f ? temperature : temperatureAfterDistanceInfluence(temperature, spreadPoint);
-    }
+			if (tempInfo.matchesState(blockState))
+			{
+				temperature = tempInfo.temperature;
+				break;
+			}
+		}
+
+		return temperature == 0.0f ? temperature : temperatureAfterDistanceInfluence(temperature, spreadPoint);
+	}
 /*
 	private float temperatureAfterDistanceInfluence(float tempIn, SpreadPoint spreadPoint) {
 		float distanceBeforeDecrease = 2.0f;
@@ -279,15 +284,15 @@ public class BlockModifier extends ModifierBase
 		}
 	}*/
 
-    private float temperatureAfterDistanceInfluence(float tempIn, SpreadPoint spreadPoint)
-    {
-        // I use the sqrt(x) graph to convert how much the block temp should be decreased vs the distance to the block
-        // [1] max spread - spread capacity = spread consumed to reach the point
-        //     divided by max spread capacity to know the % of spread capacity consumed
-        float capacityConsumed = MathUtil.round((float) Math.max(tempInfluenceMaximumDist() - spreadPoint.spreadCapacity() - 1.0, 0) / tempInfluenceMaximumDist(), 2);
+	private float temperatureAfterDistanceInfluence(float tempIn, SpreadPoint spreadPoint)
+	{
+		// I use the sqrt(x) graph to convert how much the block temp should be decreased vs the distance to the block
+		// [1] max spread - spread capacity = spread consumed to reach the point
+		//     divided by max spread capacity to know the % of spread capacity consumed
+		float capacityConsumed = MathUtil.round((float) Math.max(tempInfluenceMaximumDist() - spreadPoint.spreadCapacity() - 1.0, 0) / tempInfluenceMaximumDist(), 2);
 
-        // [2] sqrt([1]) = % of temperature the block influence has lost
-        // [3] (1 - [2]) * block temp = block influence based on distance of the player
-        return MathUtil.round((float) Math.sqrt(1 - capacityConsumed) * tempIn, 2);
-    }
+		// [2] sqrt([1]) = % of temperature the block influence has lost
+		// [3] (1 - [2]) * block temp = block influence based on distance of the player
+		return MathUtil.round((float) Math.sqrt(1 - capacityConsumed) * tempIn, 2);
+	}
 }

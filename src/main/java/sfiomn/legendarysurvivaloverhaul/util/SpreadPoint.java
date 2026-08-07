@@ -15,6 +15,7 @@ public class SpreadPoint
     private final double influenceDistance;
     private final Level level;
     private final BlockState blockState;
+    private final boolean loaded;
     private boolean canSeeSky;
     private boolean isWater;
 
@@ -25,7 +26,10 @@ public class SpreadPoint
         this.spreadCapacity = spreadCapacity;
         this.influenceDistance = influenceDistance;
         this.level = level;
-        this.blockState = level.getBlockState(pos);
+        //  Only read the block state if its chunk is already loaded. Level.getBlockState() on an
+        //  unloaded chunk triggers a *blocking* chunk load on the server thread, stalling the tick.
+        this.loaded = !level.isOutsideBuildHeight(pos) && level.hasChunkAt(pos);
+        this.blockState = this.loaded ? level.getBlockState(pos) : Blocks.AIR.defaultBlockState();
         this.canSeeSky = false;
         this.isWater = false;
     }
@@ -38,6 +42,16 @@ public class SpreadPoint
     public BlockPos position()
     {
         return pos;
+    }
+
+    public BlockState blockState()
+    {
+        return blockState;
+    }
+
+    public boolean isLoaded()
+    {
+        return loaded;
     }
 
     public Direction originalDirection()
@@ -58,7 +72,9 @@ public class SpreadPoint
     public boolean isValidSpreadPoint(Direction originDirection)
     {
         //  Check we can spread the temperature influence in the new position meaning either AIR or a block a player can pass through
-        if (spreadCapacity <= 0)
+        //  Treat unloaded terrain as a barrier so the flood fill stops at the loaded boundary
+        //  instead of forcing chunks to load.
+        if (spreadCapacity <= 0 || !loaded)
         {
             return false;
         } else
@@ -77,7 +93,7 @@ public class SpreadPoint
 
     public boolean isValidSpreadDirection(Direction direction)
     {
-        return !blockState.isFaceSturdy(level, pos, direction);
+        return loaded && !blockState.isFaceSturdy(level, pos, direction);
     }
 
     public void setCanSeeSky(boolean canSeeSky)
