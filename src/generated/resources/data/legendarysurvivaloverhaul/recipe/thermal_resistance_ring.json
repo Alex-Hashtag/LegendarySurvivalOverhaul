@@ -12,7 +12,13 @@
       "item": "legendarysurvivaloverhaul:cold_string"
     },
     "t": {
-      "item": "minecraft:potion"
+      "type": "neoforge:components",
+      "components": {
+        "minecraft:potion_contents": {
+          "potion": "legendarysurvivaloverhaul:temperature_immunity"
+        }
+      },
+      "items": "minecraft:potion"
     },
     "w": {
       "item": "legendarysurvivaloverhaul:warm_string"

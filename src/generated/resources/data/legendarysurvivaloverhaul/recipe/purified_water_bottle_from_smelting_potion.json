@@ -4,7 +4,13 @@
   "cookingtime": 200,
   "experience": 1.0,
   "ingredient": {
-    "item": "minecraft:potion"
+    "type": "neoforge:components",
+    "components": {
+      "minecraft:potion_contents": {
+        "potion": "minecraft:water"
+      }
+    },
+    "items": "minecraft:potion"
   },
   "result": {
     "count": 1,

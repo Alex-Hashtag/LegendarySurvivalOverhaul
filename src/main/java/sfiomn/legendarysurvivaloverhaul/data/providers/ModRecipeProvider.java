@@ -1,28 +1,32 @@
 package sfiomn.legendarysurvivaloverhaul.data.providers;
 
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.*;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.alchemy.PotionContents;
+import net.minecraft.world.item.alchemy.Potions;
+import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.common.Tags;
+import net.neoforged.neoforge.common.crafting.DataComponentIngredient;
 import org.jetbrains.annotations.NotNull;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
-import sfiomn.legendarysurvivaloverhaul.api.thirst.HydrationEnum;
 import sfiomn.legendarysurvivaloverhaul.common.recipe.RemoveCoatRecipe;
 import sfiomn.legendarysurvivaloverhaul.data.recipes.PurificationRecipeBuilder;
 import sfiomn.legendarysurvivaloverhaul.data.recipes.SewingRecipeBuilder;
 import sfiomn.legendarysurvivaloverhaul.registry.BlockRegistry;
 import sfiomn.legendarysurvivaloverhaul.registry.ItemRegistry;
+import sfiomn.legendarysurvivaloverhaul.registry.MobEffectRegistry;
 
 import java.util.concurrent.CompletableFuture;
 
-import static sfiomn.legendarysurvivaloverhaul.util.internal.ThirstUtilInternal.HYDRATION_ENUM_TAG;
 
 public class ModRecipeProvider extends RecipeProvider
 {
@@ -90,10 +94,12 @@ public class ModRecipeProvider extends RecipeProvider
                 .save(consumer);
     }
 
-    private static Ingredient partialNbtIngredient(ItemLike item, CompoundTag nbt)
+    //  1.21 removed Forge's PartialNBTIngredient and moved the potion type out of NBT into the
+    //  POTION_CONTENTS data component. strict=false means only that component has to match, so
+    //  unrelated components (custom name, enchantments, ...) are ignored.
+    private static Ingredient potionIngredient(Holder<Potion> potion)
     {
-        // For 1.21.1, we'll use a simple ingredient and handle NBT in the recipe logic
-        return Ingredient.of(item);
+        return DataComponentIngredient.of(false, DataComponents.POTION_CONTENTS, new PotionContents(potion), Items.POTION);
     }
 
     @Override
@@ -338,15 +344,13 @@ public class ModRecipeProvider extends RecipeProvider
                 .unlockedBy("has_heart_fragment", has(ItemRegistry.HEART_FRAGMENT.get()))
                 .save(output);
 
-        CompoundTag nbt = new CompoundTag();
-        nbt.putString("Potion", LegendarySurvivalOverhaul.MOD_ID + ":temperature_immunity");
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ItemRegistry.THERMAL_RESISTANCE_RING.get())
                 .pattern(" wh")
                 .pattern("stw")
                 .pattern("cs ")
                 .define('w', ItemRegistry.WARM_STRING.get())
                 .define('s', ItemRegistry.COLD_STRING.get())
-                .define('t', partialNbtIngredient(Items.POTION, nbt))
+                .define('t', potionIngredient(MobEffectRegistry.TEMPERATURE_IMMUNITY_POTION))
                 .define('h', ItemRegistry.HEAT_RESISTANCE_RING.get())
                 .define('c', ItemRegistry.COLD_RESISTANCE_RING.get())
                 .unlockedBy("has_heat_resistance_ring", has(ItemRegistry.HEAT_RESISTANCE_RING.get()))
@@ -451,17 +455,15 @@ public class ModRecipeProvider extends RecipeProvider
                 .unlockedBy(getHasName(ItemRegistry.HEALING_HERBS.get()), has(ItemRegistry.HEALING_HERBS.get()))
                 .save(output);
 
-        nbt = new CompoundTag();
-        nbt.putString("Potion", "minecraft:water");
-        smelting(output, partialNbtIngredient(Items.POTION, nbt), ItemRegistry.PURIFIED_WATER_BOTTLE.get(), 1.0f, 200, "purified_water_bottle");
-        blasting(output, partialNbtIngredient(Items.POTION, nbt), ItemRegistry.PURIFIED_WATER_BOTTLE.get(), 1.0f, 60, "purified_water_bottle");
+        smelting(output, potionIngredient(Potions.WATER), ItemRegistry.PURIFIED_WATER_BOTTLE.get(), 1.0f, 200, "purified_water_bottle");
+        blasting(output, potionIngredient(Potions.WATER), ItemRegistry.PURIFIED_WATER_BOTTLE.get(), 1.0f, 60, "purified_water_bottle");
 
-        nbt = new CompoundTag();
-        nbt.putString(HYDRATION_ENUM_TAG, HydrationEnum.NORMAL.getName());
-        purification_smelting(output, partialNbtIngredient(ItemRegistry.CANTEEN.get(), nbt), ItemRegistry.CANTEEN.get(), 1.0f, 240, "purified_canteen");
-        purification_smelting(output, partialNbtIngredient(ItemRegistry.LARGE_CANTEEN.get(), nbt), ItemRegistry.LARGE_CANTEEN.get(), 1.0f, 240, "purified_large_canteen");
-        purification_blasting(output, partialNbtIngredient(ItemRegistry.CANTEEN.get(), nbt), ItemRegistry.CANTEEN.get(), 1.0f, 80, "purified_canteen");
-        purification_blasting(output, partialNbtIngredient(ItemRegistry.LARGE_CANTEEN.get(), nbt), ItemRegistry.LARGE_CANTEEN.get(), 1.0f, 80, "purified_large_canteen");
+        //  PurificationSmeltingRecipe/BlastingRecipe.matches() already requires a CanteenItem holding
+        //  water, so the ingredient only needs to pin the item type.
+        purification_smelting(output, Ingredient.of(ItemRegistry.CANTEEN.get()), ItemRegistry.CANTEEN.get(), 1.0f, 240, "purified_canteen");
+        purification_smelting(output, Ingredient.of(ItemRegistry.LARGE_CANTEEN.get()), ItemRegistry.LARGE_CANTEEN.get(), 1.0f, 240, "purified_large_canteen");
+        purification_blasting(output, Ingredient.of(ItemRegistry.CANTEEN.get()), ItemRegistry.CANTEEN.get(), 1.0f, 80, "purified_canteen");
+        purification_blasting(output, Ingredient.of(ItemRegistry.LARGE_CANTEEN.get()), ItemRegistry.LARGE_CANTEEN.get(), 1.0f, 80, "purified_large_canteen");
 
         sewing(output, Ingredient.of(Items.STRING), Ingredient.of(ItemRegistry.ICE_FERN.get()), new ItemStack(ItemRegistry.COLD_STRING.get()), "cold_string");
         sewing(output, Ingredient.of(Items.STRING), Ingredient.of(ItemRegistry.SUN_FERN.get()), new ItemStack(ItemRegistry.WARM_STRING.get()), "warm_string");
