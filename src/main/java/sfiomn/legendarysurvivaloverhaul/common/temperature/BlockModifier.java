@@ -34,24 +34,24 @@ public class BlockModifier extends ModifierBase
 	public int tempInfluenceMaximumDist() {
 		return Config.Baked.tempInfluenceMaximumDist - 1;
 	}
-	
+
 	@Override
 	public float getWorldInfluence(@Nullable Player player, Level level, BlockPos pos)
 	{
 		coldestValue = 0.0f;
 		hottestValue = 0.0f;
-		
+
 		hotTotal = 0.0f;
 		coldTotal = 0.0f;
-		
+
 		doBlocksAndFluidsRoutine(level, pos);
-		
+
 		hotTotal -= hottestValue;
 		coldTotal -= coldestValue;
-		
+
 		float hotLogValue = hottestValue * (float)Math.sqrt(easyLog(hotTotal));
 		float coldLogValue = coldestValue * (float)Math.sqrt(easyLog(coldTotal));
-		
+
 		float result = hotLogValue + coldLogValue;
 
 		if(result > hottestValue)
@@ -70,12 +70,12 @@ public class BlockModifier extends ModifierBase
 			return result;
 		}
 	}
-	
+
 	private void doBlocksAndFluidsRoutine(Level level, BlockPos pos)
 	{
 		HashSet<BlockPos> visitedBlockPos = new HashSet<>();
 		ArrayList<SpreadPoint> visitedSpreadPoints = new ArrayList<>();
-		ArrayList<SpreadPoint> spreadPointsToProcess = new ArrayList<>();
+		ArrayDeque<SpreadPoint> spreadPointsToProcess = new ArrayDeque<>();
 
 		SpreadPoint spreadPointFeetPlayer = new SpreadPoint(pos, Direction.DOWN, tempInfluenceMaximumDist(), 0, level);
 		SpreadPoint spreadPointHeadPlayer = new SpreadPoint(pos.above(), Direction.UP, tempInfluenceMaximumDist(), 0, level);
@@ -90,7 +90,7 @@ public class BlockModifier extends ModifierBase
 		boolean hasCeiling = level.dimensionType().hasCeiling();
 
 		while (!spreadPointsToProcess.isEmpty()) {
-			SpreadPoint spreadPoint = spreadPointsToProcess.remove(0);
+			SpreadPoint spreadPoint = spreadPointsToProcess.poll();
 			spreadPoint.setCanSeeSky(!hasCeiling || level.canSeeSky(pos));
 			Direction oppositeDirection = spreadPoint.originalDirection().getOpposite();
 
@@ -136,7 +136,7 @@ public class BlockModifier extends ModifierBase
 		}
 	}
 
-	private SpreadPoint processDirectionTo(ArrayList<SpreadPoint> spreadPointsToProcess, HashSet<BlockPos> visitedBlockPos, ArrayList<SpreadPoint> visitedSpreadPoints, SpreadPoint parentSpreadPoint, BlockPos newBlockPos, Direction originDirection, float distance) {
+	private SpreadPoint processDirectionTo(ArrayDeque<SpreadPoint> spreadPointsToProcess, HashSet<BlockPos> visitedBlockPos, ArrayList<SpreadPoint> visitedSpreadPoints, SpreadPoint parentSpreadPoint, BlockPos newBlockPos, Direction originDirection, float distance) {
 		//  Check that the new spread location isn't an already processed location
 		if (!visitedBlockPos.contains(newBlockPos)) {
 
@@ -165,12 +165,12 @@ public class BlockModifier extends ModifierBase
 		}*/
 		return null;
 	}
-	
+
 	private void processTemp(float temp)
 	{
 		if (temp == 0.0f)
-				return;
-		
+			return;
+
 		if (temp >= 0.0f)
 		{
 			hotTotal += temp;
@@ -188,7 +188,7 @@ public class BlockModifier extends ModifierBase
 			}
 		}
 	}
-	
+
 	private float easyLog(float f)
 	{
 		if(f >= 0.0f)
@@ -202,7 +202,12 @@ public class BlockModifier extends ModifierBase
 	}
 
 	private float getTemperatureFromSpreadPoint(Level level, SpreadPoint spreadPoint, Map<ResourceLocation, List<JsonTemperatureBlock>> cachedTemperatureBlocks) {
-		BlockState blockState = level.getBlockState(spreadPoint.position());
+		//  Reuse the state cached on the SpreadPoint. Re-reading it here was a second blocking
+		//  chunk load on the server thread.
+		if (!spreadPoint.isLoaded())
+			return 0.0f;
+
+		BlockState blockState = spreadPoint.blockState();
 		float temperature = 0.0f;
 		ResourceLocation registryName = ForgeRegistries.BLOCKS.getKey(blockState.getBlock());
 
