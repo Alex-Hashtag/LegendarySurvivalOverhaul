@@ -1,5 +1,5 @@
 legendarysurvivaloverhaul-1.21.1
-2.4.6.2
+2.4.7.2
 ====
-Fixed water purifier
-Fixed a crash with block temperature check in unloaded chunks
+Boosted plant worldgen
+Fixed recipes with uncraftable bottles
