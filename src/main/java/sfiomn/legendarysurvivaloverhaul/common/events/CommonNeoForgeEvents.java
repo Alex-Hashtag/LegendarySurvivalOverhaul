@@ -302,12 +302,12 @@ public class CommonNeoForgeEvents
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onEntityHurt(LivingIncomingDamageEvent event) {
         if (!event.getSource().is(DamageTypes.FALL) &&
-                !event.getSource().is(DamageTypes.STARVE) &&
-                !event.getSource().is(DamageTypes.FREEZE) &&
-                !event.getSource().is(DamageTypes.DROWN) &&
-                !event.getSource().is(ModDamageTypes.DEHYDRATION) &&
-                !event.getSource().is(ModDamageTypes.HYPOTHERMIA) &&
-                !event.getSource().is(ModDamageTypes.HYPERTHERMIA) && event.getEntity().hasEffect(MobEffectRegistry.VULNERABILITY)) {
+            !event.getSource().is(DamageTypes.STARVE) &&
+            !event.getSource().is(DamageTypes.FREEZE) &&
+            !event.getSource().is(DamageTypes.DROWN) &&
+            !event.getSource().is(ModDamageTypes.DEHYDRATION) &&
+            !event.getSource().is(ModDamageTypes.HYPOTHERMIA) &&
+            !event.getSource().is(ModDamageTypes.HYPERTHERMIA) && event.getEntity().hasEffect(MobEffectRegistry.VULNERABILITY)) {
 
             event.setAmount(event.getAmount() * (1 + 0.2f * Objects.requireNonNull(event.getEntity().getEffect(MobEffectRegistry.VULNERABILITY)).getAmplifier() + 1));
 
@@ -326,7 +326,7 @@ public class CommonNeoForgeEvents
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public static void onEntityHurtDamage(LivingDamageEvent.Pre event) {
+    public static void onEntityHurtDamage(LivingIncomingDamageEvent event) {
         Player player;
         if (event.getEntity() instanceof Player)
             player = (Player) event.getEntity();
@@ -341,14 +341,14 @@ public class CommonNeoForgeEvents
         }
 
         // Skip if damage was fully negated
-        if (event.getNewDamage() <= 0)
+        if (event.getAmount() <= 0)
             return;
 
         if (shouldApplyHealthOverhaul(player))
-            event.setNewDamage(HealthUtil.hurtPlayer(player, event.getNewDamage()));
+            event.setAmount(HealthUtil.hurtPlayer(player, event.getAmount()));
 
         if (shouldApplyLocalizedBodyDamage(player)) {
-            float bodyPartDamageValue = event.getNewDamage() * (float) Config.Baked.bodyDamageMultiplier;
+            float bodyPartDamageValue = event.getAmount() * (float) Config.Baked.bodyDamageMultiplier;
             DamageSource source = event.getSource();
 
             JsonBodyPartsDamageSource damageSourceBodyParts = BodyDamageDataManager.getBodyParts(source.getMsgId());
@@ -386,7 +386,7 @@ public class CommonNeoForgeEvents
                     && hitBodyParts.contains(BodyPartEnum.HEAD)
                     && Config.Baked.headCriticalShotMultiplier > 1
                     && player.getItemBySlot(EquipmentSlot.HEAD).isEmpty()) {
-                event.setNewDamage(event.getNewDamage() * (float) Config.Baked.headCriticalShotMultiplier);
+                event.setAmount(event.getAmount() * (float) Config.Baked.headCriticalShotMultiplier);
                 player.level().playLocalSound(player.blockPosition(), SoundRegistry.HEADSHOT.get(), SoundSource.HOSTILE, 1.0F, 1.0F, false);
             }
         }
@@ -425,9 +425,7 @@ public class CommonNeoForgeEvents
                 healthAttachment.addShieldHealth(2);
                 event.setResult(MobEffectEvent.Applicable.Result.DO_NOT_APPLY);
             }
-            //  getEffect() returns a Holder<MobEffect> since 1.21, so it never equals the raw
-            //  effect instance. Unwrap it before comparing.
-            if (event.getEffectInstance().getEffect().value() == MobEffectRegistry.THIRST.get() &&
+            if (event.getEffectInstance().getEffect() == MobEffectRegistry.THIRST.get() &&
                     CuriosUtil.isCurioItemEquipped(player, ItemRegistry.WATER_PURIFIER.get())) {
                 event.setResult(MobEffectEvent.Applicable.Result.DO_NOT_APPLY);
             }
@@ -450,10 +448,10 @@ public class CommonNeoForgeEvents
             var tempCap = AttachmentUtil.getTempAttachment(player);
             tempCap.setTemperatureLevel(sfiomn.legendarysurvivaloverhaul.api.temperature.TemperatureEnum.NORMAL.getValue());
             tempCap.setTargetTemperatureLevel(sfiomn.legendarysurvivaloverhaul.api.temperature.TemperatureEnum.NORMAL.getValue());
-
+            
             if (player instanceof ServerPlayer serverPlayer) {
                 sfiomn.legendarysurvivaloverhaul.network.payloads.UpdateTemperaturesPayload.sendToPlayer(
-                        serverPlayer, tempCap.writeNBT()
+                    serverPlayer, tempCap.writeNBT()
                 );
             }
         }
@@ -469,7 +467,7 @@ public class CommonNeoForgeEvents
 
             if (player instanceof ServerPlayer serverPlayer) {
                 sfiomn.legendarysurvivaloverhaul.network.payloads.UpdateBodyDamagePayload.sendToPlayer(
-                        serverPlayer, bodyCap.writeNBT()
+                    serverPlayer, bodyCap.writeNBT()
                 );
             }
         }
@@ -482,7 +480,7 @@ public class CommonNeoForgeEvents
 
             if (player instanceof ServerPlayer serverPlayer) {
                 sfiomn.legendarysurvivaloverhaul.network.payloads.UpdateThirstPayload.sendToPlayer(
-                        serverPlayer, thirstCap.writeNBT()
+                    serverPlayer, thirstCap.writeNBT()
                 );
             }
         }
@@ -507,31 +505,31 @@ public class CommonNeoForgeEvents
             if (Config.Baked.temperatureEnabled) {
                 var tempCap = AttachmentUtil.getTempAttachment(serverPlayer);
                 sfiomn.legendarysurvivaloverhaul.network.payloads.UpdateTemperaturesPayload.sendToPlayer(
-                        serverPlayer, tempCap.writeNBT()
+                    serverPlayer, tempCap.writeNBT()
                 );
             }
             if (Config.Baked.thirstEnabled) {
                 var thirstCap = AttachmentUtil.getThirstAttachment(serverPlayer);
                 sfiomn.legendarysurvivaloverhaul.network.payloads.UpdateThirstPayload.sendToPlayer(
-                        serverPlayer, thirstCap.writeNBT()
+                    serverPlayer, thirstCap.writeNBT()
                 );
             }
             if (Config.Baked.wetnessEnabled) {
                 var wetnessCap = AttachmentUtil.getWetnessAttachment(serverPlayer);
                 sfiomn.legendarysurvivaloverhaul.network.payloads.UpdateWetnessPayload.sendToPlayer(
-                        serverPlayer, wetnessCap.writeNBT()
+                    serverPlayer, wetnessCap.writeNBT()
                 );
             }
             if (Config.Baked.localizedBodyDamageEnabled) {
                 var bodyCap = AttachmentUtil.getBodyDamageAttachment(serverPlayer);
                 sfiomn.legendarysurvivaloverhaul.network.payloads.UpdateBodyDamagePayload.sendToPlayer(
-                        serverPlayer, bodyCap.writeNBT()
+                    serverPlayer, bodyCap.writeNBT()
                 );
             }
             if (Config.Baked.healthOverhaulEnabled) {
                 var healthCap = AttachmentUtil.getHealthAttachment(serverPlayer);
                 sfiomn.legendarysurvivaloverhaul.network.payloads.UpdateHeartsPayload.sendToPlayer(
-                        serverPlayer, healthCap.writeNBT()
+                    serverPlayer, healthCap.writeNBT()
                 );
             }
         }
@@ -550,7 +548,7 @@ public class CommonNeoForgeEvents
     @SubscribeEvent
     public static void onDataPackSyncEvent(OnDatapackSyncEvent event) {
         final ServerPlayer player = event.getPlayer();
-
+        
         ThirstBlockListener.sendDataToClient(player);
         ThirstConsumableListener.sendDataToClient(player);
 
@@ -583,7 +581,7 @@ public class CommonNeoForgeEvents
             tempCap.tickUpdate(player, level, isStart);
             if (tempCap.isDirty()) {
                 sfiomn.legendarysurvivaloverhaul.network.payloads.UpdateTemperaturesPayload.sendToPlayer(
-                        serverPlayer, tempCap.writeNBT()
+                    serverPlayer, tempCap.writeNBT()
                 );
                 tempCap.setClean();
             }
@@ -595,7 +593,7 @@ public class CommonNeoForgeEvents
             thirstCap.tickUpdate(player, level, isStart);
             if (thirstCap.isDirty()) {
                 sfiomn.legendarysurvivaloverhaul.network.payloads.UpdateThirstPayload.sendToPlayer(
-                        serverPlayer, thirstCap.writeNBT()
+                    serverPlayer, thirstCap.writeNBT()
                 );
                 thirstCap.setClean();
             }
@@ -607,7 +605,7 @@ public class CommonNeoForgeEvents
             wetnessCap.tickUpdate(player, level, isStart);
             if (wetnessCap.isDirty()) {
                 sfiomn.legendarysurvivaloverhaul.network.payloads.UpdateWetnessPayload.sendToPlayer(
-                        serverPlayer, wetnessCap.writeNBT()
+                    serverPlayer, wetnessCap.writeNBT()
                 );
                 wetnessCap.setClean();
             }
@@ -624,7 +622,7 @@ public class CommonNeoForgeEvents
             bodyCap.tickUpdate(player, level, isStart);
             if (bodyCap.isDirty()) {
                 sfiomn.legendarysurvivaloverhaul.network.payloads.UpdateBodyDamagePayload.sendToPlayer(
-                        serverPlayer, bodyCap.writeNBT()
+                    serverPlayer, bodyCap.writeNBT()
                 );
                 bodyCap.setClean();
             }
@@ -635,7 +633,7 @@ public class CommonNeoForgeEvents
             var healthCap = AttachmentUtil.getHealthAttachment(player);
             if (healthCap.isDirty()) {
                 sfiomn.legendarysurvivaloverhaul.network.payloads.UpdateHeartsPayload.sendToPlayer(
-                        serverPlayer, healthCap.writeNBT()
+                    serverPlayer, healthCap.writeNBT()
                 );
                 healthCap.setClean();
             }
