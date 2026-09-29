@@ -285,13 +285,7 @@ public class LegendarySurvivalOverhaul
 
 	private void onModConfigLoadEvent(ModConfigEvent.Loading event)
 	{
-		final ModConfig config = event.getConfig();
-
-		if (config.getSpec() == Config.CLIENT_SPEC)
-			Config.Baked.bakeClient();
-
-		if (config.getSpec() == Config.COMMON_SPEC)
-			Config.Baked.bakeCommon();
+		Config.bake(event.getConfig().getSpec());
 	}
 
 	private void onModConfigReloadEvent(ModConfigEvent.Reloading event)
