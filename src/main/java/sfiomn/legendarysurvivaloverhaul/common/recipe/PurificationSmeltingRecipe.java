@@ -28,8 +28,9 @@ public class PurificationSmeltingRecipe extends SmeltingRecipe
     public boolean matches(SingleRecipeInput input, Level level)
     {
         ItemStack inputStack = input.item();
-        // Check if item type matches (ignoring NBT/enchantments) and has water
-        return inputStack.getItem() instanceof CanteenItem && ThirstUtil.getCapacityTag(inputStack) > 0;
+        return super.matches(input, level)
+                && inputStack.getItem() instanceof CanteenItem
+                && ThirstUtil.getCapacityTag(inputStack) > 0;
     }
 
     @Override
