@@ -36,6 +36,7 @@ public class PurificationSmeltingRecipe extends SmeltingRecipe
     @Override
     public ItemStack assemble(SingleRecipeInput input, @NotNull HolderLookup.Provider provider)
     {
+        // Check if item type matches (ignoring NBT/enchantments) and has water
         ItemStack inputStack = input.item();
         int hydrationCapacity = ThirstUtil.getCapacityTag(inputStack);
         
