@@ -28,8 +28,9 @@ public class PurificationBlastingRecipe extends BlastingRecipe
     public boolean matches(SingleRecipeInput input, @NotNull Level level)
     {
         ItemStack inputStack = input.item();
-        // Check if item type matches (ignoring NBT/enchantments) and has water
-        return inputStack.getItem() instanceof CanteenItem && ThirstUtil.getCapacityTag(inputStack) > 0;
+        return super.matches(input, level)
+                && inputStack.getItem() instanceof CanteenItem
+                && ThirstUtil.getCapacityTag(inputStack) > 0;
     }
 
     @Override
