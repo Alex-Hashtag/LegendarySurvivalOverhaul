@@ -86,7 +86,7 @@ public class SunFernBlock extends CropBlock implements IPlantable {
         }
 
         BlockState newState = level.getBlockState(pos);
-        if (this.getAge(newState) == MAX_AGE) {
+        if (newState.is(this) && this.getAge(newState) == MAX_AGE) {
             if (random.nextFloat() < Config.Baked.goldFernChance) {
                 level.setBlock(pos, BlockRegistry.SUN_FERN_GOLD.get().defaultBlockState(), 2);
             }
