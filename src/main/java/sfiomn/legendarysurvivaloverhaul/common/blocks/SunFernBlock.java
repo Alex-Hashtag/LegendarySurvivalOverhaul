@@ -92,7 +92,7 @@ public class SunFernBlock extends CropBlock
         }
 
         BlockState newState = level.getBlockState(pos);
-        if (this.getAge(newState) == MAX_AGE)
+        if (newState.is(this) && this.getAge(newState) == MAX_AGE)
         {
             if (random.nextFloat() < Config.Baked.goldFernChance)
             {
