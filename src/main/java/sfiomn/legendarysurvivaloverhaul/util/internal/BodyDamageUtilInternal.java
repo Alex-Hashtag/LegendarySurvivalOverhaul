@@ -1,32 +1,31 @@
 package sfiomn.legendarysurvivaloverhaul.util.internal;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.util.Mth;
-import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import org.apache.commons.lang3.tuple.Pair;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
-import sfiomn.legendarysurvivaloverhaul.api.bodydamage.*;
+import sfiomn.legendarysurvivaloverhaul.api.bodydamage.BodyPartEnum;
+import sfiomn.legendarysurvivaloverhaul.api.bodydamage.IBodyDamageUtil;
+import sfiomn.legendarysurvivaloverhaul.api.bodydamage.LimbPenalty;
 import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonHealingConsumable;
 import sfiomn.legendarysurvivaloverhaul.api.data.manager.BodyDamageDataManager;
 import sfiomn.legendarysurvivaloverhaul.api.health.HealthUtil;
 import sfiomn.legendarysurvivaloverhaul.client.ClientHooks;
+import sfiomn.legendarysurvivaloverhaul.common.attachments.bodydamage.BodyDamageAttachment;
+import sfiomn.legendarysurvivaloverhaul.common.integration.supplementaries.SupplementariesUtil;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
 import sfiomn.legendarysurvivaloverhaul.registry.AttributeRegistry;
-import sfiomn.legendarysurvivaloverhaul.registry.MobEffectRegistry;
 import sfiomn.legendarysurvivaloverhaul.registry.SoundRegistry;
-import sfiomn.legendarysurvivaloverhaul.util.AttributeBuilder;
 import sfiomn.legendarysurvivaloverhaul.util.AttachmentUtil;
+import sfiomn.legendarysurvivaloverhaul.util.AttributeBuilder;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class BodyDamageUtilInternal implements IBodyDamageUtil
 {
@@ -40,9 +39,6 @@ public class BodyDamageUtilInternal implements IBodyDamageUtil
     public static final AttributeBuilder FEET_RESISTANCE = new AttributeBuilder(AttributeRegistry.FEET_RESISTANCE, ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "feet_resistance"));
     public static final Map<BodyPartEnum, AttributeBuilder> bodyPartResistanceAttribute = new HashMap<>();
     public static final Map<EquipmentSlot, UUID> equipmentSlotBodyResistanceUuid = new HashMap<>();
-    private static final List<Holder<MobEffect>> firstAidSuppliesBoostingEffects = new ArrayList<>();
-    private static final List<Holder<MobEffect>> passiveLimbRegenerationEffects = new ArrayList<>();
-    private static final Map<MalusBodyPartEnum, Map<Float, Pair<MobEffect, Integer>>> bodyPartMalusEffects = new HashMap<>();
 
     static
     {
@@ -67,282 +63,285 @@ public class BodyDamageUtilInternal implements IBodyDamageUtil
     {
     }
 
-    public static void initMalusConfig()
-    {
-        for (MalusBodyPartEnum malus : MalusBodyPartEnum.values())
-        {
-            Map<Float, Pair<MobEffect, Integer>> malusEffects = new HashMap<>();
-            if (malus.effects.size() != malus.amplifiers.size() || malus.effects.size() != malus.thresholds.size())
-            {
-                LegendarySurvivalOverhaul.LOGGER.debug("{} effects, amplifiers and thresholds elements number doesn't match. The last elements won't be used.", malus.name());
-            }
-
-            for (int i = 0; i < malus.effects.size(); i++)
-            {
-                MobEffect malusEffect = BuiltInRegistries.MOB_EFFECT
-                        .getOptional(ResourceLocation.parse(malus.effects.get(i)))
-                        .orElse(null);
-                int malusAmplifier;
-                float malusThreshold;
-                if (malusEffect == null)
-                {
-                    LegendarySurvivalOverhaul.LOGGER.debug("Unknown effect {} for {}", malus.effects.get(i), malus.name());
-                    continue;
-                }
-                try
-                {
-                    malusAmplifier = Math.abs(malus.amplifiers.get(i));
-                } catch (IndexOutOfBoundsException e)
-                {
-                    LegendarySurvivalOverhaul.LOGGER.debug("No amplifier defined for effect {} in {}", malus.effects.get(i), malus.name());
-                    continue;
-                }
-                try
-                {
-                    malusThreshold = (float) Mth.clamp(malus.thresholds.get(i), 0.0f, 1.0f);
-                } catch (IndexOutOfBoundsException e)
-                {
-                    LegendarySurvivalOverhaul.LOGGER.debug("No threshold defined for effect {} in {}", malus.thresholds.get(i), malus.name());
-                    continue;
-                }
-                malusEffects.put(malusThreshold, Pair.of(malusEffect, malusAmplifier));
-            }
-            bodyPartMalusEffects.put(malus, malusEffects);
-        }
-    }
-
-    public static void initLimbEffects()
-    {
-        for (String effectRegistryName : Config.Baked.firstAidSuppliesBoostedOnEffects)
-        {
-            if (ResourceLocation.tryParse(effectRegistryName) == null)
-                LegendarySurvivalOverhaul.LOGGER.info("First Aid Supplies boosting effect : not valid effect registry name : {}", effectRegistryName);
-
-            MobEffect boostingEffect = BuiltInRegistries.MOB_EFFECT
-                    .getOptional(ResourceLocation.parse(effectRegistryName))
-                    .orElse(null);
-            if (boostingEffect == null)
-            {
-                LegendarySurvivalOverhaul.LOGGER.info("Unknown effect {}", effectRegistryName);
-                continue;
-            }
-            firstAidSuppliesBoostingEffects.add(Holder.direct(boostingEffect));
-        }
-
-        for (String effectRegistryName : Config.Baked.passiveLimbRegenerationEffects)
-        {
-            if (ResourceLocation.tryParse(effectRegistryName) == null)
-                LegendarySurvivalOverhaul.LOGGER.info("Limb Regeneration Effect : not valid effect registry name : {}", effectRegistryName);
-
-            MobEffect regenerationEffect = BuiltInRegistries.MOB_EFFECT
-                    .getOptional(ResourceLocation.parse(effectRegistryName))
-                    .orElse(null);
-            if (regenerationEffect == null)
-            {
-                LegendarySurvivalOverhaul.LOGGER.info("Unknown effect {}", effectRegistryName);
-                continue;
-            }
-            passiveLimbRegenerationEffects.add(Holder.direct(regenerationEffect));
-        }
-    }
-
     @Override
     public void applyConsumableHealing(Player player, ItemStack itemStack, boolean itemAlreadyConsumed)
     {
         ResourceLocation itemRegistryName = BuiltInRegistries.ITEM.getKey(itemStack.getItem());
-        JsonHealingConsumable jsonConsumableHeal = BodyDamageDataManager.getHealingItem(itemRegistryName);
+        JsonHealingConsumable healingConsumable = BodyDamageDataManager.getHealingItem(itemRegistryName);
 
-        if (jsonConsumableHeal == null)
+        if (healingConsumable == null)
             return;
 
-        if (Config.Baked.localizedBodyDamageEnabled && jsonConsumableHeal.healingCharges > 0)
+        if (Config.Baked.localizedBodyDamageEnabled && healingConsumable.isLimbSelection())
         {
-            if (player.level().isClientSide && Minecraft.getInstance().screen == null)
-                ClientHooks.openBodyHealthScreen(player, player.getUsedItemHand(), itemAlreadyConsumed,
-                        jsonConsumableHeal.healingCharges, jsonConsumableHeal.healingValue, jsonConsumableHeal.healingTime);
-        } else
-        {
-            if (Config.Baked.localizedBodyDamageEnabled)
-            {
-                for (BodyPartEnum bodyPart : BodyPartEnum.values())
-                {
-                    BodyDamageUtil.applyHealingTimeBodyPart(player, bodyPart, jsonConsumableHeal.healingValue, jsonConsumableHeal.healingTime);
-                }
-            }
-
-            if (jsonConsumableHeal.recoveryEffectDuration > 0)
-            {
-                player.addEffect(new MobEffectInstance(MobEffectRegistry.RECOVERY, jsonConsumableHeal.recoveryEffectDuration, jsonConsumableHeal.recoveryEffectAmplifier, false, false, true));
-            }
-
-            player.level().playSound(null, player, SoundRegistry.HEAL_BODY_PART.get(), SoundSource.PLAYERS, 1.0f, 1.0f);
-            if (!itemAlreadyConsumed)
-                itemStack.shrink(1);
+            // The player chooses the limbs to heal in the body health screen, the server waits for its choice
+            if (player.level().isClientSide)
+                ClientHooks.openBodyHealthScreen(player, player.getUsedItemHand(), healingConsumable);
+            else
+                AttachmentUtil.getBodyDamageAttachment(player).startHealingSession(itemRegistryName, player.getUsedItemHand(),
+                        healingConsumable.healingCharges, itemAlreadyConsumed);
+            return;
         }
+
+        if (player.level().isClientSide)
+            return;
+
+        if (Config.Baked.localizedBodyDamageEnabled)
+        {
+            BodyDamageAttachment attachment = AttachmentUtil.getBodyDamageAttachment(player);
+            for (BodyPartEnum bodyPart : BodyPartEnum.values())
+                attachment.healLimb(bodyPart, healingConsumable.limbHealing, healingConsumable.healsBrokenLimbs);
+            giveLimbShields(player, healingConsumable.limbShields);
+            attachment.updateBrokenHearts(player);
+        }
+
+        applyRegeneration(player, healingConsumable);
+        player.level().playSound(null, player, SoundRegistry.HEAL_BODY_PART.get(), SoundSource.PLAYERS, 1.0f, 1.0f);
+
+        if (!itemAlreadyConsumed && !player.isCreative())
+            itemStack.shrink(1);
+    }
+
+    private static void applyRegeneration(Player player, JsonHealingConsumable healingConsumable)
+    {
+        if (healingConsumable.regenerationDuration > 0)
+            player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, healingConsumable.regenerationDuration, healingConsumable.regenerationAmplifier));
     }
 
     @Override
-    public MobEffectInstance getPlayerPassiveLimbRegenerationEffect(Player player)
+    public boolean canUseHealingConsumable(Player player, JsonHealingConsumable healingConsumable)
     {
-        MobEffectInstance passiveLimbRegenerationEffect = null;
-        for (Holder<MobEffect> effect : passiveLimbRegenerationEffects)
-        {
-            MobEffectInstance regenerationEffect = player.getEffect(effect);
-            if (regenerationEffect != null)
-            {
-                if (passiveLimbRegenerationEffect == null ||
-                        regenerationEffect.getAmplifier() > passiveLimbRegenerationEffect.getAmplifier())
-                {
-                    passiveLimbRegenerationEffect = regenerationEffect;
-                }
-            }
-        }
-        return passiveLimbRegenerationEffect;
-    }
+        if (healingConsumable.regenerationDuration > 0 && player.getHealth() < player.getMaxHealth())
+            return true;
 
-    @Override
-    public boolean hasPlayerFirstAidSuppliesBoostingEffect(Player player)
-    {
-        for (Holder<MobEffect> effect : firstAidSuppliesBoostingEffects)
+        if (!Config.Baked.localizedBodyDamageEnabled)
+            return false;
+
+        BodyDamageAttachment attachment = AttachmentUtil.getBodyDamageAttachment(player);
+        for (BodyPartEnum bodyPart : BodyPartEnum.values())
         {
-            if (player.hasEffect(effect))
+            if (healingConsumable.limbHealing > 0 && attachment.canHealLimb(bodyPart, healingConsumable.healsBrokenLimbs))
+                return true;
+            if (healingConsumable.limbShields > 0 && !attachment.hasLimbShield(bodyPart))
                 return true;
         }
         return false;
     }
 
     @Override
-    public List<Pair<MobEffect, Integer>> getEffects(MalusBodyPartEnum bodyPart, float healthRatio)
+    public void healBodyPartWithHealingSession(Player player, BodyPartEnum bodyPartEnum)
     {
-        List<Pair<MobEffect, Integer>> effects = new ArrayList<>();
-        if (bodyPart == null)
-            return effects;
+        if (!Config.Baked.localizedBodyDamageEnabled || bodyPartEnum == null || player.level().isClientSide)
+            return;
 
-        for (Map.Entry<Float, Pair<MobEffect, Integer>> effect : bodyPartMalusEffects.get(bodyPart).entrySet())
+        BodyDamageAttachment attachment = AttachmentUtil.getBodyDamageAttachment(player);
+        ResourceLocation sessionItem = attachment.getHealingSessionItem();
+        if (sessionItem == null)
+            return;
+
+        JsonHealingConsumable healingConsumable = BodyDamageDataManager.getHealingItem(sessionItem);
+        if (healingConsumable == null || !healingConsumable.isLimbSelection())
         {
-            if (healthRatio <= effect.getKey())
+            attachment.clearHealingSession();
+            return;
+        }
+
+        if (!attachment.canHealLimb(bodyPartEnum, healingConsumable.healsBrokenLimbs))
+            return;
+
+        // The item is only consumed once the first limb is chosen, so closing the screen doesn't waste it
+        if (!attachment.isHealingSessionItemConsumed())
+        {
+            ItemStack usedItemStack = getItemInHand(player, attachment.getHealingSessionHand());
+            if (!sessionItem.equals(BuiltInRegistries.ITEM.getKey(usedItemStack.getItem())))
             {
-                effects.add(effect.getValue());
+                attachment.clearHealingSession();
+                return;
+            }
+            if (!player.isCreative())
+                usedItemStack.shrink(1);
+            attachment.setHealingSessionItemConsumed();
+            applyRegeneration(player, healingConsumable);
+        }
+
+        attachment.healLimb(bodyPartEnum, healingConsumable.limbHealing, healingConsumable.healsBrokenLimbs);
+        attachment.useHealingSessionCharge();
+        attachment.updateBrokenHearts(player);
+        player.level().playSound(null, player, SoundRegistry.HEAL_BODY_PART.get(), SoundSource.PLAYERS, 1.0f, 1.0f);
+    }
+
+    private static ItemStack getItemInHand(Player player, InteractionHand hand)
+    {
+        if (hand == null)
+            return ItemStack.EMPTY;
+
+        ItemStack itemStack = player.getItemInHand(hand);
+        if (LegendarySurvivalOverhaul.supplementariesLoaded)
+        {
+            ItemStack itemStackInBasket = SupplementariesUtil.getSelectedItemInLunchBasket(itemStack);
+            if (itemStackInBasket != ItemStack.EMPTY)
+                return itemStackInBasket;
+        }
+        return itemStack;
+    }
+
+    @Override
+    public int healBodyPart(Player player, BodyPartEnum bodyPartEnum, int limbHearts, boolean canHealBroken)
+    {
+        if (!Config.Baked.localizedBodyDamageEnabled || bodyPartEnum == null)
+            return 0;
+
+        BodyDamageAttachment attachment = AttachmentUtil.getBodyDamageAttachment(player);
+        int healed = attachment.healLimb(bodyPartEnum, limbHearts, canHealBroken);
+        if (healed > 0)
+            attachment.updateBrokenHearts(player);
+        return healed;
+    }
+
+    @Override
+    public void giveLimbShields(Player player, int limbShields)
+    {
+        if (!Config.Baked.localizedBodyDamageEnabled || limbShields <= 0)
+            return;
+
+        BodyDamageAttachment attachment = AttachmentUtil.getBodyDamageAttachment(player);
+        for (int i = 0; i < limbShields; i++)
+        {
+            // Limbs without shield, weighted by their damage so the most damaged limbs are more likely protected
+            int totalWeight = 0;
+            Map<BodyPartEnum, Integer> weights = new EnumMap<>(BodyPartEnum.class);
+            for (BodyPartEnum bodyPart : BodyPartEnum.values())
+            {
+                if (attachment.hasLimbShield(bodyPart))
+                    continue;
+                int weight = 1 + attachment.getLimbDamage(bodyPart);
+                weights.put(bodyPart, weight);
+                totalWeight += weight;
+            }
+
+            if (totalWeight == 0)
+                return;
+
+            int roll = player.getRandom().nextInt(totalWeight);
+            for (Map.Entry<BodyPartEnum, Integer> weight : weights.entrySet())
+            {
+                roll -= weight.getValue();
+                if (roll < 0)
+                {
+                    attachment.setLimbShield(weight.getKey(), true);
+                    break;
+                }
             }
         }
-        return effects;
-    }
-
-    @Override
-    public void applyHealingTimeBodyPart(Player player, BodyPartEnum bodyPartEnum, float healingValue, int healingTime)
-    {
-
-        if (!Config.Baked.localizedBodyDamageEnabled || bodyPartEnum == null)
-            return;
-
-        IBodyDamageAttachment capability = AttachmentUtil.getBodyDamageAttachment(player);
-
-        int remainingHealingTicks = capability.getRemainingHealingTicks(bodyPartEnum);
-        float healingPerTicks = capability.getHealingPerTicks(bodyPartEnum);
-
-        float healingValuePerTick = (healingValue + remainingHealingTicks * healingPerTicks) / (float) (healingTime + remainingHealingTicks);
-
-        capability.applyHealingTime(bodyPartEnum, healingTime + remainingHealingTicks, healingValuePerTick);
-    }
-
-    @Override
-    public void healBodyPart(Player player, BodyPartEnum bodyPartEnum, float healingValue)
-    {
-
-        if (!Config.Baked.localizedBodyDamageEnabled)
-            return;
-
-        IBodyDamageAttachment capability = AttachmentUtil.getBodyDamageAttachment(player);
-
-        capability.heal(bodyPartEnum, healingValue);
     }
 
     @Override
     public void hurtBodyPart(Player player, BodyPartEnum bodyPartEnum, float damageValue)
     {
-
-        if (!Config.Baked.localizedBodyDamageEnabled || bodyPartEnum == null)
-            return;
-
-        IBodyDamageAttachment capability = AttachmentUtil.getBodyDamageAttachment(player);
-        double bodyResistance = BODY_RESISTANCE.getAttribute(player).getValue();
-        double limbResistance = bodyPartResistanceAttribute.get(bodyPartEnum).getAttribute(player).getValue();
-
-        damageValue = damageValue * (float) (1 - bodyResistance - limbResistance);
-
-        float remainingDamage = Math.max(0, damageValue - (capability.getBodyPartMaxHealth(bodyPartEnum) - capability.getBodyPartDamage(bodyPartEnum)));
-
-        capability.hurt(bodyPartEnum, damageValue - remainingDamage);
-
-        if (remainingDamage > 0 && !bodyPartEnum.getNeighbours().isEmpty())
-        {
-            remainingDamage /= (float) (1 - bodyResistance - limbResistance);
-            List<BodyPartEnum> damageableBodyParts = bodyPartEnum.getNeighbours().stream().filter(bodyPart -> capability.getBodyPartHealthRatio(bodyPart) > 0).collect(Collectors.toList());
-            if (!damageableBodyParts.isEmpty())
-            {
-                BodyPartEnum bodyPart = DamageDistributionEnum.ONE_OF.getBodyParts(player, damageableBodyParts).get(0);
-                limbResistance = bodyPartResistanceAttribute.get(bodyPart).getAttribute(player).getValue();
-                capability.hurt(bodyPart, remainingDamage * (float) (1 - bodyResistance - limbResistance));
-            }
-        }
+        if (bodyPartEnum != null)
+            hurtBodyParts(player, Collections.singletonList(bodyPartEnum), damageValue);
     }
 
     @Override
-    public void balancedHurtBodyParts(Player player, List<BodyPartEnum> bodyParts, float damageValue)
+    public void hurtBodyParts(Player player, List<BodyPartEnum> bodyParts, float damageValue)
     {
-
-        if (!Config.Baked.localizedBodyDamageEnabled || bodyParts.isEmpty())
+        if (!Config.Baked.localizedBodyDamageEnabled || bodyParts.isEmpty() || damageValue <= 0)
             return;
 
-        Collections.shuffle(bodyParts);
+        float threshold = getLimbDamageThreshold(player);
+        if (threshold <= 0)
+            return;
 
+        BodyDamageAttachment attachment = AttachmentUtil.getBodyDamageAttachment(player);
+        double bodyResistance = BODY_RESISTANCE.getAttribute(player).getValue();
+        Set<BodyPartEnum> immuneBodyParts = EnumSet.noneOf(BodyPartEnum.class);
+        float remainingDamage = damageValue;
+        boolean limbHit = false;
+
+        // Each time the damage reaches the threshold, a limb loses a limb heart (or its shield)
+        while (true)
+        {
+            BodyPartEnum target = chooseHitBodyPart(player, attachment, bodyParts, immuneBodyParts);
+            if (target == null)
+                break;
+
+            double resistance = bodyResistance + bodyPartResistanceAttribute.get(target).getAttribute(player).getValue();
+            if (resistance >= 1)
+            {
+                immuneBodyParts.add(target);
+                continue;
+            }
+
+            float damageNeeded = (float) (threshold / (1 - resistance));
+            if (remainingDamage < damageNeeded)
+                break;
+
+            remainingDamage -= damageNeeded;
+            attachment.hitLimb(target);
+            limbHit = true;
+        }
+
+        if (limbHit)
+            attachment.updateBrokenHearts(player);
+    }
+
+    /**
+     * Choose a random hit body part that can still be hurt. <br>
+     * If all of them are broken, the damage goes to one of their neighbours.
+     */
+    private static BodyPartEnum chooseHitBodyPart(Player player, BodyDamageAttachment attachment, List<BodyPartEnum> bodyParts, Set<BodyPartEnum> immuneBodyParts)
+    {
+        List<BodyPartEnum> hittableBodyParts = new ArrayList<>();
         for (BodyPartEnum bodyPart : bodyParts)
         {
-            hurtBodyPart(player, bodyPart, damageValue / bodyParts.size());
+            if (canBeHit(attachment, bodyPart, immuneBodyParts))
+                hittableBodyParts.add(bodyPart);
         }
+
+        if (hittableBodyParts.isEmpty())
+        {
+            for (BodyPartEnum bodyPart : bodyParts)
+            {
+                for (BodyPartEnum neighbour : bodyPart.getNeighbours())
+                {
+                    if (!hittableBodyParts.contains(neighbour) && canBeHit(attachment, neighbour, immuneBodyParts))
+                        hittableBodyParts.add(neighbour);
+                }
+            }
+        }
+
+        if (hittableBodyParts.isEmpty())
+            return null;
+
+        return hittableBodyParts.get(player.getRandom().nextInt(hittableBodyParts.size()));
+    }
+
+    private static boolean canBeHit(BodyDamageAttachment attachment, BodyPartEnum bodyPart, Set<BodyPartEnum> immuneBodyParts)
+    {
+        return !immuneBodyParts.contains(bodyPart) && (attachment.hasLimbShield(bodyPart) || !attachment.isLimbBroken(bodyPart));
     }
 
     @Override
-    public void randomHurtBodyParts(Player player, List<BodyPartEnum> bodyParts, float damageValue)
+    public float getLimbDamageThreshold(Player player)
     {
-        if (!Config.Baked.localizedBodyDamageEnabled || bodyParts.isEmpty())
-            return;
-        int bodyPartIndex = bodyParts.size() == 1 ? 0 : player.getRandom().nextInt(bodyParts.size() - 1);
-
-        hurtBodyPart(player, bodyParts.get(bodyPartIndex), damageValue);
+        // Broken hearts are removed from the max health first
+        double maxHealth = HealthUtil.getPlayerStableMaxHealth(player) - HealthUtil.getEffectiveBrokenHearts(player) * 2.0;
+        return (float) (Math.max(maxHealth, 0) * Config.Baked.limbDamageThreshold);
     }
 
     @Override
     public float getHealthRatio(Player player, BodyPartEnum bodyPartEnum)
     {
         if (!Config.Baked.localizedBodyDamageEnabled || bodyPartEnum == null)
-            return 0.0f;
+            return 1.0f;
 
-        IBodyDamageAttachment capability = AttachmentUtil.getBodyDamageAttachment(player);
-
-        return capability.getBodyPartHealthRatio(bodyPartEnum);
+        return AttachmentUtil.getBodyDamageAttachment(player).getLimbHealthRatio(bodyPartEnum);
     }
 
     @Override
-    public float getTotalRemainingHealing(Player player, BodyPartEnum bodyPartEnum)
+    public boolean hasLimbPenalty(Player player, LimbPenalty penalty)
     {
-        if (!Config.Baked.localizedBodyDamageEnabled || bodyPartEnum == null)
-            return 0.0f;
-
-        IBodyDamageAttachment capability = AttachmentUtil.getBodyDamageAttachment(player);
-
-        return capability.getRemainingHealingTicks(bodyPartEnum) * capability.getHealingPerTicks(bodyPartEnum);
-    }
-
-    @Override
-    public float getMaxHealth(Player player, BodyPartEnum bodyPartEnum)
-    {
-        if (!Config.Baked.localizedBodyDamageEnabled || bodyPartEnum == null)
-            return 0.0f;
-
-        IBodyDamageAttachment capability = AttachmentUtil.getBodyDamageAttachment(player);
-
-        return capability.getBodyPartMaxHealth(bodyPartEnum);
+        return Config.Baked.localizedBodyDamageEnabled && AttachmentUtil.getBodyDamageAttachment(player).hasLimbPenalty(penalty);
     }
 
     @Override
@@ -350,11 +349,7 @@ public class BodyDamageUtilInternal implements IBodyDamageUtil
     {
         int expectedBrokenHearts = 0;
         if (Config.Baked.localizedBodyDamageEnabled && Config.Baked.healthOverhaulEnabled)
-        {
-            IBodyDamageAttachment capability = AttachmentUtil.getBodyDamageAttachment(player);
-
-            expectedBrokenHearts = capability.getExpectedBrokenHearts();
-        }
+            expectedBrokenHearts = AttachmentUtil.getBodyDamageAttachment(player).getExpectedBrokenHearts();
 
         HealthUtil.updateBrokenHearts(player, BROKEN_HEART_ATTRIBUTE_UUID, expectedBrokenHearts);
     }

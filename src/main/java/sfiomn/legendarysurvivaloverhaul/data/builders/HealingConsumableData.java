@@ -6,10 +6,12 @@ import sfiomn.legendarysurvivaloverhaul.api.data.builder.IHealingConsumableData;
 public class HealingConsumableData implements IHealingConsumableData
 {
     private int healingCharges;
-    private float healingValue;
+    private int limbHealing = 1;
     private int healingTime;
-    private int recoveryDuration;
-    private int recoveryAmplifier;
+    private boolean healsBrokenLimbs;
+    private int limbShields;
+    private int regenerationDuration;
+    private int regenerationAmplifier;
 
     public HealingConsumableData()
     {
@@ -23,30 +25,38 @@ public class HealingConsumableData implements IHealingConsumableData
     }
 
     @Override
-    public IHealingConsumableData healingValue(float healingValue)
+    public IHealingConsumableData limbHealing(int limbHealing)
     {
-        this.healingValue = healingValue;
+        this.limbHealing = limbHealing;
         return this;
     }
 
     @Override
-    public IHealingConsumableData duration(int durationInTick)
+    public IHealingConsumableData healingTime(int healingTimeInTick)
     {
-        this.healingTime = durationInTick;
+        this.healingTime = healingTimeInTick;
         return this;
     }
 
     @Override
-    public IHealingConsumableData recoveryEffectDuration(int durationInTick)
+    public IHealingConsumableData healsBrokenLimbs()
     {
-        this.recoveryDuration = durationInTick;
+        this.healsBrokenLimbs = true;
         return this;
     }
 
     @Override
-    public IHealingConsumableData recoveryEffectAmplifier(int amplifier)
+    public IHealingConsumableData limbShields(int limbShields)
     {
-        this.recoveryAmplifier = amplifier;
+        this.limbShields = limbShields;
+        return this;
+    }
+
+    @Override
+    public IHealingConsumableData regeneration(int durationInTick, int amplifier)
+    {
+        this.regenerationDuration = durationInTick;
+        this.regenerationAmplifier = amplifier;
         return this;
     }
 
@@ -55,10 +65,17 @@ public class HealingConsumableData implements IHealingConsumableData
     {
         JsonObject json = new JsonObject();
         json.addProperty("healing_charges", this.healingCharges);
-        json.addProperty("healing_value", this.healingValue);
-        json.addProperty("healing_time", this.healingTime);
-        json.addProperty("recovery_effect_duration", this.recoveryDuration);
-        json.addProperty("recovery_effect_amplifier", this.recoveryAmplifier);
+        if (this.healingTime > 0)
+            json.addProperty("healing_time", this.healingTime);
+        json.addProperty("limb_healing", this.limbHealing);
+        json.addProperty("heals_broken_limbs", this.healsBrokenLimbs);
+        if (this.limbShields > 0)
+            json.addProperty("limb_shields", this.limbShields);
+        if (this.regenerationDuration > 0)
+        {
+            json.addProperty("regeneration_duration", this.regenerationDuration);
+            json.addProperty("regeneration_amplifier", this.regenerationAmplifier);
+        }
         return json;
     }
 }

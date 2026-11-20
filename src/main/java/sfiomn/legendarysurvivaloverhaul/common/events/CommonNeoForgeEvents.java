@@ -348,7 +348,6 @@ public class CommonNeoForgeEvents
             event.setAmount(HealthUtil.hurtPlayer(player, event.getAmount()));
 
         if (shouldApplyLocalizedBodyDamage(player)) {
-            float bodyPartDamageValue = event.getAmount() * (float) Config.Baked.bodyDamageMultiplier;
             DamageSource source = event.getSource();
 
             JsonBodyPartsDamageSource damageSourceBodyParts = BodyDamageDataManager.getBodyParts(source.getMsgId());
@@ -376,12 +375,6 @@ public class CommonNeoForgeEvents
                 }
             }
 
-            if (!hitBodyParts.isEmpty()) {
-                BodyDamageUtil.balancedHurtBodyParts(player, hitBodyParts, bodyPartDamageValue);
-                // Update broken hearts after dealing damage
-                AttachmentUtil.getBodyDamageAttachment(player).updateBrokenHearts(player);
-            }
-
             if (source.is(DamageTypeTags.IS_PROJECTILE)
                     && hitBodyParts.contains(BodyPartEnum.HEAD)
                     && Config.Baked.headCriticalShotMultiplier > 1
@@ -389,6 +382,10 @@ public class CommonNeoForgeEvents
                 event.setAmount(event.getAmount() * (float) Config.Baked.headCriticalShotMultiplier);
                 player.level().playLocalSound(player.blockPosition(), SoundRegistry.HEADSHOT.get(), SoundSource.HOSTILE, 1.0F, 1.0F, false);
             }
+
+            // Limbs lose a limb heart each time the hit reaches the limb damage threshold
+            if (!hitBodyParts.isEmpty())
+                BodyDamageUtil.hurtBodyParts(player, hitBodyParts, event.getAmount() * (float) Config.Baked.bodyDamageMultiplier);
         }
     }
 
@@ -396,15 +393,6 @@ public class CommonNeoForgeEvents
     public static void onSleepFinished(SleepFinishedTimeEvent event) {
         for (Player player : event.getLevel().players()) {
             if (player.isSleepingLongEnough()) {
-                if (Config.Baked.localizedBodyDamageEnabled && Config.Baked.bodyHealthRatioRecoveredFromSleep > 0) {
-                    for (BodyPartEnum bodyPart : BodyPartEnum.values()) {
-                        double healthRecovered = BodyDamageUtil.getMaxHealth(player, bodyPart) * Config.Baked.bodyHealthRatioRecoveredFromSleep;
-                        BodyDamageUtil.healBodyPart(player, bodyPart, (float) healthRecovered);
-                    }
-                    // Update broken hearts after healing from sleep
-                    AttachmentUtil.getBodyDamageAttachment(player).updateBrokenHearts(player);
-                }
-
                 if (Config.Baked.healthRatioRecoveredFromSleep > 0) {
                     HealthUtil.updatePlayerMaxHealthAttribute(player);
                     double healthRecovered = player.getMaxHealth() * Config.Baked.healthRatioRecoveredFromSleep;
@@ -439,6 +427,21 @@ public class CommonNeoForgeEvents
 
         Player player = event.getEntity();
 
+        // Attribute modifiers aren't kept on death: restore them, then remove the hearts lost on death
+        if (Config.Baked.healthOverhaulEnabled) {
+            HealthUtil.initializeHealthAttributes(player);
+            if (Config.Baked.heartsLostOnDeath > 0)
+                HealthUtil.loseHearth(player, Config.Baked.heartsLostOnDeath);
+            HealthUtil.updatePlayerMaxHealthAttribute(player);
+            player.setHealth(player.getMaxHealth());
+
+            if (player instanceof ServerPlayer serverPlayer) {
+                sfiomn.legendarysurvivaloverhaul.network.payloads.UpdateHeartsPayload.sendToPlayer(
+                    serverPlayer, AttachmentUtil.getHealthAttachment(player).writeNBT()
+                );
+            }
+        }
+
         if (Config.Baked.temperatureImmunityOnDeathEnabled && Config.Baked.temperatureEnabled) {
             player.addEffect(new MobEffectInstance(MobEffectRegistry.TEMPERATURE_IMMUNITY, Config.Baked.temperatureImmunityOnDeathTime, 0, false, false, true));
         }
@@ -459,9 +462,7 @@ public class CommonNeoForgeEvents
         // Reset all limb health to full on respawn
         if (Config.Baked.localizedBodyDamageEnabled) {
             var bodyCap = AttachmentUtil.getBodyDamageAttachment(player);
-            for (BodyPartEnum part : BodyPartEnum.values()) {
-                bodyCap.setBodyPartDamage(part, 0);
-            }
+            bodyCap.init();
             bodyCap.updateBrokenHearts(player);
             bodyCap.setManualDirty();
 
@@ -621,6 +622,7 @@ public class CommonNeoForgeEvents
             var bodyCap = AttachmentUtil.getBodyDamageAttachment(player);
             bodyCap.tickUpdate(player, level, isStart);
             if (bodyCap.isDirty()) {
+                bodyCap.notifyLimbConditionsChange(player);
                 sfiomn.legendarysurvivaloverhaul.network.payloads.UpdateBodyDamagePayload.sendToPlayer(
                     serverPlayer, bodyCap.writeNBT()
                 );

@@ -20,21 +20,7 @@ public class EnumUtil
     public enum brokenHeartsPerInjuredLimbMode
     {
         SIMPLE,
-        PLAYER_DYNAMIC,
-        LIMB_DYNAMIC
-    }
-
-    public enum limbRegenerationMode
-    {
-        SIMPLE,
-        PLAYER_DYNAMIC,
-        LIMB_DYNAMIC
-    }
-
-    public enum bodyPartHealthMode
-    {
-        SIMPLE,
-        DYNAMIC
+        PLAYER_DYNAMIC
     }
 
     public enum temperatureDisplayMode

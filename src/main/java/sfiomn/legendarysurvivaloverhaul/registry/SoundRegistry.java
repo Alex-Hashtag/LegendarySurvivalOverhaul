@@ -30,6 +30,12 @@ public class SoundRegistry
     public static final DeferredHolder<SoundEvent, ? extends SoundEvent> HARD_FALLING_HURT = registerSoundEvent("hard_falling_hurt");
     public static final DeferredHolder<SoundEvent, ? extends SoundEvent> HEADACHE_HEARTBEAT = registerSoundEvent("headache_heartbeat");
 
+    // Limb penalties. PLACEHOLDERS: sounds.json points them to existing sounds until the real ones are made
+    public static final DeferredHolder<SoundEvent, ? extends SoundEvent> LIMB_EAR_RINGING = registerSoundEvent("limb_ear_ringing");
+    public static final DeferredHolder<SoundEvent, ? extends SoundEvent> LIMB_HEARTBEAT_FAST = registerSoundEvent("limb_heartbeat_fast");
+    public static final DeferredHolder<SoundEvent, ? extends SoundEvent> LIMB_HEARTBEAT = registerSoundEvent("limb_heartbeat");
+    public static final DeferredHolder<SoundEvent, ? extends SoundEvent> LIMB_SHORT_BREATH = registerSoundEvent("limb_short_breath");
+
     public static final DeferredHolder<SoundEvent, ? extends SoundEvent> HEART_CONTAINER = registerSoundEvent("heart_container");
 
     private static DeferredHolder<SoundEvent, SoundEvent> registerSoundEvent(String name)

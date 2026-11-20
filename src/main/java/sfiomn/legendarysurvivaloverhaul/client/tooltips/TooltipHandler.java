@@ -11,6 +11,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffectUtil;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
@@ -37,7 +38,6 @@ import sfiomn.legendarysurvivaloverhaul.common.items.drink.CanteenItem;
 import sfiomn.legendarysurvivaloverhaul.config.Config;
 import sfiomn.legendarysurvivaloverhaul.registry.AttributeRegistry;
 import sfiomn.legendarysurvivaloverhaul.registry.MobEffectRegistry;
-import sfiomn.legendarysurvivaloverhaul.util.MathUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -184,7 +184,7 @@ public class TooltipHandler
                 if (jtc.getEffect() == MobEffectRegistry.COLD_FOOD.get() || jtc.getEffect() == MobEffectRegistry.COLD_DRINK.get())
                     tooltips.add(mutableComponent.withStyle(Style.EMPTY.withColor(TextColor.fromRgb(6466303))));
 
-                if (jtc.getEffect() == MobEffectRegistry.HOT_FOOD.get())
+                if (jtc.getEffect() == MobEffectRegistry.HOT_FOOD.get() || jtc.getEffect() == MobEffectRegistry.HOT_DRINk.get())
                     tooltips.add(mutableComponent.withStyle(Style.EMPTY.withColor(TextColor.fromRgb(16420407))));
             }
         }
@@ -198,28 +198,28 @@ public class TooltipHandler
 
         if (jsonConsumableHeal != null)
         {
-            if (jsonConsumableHeal.healingCharges > 0)
+            if (Config.Baked.localizedBodyDamageEnabled && jsonConsumableHeal.limbHealing > 0)
             {
-                tooltips.add(Component.translatable("tooltip.legendarysurvivaloverhaul.body_heal_item.body_part", jsonConsumableHeal.healingCharges).withStyle(ChatFormatting.BLUE));
-            } else if (jsonConsumableHeal.healingCharges == 0)
-            {
-                tooltips.add(Component.translatable("tooltip.legendarysurvivaloverhaul.body_heal_item.whole_body").withStyle(ChatFormatting.BLUE));
+                if (jsonConsumableHeal.healingCharges > 0)
+                    tooltips.add(Component.translatable("tooltip.legendarysurvivaloverhaul.body_heal_item.body_part", jsonConsumableHeal.healingCharges, jsonConsumableHeal.limbHealing).withStyle(ChatFormatting.BLUE));
+                else
+                    tooltips.add(Component.translatable("tooltip.legendarysurvivaloverhaul.body_heal_item.whole_body", jsonConsumableHeal.limbHealing).withStyle(ChatFormatting.BLUE));
+
+                tooltips.add(Component.translatable(jsonConsumableHeal.healsBrokenLimbs
+                        ? "tooltip.legendarysurvivaloverhaul.body_heal_item.heals_broken"
+                        : "tooltip.legendarysurvivaloverhaul.body_heal_item.no_broken").withStyle(ChatFormatting.BLUE));
             }
-            tooltips.add(
-                    Component.translatable("tooltip.legendarysurvivaloverhaul.body_heal_item.healing_value",
-                                    jsonConsumableHeal.healingValue, MathUtil.round(jsonConsumableHeal.healingTime / 20.0f, 1))
-                            .withStyle(ChatFormatting.BLUE));
 
-            MutableComponent mutableComponent = Component.translatable(MobEffectRegistry.RECOVERY.get().getDescriptionId());
+            if (Config.Baked.localizedBodyDamageEnabled && jsonConsumableHeal.limbShields > 0)
+                tooltips.add(Component.translatable("tooltip.legendarysurvivaloverhaul.body_heal_item.limb_shield", jsonConsumableHeal.limbShields).withStyle(ChatFormatting.BLUE));
 
-            if (jsonConsumableHeal.recoveryEffectDuration > 0)
+            if (jsonConsumableHeal.regenerationDuration > 0)
             {
-                if (jsonConsumableHeal.recoveryEffectAmplifier > 0)
-                {
-                    mutableComponent = Component.translatable("potion.withAmplifier", mutableComponent, Component.translatable("potion.potency." + jsonConsumableHeal.recoveryEffectAmplifier));
-                }
+                MutableComponent mutableComponent = Component.translatable(MobEffects.REGENERATION.value().getDescriptionId());
+                if (jsonConsumableHeal.regenerationAmplifier > 0)
+                    mutableComponent = Component.translatable("potion.withAmplifier", mutableComponent, Component.translatable("potion.potency." + jsonConsumableHeal.regenerationAmplifier));
 
-                MobEffectInstance mei = new MobEffectInstance(MobEffectRegistry.RECOVERY, jsonConsumableHeal.recoveryEffectDuration, jsonConsumableHeal.recoveryEffectAmplifier);
+                MobEffectInstance mei = new MobEffectInstance(MobEffects.REGENERATION, jsonConsumableHeal.regenerationDuration, jsonConsumableHeal.regenerationAmplifier);
                 mutableComponent = Component.translatable("potion.withDuration", mutableComponent, MobEffectUtil.formatDuration(mei, 1.0f, 20.0f));
 
                 tooltips.add(mutableComponent.withStyle(Style.EMPTY.withColor(ChatFormatting.BLUE)));

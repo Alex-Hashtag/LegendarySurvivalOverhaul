@@ -6,25 +6,54 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 public class JsonHealingConsumable
 {
     public static final Codec<JsonHealingConsumable> CODEC = RecordCodecBuilder.create((inst) -> inst.group(
-            Codec.INT.fieldOf("healing_charges").forGetter(d -> d.healingCharges),
-            Codec.FLOAT.fieldOf("healing_value").forGetter(d -> d.healingValue),
-            Codec.INT.fieldOf("healing_time").forGetter(d -> d.healingTime),
-            Codec.INT.optionalFieldOf("recovery_effect_duration", 0).forGetter(d -> d.recoveryEffectDuration),
-            Codec.INT.optionalFieldOf("recovery_effect_amplifier", 0).forGetter(d -> d.recoveryEffectAmplifier)
+            Codec.INT.optionalFieldOf("healing_charges", 0).forGetter(d -> d.healingCharges),
+            Codec.INT.optionalFieldOf("limb_healing", 1).forGetter(d -> d.limbHealing),
+            Codec.INT.optionalFieldOf("healing_time", 0).forGetter(d -> d.healingTime),
+            Codec.BOOL.optionalFieldOf("heals_broken_limbs", false).forGetter(d -> d.healsBrokenLimbs),
+            Codec.INT.optionalFieldOf("limb_shields", 0).forGetter(d -> d.limbShields),
+            Codec.INT.optionalFieldOf("regeneration_duration", 0).forGetter(d -> d.regenerationDuration),
+            Codec.INT.optionalFieldOf("regeneration_amplifier", 0).forGetter(d -> d.regenerationAmplifier)
     ).apply(inst, JsonHealingConsumable::new));
 
+    /**
+     * Number of limbs the player chooses to heal. 0 means every limb is healed at once.
+     */
     public int healingCharges;
-    public float healingValue;
+    /**
+     * Limb hearts restored on each healed limb.
+     */
+    public int limbHealing;
+    /**
+     * Time in ticks taken to heal each chosen limb.
+     */
     public int healingTime;
-    public int recoveryEffectDuration;
-    public int recoveryEffectAmplifier;
+    /**
+     * Whether a broken limb can be healed.
+     */
+    public boolean healsBrokenLimbs;
+    /**
+     * Number of limb shields given, to random limbs weighted by their damage.
+     */
+    public int limbShields;
+    public int regenerationDuration;
+    public int regenerationAmplifier;
 
-    public JsonHealingConsumable(int healingCharges, float healingValue, int healingTime, int recoveryEffectDuration, int recoveryEffectAmplifier)
+    public JsonHealingConsumable(int healingCharges, int limbHealing, int healingTime, boolean healsBrokenLimbs, int limbShields, int regenerationDuration, int regenerationAmplifier)
     {
         this.healingCharges = healingCharges;
-        this.healingValue = healingValue;
+        this.limbHealing = limbHealing;
         this.healingTime = healingTime;
-        this.recoveryEffectDuration = recoveryEffectDuration;
-        this.recoveryEffectAmplifier = recoveryEffectAmplifier;
+        this.healsBrokenLimbs = healsBrokenLimbs;
+        this.limbShields = limbShields;
+        this.regenerationDuration = regenerationDuration;
+        this.regenerationAmplifier = regenerationAmplifier;
+    }
+
+    /**
+     * Whether the player has to choose the limbs to heal.
+     */
+    public boolean isLimbSelection()
+    {
+        return this.healingCharges > 0 && this.limbHealing > 0;
     }
 }

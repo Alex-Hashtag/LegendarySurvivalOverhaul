@@ -143,7 +143,8 @@ public class LegendarySurvivalOverhaul
 
     private void modIntegration(IEventBus forgeBus)
     {
-        sereneSeasonsLoaded = ModList.get().isLoaded("sereneseasons");
+        // Serene Seasons API stubs (like the Ecliptic Seasons bridge) share the mod id without the season classes we use
+        sereneSeasonsLoaded = ModList.get().isLoaded("sereneseasons") && isClassPresent("sereneseasons.season.SeasonTime");
         eclipticSeasonsLoaded = ModList.get().isLoaded("eclipticseasons");
         curiosLoaded = ModList.get().isLoaded("curios");
         terraFirmaCraftLoaded = ModList.get().isLoaded("tfc");
@@ -225,6 +226,18 @@ public class LegendarySurvivalOverhaul
         JsonIntegrationConfigRegistration.init(LegendarySurvivalOverhaul.modIntegrationConfigJsons.toFile());
     }
 
+    private static boolean isClassPresent(String className)
+    {
+        try
+        {
+            Class.forName(className, false, LegendarySurvivalOverhaul.class.getClassLoader());
+            return true;
+        } catch (ClassNotFoundException | LinkageError e)
+        {
+            return false;
+        }
+    }
+
     private void commonSetup(final FMLCommonSetupEvent event)
     {
         event.enqueueWork(() -> {
@@ -258,9 +271,6 @@ public class LegendarySurvivalOverhaul
     {
         event.enqueueWork(() ->
         {
-            BodyDamageUtilInternal.initMalusConfig();
-            BodyDamageUtilInternal.initLimbEffects();
-
             if (sereneSeasonsLoaded)
                 SereneSeasonsUtil.initAverageTemperatures();
 

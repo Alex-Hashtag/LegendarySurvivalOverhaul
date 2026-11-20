@@ -7,8 +7,8 @@ public class HealthConfig
 {
     public final ModConfigSpec.BooleanValue healthOverhaulEnabled;
     public final ModConfigSpec.DoubleValue initialHealth;
-    public final ModConfigSpec.BooleanValue naturalRegenerationEnabled;
     public final ModConfigSpec.DoubleValue healthRatioRecoveredFromSleep;
+    public final ModConfigSpec.BooleanValue naturalRegenerationEnabled;
     public final ModConfigSpec.DoubleValue maxAdditionalHealth;
     public final ModConfigSpec.DoubleValue maxShieldHealth;
     public final ModConfigSpec.BooleanValue absorptionEffectOverride;
@@ -17,11 +17,6 @@ public class HealthConfig
     public final ModConfigSpec.IntValue resilientHeartsWithBrokenHearts;
     public final ModConfigSpec.DoubleValue brokenHeartsPerInjuredLimb;
     public final ModConfigSpec.EnumValue<EnumUtil.brokenHeartsPerInjuredLimbMode> brokenHeartsPerInjuredLimbMode;
-
-    public final ModConfigSpec.BooleanValue customHealthRegenEnabled;
-    public final ModConfigSpec.DoubleValue customHealthRegenRate;
-    public final ModConfigSpec.IntValue customHealthRegenTickRate;
-    public final ModConfigSpec.DoubleValue customHealthRegenFoodExhaustion;
 
     HealthConfig(ModConfigSpec.Builder builder)
     {
@@ -37,24 +32,10 @@ public class HealthConfig
         healthRatioRecoveredFromSleep = builder
                 .comment(" How much health ratio are recovered from bed sleeping.")
                 .defineInRange("Health Ratio Recovered", 1.0d, 0.0d, 1.0d);
-
-        builder.push("regeneration");
         naturalRegenerationEnabled = builder
-                .comment(" If enabled, the player can regenerate health naturally if their hunger is full enough (doesn't affect external healing, such as golden apples, the Regeneration effect, etc.)")
-                .define("Natural Regeneration Enabled", false);
-        customHealthRegenEnabled = builder
-                .comment(" Enable custom health regeneration when natural regen is off. Consumes saturation and hunger.")
-                .define("Custom Health Regen Enabled", true);
-        customHealthRegenRate = builder
-                .comment(" Amount of health to regenerate per tick rate.")
-                .defineInRange("Custom Health Regen Rate", 1.0, 0, 1000);
-        customHealthRegenTickRate = builder
-                .comment(" How often in ticks health regenerates. 20 ticks = 1s")
-                .defineInRange("Custom Health Regen Tick Rate", 200, 1, 10000);
-        customHealthRegenFoodExhaustion = builder
-                .comment(" Food exhaustion per health point regenerated.")
-                .defineInRange("Custom Health Regen Food Exhaustion", 6.0, 0, 100);
-        builder.pop();
+                .comment(" Value applied to the naturalRegeneration game rule when a world is loaded.",
+                        " Health only regenerates the vanilla way, so disabling it leaves healing to items and effects.")
+                .define("Natural Regeneration Enabled", true);
 
         builder.push("shield-health");
         maxShieldHealth = builder
@@ -93,7 +74,6 @@ public class HealthConfig
                         " Accepted values are as follows:",
                         "   SIMPLE - The broken heart amount is a fixed value defined in Broken Hearts Per Injured Limb.",
                         "   PLAYER_DYNAMIC - The broken heart amount is a percentage value of the player max health using the percentage value defined in Broken Hearts Per Injured Limb.",
-                        "   LIMB_DYNAMIC - The broken heart amount is a percentage value of the injured limb max health using the percentage value defined in Broken Hearts Per Injured Limb.",
                         " Any other value will default to SIMPLE.")
                 .defineEnum("Broken Hearts Per Injured Limb Mode", EnumUtil.brokenHeartsPerInjuredLimbMode.PLAYER_DYNAMIC);
         builder.pop();

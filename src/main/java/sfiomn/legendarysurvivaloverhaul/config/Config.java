@@ -8,6 +8,7 @@ import net.neoforged.fml.config.ModConfig;
 import net.neoforged.neoforge.common.ModConfigSpec;
 import org.apache.commons.lang3.tuple.Pair;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
+import sfiomn.legendarysurvivaloverhaul.api.bodydamage.LimbConditions;
 import sfiomn.legendarysurvivaloverhaul.config.json_old.JsonConfigRegistration;
 import sfiomn.legendarysurvivaloverhaul.util.EnumUtil;
 
@@ -179,7 +180,6 @@ public class Config
         // Core
         public static int routinePacketSync;
         public static boolean hideInfoFromDebug;
-        public static boolean naturalRegenerationEnabled;
         public static boolean vanillaFreezeEnabled;
         public static EnumUtil.CompassInfo compassInfoMode;
         public static boolean showCoordinateOnMap;
@@ -338,45 +338,12 @@ public class Config
 
         // Body members damage
         public static boolean localizedBodyDamageEnabled;
+        public static double limbDamageThreshold;
         public static double headCriticalShotMultiplier;
         public static double bodyDamageMultiplier;
-        public static double bodyHealthRatioRecoveredFromSleep;
         public static double healthRatioRecoveredFromSleep;
-        public static double bodyHealingFoodExhaustion;
-        public static int minFoodOnBodyHealing;
+        public static boolean naturalRegenerationEnabled;
         public static int painkillerAddictionDuration;
-
-        public static boolean passiveLimbRegenerationOnFullHealth;
-        public static List<? extends String> passiveLimbRegenerationEffects;
-        public static boolean passiveLimbRegenerationAmplificationEnabled;
-        public static double passiveLimbHealthRegenerated;
-        public static int passiveLimbRegenerationTickTimer;
-
-        public static double proportionalLimbRegenMinThreshold;
-        public static double proportionalLimbRegenMinHealValue;
-        public static double proportionalLimbRegenMaxHealValue;
-        public static int proportionalLimbRegenTickRate;
-        public static double proportionalLimbRegenIncreaseRate;
-
-        public static boolean customHealthRegenEnabled;
-        public static double customHealthRegenRate;
-        public static int customHealthRegenTickRate;
-        public static double customHealthRegenFoodExhaustion;
-
-        public static double firstAidSuppliesLimbHealthRegenerated;
-        public static EnumUtil.limbRegenerationMode limbRegenerationMode;
-        public static boolean firstAidSuppliesHealingOverflow;
-        public static int firstAidSuppliesTickTimer;
-        public static boolean firstAidSuppliesExhaustsFood;
-        public static List<? extends String> firstAidSuppliesBoostedOnEffects;
-        public static double firstAidSuppliesBoostedTickTimerMultiplier;
-
-        public static EnumUtil.bodyPartHealthMode bodyPartHealthMode;
-        public static double headPartHealth;
-        public static double armsPartHealth;
-        public static double chestPartHealth;
-        public static double legsPartHealth;
-        public static double feetPartHealth;
 
         public static double recoveryEffectHealingValue;
         public static int healingHerbsUseTime;
@@ -387,36 +354,26 @@ public class Config
         public static int morphineUseTime;
         public static int morphinePainkillerTickDuration;
 
-        public static List<? extends String> headPartEffects;
-        public static List<? extends Integer> headPartEffectAmplifiers;
-        public static List<? extends Double> headPartEffectThresholds;
-
-        public static List<? extends String> armsPartEffects;
-        public static List<? extends Integer> armsPartEffectAmplifiers;
-        public static List<? extends Double> armsPartEffectThresholds;
-        public static List<? extends String> bothArmsPartEffects;
-        public static List<? extends Integer> bothArmsPartEffectAmplifiers;
-        public static List<? extends Double> bothArmsPartEffectThresholds;
-
-        public static List<? extends String> chestPartEffects;
-        public static List<? extends Integer> chestPartEffectAmplifiers;
-        public static List<? extends Double> chestPartEffectThresholds;
-
-        public static List<? extends String> legsPartEffects;
-        public static List<? extends Integer> legsPartEffectAmplifiers;
-        public static List<? extends Double> legsPartEffectThresholds;
-        public static List<? extends String> bothLegsPartEffects;
-        public static List<? extends Integer> bothLegsPartEffectAmplifiers;
-        public static List<? extends Double> bothLegsPartEffectThresholds;
-
-        public static List<? extends String> feetPartEffects;
-        public static List<? extends Integer> feetPartEffectAmplifiers;
-        public static List<? extends Double> feetPartEffectThresholds;
-        public static List<? extends String> bothFeetPartEffects;
-        public static List<? extends Integer> bothFeetPartEffectAmplifiers;
-        public static List<? extends Double> bothFeetPartEffectThresholds;
-
         public static boolean morphineSyringeApplyPainkillerAddiction;
+
+        // Limb penalties
+        public static double muffledHearingVolume;
+        public static double muffledHearingClarity;
+        public static double deafenedHearingVolume;
+        public static double deafenedHearingClarity;
+        public static int concussionDeafnessDuration;
+        public static double lazyMouseSensitivityMultiplier;
+        public static double lazyMouseSmoothing;
+        public static double fragileTorsoDamageMultiplier;
+        public static double veryFragileTorsoDamageMultiplier;
+        public static double shortnessOfBreathAirLossMultiplier;
+        public static double slowBowDrawMultiplier;
+        public static double slowEatingMultiplier;
+        public static double slowBandagingMultiplier;
+        public static double weakProjectilesVelocityMultiplier;
+        public static double slowSprintSpeedPenalty;
+        public static double hardFallingDamageMultiplier;
+        public static double veryHardFallingDamageMultiplier;
 
         // Client Config
         public static EnumUtil.temperatureDisplayMode temperatureDisplayMode;
@@ -628,7 +585,6 @@ public class Config
             LegendarySurvivalOverhaul.LOGGER.debug("Load Health configuration from file");
             try
             {
-                naturalRegenerationEnabled = HEALTH.naturalRegenerationEnabled.get();
                 initialHealth = HEALTH.initialHealth.get();
                 healthOverhaulEnabled = HEALTH.healthOverhaulEnabled.get();
                 maxAdditionalHealth = HEALTH.maxAdditionalHealth.get();
@@ -640,10 +596,7 @@ public class Config
                 brokenHeartsPerInjuredLimb = HEALTH.brokenHeartsPerInjuredLimb.get();
                 brokenHeartsPerInjuredLimbMode = HEALTH.brokenHeartsPerInjuredLimbMode.get();
                 healthRatioRecoveredFromSleep = HEALTH.healthRatioRecoveredFromSleep.get();
-                customHealthRegenEnabled = HEALTH.customHealthRegenEnabled.get();
-                customHealthRegenRate = HEALTH.customHealthRegenRate.get();
-                customHealthRegenTickRate = HEALTH.customHealthRegenTickRate.get();
-                customHealthRegenFoodExhaustion = HEALTH.customHealthRegenFoodExhaustion.get();
+                naturalRegenerationEnabled = HEALTH.naturalRegenerationEnabled.get();
             } catch (Exception e)
             {
                 LegendarySurvivalOverhaul.LOGGER.warn("An exception was caused trying to load the Health config for Legendary Survival Overhaul");
@@ -657,29 +610,10 @@ public class Config
             try
             {
                 localizedBodyDamageEnabled = BODY_DAMAGE.localizedBodyDamageEnabled.get();
+                limbDamageThreshold = BODY_DAMAGE.limbDamageThreshold.get();
                 headCriticalShotMultiplier = BODY_DAMAGE.headCriticalShotMultiplier.get();
                 bodyDamageMultiplier = BODY_DAMAGE.bodyDamageMultiplier.get();
-                bodyHealthRatioRecoveredFromSleep = BODY_DAMAGE.bodyHealthRatioRecoveredFromSleep.get();
-                bodyHealingFoodExhaustion = BODY_DAMAGE.bodyHealingFoodExhaustion.get();
-                minFoodOnBodyHealing = BODY_DAMAGE.minFoodOnBodyHealing.get();
                 painkillerAddictionDuration = BODY_DAMAGE.painkillerAddictionDuration.get();
-                passiveLimbRegenerationOnFullHealth = BODY_DAMAGE.passiveLimbRegenerationOnFullHealth.get();
-                passiveLimbRegenerationEffects = BODY_DAMAGE.passiveLimbRegenerationEffects.get();
-                passiveLimbRegenerationAmplificationEnabled = BODY_DAMAGE.passiveLimbRegenerationAmplificationEnabled.get();
-                passiveLimbHealthRegenerated = BODY_DAMAGE.passiveLimbHealthRegenerated.get();
-                passiveLimbRegenerationTickTimer = BODY_DAMAGE.passiveLimbRegenerationTickTimer.get();
-                proportionalLimbRegenMinThreshold = BODY_DAMAGE.proportionalLimbRegenMinThreshold.get();
-                proportionalLimbRegenMinHealValue = BODY_DAMAGE.proportionalLimbRegenMinHealValue.get();
-                proportionalLimbRegenMaxHealValue = BODY_DAMAGE.proportionalLimbRegenMaxHealValue.get();
-                proportionalLimbRegenTickRate = BODY_DAMAGE.proportionalLimbRegenTickRate.get();
-                proportionalLimbRegenIncreaseRate = BODY_DAMAGE.proportionalLimbRegenIncreaseRate.get();
-                firstAidSuppliesLimbHealthRegenerated = BODY_DAMAGE.firstAidSuppliesLimbHealthRegenerated.get();
-                limbRegenerationMode = BODY_DAMAGE.firstAidSuppliesLimbRegenerationMode.get();
-                firstAidSuppliesHealingOverflow = BODY_DAMAGE.firstAidSuppliesHealingOverflow.get();
-                firstAidSuppliesTickTimer = BODY_DAMAGE.firstAidSuppliesTickTimer.get();
-                firstAidSuppliesExhaustsFood = BODY_DAMAGE.firstAidSuppliesExhaustsFood.get();
-                firstAidSuppliesBoostedOnEffects = BODY_DAMAGE.firstAidSuppliesBoostedOnEffects.get();
-                firstAidSuppliesBoostedTickTimerMultiplier = BODY_DAMAGE.firstAidSuppliesBoostedTickTimerMultiplier.get();
                 recoveryEffectHealingValue = BODY_DAMAGE.recoveryEffectHealingValue.get();
                 healingHerbsUseTime = BODY_DAMAGE.healingHerbsUseTime.get();
                 plasterUseTime = BODY_DAMAGE.plasterUseTime.get();
@@ -688,37 +622,25 @@ public class Config
                 medkitUseTime = BODY_DAMAGE.medkitUseTime.get();
                 morphineUseTime = BODY_DAMAGE.morphineUseTime.get();
                 morphinePainkillerTickDuration = BODY_DAMAGE.morphinePainkillerTickDuration.get();
-                bodyPartHealthMode = BODY_DAMAGE.bodyPartHealthMode.get();
-                headPartHealth = BODY_DAMAGE.headPartHealth.get();
-                chestPartHealth = BODY_DAMAGE.chestPartHealth.get();
-                armsPartHealth = BODY_DAMAGE.armsPartHealth.get();
-                legsPartHealth = BODY_DAMAGE.legsPartHealth.get();
-                feetPartHealth = BODY_DAMAGE.feetPartHealth.get();
-                headPartEffects = BODY_DAMAGE.headPartEffects.get();
-                headPartEffectAmplifiers = BODY_DAMAGE.headPartEffectAmplifiers.get();
-                headPartEffectThresholds = BODY_DAMAGE.headPartEffectThresholds.get();
-                armsPartEffects = BODY_DAMAGE.armsPartEffects.get();
-                armsPartEffectAmplifiers = BODY_DAMAGE.armsPartEffectAmplifiers.get();
-                armsPartEffectThresholds = BODY_DAMAGE.armsPartEffectThresholds.get();
-                bothArmsPartEffects = BODY_DAMAGE.bothArmsPartEffects.get();
-                bothArmsPartEffectAmplifiers = BODY_DAMAGE.bothArmsPartEffectAmplifiers.get();
-                bothArmsPartEffectThresholds = BODY_DAMAGE.bothArmsPartEffectThresholds.get();
-                chestPartEffects = BODY_DAMAGE.chestPartEffects.get();
-                chestPartEffectAmplifiers = BODY_DAMAGE.chestPartEffectAmplifiers.get();
-                chestPartEffectThresholds = BODY_DAMAGE.chestPartEffectThresholds.get();
-                legsPartEffects = BODY_DAMAGE.legsPartEffects.get();
-                legsPartEffectAmplifiers = BODY_DAMAGE.legsPartEffectAmplifiers.get();
-                legsPartEffectThresholds = BODY_DAMAGE.legsPartEffectThresholds.get();
-                bothLegsPartEffects = BODY_DAMAGE.bothLegsPartEffects.get();
-                bothLegsPartEffectAmplifiers = BODY_DAMAGE.bothLegsPartEffectAmplifiers.get();
-                bothLegsPartEffectThresholds = BODY_DAMAGE.bothLegsPartEffectThresholds.get();
-                feetPartEffects = BODY_DAMAGE.feetPartEffects.get();
-                feetPartEffectAmplifiers = BODY_DAMAGE.feetPartEffectAmplifiers.get();
-                feetPartEffectThresholds = BODY_DAMAGE.feetPartEffectThresholds.get();
-                bothFeetPartEffects = BODY_DAMAGE.bothFeetPartEffects.get();
-                bothFeetPartEffectAmplifiers = BODY_DAMAGE.bothFeetPartEffectAmplifiers.get();
-                bothFeetPartEffectThresholds = BODY_DAMAGE.bothFeetPartEffectThresholds.get();
                 morphineSyringeApplyPainkillerAddiction = BODY_DAMAGE.morphineSyringeApplyPainkillerAddiction.get();
+                LimbConditions.setDisabledPenalties(BODY_DAMAGE.disabledLimbPenalties.get());
+                muffledHearingVolume = BODY_DAMAGE.muffledHearingVolume.get();
+                muffledHearingClarity = BODY_DAMAGE.muffledHearingClarity.get();
+                deafenedHearingVolume = BODY_DAMAGE.deafenedHearingVolume.get();
+                deafenedHearingClarity = BODY_DAMAGE.deafenedHearingClarity.get();
+                concussionDeafnessDuration = BODY_DAMAGE.concussionDeafnessDuration.get();
+                lazyMouseSensitivityMultiplier = BODY_DAMAGE.lazyMouseSensitivityMultiplier.get();
+                lazyMouseSmoothing = BODY_DAMAGE.lazyMouseSmoothing.get();
+                fragileTorsoDamageMultiplier = BODY_DAMAGE.fragileTorsoDamageMultiplier.get();
+                veryFragileTorsoDamageMultiplier = BODY_DAMAGE.veryFragileTorsoDamageMultiplier.get();
+                shortnessOfBreathAirLossMultiplier = BODY_DAMAGE.shortnessOfBreathAirLossMultiplier.get();
+                slowBowDrawMultiplier = BODY_DAMAGE.slowBowDrawMultiplier.get();
+                slowEatingMultiplier = BODY_DAMAGE.slowEatingMultiplier.get();
+                slowBandagingMultiplier = BODY_DAMAGE.slowBandagingMultiplier.get();
+                weakProjectilesVelocityMultiplier = BODY_DAMAGE.weakProjectilesVelocityMultiplier.get();
+                slowSprintSpeedPenalty = BODY_DAMAGE.slowSprintSpeedPenalty.get();
+                hardFallingDamageMultiplier = BODY_DAMAGE.hardFallingDamageMultiplier.get();
+                veryHardFallingDamageMultiplier = BODY_DAMAGE.veryHardFallingDamageMultiplier.get();
             } catch (Exception e)
             {
                 LegendarySurvivalOverhaul.LOGGER.warn("An exception was caused trying to load the Body Damage config for Legendary Survival Overhaul");

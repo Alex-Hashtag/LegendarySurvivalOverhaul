@@ -772,9 +772,8 @@ public class JsonConfigRegistration
 
                     File jsonFile = new File(endPath.toFile(), rl.getPath() + ".json");
                     HealingConsumableData td = new HealingConsumableData();
-                    td.duration(JsonConfig.consumableHeal.get(e).healingTime);
+                    // Old healing values were limb health over time, only the healed limb count is kept
                     td.healingCharges(JsonConfig.consumableHeal.get(e).healingCharges);
-                    td.healingValue(JsonConfig.consumableHeal.get(e).healingValue);
 
                     writeInFile(jsonFile, td.build());
                 }

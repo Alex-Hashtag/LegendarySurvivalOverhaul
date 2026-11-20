@@ -23,7 +23,7 @@ public class RenderBodyDamageGui
     private static final int BODY_MODEL_TEXTURE_WIDTH = 16;
     private static final int BODY_MODEL_TEXTURE_HEIGHT = 32;
     private static final Map<BodyPartEnum, Integer> flashCounters = new HashMap<>();
-    private static final Map<BodyPartEnum, Float> bodyPartHealth = new HashMap<>();
+    private static final Map<BodyPartEnum, Integer> bodyPartHealth = new HashMap<>();
     private static BodyDamageAttachment BODY_DAMAGE_CAP = null;
 
     public static void render(Gui gui, GuiGraphics guiGraphics, float partialTicks, int width, int height)
@@ -67,13 +67,13 @@ public class RenderBodyDamageGui
 
             if (!bodyPartHealth.containsKey(bodyPart))
             {
-                bodyPartHealth.put(bodyPart, cap.getBodyPartDamage(bodyPart));
+                bodyPartHealth.put(bodyPart, cap.getLimbDamage(bodyPart));
             } else
             {
-                if (bodyPartHealth.get(bodyPart) != cap.getBodyPartDamage(bodyPart))
+                if (bodyPartHealth.get(bodyPart) != cap.getLimbDamage(bodyPart))
                 {
                     flashCounters.put(bodyPart, 4);
-                    bodyPartHealth.put(bodyPart, cap.getBodyPartDamage(bodyPart));
+                    bodyPartHealth.put(bodyPart, cap.getLimbDamage(bodyPart));
                 }
             }
 
@@ -81,7 +81,7 @@ public class RenderBodyDamageGui
             if (icon == null)
                 continue;
 
-            float healthRatio = cap.getBodyPartHealthRatio(bodyPart);
+            float healthRatio = cap.getLimbHealthRatio(bodyPart);
             boolean shouldFlash = flashCounters.containsKey(bodyPart);
 
             BodyPartCondition offset = BodyPartCondition.get(healthRatio, shouldFlash);

@@ -3,17 +3,25 @@ package sfiomn.legendarysurvivaloverhaul.client;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
+import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonHealingConsumable;
 import sfiomn.legendarysurvivaloverhaul.client.screens.BodyHealthScreen;
 
 public class ClientHooks
 {
-    public static void openBodyHealthScreen(Player player, InteractionHand hand, boolean alreadyConsumed, int healingCharges, float healingValue, int healingTime)
+    /**
+     * Open the body health screen to choose the limbs healed by the healing item just used.
+     */
+    public static void openBodyHealthScreen(Player player, InteractionHand hand, JsonHealingConsumable healingConsumable)
     {
-        Minecraft.getInstance().setScreen(new BodyHealthScreen(player, hand, alreadyConsumed, healingCharges, healingValue, healingTime));
+        if (Minecraft.getInstance().screen == null)
+            Minecraft.getInstance().setScreen(new BodyHealthScreen(player, hand, healingConsumable));
     }
 
+    /**
+     * Open the body health screen only to look at the limbs.
+     */
     public static void openBodyHealthScreen(Player player)
     {
-        openBodyHealthScreen(player, null, false, 0, 0, 0);
+        Minecraft.getInstance().setScreen(new BodyHealthScreen(player, null, null));
     }
 }

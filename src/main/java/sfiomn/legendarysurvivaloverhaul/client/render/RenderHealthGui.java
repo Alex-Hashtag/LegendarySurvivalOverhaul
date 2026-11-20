@@ -10,7 +10,6 @@ import net.minecraft.world.entity.player.Player;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
-import sfiomn.legendarysurvivaloverhaul.api.bodydamage.IBodyDamageAttachment;
 import sfiomn.legendarysurvivaloverhaul.api.health.HealthUtil;
 import sfiomn.legendarysurvivaloverhaul.common.attachments.health.HealthAttachment;
 import sfiomn.legendarysurvivaloverhaul.common.integration.overflowingbars.OverflowingBarsUtil;
@@ -66,13 +65,6 @@ public class RenderHealthGui
 
         int brokenHearts = HealthUtil.getEffectiveBrokenHearts(player);
         float shieldHealth = HEALTH_CAP.getShieldHealth();
-        
-        // Check if we should blink the health bar
-        IBodyDamageAttachment bodyDamageCap = null;
-        if (Config.Baked.localizedBodyDamageEnabled)
-        {
-            bodyDamageCap = AttachmentUtil.getBodyDamageAttachment(player);
-        }
 
         if (brokenHearts + shieldHealth == 0)
             return 0;
@@ -104,8 +96,7 @@ public class RenderHealthGui
         int healthRows = Mth.ceil(totalHearts / 10.0F);
 
         // Render
-        int healthBlinkTimer = bodyDamageCap != null ? bodyDamageCap.getHealthBlinkTimer() : 0;
-        renderHearts(gui, left, top, 10, playerHearts, brokenHearts, Mth.ceil(player.getHealth()), shieldHealth, healthBlinkTimer);
+        renderHearts(gui, left, top, 10, playerHearts, brokenHearts, Mth.ceil(player.getHealth()), shieldHealth, 0);
 
         // Report how much vertical space we actually used on the left HUD stack.
         // Matches old Forge logic: start -10 when we appended the extra player row, then add rows * 10.

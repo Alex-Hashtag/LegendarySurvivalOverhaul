@@ -18,8 +18,8 @@ public class MedsAndHerbsBodyDamageProvider extends BodyDamageDataProvider
     @Override
     public void generate(HolderLookup.Provider provider, ExistingFileHelper existingFileHelper)
     {
-        consumable("medkit_novice").healingCharges(0).healingValue(3).duration(400);
-        consumable("medkit_advanced").healingCharges(0).healingValue(5).duration(800);
-        consumable("medkit_expert").healingCharges(0).healingValue(8).duration(600);
+        consumable("medkit_novice").healingCharges(0).limbHealing(1);
+        consumable("medkit_advanced").healingCharges(0).limbHealing(1).healsBrokenLimbs().regeneration(200, 0);
+        consumable("medkit_expert").healingCharges(0).limbHealing(2).healsBrokenLimbs().regeneration(200, 2);
     }
 }

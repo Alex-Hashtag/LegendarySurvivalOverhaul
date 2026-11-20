@@ -22,7 +22,7 @@ public class MinecraftBodyDamageProvider extends BodyDamageDataProvider
     @Override
     public void generate(HolderLookup.Provider provider, ExistingFileHelper existingFileHelper)
     {
-        consumable(Items.ENCHANTED_GOLDEN_APPLE).healingCharges(0).healingValue(3).duration(600);
+        consumable(Items.ENCHANTED_GOLDEN_APPLE).healingCharges(0).limbHealing(3).healsBrokenLimbs();
 
         item(Items.DIAMOND_HELMET).headResistance(0.1f);
         item(Items.DIAMOND_CHESTPLATE).chestResistance(0.1f);

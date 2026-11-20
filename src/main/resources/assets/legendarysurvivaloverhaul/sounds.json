@@ -194,5 +194,45 @@
         "stream": true
       }
     ]
+  },
+  "limb_ear_ringing": {
+    "category": "player",
+    "subtitle": "sounds.legendarysurvivaloverhaul.limb_ear_ringing",
+    "sounds": [
+      {
+        "name": "minecraft:block.beacon.ambient",
+        "type": "event",
+        "pitch": 2.0
+      }
+    ]
+  },
+  "limb_heartbeat_fast": {
+    "category": "player",
+    "subtitle": "sounds.legendarysurvivaloverhaul.limb_heartbeat_fast",
+    "sounds": [
+      {
+        "name": "legendarysurvivaloverhaul:headache_heartbeat",
+        "pitch": 1.5
+      }
+    ]
+  },
+  "limb_heartbeat": {
+    "category": "player",
+    "subtitle": "sounds.legendarysurvivaloverhaul.limb_heartbeat",
+    "sounds": [
+      {
+        "name": "legendarysurvivaloverhaul:headache_heartbeat"
+      }
+    ]
+  },
+  "limb_short_breath": {
+    "category": "player",
+    "subtitle": "sounds.legendarysurvivaloverhaul.limb_short_breath",
+    "sounds": [
+      {
+        "name": "legendarysurvivaloverhaul:panting1",
+        "pitch": 1.3
+      }
+    ]
   }
 }

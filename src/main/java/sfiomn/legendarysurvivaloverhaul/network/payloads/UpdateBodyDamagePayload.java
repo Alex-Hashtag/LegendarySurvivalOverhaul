@@ -39,6 +39,7 @@ public record UpdateBodyDamagePayload(
             {
                 BodyDamageAttachment bodyDamageAttachment = AttachmentUtil.getBodyDamageAttachment(player);
                 bodyDamageAttachment.readNBT(pkt.compound());
+                bodyDamageAttachment.notifyLimbConditionsChange(player);
             }
         });
     }

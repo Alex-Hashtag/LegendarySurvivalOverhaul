@@ -18,14 +18,13 @@ public class SurvivalInstinctBodyDamageProvider extends BodyDamageDataProvider
     @Override
     public void generate(HolderLookup.Provider provider, ExistingFileHelper existingFileHelper)
     {
-        consumable("adrenaline_injector").healingCharges(1).healingValue(1).duration(100);
-        consumable("adrenaline_syringe").healingCharges(1).healingValue(1).duration(100);
-        consumable("bandage").healingCharges(3).healingValue(3).duration(300);
-        consumable("blood_syringe").healingCharges(1).healingValue(4).duration(375);
-        consumable("homemade_bandage").healingCharges(3).healingValue(3).duration(300);
-        consumable("medkit_bag").healingCharges(6).healingValue(8).duration(400);
-        consumable("medkit_bag").healingCharges(6).healingValue(8).duration(400);
-        consumable("morphine_injector").healingCharges(1).healingValue(2).duration(150);
-        consumable("morphine_syringe").healingCharges(1).healingValue(2).duration(150);
+        consumable("adrenaline_injector").healingCharges(1).limbHealing(1).healingTime(10);
+        consumable("adrenaline_syringe").healingCharges(1).limbHealing(1).healingTime(10);
+        consumable("bandage").healingCharges(4).limbHealing(1).healingTime(30).healsBrokenLimbs().regeneration(200, 0);
+        consumable("blood_syringe").healingCharges(1).limbHealing(2).healingTime(10);
+        consumable("homemade_bandage").healingCharges(2).limbHealing(1).healingTime(20);
+        consumable("medkit_bag").healingCharges(0).limbHealing(1).healsBrokenLimbs().regeneration(200, 2);
+        consumable("morphine_injector").healingCharges(1).limbHealing(1).healingTime(10);
+        consumable("morphine_syringe").healingCharges(1).limbHealing(1).healingTime(10);
     }
 }

@@ -8,7 +8,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.entity.decoration.ItemFrame;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -49,10 +49,10 @@ public class RenderTooltipFrame
         {
             if (player.tickCount != lastCheckTick && player.tickCount % 5 == 0)
             {
-                ENTITY_LOOKED_AT = WorldUtil.getEntityLookedAt(
-                        player,
-                        player.getAttributeValue(Attributes.ENTITY_INTERACTION_RANGE)
-                );
+                // Reuse the entity vanilla already picks under the crosshair, instead of ray tracing again
+                // (an extra ray trace floods the log with Sable / Create Aeronautics sub-levels)
+                ENTITY_LOOKED_AT = Minecraft.getInstance().hitResult instanceof EntityHitResult entityHitResult
+                        ? entityHitResult.getEntity() : null;
                 lastCheckTick = player.tickCount;
             }
         }

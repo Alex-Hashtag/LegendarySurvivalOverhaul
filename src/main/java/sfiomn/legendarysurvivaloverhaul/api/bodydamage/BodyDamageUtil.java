@@ -1,10 +1,8 @@
 package sfiomn.legendarysurvivaloverhaul.api.bodydamage;
 
-import net.minecraft.world.effect.MobEffect;
-import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import org.apache.commons.lang3.tuple.Pair;
+import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonHealingConsumable;
 
 import java.util.List;
 
@@ -13,7 +11,8 @@ public class BodyDamageUtil
     public static IBodyDamageUtil internal;
 
     /**
-     * Apply to the player the limb healing behavior associated to the provided item registry name
+     * Apply to the player the limb healing behavior associated to the provided item registry name. <br>
+     * Items healing a limited number of limbs open the body health screen on the client, and wait on the server for the player to choose the limbs.
      *
      * @param player              Player to which limbs will be healed
      * @param itemStack           Item stack that has a limb healing behavior
@@ -25,70 +24,61 @@ public class BodyDamageUtil
     }
 
     /**
-     * Get effects applicable to the player. <br>
-     * This is based on the body part and the body health ratio, defined in the configuration file <br>
+     * Check if the healing consumable would have any effect on the player.
      *
-     * @param bodyPart        malus bodyPart enum
-     * @param headHealthRatio headHealthRatio
-     * @return List of effects and associated amplifier
+     * @param player            player using the item
+     * @param healingConsumable healing behavior of the item
      */
-    public static List<Pair<MobEffect, Integer>> getEffects(MalusBodyPartEnum bodyPart, float headHealthRatio)
+    public static boolean canUseHealingConsumable(Player player, JsonHealingConsumable healingConsumable)
     {
-        return internal.getEffects(bodyPart, headHealthRatio);
+        return internal.canUseHealingConsumable(player, healingConsumable);
     }
 
     /**
-     * Get the effect on the player with the highest amplification that make the limbs regenerate passively
-     *
-     * @param player player to get the effects
-     */
-    public static MobEffectInstance getPlayerPassiveLimbRegenerationEffect(Player player)
-    {
-        return internal.getPlayerPassiveLimbRegenerationEffect(player);
-    }
-
-    /**
-     * Check if the player has an effect that can boost the First Aid Supplies
-     *
-     * @param player player to check the effects
-     */
-    public static boolean hasPlayerFirstAidSuppliesBoostingEffect(Player player)
-    {
-        return internal.hasPlayerFirstAidSuppliesBoostingEffect(player);
-    }
-
-    /**
-     * Apply healing item on player's body limb, defined in its body damage capability. <br>
+     * Heal the body part chosen by the player with the healing item they just used. <br>
+     * Server side only, does nothing if there is no pending healing item.
      *
      * @param player       player to heal
-     * @param bodyPart     bodyPart enum where healing item is applied
-     * @param healingValue healing value to be healed over healingTime
-     * @param healingTime  healing time taken to heal healingValue
+     * @param bodyPartEnum body part chosen by the player
      */
-    public static void applyHealingTimeBodyPart(Player player, BodyPartEnum bodyPart, float healingValue, int healingTime)
+    public static void healBodyPartWithHealingSession(Player player, BodyPartEnum bodyPartEnum)
     {
-        internal.applyHealingTimeBodyPart(player, bodyPart, healingValue, healingTime);
+        internal.healBodyPartWithHealingSession(player, bodyPartEnum);
     }
 
     /**
-     * Heal a player's body limb, defined in its body damage capability. <br>
+     * Restore limb hearts of a player's body limb. <br>
      *
-     * @param player       player to heal
-     * @param bodyPart     bodyPart enum to heal
-     * @param healingValue quantity healed
+     * @param player        player to heal
+     * @param bodyPart      bodyPart enum to heal
+     * @param limbHearts    limb hearts restored
+     * @param canHealBroken whether a broken limb can be healed
+     * @return limb hearts actually restored
      */
-    public static void healBodyPart(Player player, BodyPartEnum bodyPart, float healingValue)
+    public static int healBodyPart(Player player, BodyPartEnum bodyPart, int limbHearts, boolean canHealBroken)
     {
-        internal.healBodyPart(player, bodyPart, healingValue);
+        return internal.healBodyPart(player, bodyPart, limbHearts, canHealBroken);
     }
 
     /**
-     * Hurt a player's body limb, defined in its body damage capability.<br>
-     * The remaining damage that exceed body part health will be propagated to a neighbour body part<br>
+     * Give limb shields to random limbs without shield, the most damaged limbs being more likely to be chosen.
+     *
+     * @param player      player receiving the shields
+     * @param limbShields number of limb shields
+     */
+    public static void giveLimbShields(Player player, int limbShields)
+    {
+        internal.giveLimbShields(player, limbShields);
+    }
+
+    /**
+     * Hurt a player's body limb. <br>
+     * The limb loses one limb heart (or its shield) each time the damage reaches the limb damage threshold. <br>
+     * If the limb is already broken, a neighbour limb is hurt instead.
      *
      * @param player      player to hurt
      * @param bodyPart    bodyPart enum to hurt
-     * @param damageValue damage value inflicted to body part
+     * @param damageValue damage value inflicted to the player
      */
     public static void hurtBodyPart(Player player, BodyPartEnum bodyPart, float damageValue)
     {
@@ -96,37 +86,35 @@ public class BodyDamageUtil
     }
 
     /**
-     * Hurt a set of player's body limbs, defined in its body damage capability. <br>
-     * The damage value will be divided across each body part <br>
+     * Hurt a set of player's body limbs. <br>
+     * Each time the damage reaches the limb damage threshold, one of the body parts loses one limb heart (or its shield).
      *
      * @param player      player to hurt
-     * @param bodyParts   list of bodyPart enum to hurt
-     * @param damageValue damage value inflicted to body part
+     * @param bodyParts   list of bodyPart enum that can be hurt
+     * @param damageValue damage value inflicted to the player
      */
-    public static void balancedHurtBodyParts(Player player, List<BodyPartEnum> bodyParts, float damageValue)
+    public static void hurtBodyParts(Player player, List<BodyPartEnum> bodyParts, float damageValue)
     {
-        internal.balancedHurtBodyParts(player, bodyParts, damageValue);
+        internal.hurtBodyParts(player, bodyParts, damageValue);
     }
 
     /**
-     * Hurt a random player's body limb, defined in its body damage capability. <br>
-     * The damage value will be fully assigned to this body limb <br>
+     * Get the damage needed to make a limb lose one limb heart, before limb resistances. <br>
+     * It is a percentage of the player max health, broken hearts removed.
      *
-     * @param player      player to hurt
-     * @param bodyParts   list of bodyPart enum to hurt
-     * @param damageValue damage value inflicted to body part
+     * @param player player
      */
-    public static void randomHurtBodyParts(Player player, List<BodyPartEnum> bodyParts, float damageValue)
+    public static float getLimbDamageThreshold(Player player)
     {
-        internal.randomHurtBodyParts(player, bodyParts, damageValue);
+        return internal.getLimbDamageThreshold(player);
     }
 
     /**
-     * Get the health percentage of a player's body limb, defined in its body damage capability. <br>
+     * Get the health percentage of a player's body limb. <br>
      *
      * @param player   player
      * @param bodyPart bodyPart enum
-     * @return health / max health of the player's body limb
+     * @return remaining limb hearts / max limb hearts
      */
     public static float getHealthRatio(Player player, BodyPartEnum bodyPart)
     {
@@ -134,27 +122,15 @@ public class BodyDamageUtil
     }
 
     /**
-     * Get the total remaining healing applying on the player's body limb, defined in its body damage capability. <br>
+     * Check if a limb penalty is active on the player. Cheap: a bit test on cached limb conditions. <br>
+     * On the client, prefer {@code ClientLimbConditions} for the local player in per frame code.
      *
-     * @param player   player
-     * @param bodyPart bodyPart enum
-     * @return remaining healing that will be applied to the body part
+     * @param player  player
+     * @param penalty limb penalty
      */
-    public static float getTotalRemainingHealing(Player player, BodyPartEnum bodyPart)
+    public static boolean hasLimbPenalty(Player player, LimbPenalty penalty)
     {
-        return internal.getTotalRemainingHealing(player, bodyPart);
-    }
-
-    /**
-     * Get the max health of a player's body limb, defined in its body damage capability. <br>
-     *
-     * @param player   player
-     * @param bodyPart bodyPart enum
-     * @return max health of the body part
-     */
-    public static float getMaxHealth(Player player, BodyPartEnum bodyPart)
-    {
-        return internal.getMaxHealth(player, bodyPart);
+        return internal.hasLimbPenalty(player, penalty);
     }
 
     /**

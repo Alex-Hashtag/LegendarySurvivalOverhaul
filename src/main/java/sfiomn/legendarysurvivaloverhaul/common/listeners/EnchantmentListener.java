@@ -21,6 +21,79 @@ import sfiomn.legendarysurvivaloverhaul.common.items.drink.CanteenItem;
 @EventBusSubscriber(modid = LegendarySurvivalOverhaul.MOD_ID, bus = EventBusSubscriber.Bus.GAME)
 public class EnchantmentListener {
 
+    private static final int TOO_EXPENSIVE_COST = 40;
+
+    /**
+     * Vanilla only combines two identical items in an anvil if they are damageable, which canteens aren't.
+     * Merge the enchantments of two canteens of the same type the vanilla way instead.
+     */
+    @SubscribeEvent
+    public static void onCanteenCombine(AnvilUpdateEvent event) {
+        ItemStack left = event.getLeft();
+        ItemStack right = event.getRight();
+
+        if (!(left.getItem() instanceof CanteenItem) || !right.is(left.getItem()) || !event.getOutput().isEmpty())
+            return;
+
+        ItemEnchantments rightEnchantments = right.getOrDefault(DataComponents.ENCHANTMENTS, ItemEnchantments.EMPTY);
+        if (rightEnchantments.isEmpty())
+            return;
+
+        ItemEnchantments.Mutable merged = new ItemEnchantments.Mutable(left.getOrDefault(DataComponents.ENCHANTMENTS, ItemEnchantments.EMPTY));
+        int cost = 0;
+        boolean changed = false;
+
+        for (var entry : rightEnchantments.entrySet()) {
+            Holder<Enchantment> enchantment = entry.getKey();
+            int rightLevel = entry.getIntValue();
+            int leftLevel = merged.getLevel(enchantment);
+
+            boolean compatible = true;
+            for (Holder<Enchantment> other : merged.keySet()) {
+                if (!other.equals(enchantment) && !Enchantment.areCompatible(enchantment, other)) {
+                    compatible = false;
+                    break;
+                }
+            }
+            if (!compatible) {
+                cost++;
+                continue;
+            }
+
+            int newLevel = leftLevel == rightLevel ? rightLevel + 1 : Math.max(leftLevel, rightLevel);
+            newLevel = Math.min(newLevel, enchantment.value().getMaxLevel());
+            if (newLevel != leftLevel) {
+                merged.set(enchantment, newLevel);
+                changed = true;
+            }
+            cost += enchantment.value().getAnvilCost() * newLevel;
+        }
+
+        if (!changed)
+            return;
+
+        ItemStack output = left.copy();
+        output.set(DataComponents.ENCHANTMENTS, merged.toImmutable());
+
+        int leftRepairCost = left.getOrDefault(DataComponents.REPAIR_COST, 0);
+        int rightRepairCost = right.getOrDefault(DataComponents.REPAIR_COST, 0);
+        cost += leftRepairCost + rightRepairCost;
+        output.set(DataComponents.REPAIR_COST, net.minecraft.world.inventory.AnvilMenu.calculateIncreasedRepairCost(Math.max(leftRepairCost, rightRepairCost)));
+
+        String name = event.getName();
+        if (name != null && !name.isBlank() && !name.equals(left.getHoverName().getString())) {
+            output.set(DataComponents.CUSTOM_NAME, net.minecraft.network.chat.Component.literal(name));
+            cost++;
+        }
+
+        if (cost >= TOO_EXPENSIVE_COST && !event.getPlayer().getAbilities().instabuild)
+            return;
+
+        event.setOutput(output);
+        event.setCost(cost);
+        event.setMaterialCost(1);
+    }
+
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onAnvilUpdate(AnvilUpdateEvent event) {
         ItemStack left = event.getLeft();

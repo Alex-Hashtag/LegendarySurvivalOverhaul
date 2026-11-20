@@ -29,7 +29,7 @@ public class PurificationSmeltingRecipe extends SmeltingRecipe
     {
         ItemStack inputStack = input.item();
         // Check if item type matches (ignoring NBT/enchantments) and has water
-        return inputStack.getItem() instanceof CanteenItem && ThirstUtil.getCapacityTag(inputStack) > 0;
+        return this.ingredient.test(inputStack) && inputStack.getItem() instanceof CanteenItem && ThirstUtil.getCapacityTag(inputStack) > 0;
     }
 
     @Override

@@ -1,41 +1,17 @@
 package sfiomn.legendarysurvivaloverhaul.config;
 
 import net.neoforged.neoforge.common.ModConfigSpec;
-import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
-import sfiomn.legendarysurvivaloverhaul.util.EnumUtil;
+import sfiomn.legendarysurvivaloverhaul.api.bodydamage.LimbPenalty;
 
-import java.util.Collections;
 import java.util.List;
 
 public class BodyDamageConfig
 {
     public final ModConfigSpec.BooleanValue localizedBodyDamageEnabled;
+    public final ModConfigSpec.DoubleValue limbDamageThreshold;
     public final ModConfigSpec.DoubleValue headCriticalShotMultiplier;
     public final ModConfigSpec.DoubleValue bodyDamageMultiplier;
-    public final ModConfigSpec.DoubleValue bodyHealthRatioRecoveredFromSleep;
-    public final ModConfigSpec.DoubleValue bodyHealingFoodExhaustion;
-    public final ModConfigSpec.IntValue minFoodOnBodyHealing;
     public final ModConfigSpec.IntValue painkillerAddictionDuration;
-
-    public final ModConfigSpec.BooleanValue passiveLimbRegenerationOnFullHealth;
-    public final ModConfigSpec.ConfigValue<List<? extends String>> passiveLimbRegenerationEffects;
-    public final ModConfigSpec.BooleanValue passiveLimbRegenerationAmplificationEnabled;
-    public final ModConfigSpec.DoubleValue passiveLimbHealthRegenerated;
-    public final ModConfigSpec.IntValue passiveLimbRegenerationTickTimer;
-
-    public final ModConfigSpec.DoubleValue proportionalLimbRegenMinThreshold;
-    public final ModConfigSpec.DoubleValue proportionalLimbRegenMinHealValue;
-    public final ModConfigSpec.DoubleValue proportionalLimbRegenMaxHealValue;
-    public final ModConfigSpec.IntValue proportionalLimbRegenTickRate;
-    public final ModConfigSpec.DoubleValue proportionalLimbRegenIncreaseRate;
-
-    public final ModConfigSpec.DoubleValue firstAidSuppliesLimbHealthRegenerated;
-    public final ModConfigSpec.EnumValue<EnumUtil.limbRegenerationMode> firstAidSuppliesLimbRegenerationMode;
-    public final ModConfigSpec.BooleanValue firstAidSuppliesHealingOverflow;
-    public final ModConfigSpec.IntValue firstAidSuppliesTickTimer;
-    public final ModConfigSpec.BooleanValue firstAidSuppliesExhaustsFood;
-    public final ModConfigSpec.ConfigValue<List<? extends String>> firstAidSuppliesBoostedOnEffects;
-    public final ModConfigSpec.DoubleValue firstAidSuppliesBoostedTickTimerMultiplier;
 
     public final ModConfigSpec.DoubleValue recoveryEffectHealingValue;
     public final ModConfigSpec.IntValue healingHerbsUseTime;
@@ -46,141 +22,52 @@ public class BodyDamageConfig
     public final ModConfigSpec.IntValue morphineUseTime;
     public final ModConfigSpec.IntValue morphinePainkillerTickDuration;
 
-    public final ModConfigSpec.EnumValue<EnumUtil.bodyPartHealthMode> bodyPartHealthMode;
-    public final ModConfigSpec.DoubleValue headPartHealth;
-    public final ModConfigSpec.DoubleValue armsPartHealth;
-    public final ModConfigSpec.DoubleValue chestPartHealth;
-    public final ModConfigSpec.DoubleValue legsPartHealth;
-    public final ModConfigSpec.DoubleValue feetPartHealth;
-
-    public final ModConfigSpec.ConfigValue<List<? extends String>> headPartEffects;
-    public final ModConfigSpec.ConfigValue<List<? extends Integer>> headPartEffectAmplifiers;
-    public final ModConfigSpec.ConfigValue<List<? extends Double>> headPartEffectThresholds;
-
-    public final ModConfigSpec.ConfigValue<List<? extends String>> armsPartEffects;
-    public final ModConfigSpec.ConfigValue<List<? extends Integer>> armsPartEffectAmplifiers;
-    public final ModConfigSpec.ConfigValue<List<? extends Double>> armsPartEffectThresholds;
-    public final ModConfigSpec.ConfigValue<List<? extends String>> bothArmsPartEffects;
-    public final ModConfigSpec.ConfigValue<List<? extends Integer>> bothArmsPartEffectAmplifiers;
-    public final ModConfigSpec.ConfigValue<List<? extends Double>> bothArmsPartEffectThresholds;
-
-    public final ModConfigSpec.ConfigValue<List<? extends String>> chestPartEffects;
-    public final ModConfigSpec.ConfigValue<List<? extends Integer>> chestPartEffectAmplifiers;
-    public final ModConfigSpec.ConfigValue<List<? extends Double>> chestPartEffectThresholds;
-
-    public final ModConfigSpec.ConfigValue<List<? extends String>> legsPartEffects;
-    public final ModConfigSpec.ConfigValue<List<? extends Integer>> legsPartEffectAmplifiers;
-    public final ModConfigSpec.ConfigValue<List<? extends Double>> legsPartEffectThresholds;
-    public final ModConfigSpec.ConfigValue<List<? extends String>> bothLegsPartEffects;
-    public final ModConfigSpec.ConfigValue<List<? extends Integer>> bothLegsPartEffectAmplifiers;
-    public final ModConfigSpec.ConfigValue<List<? extends Double>> bothLegsPartEffectThresholds;
-
-    public final ModConfigSpec.ConfigValue<List<? extends String>> feetPartEffects;
-    public final ModConfigSpec.ConfigValue<List<? extends Integer>> feetPartEffectAmplifiers;
-    public final ModConfigSpec.ConfigValue<List<? extends Double>> feetPartEffectThresholds;
-    public final ModConfigSpec.ConfigValue<List<? extends String>> bothFeetPartEffects;
-    public final ModConfigSpec.ConfigValue<List<? extends Integer>> bothFeetPartEffectAmplifiers;
-    public final ModConfigSpec.ConfigValue<List<? extends Double>> bothFeetPartEffectThresholds;
-
     public final ModConfigSpec.BooleanValue morphineSyringeApplyPainkillerAddiction;
+
+    // Limb penalties
+    public final ModConfigSpec.ConfigValue<List<? extends String>> disabledLimbPenalties;
+    public final ModConfigSpec.DoubleValue muffledHearingVolume;
+    public final ModConfigSpec.DoubleValue muffledHearingClarity;
+    public final ModConfigSpec.DoubleValue deafenedHearingVolume;
+    public final ModConfigSpec.DoubleValue deafenedHearingClarity;
+    public final ModConfigSpec.IntValue concussionDeafnessDuration;
+    public final ModConfigSpec.DoubleValue lazyMouseSensitivityMultiplier;
+    public final ModConfigSpec.DoubleValue lazyMouseSmoothing;
+    public final ModConfigSpec.DoubleValue fragileTorsoDamageMultiplier;
+    public final ModConfigSpec.DoubleValue veryFragileTorsoDamageMultiplier;
+    public final ModConfigSpec.DoubleValue shortnessOfBreathAirLossMultiplier;
+    public final ModConfigSpec.DoubleValue slowBowDrawMultiplier;
+    public final ModConfigSpec.DoubleValue slowEatingMultiplier;
+    public final ModConfigSpec.DoubleValue slowBandagingMultiplier;
+    public final ModConfigSpec.DoubleValue weakProjectilesVelocityMultiplier;
+    public final ModConfigSpec.DoubleValue slowSprintSpeedPenalty;
+    public final ModConfigSpec.DoubleValue hardFallingDamageMultiplier;
+    public final ModConfigSpec.DoubleValue veryHardFallingDamageMultiplier;
 
     BodyDamageConfig(ModConfigSpec.Builder builder)
     {
         localizedBodyDamageEnabled = builder
                 .comment(" Whether body members receive localized damages.",
+                        " Each limb has 3 limb hearts: bruised, fractured, then broken. A broken limb inflicts broken hearts (see health.toml).",
+                        " Limbs are only healed with healing items, defined per item in the body_damage/consumables data pack folder.",
                         " The damageSourceBodyParts.json allows you to define for specific damage source, the damage spread across specified body parts.",
-                        " The damage distribution can either be ONE_OF or ALL. ALL means the damage are equally divided across all body parts.")
+                        " The damage distribution can either be ONE_OF or ALL. ALL means any of the body parts can be hurt.")
                 .define("Localized Body Damage Enabled", true);
+        limbDamageThreshold = builder
+                .comment(" Percentage of the player max health (broken hearts removed first) a hit has to deal for a limb to lose a limb heart.",
+                        " A hit dealing twice this amount hurts twice, and so on. A limb shield is broken before the limb loses a limb heart.",
+                        " Limb resistances increase the damage needed.")
+                .defineInRange("Limb Damage Threshold", 0.4d, 0.01d, 1.0d);
         headCriticalShotMultiplier = builder
                 .comment(" Multiply the damage taken by the player when shot in the head without helmet.")
                 .defineInRange("Headshot Multiplier", 2.0d, 1.0d, 1000.0d);
         bodyDamageMultiplier = builder
-                .comment(" How much of the hurt player's damage is assigned to the body parts.")
+                .comment(" Multiply the damage taken by the player before comparing it to the limb damage threshold.")
                 .defineInRange("Body Damage Multiplier", 1.0d, 0.0d, 1000.0d);
-        bodyHealthRatioRecoveredFromSleep = builder
-                .comment(" How much health ratio are recovered in all body parts from bed sleeping.")
-                .defineInRange("Body Part Health Ratio Recovered", 1.0d, 0.0d, 1.0d);
-        bodyHealingFoodExhaustion = builder
-                .comment(" How much food is exhausted when a limb regenerates based on the amount of health regenerated.",
-                        " For each 1 health regenerated, the food is exhausted by this value.")
-                .defineInRange("Body Healing Food Exhaustion", 0.5d, 0, 1000.0D);
-        minFoodOnBodyHealing = builder
-                .comment(" The hunger bar won't drop below this value while body is healing.",
-                        " Each hunger icon has a value of 2 in the hunger bar.")
-                .defineInRange("Minimum Food On Body Healing", 0, 0, 1000);
         painkillerAddictionDuration = builder
                 .comment(" How long in ticks is the Addiction Effect lasting. 0 deactivates the feature.",
                         " The Addiction Effect prevents you from re-using the morphine item.")
                 .defineInRange("Painkiller Addiction Duration", 3600, 0, 100000);
-
-        builder.push("healing-limbs");
-        builder.push("passive-regeneration");
-        passiveLimbRegenerationOnFullHealth = builder
-                .comment(" The limbs will be healed when the player is at max health.")
-                .define("Passive Limb Regeneration On Full Health", false);
-        passiveLimbRegenerationEffects = builder
-                .comment(" The limbs will be healed when the player is under one of the mentioned effect, the most damaged limb first.")
-                .defineListAllowEmpty("Passive Limb Regeneration On Effects", List.of("minecraft:regeneration"), Config::validateEffectName);
-        passiveLimbRegenerationAmplificationEnabled = builder
-                .comment(" Whether the amplification of the effect increase the limb regeneration speed.",
-                        " The speed increase follows the same logic as the Regeneration Effect Amplification :",
-                        "    Amplifier 1 -> tick timer /2, Amplifier 2 -> tick timer /4, ...")
-                .define("Passive Limb Regeneration Amplification Enabled", true);
-        passiveLimbHealthRegenerated = builder
-                .comment(" Amount of limb health regenerated, the most damaged limb first.")
-                .defineInRange("Passive Limb Health Regenerated", 0.01, 0, 1000);
-        passiveLimbRegenerationTickTimer = builder
-                .comment(" How fast in ticks the limbs regenerate passively. 20 ticks = 1s")
-                .defineInRange("Passive Limb Regeneration Tick Timer", 200, 0, 10000);
-        builder.pop();
-
-        builder.push("proportional-regeneration");
-        proportionalLimbRegenMinThreshold = builder
-                .comment(" Minimum health threshold (as ratio of max health minus broken hearts) to start regenerating limbs.")
-                .defineInRange("Proportional Limb Regen Min Threshold", 0.5, 0, 1);
-        proportionalLimbRegenMinHealValue = builder
-                .comment(" Minimum limb heal value per tick rate when at min threshold. Spread proportionally across all body parts.")
-                .defineInRange("Proportional Limb Regen Min Heal Value", 0.0, 0, 1000);
-        proportionalLimbRegenMaxHealValue = builder
-                .comment(" Maximum limb heal value per tick rate when at full health. Spread proportionally across all body parts.")
-                .defineInRange("Proportional Limb Regen Max Heal Value", 4.0, 0, 1000);
-        proportionalLimbRegenTickRate = builder
-                .comment(" How often in ticks the proportional regeneration occurs. 20 ticks = 1s")
-                .defineInRange("Proportional Limb Regen Tick Rate", 100, 1, 10000);
-        proportionalLimbRegenIncreaseRate = builder
-                .comment(" Rate at which healing increases from min to max. 1.0 = linear, >1 = exponential.")
-                .defineInRange("Proportional Limb Regen Increase Rate", 1.0, 0.1, 10);
-        builder.pop();
-
-        builder.comment(" The First Aid Supplies overrides the passive limb regeneration as its effects is meant to be stronger.").push("first-aid-supplies");
-        firstAidSuppliesLimbHealthRegenerated = builder
-                .comment(" The First Aid Supplies regenerate limb health passively, either by holding it or using Curios mod, the most damaged limb first.")
-                .defineInRange("First Aid Supplies Limb Health Regenerated", 0.01, 0, 1000);
-        firstAidSuppliesLimbRegenerationMode = builder
-                .comment(" How a player's limb health regenerated is defined. Accepted values are as follows:",
-                        "   SIMPLE - The limb health regenerated is a fixed value defined in First Aid Supplies Limb Health Regenerated.",
-                        "   PLAYER_DYNAMIC - The limb health regenerated is a percentage value of the player max health using the percentage value defined in First Aid Supplies Limb Health Regenerated.",
-                        "   LIMB_DYNAMIC - The limb health regenerated is a percentage value of the limb max health using the percentage value defined in First Aid Supplies Limb Health Regenerated.",
-                        " Any other value will default to SIMPLE.")
-                .defineEnum("First Aid Supplies Limb Regeneration Mode", EnumUtil.limbRegenerationMode.PLAYER_DYNAMIC);
-        firstAidSuppliesHealingOverflow = builder
-                .comment(" Whether the exceeded limb health regenerated will heal the next most damaged limb.",
-                        " Only available for Regeneration Mode SIMPLE or PLAYER_DYNAMIC.")
-                .define("First Aid Supplies Healing Overflow", true);
-        firstAidSuppliesTickTimer = builder
-                .comment(" How fast in ticks the First Aid Supplies will heal limbs. 20 ticks = 1s")
-                .defineInRange("First Aid Supplies Tick Timer", 100, 0, 10000);
-        firstAidSuppliesExhaustsFood = builder
-                .comment(" Whether the First Aid Supplies exhaust food when healing limbs, such as the other healing items.")
-                .define("First Aid Supplies Exhausts Food", true);
-        firstAidSuppliesBoostedOnEffects = builder
-                .comment(" The First Aid Supplies will heal limbs faster when the player is under one of the mentioned effect.")
-                .defineListAllowEmpty("First Aid Supplies Boosted On Effects", List.of("minecraft:regeneration", "farmersdelight:comfort"), Config::validateEffectName);
-        firstAidSuppliesBoostedTickTimerMultiplier = builder
-                .comment(" How much the First Aid Supplies tick timer is multiplied when boosted. ",
-                        " A value of 1 would deactivate the speed boost. 0.5 makes the heal twice faster.")
-                .defineInRange("First Aid Supplies Tick Timer Multiplier", 0.5, 0.1, 1);
-        builder.pop();
 
         builder.push("healing-items");
         recoveryEffectHealingValue = builder
@@ -209,84 +96,96 @@ public class BodyDamageConfig
                 .comment(" Item use time in ticks.")
                 .defineInRange("Morphine Use Time", 30, 0, 1000);
         morphinePainkillerTickDuration = builder
-                .comment(" Painkiller effect duration in ticks. This effect prevents the player to be affected by broken limbs effects.")
+                .comment(" Painkiller effect duration in ticks.")
                 .defineInRange("Morphine Painkiller Duration", 1800, 0, 10000);
         builder.pop();
+
+        builder.comment(" Penalties given by fractured (2 limb hearts lost) and broken (3 limb hearts lost) limbs.",
+                        " For arms, legs and feet, the most damaged limb of the pair counts.")
+                .push("limb-penalties");
+        disabledLimbPenalties = builder
+                .comment(" Names of the limb penalties to disable. Accepted values:",
+                        "   Head: MUFFLED_HEARING, DEAFENED_HEARING, EAR_RINGING, MOTION_BLUR, LAZY_MOUSE",
+                        "   Torso: HEARTBEAT_ON_BREAK, FRAGILE_TORSO, CONSTANT_HEARTBEAT, VERY_FRAGILE_TORSO, SHORTNESS_OF_BREATH",
+                        "   Arms: SLOW_BOW_DRAW, SLOW_EATING, NO_SWIMMING, SLOW_BANDAGING, WEAK_PROJECTILES",
+                        "   Legs: SLOW_SPRINT, NO_SNEAKING",
+                        "   Feet: HARD_FALLING, VERY_HARD_FALLING")
+                .defineListAllowEmpty("Disabled Limb Penalties", List.of(),
+                        obj -> obj instanceof String name && LimbPenalty.get(name) != null);
+
+        builder.push("head");
+        muffledHearingVolume = builder
+                .comment(" Sound volume multiplier with a fractured head.")
+                .defineInRange("Muffled Hearing Volume", 0.7, 0.0, 1.0);
+        muffledHearingClarity = builder
+                .comment(" How much of the high frequencies is still heard with a fractured head. Lower sounds more muffled.")
+                .defineInRange("Muffled Hearing Clarity", 0.25, 0.0, 1.0);
+        deafenedHearingVolume = builder
+                .comment(" Sound volume multiplier with a broken head.")
+                .defineInRange("Deafened Hearing Volume", 0.35, 0.0, 1.0);
+        deafenedHearingClarity = builder
+                .comment(" How much of the high frequencies is still heard with a broken head. Lower sounds more muffled.")
+                .defineInRange("Deafened Hearing Clarity", 0.05, 0.0, 1.0);
+        concussionDeafnessDuration = builder
+                .comment(" When the head gets worse, the player is nearly deaf for a moment, then the hearing recovers to its muffled level.",
+                        " Duration in ticks of this recovery. 0 deactivates it.")
+                .defineInRange("Concussion Deafness Duration", 100, 0, 1200);
+        lazyMouseSensitivityMultiplier = builder
+                .comment(" Mouse sensitivity multiplier with a broken head.")
+                .defineInRange("Lazy Mouse Sensitivity Multiplier", 0.925, 0.05, 1.0);
+        lazyMouseSmoothing = builder
+                .comment(" With a broken head, the camera lags behind the mouse: time in seconds to catch up most of the way.",
+                        " For comparison, the vanilla cinematic camera is about 1 second. 0 deactivates the smoothing.")
+                .defineInRange("Lazy Mouse Smoothing", 0.15, 0.0, 2.0);
         builder.pop();
 
-        builder.push("body-parts-health");
-        bodyPartHealthMode = builder
-                .comment(" How a player's body part health is determined. Accepted values are as follows:",
-                        "   SIMPLE - Body parts will have initial fixed values. The body parts health define the health value.",
-                        "       In this case, if the 'headPartHeath = 10', the head will have '10' health.",
-                        "   DYNAMIC - Body parts will have dynamic values based on the player's max health. In this case, the body parts health is a multiplier of the player's max health.",
-                        "       In this case, if the 'headPartHeath = 0.3', the head will have '0.3' * 'player max health' health.",
-                        " Any other value will default to SIMPLE.")
-                .defineEnum("Body Part Health Mode", EnumUtil.bodyPartHealthMode.DYNAMIC);
-        headPartHealth = builder.defineInRange("Head Part Health", 0.4d, 0.0d, 1000.0d);
-        armsPartHealth = builder.comment(" Both arms will have this health.")
-                .defineInRange("Arms Part Health", 0.4d, 0.0d, 1000.0d);
-        chestPartHealth = builder.defineInRange("Chest Part Health", 0.6d, 0.0d, 1000.0d);
-        legsPartHealth = builder.comment(" Both legs will have this health.")
-                .defineInRange("Legs Part Health", 0.6d, 0.0d, 1000.0d);
-        feetPartHealth = builder.comment(" Both feet will have this health.")
-                .defineInRange("Feet Part Health", 0.4d, 0.0d, 1000.0d);
+        builder.push("torso");
+        fragileTorsoDamageMultiplier = builder
+                .comment(" Damage taken multiplier with a fractured torso.")
+                .defineInRange("Fragile Torso Damage Multiplier", 1.1, 1.0, 10.0);
+        veryFragileTorsoDamageMultiplier = builder
+                .comment(" Damage taken multiplier with a broken torso.")
+                .defineInRange("Very Fragile Torso Damage Multiplier", 1.25, 1.0, 10.0);
+        shortnessOfBreathAirLossMultiplier = builder
+                .comment(" How much faster air runs out underwater with a broken torso.")
+                .defineInRange("Shortness Of Breath Air Loss Multiplier", 2.0, 1.0, 20.0);
         builder.pop();
 
-        builder.push("body-parts-effects");
-        builder.comment(" Each effect, threshold and amplifier lists must have the same number of items.",
-                        " The first effect will be triggered with the first amplifier value when the first threshold is reach.")
-                .push("head");
-        headPartEffects = builder
-                .comment(" The list of effects that will be triggered when the head is damaged by the percentage of remaining head health defined in the thresholds.")
-                .defineListAllowEmpty("Head Part Effects", List.of(LegendarySurvivalOverhaul.MOD_ID + ":headache"), Config::validateEffectName);
-        headPartEffectAmplifiers = builder
-                .comment(" The list of amplifiers the effect will have.",
-                        " 0 means the basic effect, 1 means the effect is amplified once.")
-                .defineListAllowEmpty("Head Part Effect Amplifiers", List.of(0), Config::validatePositiveInt);
-        headPartEffectThresholds = builder
-                .comment(" The list of thresholds for which each effect will be triggered. A threshold is a percentage of remaining head health.",
-                        " 0 means the head is fully damaged.")
-                .defineListAllowEmpty("Head Part Effect Thresholds", List.of(0.2), Config::validatePercentDouble);
-        builder.pop();
         builder.push("arms");
-        armsPartEffects = builder.defineListAllowEmpty("Arms Part Effects", List.of("minecraft:mining_fatigue"), Config::validateEffectName);
-        armsPartEffectAmplifiers = builder.defineListAllowEmpty("Arms Part Effect Amplifiers", List.of(0), Config::validatePositiveInt);
-        armsPartEffectThresholds = builder.defineListAllowEmpty("Arms Part Effect Thresholds", List.of(0.2), Config::validatePercentDouble);
-        bothArmsPartEffects = builder
-                .comment(" These effects will be triggered when both arms reach the thresholds.",
-                        " If a same effect is used with a higher amplifier, the higher prevails (normal Minecraft behaviour).")
-                .defineListAllowEmpty("Both Arms Part Effects", List.of("minecraft:weakness"), Config::validateEffectName);
-        bothArmsPartEffectAmplifiers = builder.defineListAllowEmpty("Both Arms Part Effect Amplifiers", List.of(0), Config::validatePositiveInt);
-        bothArmsPartEffectThresholds = builder.defineListAllowEmpty("Both Arms Part Effect Thresholds", List.of(0.2), Config::validatePercentDouble);
+        slowBowDrawMultiplier = builder
+                .comment(" Bow draw speed multiplier with a fractured arm.")
+                .defineInRange("Slow Bow Draw Multiplier", 0.7, 0.05, 1.0);
+        slowEatingMultiplier = builder
+                .comment(" Eating and drinking speed multiplier with a fractured arm.")
+                .defineInRange("Slow Eating Multiplier", 0.7, 0.05, 1.0);
+        slowBandagingMultiplier = builder
+                .comment(" Healing items speed multiplier with a broken arm.")
+                .defineInRange("Slow Bandaging Multiplier", 0.6, 0.05, 1.0);
+        weakProjectilesVelocityMultiplier = builder
+                .comment(" Projectile velocity multiplier with a broken arm.")
+                .defineInRange("Weak Projectiles Velocity Multiplier", 0.7, 0.05, 1.0);
         builder.pop();
-        builder.push("chest");
-        chestPartEffects = builder.defineListAllowEmpty("Chest Part Effects", List.of(LegendarySurvivalOverhaul.MOD_ID + ":vulnerability"), Config::validateEffectName);
-        chestPartEffectAmplifiers = builder.defineListAllowEmpty("Chest Part Effect Amplifier", List.of(0), Config::validatePositiveInt);
-        chestPartEffectThresholds = builder.defineListAllowEmpty("Chest Part Effect Thresholds", List.of(0.2), Config::validatePercentDouble);
-        builder.pop();
+
         builder.push("legs");
-        legsPartEffects = builder.defineListAllowEmpty("Legs Part Effects", List.of(LegendarySurvivalOverhaul.MOD_ID + ":hard_falling"), Config::validateEffectName);
-        legsPartEffectAmplifiers = builder.defineListAllowEmpty("Legs Part Effect Amplifiers", List.of(0), Config::validatePositiveInt);
-        legsPartEffectThresholds = builder.defineListAllowEmpty("Legs Part Effect Thresholds", List.of(0.2), Config::validatePercentDouble);
-        bothLegsPartEffects = builder.defineListAllowEmpty("Both Legs Part Effects", List.of(LegendarySurvivalOverhaul.MOD_ID + ":hard_falling"), Config::validateEffectName);
-        bothLegsPartEffectAmplifiers = builder.defineListAllowEmpty("Both Legs Part Effect Amplifiers", List.of(1), Config::validatePositiveInt);
-        bothLegsPartEffectThresholds = builder.defineListAllowEmpty("Both Legs Part Effect Thresholds", List.of(0.2), Config::validatePercentDouble);
+        slowSprintSpeedPenalty = builder
+                .comment(" Sprint speed lost with a fractured leg, as a ratio of the movement speed.")
+                .defineInRange("Slow Sprint Speed Penalty", 0.15, 0.0, 1.0);
         builder.pop();
+
         builder.push("feet");
-        feetPartEffects = builder.defineListAllowEmpty("Feet Part Effects", Collections.singletonList("minecraft:slowness"), Config::validateEffectName);
-        feetPartEffectAmplifiers = builder.defineListAllowEmpty("Feet Part Effect Amplifiers", Collections.singletonList(0), Config::validatePositiveInt);
-        feetPartEffectThresholds = builder.defineListAllowEmpty("Feet Part Effect Thresholds", Collections.singletonList(0.2), Config::validatePercentDouble);
-        bothFeetPartEffects = builder.defineListAllowEmpty("Both Feet Part Effects", Collections.singletonList("minecraft:slowness"), Config::validateEffectName);
-        bothFeetPartEffectAmplifiers = builder.defineListAllowEmpty("Both Feet Part Effect Amplifiers", Collections.singletonList(1), Config::validatePositiveInt);
-        bothFeetPartEffectThresholds = builder.defineListAllowEmpty("Both Feet Part Effect Thresholds", Collections.singletonList(0.2), Config::validatePercentDouble);
+        hardFallingDamageMultiplier = builder
+                .comment(" Fall damage multiplier with a fractured foot.")
+                .defineInRange("Hard Falling Damage Multiplier", 1.25, 1.0, 10.0);
+        veryHardFallingDamageMultiplier = builder
+                .comment(" Fall damage multiplier with a broken foot.")
+                .defineInRange("Very Hard Falling Damage Multiplier", 1.5, 1.0, 10.0);
         builder.pop();
         builder.pop();
 
         builder.push("integration");
         builder.push("meds_and_herbs");
         morphineSyringeApplyPainkillerAddiction = builder
-                .comment(" Painkiller Addiction effect prevents the abusive usage of Painkiller effect that prevents all negative effects from limbs.",
+                .comment(" Painkiller Addiction effect prevents the abusive usage of Painkiller effect.",
                         " Syringe Morphine share the same configuration as Morphine item")
                 .define("Syringe Morphine Apply Painkiller Addiction", true);
         builder.pop();

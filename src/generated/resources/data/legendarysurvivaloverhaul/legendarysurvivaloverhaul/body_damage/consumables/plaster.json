@@ -1,7 +1,6 @@
 {
-  "healing_charges": 1,
-  "healing_time": 400,
-  "healing_value": 3.0,
-  "recovery_effect_amplifier": 0,
-  "recovery_effect_duration": 1200
+  "healing_charges": 2,
+  "healing_time": 20,
+  "heals_broken_limbs": false,
+  "limb_healing": 1
 }

@@ -12,13 +12,15 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
 import sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul;
-import sfiomn.legendarysurvivaloverhaul.api.bodydamage.BodyDamageUtil;
 import sfiomn.legendarysurvivaloverhaul.api.bodydamage.BodyPartEnum;
+import sfiomn.legendarysurvivaloverhaul.api.bodydamage.IBodyDamageAttachment;
+import sfiomn.legendarysurvivaloverhaul.api.data.json.JsonHealingConsumable;
 import sfiomn.legendarysurvivaloverhaul.common.attachments.bodydamage.BodyDamageAttachment;
-import sfiomn.legendarysurvivaloverhaul.network.payloads.BodyPartHealingTimeMessage;
+import sfiomn.legendarysurvivaloverhaul.network.payloads.HealBodyPartPayload;
 import sfiomn.legendarysurvivaloverhaul.registry.KeyMappingRegistry;
 import sfiomn.legendarysurvivaloverhaul.util.AttachmentUtil;
-import sfiomn.legendarysurvivaloverhaul.util.MathUtil;
+
+import javax.annotation.Nullable;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -30,10 +32,13 @@ public class BodyHealthScreen extends Screen
     public static final ResourceLocation TUTORIAL_PAGES = ResourceLocation.fromNamespaceAndPath(LegendarySurvivalOverhaul.MOD_ID, "textures/gui/tutorial_pages.png");
     public static final int HEALTH_SCREEN_WIDTH = 176;
     public static final int HEALTH_SCREEN_HEIGHT = 183;
-    public static final int HEALTH_BAR_WIDTH = 30;
-    public static final int HEALTH_BAR_HEIGHT = 5;
-    public static final int TEX_HEALTH_BAR_X = 176;
-    public static final int TEX_HEALTH_BAR_Y = 0;
+    // Limb hearts drawn in the limb boxes of the screen texture
+    public static final int LIMB_HEART_SIZE = 7;
+    public static final int LIMB_HEART_SPACING = 8;
+    public static final int TEX_LIMB_HEART_X = 176;
+    public static final int TEX_LIMB_HEART_Y = 47;
+    public static final int TEX_LIMB_SHIELD_X = 176;
+    public static final int TEX_LIMB_SHIELD_Y = 54;
 
     // Tutorial toggle button constants (relative to body_health_screen.png)
     public static final int TUTORIAL_TOGGLE_BUTTON_X = 155;
@@ -84,36 +89,44 @@ public class BodyHealthScreen extends Screen
     private final Map<BodyPartEnum, BodyPartButton> bodyPartButtons = new HashMap<>();
 
     private final Map<BodyPartEnum, Integer> flashCounters = new HashMap<>();
-    private final Map<BodyPartEnum, Float> bodyPartHealth = new HashMap<>();
+    // Limb damage and shield of each limb, to flash the limbs that changed
+    private final Map<BodyPartEnum, Integer> bodyPartState = new HashMap<>();
     private final Player player;
     private final InteractionHand hand;
-    private final float healingValue;
-    private final int healingTime;
+    private final int limbHealing;
+    private final boolean healsBrokenLimbs;
     private int leftPos;
     private int topPos;
     private int healingCharges;
-    private boolean consumeItem;
-    private boolean applyEffect;
 
     private boolean tutorialOpen = false;
     private int currentTutorialPage = 0;
     private TutorialToggleButton tutorialToggleButton;
     private TutorialNavButton tutorialLeftButton;
     private TutorialNavButton tutorialRightButton;
+    private LimbEffectsPanel limbEffectsPanel;
+    private static final int LIMB_EFFECTS_GAP = 2;
     private int leftArrowPressCounter = 0;
     private int rightArrowPressCounter = 0;
 
-    public BodyHealthScreen(Player player, InteractionHand hand, boolean alreadyConsumed, int healingCharges, float healingValue, int healingTime)
+    /**
+     * @param hand              hand holding the healing item, null to only look at the limbs
+     * @param healingConsumable healing behavior of the item used, null to only look at the limbs
+     */
+    public BodyHealthScreen(Player player, @Nullable InteractionHand hand, @Nullable JsonHealingConsumable healingConsumable)
     {
         super(Component.translatable("screen." + LegendarySurvivalOverhaul.MOD_ID + ".body_health_screen"));
 
         this.player = player;
-        this.hand = hand;
-        this.healingCharges = healingCharges;
-        this.healingValue = healingValue;
-        this.healingTime = healingTime;
-        this.consumeItem = !alreadyConsumed;
-        this.applyEffect = true;
+        this.hand = healingConsumable != null ? hand : null;
+        this.healingCharges = healingConsumable != null ? healingConsumable.healingCharges : 0;
+        this.limbHealing = healingConsumable != null ? healingConsumable.limbHealing : 0;
+        this.healsBrokenLimbs = healingConsumable != null && healingConsumable.healsBrokenLimbs;
+    }
+
+    private static int getBodyPartState(IBodyDamageAttachment cap, BodyPartEnum bodyPart)
+    {
+        return cap.getLimbDamage(bodyPart) | (cap.hasLimbShield(bodyPart) ? 4 : 0);
     }
 
     @Override
@@ -165,6 +178,11 @@ public class BodyHealthScreen extends Screen
         );
         addWidget(tutorialRightButton);
 
+        // Active limb effects, 2 pixels left of the screen and centered on its height
+        limbEffectsPanel = new LimbEffectsPanel(this.leftPos - LIMB_EFFECTS_GAP - LimbEffectsPanel.WIDTH, this.topPos + HEALTH_SCREEN_HEIGHT / 2);
+        limbEffectsPanel.setConditions(AttachmentUtil.getBodyDamageAttachment(player).getLimbConditions());
+        addRenderableWidget(limbEffectsPanel);
+
         bodyPartButtons.clear();
         for (GuiEventListener button : this.children())
         {
@@ -181,23 +199,19 @@ public class BodyHealthScreen extends Screen
         flashCounters.clear();
 
         BodyDamageAttachment cap = AttachmentUtil.getBodyDamageAttachment(player);
-        bodyPartHealth.clear();
+        bodyPartState.clear();
         for (BodyPartEnum bodyPart : BodyPartEnum.values())
         {
-            bodyPartHealth.put(bodyPart, cap.getBodyPartDamage(bodyPart));
+            bodyPartState.put(bodyPart, getBodyPartState(cap, bodyPart));
         }
     }
 
     public void sendBodyPartHeal(BodyPartEnum bodyPart)
     {
-        if (healingCharges > 0)
+        BodyDamageAttachment cap = AttachmentUtil.getBodyDamageAttachment(player);
+        if (healingCharges > 0 && cap.canHealLimb(bodyPart, this.healsBrokenLimbs))
         {
-            BodyPartHealingTimeMessage.sendToServer(bodyPart, this.hand, this.consumeItem, this.applyEffect);
-            BodyDamageUtil.applyHealingTimeBodyPart(player, bodyPart, this.healingValue, this.healingTime);
-            if (this.consumeItem)
-                this.consumeItem = false;
-            if (this.applyEffect)
-                this.applyEffect = false;
+            HealBodyPartPayload.sendToServer(bodyPart);
             this.healingCharges--;
         }
     }
@@ -216,12 +230,14 @@ public class BodyHealthScreen extends Screen
         }
 
         BodyDamageAttachment cap = AttachmentUtil.getBodyDamageAttachment(player);
+        limbEffectsPanel.setConditions(cap.getLimbConditions());
         for (BodyPartEnum bodyPart : BodyPartEnum.values())
         {
-            if (bodyPartHealth.get(bodyPart) != cap.getBodyPartDamage(bodyPart))
+            int state = getBodyPartState(cap, bodyPart);
+            if (bodyPartState.get(bodyPart) != state)
             {
                 flashCounters.put(bodyPart, 4);
-                bodyPartHealth.put(bodyPart, cap.getBodyPartDamage(bodyPart));
+                bodyPartState.put(bodyPart, state);
             }
         }
 
@@ -383,179 +399,96 @@ public class BodyHealthScreen extends Screen
             return;
         }
 
-        float healthRatio = BodyDamageUtil.getHealthRatio(this.player, bodyPart);
-        float totalRemainingHealing = BodyDamageUtil.getTotalRemainingHealing(this.player, bodyPart);
-        float maxHealth = BodyDamageUtil.getMaxHealth(this.player, bodyPart);
+        BodyDamageAttachment cap = AttachmentUtil.getBodyDamageAttachment(player);
+        float healthRatio = cap.getLimbHealthRatio(bodyPart);
 
         BodyPartButton bodyPartButton = this.bodyPartButtons.get(bodyPart);
 
         // Update button health ratio
         bodyPartButton.setHealthRatio(healthRatio);
 
-        // Define button inactive if full health, or pressed, or no healing items used
-        if (healthRatio >= 1 || bodyPartButton.isPressed || this.hand == null)
-        {
-            if (bodyPartButton.active)
-            {
-                bodyPartButton.active = false;
-            }
-            if (totalRemainingHealing > 0.0f)
-            {
-                bodyPartButton.isPressed = false;
-            }
-        } else if (!bodyPartButton.active)
-        {
-            bodyPartButton.active = true;
-        }
+        // A limb can be chosen once per healing item, if the item can heal it
+        bodyPartButton.active = this.hand != null && !bodyPartButton.isPressed && cap.canHealLimb(bodyPart, this.healsBrokenLimbs);
 
         bodyPartButton.render(gui, mouseX, mouseY, partialTicks);
 
-        if (bodyPartButton.isMouseOver(mouseX, mouseY) && this.hand != null)
-        {
-            totalRemainingHealing += this.healingValue;
-        }
+        // Limb hearts the hovered limb would get back from the healing item
+        int previewHearts = 0;
+        if (bodyPartButton.active && bodyPartButton.isMouseOver(mouseX, mouseY))
+            previewHearts = Math.min(this.limbHealing, cap.getLimbDamage(bodyPart));
+
+        drawLimbHearts(gui, bodyPart, cap.getLimbDamage(bodyPart), previewHearts, cap.hasLimbShield(bodyPart));
+    }
+
+    /**
+     * Draw the limb hearts of a limb in its box: remaining hearts from the left, then the hearts the hovered healing item
+     * would restore, faded. A shield covers the most left heart, even if the limb is broken.
+     */
+    private void drawLimbHearts(GuiGraphics gui, BodyPartEnum bodyPart, int damage, int previewHearts, boolean shielded)
+    {
+        LimbHeartsBox box = LimbHeartsBox.get(bodyPart);
+        int x = this.leftPos + box.x;
+        int y = this.topPos + box.y;
+        int remainingHearts = IBodyDamageAttachment.MAX_LIMB_DAMAGE - damage;
 
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderColor(1, 1, 1, 1);
-        drawHealthBar(gui, bodyPart, healthRatio, MathUtil.round(totalRemainingHealing / maxHealth, 2));
-    }
+        RenderSystem.enableBlend();
 
-    private void drawHealthBar(GuiGraphics gui, BodyPartEnum bodyPart, float healthRatio, float totalRemainingHealingRatio)
-    {
-        HealthBarIcon healthBarIcon = HealthBarIcon.get(bodyPart);
-        HealthBarCondition healthBarCondition = HealthBarCondition.get(healthRatio);
-        if (healthBarIcon == null)
-            return;
-
-        boolean shouldFlash = flashCounters.containsKey(bodyPart);
-
-        // Draw empty health bar
-        gui.blit(BODY_HEALTH_SCREEN, this.leftPos + healthBarIcon.x, this.topPos + healthBarIcon.y,
-                TEX_HEALTH_BAR_X + HEALTH_BAR_WIDTH * HealthBarCondition.DEAD.iconIndexX,
-                TEX_HEALTH_BAR_Y + HEALTH_BAR_HEIGHT * HealthBarCondition.DEAD.iconIndexY,
-                HEALTH_BAR_WIDTH, HEALTH_BAR_HEIGHT);
-
-        int healthBarWidth = (int) Math.ceil(HEALTH_BAR_WIDTH * healthRatio);
-        int healthBarPreviewWidth = (int) Math.min(Math.ceil(HEALTH_BAR_WIDTH * totalRemainingHealingRatio), HEALTH_BAR_WIDTH - healthBarWidth);
-
-        int texX = TEX_HEALTH_BAR_X + HEALTH_BAR_WIDTH * healthBarCondition.iconIndexX;
-        int texY = TEX_HEALTH_BAR_Y + HEALTH_BAR_HEIGHT * healthBarCondition.iconIndexY;
-
-        sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul.LOGGER.info(
-                "[drawHealthBar] {}: ratio={}, barWidth={}/{}, condition={}, texCoords=({},{})",
-                bodyPart.name(), healthRatio, healthBarWidth, HEALTH_BAR_WIDTH, healthBarCondition.name(), texX, texY
-        );
-
-        // Draw current health bar
-        if (healthBarWidth > 0)
+        // The limb blinks for a few ticks when it changes
+        Integer flashCounter = flashCounters.get(bodyPart);
+        if (flashCounter == null || flashCounter % 2 == 0)
         {
-            sfiomn.legendarysurvivaloverhaul.LegendarySurvivalOverhaul.LOGGER.info(
-                    "[drawHealthBar] Drawing filled bar at screen({},{}) from tex({},{}) size({},{})",
-                    this.leftPos + healthBarIcon.x, this.topPos + healthBarIcon.y,
-                    texX, texY, healthBarWidth, HEALTH_BAR_HEIGHT
-            );
-            gui.blit(BODY_HEALTH_SCREEN, this.leftPos + healthBarIcon.x, this.topPos + healthBarIcon.y,
-                    texX, texY, healthBarWidth, HEALTH_BAR_HEIGHT);
+            RenderSystem.setShaderColor(1, 1, 1, 1);
+            for (int i = 0; i < remainingHearts; i++)
+                gui.blit(BODY_HEALTH_SCREEN, x + i * LIMB_HEART_SPACING, y, TEX_LIMB_HEART_X, TEX_LIMB_HEART_Y, LIMB_HEART_SIZE, LIMB_HEART_SIZE);
+
+            RenderSystem.setShaderColor(1, 1, 1, 0.5f);
+            for (int i = remainingHearts; i < remainingHearts + previewHearts; i++)
+                gui.blit(BODY_HEALTH_SCREEN, x + i * LIMB_HEART_SPACING, y, TEX_LIMB_HEART_X, TEX_LIMB_HEART_Y, LIMB_HEART_SIZE, LIMB_HEART_SIZE);
         }
 
-        // Draw healing bar
-        if (healthBarPreviewWidth > 0)
-            gui.blit(BODY_HEALTH_SCREEN, this.leftPos + healthBarIcon.x + healthBarWidth, this.topPos + healthBarIcon.y,
-                    TEX_HEALTH_BAR_X + healthBarWidth + HEALTH_BAR_WIDTH * healthBarCondition.getPreviewVariant().iconIndexX,
-                    TEX_HEALTH_BAR_Y + HEALTH_BAR_HEIGHT * healthBarCondition.getPreviewVariant().iconIndexY,
-                    healthBarPreviewWidth, HEALTH_BAR_HEIGHT);
+        RenderSystem.setShaderColor(1, 1, 1, 1);
+        if (shielded)
+            gui.blit(BODY_HEALTH_SCREEN, x, y, TEX_LIMB_SHIELD_X, TEX_LIMB_SHIELD_Y, LIMB_HEART_SIZE, LIMB_HEART_SIZE);
 
-        if (shouldFlash)
-            gui.blit(BODY_HEALTH_SCREEN, this.leftPos + healthBarIcon.x, this.topPos + healthBarIcon.y,
-                    TEX_HEALTH_BAR_X + HEALTH_BAR_WIDTH * HealthBarCondition.FLASH.iconIndexX,
-                    TEX_HEALTH_BAR_Y + HEALTH_BAR_HEIGHT * HealthBarCondition.FLASH.iconIndexY,
-                    HEALTH_BAR_WIDTH, HEALTH_BAR_HEIGHT);
+        RenderSystem.disableBlend();
     }
 
-    private enum HealthBarIcon
+    /**
+     * Top left corner of the 23 x 8 box holding the limb hearts of each limb, in the body health screen texture.
+     */
+    private enum LimbHeartsBox
     {
-        HEAD(72, 46),
-        RIGHT_ARM(118, 80),
-        LEFT_ARM(27, 80),
-        CHEST(72, 92),
-        RIGHT_LEG(106, 134),
-        LEFT_LEG(39, 134),
-        RIGHT_FOOT(106, 156),
-        LEFT_FOOT(39, 156);
+        HEAD(75, 46),
+        LEFT_ARM(30, 80),
+        RIGHT_ARM(121, 80),
+        CHEST(75, 92),
+        LEFT_LEG(42, 134),
+        RIGHT_LEG(109, 134),
+        LEFT_FOOT(42, 156),
+        RIGHT_FOOT(109, 156);
 
         public final int x;
         public final int y;
 
-        HealthBarIcon(int x, int y)
+        LimbHeartsBox(int x, int y)
         {
             this.x = x;
             this.y = y;
         }
 
-        public static HealthBarIcon get(BodyPartEnum bodyPart)
+        public static LimbHeartsBox get(BodyPartEnum bodyPart)
         {
             return switch (bodyPart)
             {
                 case HEAD -> HEAD;
-                case RIGHT_ARM -> RIGHT_ARM;
                 case LEFT_ARM -> LEFT_ARM;
+                case RIGHT_ARM -> RIGHT_ARM;
                 case CHEST -> CHEST;
-                case RIGHT_LEG -> RIGHT_LEG;
-                case RIGHT_FOOT -> RIGHT_FOOT;
                 case LEFT_LEG -> LEFT_LEG;
+                case RIGHT_LEG -> RIGHT_LEG;
                 case LEFT_FOOT -> LEFT_FOOT;
-                default -> null;
-            };
-        }
-    }
-
-    private enum HealthBarCondition
-    {
-        HEALTHY(0, 0),
-        WOUNDED(0, 1),
-        HEAVILY_WOUNDED(0, 2),
-        DEAD(0, 3),
-        HEALTHY_PREVIEW(0, 4),
-        WOUNDED_PREVIEW(0, 5),
-        HEAVILY_WOUNDED_PREVIEW(0, 6),
-        DEAD_PREVIEW(0, 7),
-        FLASH(1, 8);
-
-        public final int iconIndexX;
-        public final int iconIndexY;
-
-        HealthBarCondition(int iconIndexX, int iconIndexY)
-        {
-            this.iconIndexX = iconIndexX;
-            this.iconIndexY = iconIndexY;
-        }
-
-        public static HealthBarCondition get(float healthRatio)
-        {
-            if (healthRatio >= 0.66f)
-            {
-                return HEALTHY;
-            } else if (healthRatio >= 0.33f)
-            {
-                return WOUNDED;
-            } else if (healthRatio > 0)
-            {
-                return HEAVILY_WOUNDED;
-            } else
-            {
-                return DEAD;
-            }
-        }
-
-        public HealthBarCondition getPreviewVariant()
-        {
-            return switch (this)
-            {
-                case HEALTHY -> HEALTHY_PREVIEW;
-                case WOUNDED -> WOUNDED_PREVIEW;
-                case HEAVILY_WOUNDED -> HEAVILY_WOUNDED_PREVIEW;
-                case DEAD -> DEAD_PREVIEW;
-                default -> this;
+                case RIGHT_FOOT -> RIGHT_FOOT;
             };
         }
     }

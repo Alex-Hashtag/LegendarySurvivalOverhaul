@@ -39,8 +39,7 @@ public class NetworkHandler
         reg.playBidirectional(DrinkBlockFluidMessage.TYPE, DrinkBlockFluidMessage.STREAM_CODEC,
                 new DirectionalPayloadHandler<>(DrinkBlockFluidMessage::handle, DrinkBlockFluidMessage::handle));
 
-        reg.playBidirectional(BodyPartHealingTimeMessage.TYPE, BodyPartHealingTimeMessage.STREAM_CODEC,
-                new DirectionalPayloadHandler<>(BodyPartHealingTimeMessage::handle, BodyPartHealingTimeMessage::handle));
+        reg.playToServer(HealBodyPartPayload.TYPE, HealBodyPartPayload.STREAM_CODEC, HealBodyPartPayload::handle);
 
         reg.playBidirectional(SyncTemperatureConsumablesPayload.TYPE, SyncTemperatureConsumablesPayload.STREAM_CODEC,
                 new DirectionalPayloadHandler<>(SyncTemperatureConsumablesPayload::handle, SyncTemperatureConsumablesPayload::handle));
